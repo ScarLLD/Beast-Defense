@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour, ITarget
@@ -16,5 +15,10 @@ public class Enemy : MonoBehaviour, ITarget
     public void ChangeDetectedStatus()
     {
         IsDetected = !IsDetected;
+    }
+
+    internal void Init(ObjectPool<Enemy> pool, Transform targetTransform)
+    {
+        throw new NotImplementedException();
     }
 }

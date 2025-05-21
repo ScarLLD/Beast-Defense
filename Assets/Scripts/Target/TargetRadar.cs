@@ -1,15 +1,11 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetFinder : MonoBehaviour
+public class TargetRadar : MonoBehaviour
 {
-    [SerializeField] private TargetCollector _targetCollector;
-
+    [SerializeField] private Gunner _gunner;
     [SerializeField] private float sphereRadius = 0.5f;
     [SerializeField] private float maxDistance = 10f;
-    public LayerMask layerMask;
+    [SerializeField] private LayerMask layerMask;
 
     private Ray _ray;
     private RaycastHit[] _hits;
@@ -30,10 +26,13 @@ public class TargetFinder : MonoBehaviour
     {
         foreach (var hit in _hits)
         {
-            if (hit.collider.TryGetComponent<ITarget>(out ITarget target) && target.IsDetected == false)
+            if (hit.collider.TryGetComponent(out ITarget target) && target.IsDetected == false)
             {
-                target.ChangeDetectedStatus();
-                _targetCollector.PutTarget(hit.transform);
+                if (target as Enemy)
+                {
+                    target.ChangeDetectedStatus();
+                    _gunner.Shoot(hit.transform);
+                }
             }
         }
     }
@@ -51,6 +50,5 @@ public class TargetFinder : MonoBehaviour
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(_ray.origin + _ray.direction * maxDistance, sphereRadius);
-
     }
 }
