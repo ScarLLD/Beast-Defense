@@ -24,20 +24,15 @@ public class ObjectPool<T> where T : MonoBehaviour
 
     public T GetObject()
     {
-        foreach (var obj in _pool)
+        foreach (var gameObject in _pool)
         {
-            if (obj.gameObject.activeInHierarchy == false)
+            if (gameObject.gameObject.activeInHierarchy == false)
             {
-                obj.gameObject.SetActive(true);
-                return obj;
+                gameObject.gameObject.SetActive(true);
+                return gameObject;
             }
         }
 
         return CreateObject();
-    }
-
-    public void ReturnObject(T obj)
-    {
-        obj.gameObject.SetActive(false);
     }
 }

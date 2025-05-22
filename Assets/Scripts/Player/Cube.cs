@@ -1,18 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Cube : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private float _speed;
 
-    // Update is called once per frame
-    void Update()
+    private Vector3 _defensePosition;
+    private ObjectPool<Cube> _pool;
+
+    public void Init(ObjectPool<Cube> pool, Vector3 defensePosition)
     {
-        
+        if (pool == null)
+            throw new ArgumentNullException(nameof(pool), $"pool не может быть null.");
+
+        if (defensePosition == null)
+            throw new ArgumentNullException(nameof(defensePosition), $"defensePosition не может быть null.");
+
+        _pool = pool;
+        _defensePosition = defensePosition;
     }
 }

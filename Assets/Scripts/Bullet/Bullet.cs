@@ -1,40 +1,29 @@
 using System;
 using UnityEngine;
 
+[RequireComponent(typeof(BulletMover))]
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    private BulletMover _mover;
 
-    private Transform _targetTransform;
-    private ObjectPool<Bullet> _pool;
+    public void Init(Transform targetTransform)
+    {    
+        if (targetTransform == null)
+            throw new ArgumentNullException(nameof(targetTransform), $"targetTransform не может быть null.");
 
-    public void Init(ObjectPool<Bullet> pool, Transform target)
-    {
-        if (pool == null)
-            throw new ArgumentNullException(nameof(pool), $"pool не может быть null.");
-
-        if (target == null)
-            throw new ArgumentNullException(nameof(target), $"_enemyPrefab не может быть null.");
-
-        _pool = pool;
-        _targetTransform = target;
+        _mover.Init(targetTransform);
     }
 
-    private void Update()
+    private void Awake()
     {
-        if (isActiveAndEnabled == true && _targetTransform != null)
-        {
-            Vector3 direction = _targetTransform.position - transform.position;
-            transform.Translate(_speed * Time.deltaTime * direction.normalized);
-        }
+        _mover = GetComponent<BulletMover>();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.TryGetComponent(out ITarget target))
-        {
-            _pool.ReturnObject(this);
-            Debug.Log("Returned");
+        {            
+            gameObject.SetActive(false);
         }
     }
 }
