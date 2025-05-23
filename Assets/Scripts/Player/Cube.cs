@@ -1,22 +1,40 @@
-using System;
 using UnityEngine;
 
+[RequireComponent(typeof(CubeMover))]
 public class Cube : MonoBehaviour
 {
     [SerializeField] private float _speed;
+    [SerializeField] private float _maxDistance;
 
-    private Vector3 _defensePosition;
-    private ObjectPool<Cube> _pool;
+    public bool IsStatic { get; private set; } = true;
+    public bool IsAvailable { get; private set; } = true;
+    public CubeMover Mover { get; private set; }
 
-    public void Init(ObjectPool<Cube> pool, Vector3 defensePosition)
+    private TargetRadar _radar;
+
+    private void Awake()
     {
-        if (pool == null)
-            throw new ArgumentNullException(nameof(pool), $"pool не может быть null.");
+        Mover = GetComponent<CubeMover>();
+        Mover.Init(_speed, _maxDistance);
+    }
 
-        if (defensePosition == null)
-            throw new ArgumentNullException(nameof(defensePosition), $"defensePosition не может быть null.");
+    private void OnEnable()
+    {
+        Mover.Arrived += ActivateRadar;
+    }
 
-        _pool = pool;
-        _defensePosition = defensePosition;
+    private void OnDisable()
+    {
+        Mover.Arrived -= ActivateRadar;
+    }
+
+    public void ChangeStaticStatus()
+    {
+        IsStatic = !IsStatic;
+    }
+
+    private void ActivateRadar()
+    {
+        _radar.StartScan();
     }
 }

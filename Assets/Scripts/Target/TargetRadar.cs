@@ -1,26 +1,45 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class TargetRadar : MonoBehaviour
 {
     [SerializeField] private float sphereRadius = 0.5f;
     [SerializeField] private float maxDistance = 10f;
-    [SerializeField] private LayerMask layerMask;
 
+    private bool _isWork;
     private Ray _ray;
     private RaycastHit[] _hits;
+    private Coroutine _moveCoroutine;
 
     public event Action<Transform> Found;
 
-    void Update()
+    public void StartScan()
     {
-        _ray = new Ray(transform.position, transform.forward);
+        _isWork = true;
+        _moveCoroutine = StartCoroutine(ScanRoutine());
+    }
 
-        _hits = Physics.SphereCastAll(_ray.origin, sphereRadius, _ray.direction, maxDistance);
+    public void EndScan()
+    {
+        _isWork = false;
+        _moveCoroutine = null;
+    }
 
-        if (_hits.Length > 0)
+    private IEnumerator ScanRoutine()
+    {
+        while (_isWork)
         {
-            Interact();
+            _ray = new Ray(transform.position, transform.forward);
+
+            _hits = Physics.SphereCastAll(_ray.origin, sphereRadius, _ray.direction, maxDistance);
+
+            if (_hits.Length > 0)
+            {
+                Interact();
+            }
+
+            yield return new WaitForSeconds(0);
         }
     }
 
