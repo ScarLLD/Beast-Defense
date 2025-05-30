@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ public class BulletMover : MonoBehaviour
         _moveCoroutine = StartCoroutine(MoveRoutine(targetTransform));
     }
 
-    private void OnDisable()
+    public void StopMoving()
     {
         if (_moveCoroutine != null)
         {

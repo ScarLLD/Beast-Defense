@@ -1,6 +1,9 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(CubeMover))]
+[RequireComponent(typeof(TargetRadar))]
+[RequireComponent(typeof(Shooter))]
 public class Cube : MonoBehaviour
 {
     [SerializeField] private float _speed;
@@ -11,11 +14,19 @@ public class Cube : MonoBehaviour
     public CubeMover Mover { get; private set; }
 
     private TargetRadar _radar;
+    private Shooter _shooter;
 
     private void Awake()
     {
         Mover = GetComponent<CubeMover>();
+        _radar = GetComponent<TargetRadar>();
+        _shooter = GetComponent<Shooter>();
         Mover.Init(_speed, _maxDistance);
+    }
+
+    public void Init(BulletSpawner bulletSpawner)
+    {
+        _shooter.Init(bulletSpawner);
     }
 
     private void OnEnable()
@@ -33,8 +44,13 @@ public class Cube : MonoBehaviour
         IsStatic = !IsStatic;
     }
 
+    public void ChangeAvailableStatus()
+    {
+        IsAvailable = !IsAvailable;
+    }
+
     private void ActivateRadar()
     {
-        _radar.StartScan();
+        _radar.StartScanning();
     }
 }

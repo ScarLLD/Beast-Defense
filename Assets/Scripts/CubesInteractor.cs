@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CubesInteractor : MonoBehaviour
@@ -19,13 +17,10 @@ public class CubesInteractor : MonoBehaviour
 
     private void TryGetMove(Cube cube)
     {
-        Debug.Log("TryGetMove");
-
-        if (_placesHolder.TryGetPlace(out ShootingPlace place) && cube.IsStatic && cube.IsAvailable)
+        if (_placesHolder.TryGetPlace(out ShootingPlace place) && cube.IsStatic)
         {
-            Debug.Log("placeGeted");
             cube.ChangeStaticStatus();
-            cube.Mover.MoveTarget(place.gameObject.transform);
+            cube.Mover.StartMoving(place.gameObject.transform);
         }
     }
 }

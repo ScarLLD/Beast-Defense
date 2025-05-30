@@ -15,8 +15,6 @@ public class ShootingPlacesHolder : MonoBehaviour
 
     public bool TryGetPlace(out ShootingPlace place)
     {
-        Debug.Log("tryingGetPlace");
-
         place = _shootingPlaces.Where(place => place.IsEmpty == true).FirstOrDefault();
 
         if (place != null)

@@ -1,7 +1,5 @@
 using System;
 using System.Collections;
-using System.Drawing;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CubeMover : MonoBehaviour
@@ -18,18 +16,9 @@ public class CubeMover : MonoBehaviour
         _maxDistance = maxDistance;
     }
 
-    public void MoveTarget(Transform targetTransform)
+    public void StartMoving(Transform targetTransform)
     {
         _moveCoroutine = StartCoroutine(MoveRoutine(targetTransform));
-    }
-
-    private void OnDisable()
-    {
-        if (_moveCoroutine != null)
-        {
-            StopCoroutine(_moveCoroutine);
-            _moveCoroutine = null;
-        }
     }
 
     private IEnumerator MoveRoutine(Transform target)
@@ -43,11 +32,22 @@ public class CubeMover : MonoBehaviour
 
             if ((target.position - transform.position).magnitude < _maxDistance)
             {
+                transform.position = target.position;
+                StopMoving();
                 Arrived?.Invoke();
                 isWork = false;
             }
 
             yield return null;
+        }
+    }
+
+    private void StopMoving()
+    {
+        if (_moveCoroutine != null)
+        {
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
         }
     }
 }

@@ -5,6 +5,7 @@ public class StaticCubeGridGenerator : MonoBehaviour
 {
     [Header("Основные настройки")]
     [SerializeField] private Cube _cubePrefab;
+    [SerializeField] private BulletSpawner _bulletSpawner;
     [SerializeField] private int rows;
     [SerializeField] private int columns;
 
@@ -56,6 +57,8 @@ public class StaticCubeGridGenerator : MonoBehaviour
                 Vector3 spawnPosition = new(localX, 0f, localZ);
 
                 Cube cube = Instantiate(_cubePrefab, transform);
+
+                cube.Init(_bulletSpawner);
                 cube.transform.localPosition = spawnPosition;
 
                 _holder.PutCube(cube);

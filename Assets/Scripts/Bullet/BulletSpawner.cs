@@ -14,8 +14,6 @@ public class BulletSpawner : MonoBehaviour
 
     public void SpawnBullet(Vector3 spawnPosition, Transform targetTransform)
     {
-        Bullet bullet = _pool.GetObject();
-        bullet.transform.position = spawnPosition;
-        bullet.Init(targetTransform);
+        
     }
 }

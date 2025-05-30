@@ -14,7 +14,7 @@ public class ObjectPool<T> where T : MonoBehaviour
         _pool = new List<T>();
     }
 
-    private T CreateObject()
+    public T CreateObject()
     {
         var tempObject = Object.Instantiate(_prefab, _container);
         _pool.Add(tempObject);
@@ -24,15 +24,14 @@ public class ObjectPool<T> where T : MonoBehaviour
 
     public T GetObject()
     {
-        foreach (var gameObject in _pool)
+        foreach (var tempObject in _pool)
         {
-            if (gameObject.gameObject.activeInHierarchy == false)
+            if (tempObject.gameObject.activeInHierarchy == false)
             {
-                gameObject.gameObject.SetActive(true);
-                return gameObject;
+                return tempObject;
             }
         }
 
-        return CreateObject();
+        return null;
     }
 }

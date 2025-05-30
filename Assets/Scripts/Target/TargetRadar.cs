@@ -12,9 +12,9 @@ public class TargetRadar : MonoBehaviour
     private RaycastHit[] _hits;
     private Coroutine _moveCoroutine;
 
-    public event Action<Transform> Found;
+    public event Action<Transform> OnTargetFound;
 
-    public void StartScan()
+    public void StartScanning()
     {
         _isWork = true;
         _moveCoroutine = StartCoroutine(ScanRoutine());
@@ -52,7 +52,7 @@ public class TargetRadar : MonoBehaviour
                 if (target as Enemy)
                 {
                     target.ChangeDetectedStatus();
-                    Found?.Invoke(hit.transform);
+                    OnTargetFound?.Invoke(hit.transform);
                 }
             }
         }

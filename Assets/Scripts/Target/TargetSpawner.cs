@@ -14,8 +14,6 @@ public class TargetSpawner : MonoBehaviour
 
     public void SpawnEnemy(Vector3 spawnPosition, Transform targetTransform)
     {
-        Enemy enemy = _pool.GetObject();
-        enemy.transform.position = spawnPosition;
-        enemy.Init(targetTransform);
+        
     }
 }
