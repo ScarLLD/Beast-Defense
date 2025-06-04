@@ -11,7 +11,6 @@ public class Enemy : MonoBehaviour, ITarget
     public bool IsDetected { get; private set; }
     public bool IsCaptured { get; private set; }
 
-
     public void ChangeCapturedStatus()
     {
         IsCaptured = !IsCaptured;

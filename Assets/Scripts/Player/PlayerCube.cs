@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(CubeMover))]
 [RequireComponent(typeof(TargetRadar))]
 [RequireComponent(typeof(Shooter))]
-public class Cube : MonoBehaviour
+public class PlayerCube : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _maxDistance;

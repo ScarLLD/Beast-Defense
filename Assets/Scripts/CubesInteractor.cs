@@ -15,7 +15,7 @@ public class CubesInteractor : MonoBehaviour
         _ray.Clicked -= TryGetMove;
     }
 
-    private void TryGetMove(Cube cube)
+    private void TryGetMove(PlayerCube cube)
     {
         if (_placesHolder.TryGetPlace(out ShootingPlace place) && cube.IsStatic)
         {

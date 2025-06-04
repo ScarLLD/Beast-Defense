@@ -1,25 +1,52 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class RayCreator : MonoBehaviour
 {
+    [SerializeField] private Game _game;
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private float _rayDirection;
 
-    public event Action<Cube> Clicked;
+    private Coroutine _rayCoroutine;
 
-    private void Update()
+    public event Action<PlayerCube> Clicked;
+
+    private void OnEnable()
     {
-        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+        _game.Started += ActivateRay;
+    }
 
-        if (Input.GetKeyUp(KeyCode.Mouse0)
-            && Physics.Raycast(ray.origin, ray.direction,
-            out RaycastHit hit, _rayDirection)
-            && hit.transform.TryGetComponent(out Cube cube)
-            && cube.IsAvailable)
+    private void OnDisable()
+    {
+        _game.Started -= ActivateRay;
+    }
+
+    private void ActivateRay()
+    {
+        _rayCoroutine = StartCoroutine(MouseRaycastInteraction());
+        Debug.Log("Coroutine");
+    }
+
+    private IEnumerator MouseRaycastInteraction()
+    {
+        bool isWork = true;
+
+        while (isWork)
         {
-            cube.ChangeAvailableStatus();
-            Clicked?.Invoke(cube);
+            Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+
+            if (Input.GetKeyUp(KeyCode.Mouse0)
+                && Physics.Raycast(ray.origin, ray.direction,
+                out RaycastHit hit, _rayDirection)
+                && hit.transform.TryGetComponent(out PlayerCube cube)
+                && cube.IsAvailable)
+            {
+                cube.ChangeAvailableStatus();
+                Clicked?.Invoke(cube);
+            }
+
+            yield return null;
         }
     }
 }

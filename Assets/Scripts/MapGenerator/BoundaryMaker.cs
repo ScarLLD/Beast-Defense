@@ -1,15 +1,19 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class BoundaryMarker : MonoBehaviour
+public class BoundaryMaker : MonoBehaviour
 {
     [SerializeField] private Game _game;
     [SerializeField] private GameObject _pointPrefab;
     [SerializeField] private Material _lineMeterial;
+    [Range(0.1f, 0.9f)]
+    [SerializeField] private float _borderReduction;
 
     private List<Vector3> _planePoints;
     private List<LineRenderer> _lines;
     private Camera _camera;
+
+    public event System.Action<List<Vector3>> PointsInitialized;
 
     private void Awake()
     {
@@ -28,12 +32,6 @@ public class BoundaryMarker : MonoBehaviour
         _game.Started -= GenerateMarkers;
     }
 
-    public float GetBoundFloatX(int lineNumber)
-    {
-        return _lines[lineNumber].transform.position.x;
-    }
-
-
     public Vector3 GetRandomPointOnRandomLine()
     {
         int index = Random.Range(0, _lines.Count);
@@ -44,9 +42,9 @@ public class BoundaryMarker : MonoBehaviour
 
     private void GenerateMarkers()
     {
-        float partHeight = _camera.pixelHeight * 3f / 4f;
+        float partHeight = _camera.pixelHeight * _borderReduction;
 
-        List<Vector3> screenPoints = new List<Vector3>()
+        List<Vector3> screenPoints = new()
         {
         new(0f, partHeight, 10),
         new(0f, _camera.pixelHeight, 10),
@@ -66,7 +64,7 @@ public class BoundaryMarker : MonoBehaviour
         }
 
         CreateBorderLines();
-        GetRandomPointOnRandomLine();
+        PointsInitialized?.Invoke(_planePoints);
     }
 
     private void CreateBorderLines()
@@ -82,7 +80,7 @@ public class BoundaryMarker : MonoBehaviour
 
     private void CreateLine(Vector3 start, Vector3 end)
     {
-        GameObject line = new("BorderLine");
+        GameObject line = new("Line");
         line.transform.SetParent(transform);
 
         LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
@@ -98,9 +96,8 @@ public class BoundaryMarker : MonoBehaviour
 
     private Vector3 GetRandomLinePoint(Vector3 start, Vector3 end)
     {
-        float randomT = Random.Range(0.1f, 0.9f);
+        float randomT = Random.Range(0.3f, 0.7f);
         Vector3 randomPosition = Vector3.Lerp(start, end, randomT);
-        Instantiate(_pointPrefab, randomPosition, Quaternion.identity, transform);
 
         return randomPosition;
     }
