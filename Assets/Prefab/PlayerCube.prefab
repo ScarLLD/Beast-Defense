@@ -18,7 +18,7 @@ GameObject:
   - component: {fileID: 8604573234390706645}
   - component: {fileID: 4533960132311930740}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: PlayerCube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -122,8 +122,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 597f3049c3f9a0d43a2627235d04fd34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _shooter: {fileID: 3060330259778611814}
-  _targetRadar: {fileID: 2437316090417186051}
 --- !u!114 &3060330259778611814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,7 +134,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f93d11656c20924096e2bbb43ed9222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawner: {fileID: 0}
   _timeBetweenShoot: 0.5
 --- !u!114 &2437316090417186051
 MonoBehaviour:
@@ -161,11 +158,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 2856575829803806865}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 116a245f78dafa6479f8bfe184ad2e76, type: 3}
+  m_Script: {fileID: 11500000, guid: b862cda485e6f2d4c8c02b62f506ce1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 10
-  _maxDistance: 0.1
+  _speed: 6
+  _maxDistanceRounding: 0.1
 --- !u!114 &4533960132311930740
 MonoBehaviour:
   m_ObjectHideFlags: 0

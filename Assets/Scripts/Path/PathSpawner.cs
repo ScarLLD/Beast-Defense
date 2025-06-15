@@ -43,7 +43,7 @@ public class PathSpawner : MonoBehaviour
 
     private bool GeneratePath()
     {
-        Vector3 currentDirection = _initialDirection;
+        Vector3 currentDirection = _initialDirection;        
         Vector3 currentPosition = _spawnPoint;
         int safetyCounter = 0;
 
@@ -109,6 +109,7 @@ public class PathSpawner : MonoBehaviour
 
         return false;
     }
+
     private void InitializeStartingPointAndDirection()
     {
         _spawnPoint = _boundaryMaker.GetRandomPointOnRandomLine();
@@ -116,6 +117,7 @@ public class PathSpawner : MonoBehaviour
 
         _initialDirection = _directionHolder.GetValidDirection(_spawnPoint);
     }
+
     private bool TryMoveForward(ref Vector3 position, Vector3 direction)
     {
         Vector3 newPosition = position + direction * _segmentLength;
@@ -126,6 +128,7 @@ public class PathSpawner : MonoBehaviour
         }
         return false;
     }
+
     private bool ShouldTurn()
     {
         float turnProbability = 0.3f + (_pathPoints.Count * 0.02f);

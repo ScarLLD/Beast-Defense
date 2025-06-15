@@ -8,6 +8,8 @@ public class PathVizualizator : MonoBehaviour
     [SerializeField] private float _prefabScale;
     [SerializeField] private float _prefabScaleYmultiplier;
 
+    private readonly float _divider = 2f;
+
     public void VisualizePath(List<Vector3> pathPoints)
     {
         foreach (Transform child in transform)
@@ -24,13 +26,13 @@ public class PathVizualizator : MonoBehaviour
     {
         var point = Instantiate(_cylinderVisualizerPrefab, transform);
         point.transform.position = pathPoints[i + 1];
-        point.transform.localScale = new Vector3(_prefabScale, _prefabScale / 2 * _prefabScaleYmultiplier, _prefabScale);
+        point.transform.localScale = new Vector3(_prefabScale, _prefabScale / _divider * _prefabScaleYmultiplier, _prefabScale);
     }
 
     private void CreatePathSegment(List<Vector3> pathPoints, int index)
     {
         var segment = Instantiate(_cubePathVisualizerPrefab, transform);
-        segment.transform.position = (pathPoints[index] + pathPoints[index + 1]) / 2f;
+        segment.transform.position = (pathPoints[index] + pathPoints[index + 1]) / _divider;
         segment.transform.LookAt(pathPoints[index + 1]);
         segment.transform.localScale = new Vector3(_prefabScale, _prefabScale * _prefabScaleYmultiplier, Vector3.Distance(pathPoints[index], pathPoints[index + 1]));
     }

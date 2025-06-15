@@ -25,7 +25,6 @@ public class RayCreator : MonoBehaviour
     private void ActivateRay()
     {
         _rayCoroutine = StartCoroutine(MouseRaycastInteraction());
-        Debug.Log("Coroutine");
     }
 
     private IEnumerator MouseRaycastInteraction()

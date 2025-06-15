@@ -5,7 +5,7 @@ using UnityEngine;
 public class CubeMover : MonoBehaviour
 {
     private float _speed;
-    private float _maxDistance;
+    private float _maxDistanceRounding;
     private Coroutine _moveCoroutine;
 
     public event Action Arrived;
@@ -13,7 +13,7 @@ public class CubeMover : MonoBehaviour
     public void Init(float speed, float maxDistance)
     {
         _speed = speed;
-        _maxDistance = maxDistance;
+        _maxDistanceRounding = maxDistance;
     }
 
     public void StartMoving(Transform targetTransform)
@@ -30,7 +30,7 @@ public class CubeMover : MonoBehaviour
             Vector3 direction = target.position - transform.position;
             transform.Translate(_speed * Time.deltaTime * direction.normalized);
 
-            if ((target.position - transform.position).magnitude < _maxDistance)
+            if ((target.position - transform.position).magnitude < _maxDistanceRounding)
             {
                 transform.position = target.position;
                 StopMoving();
