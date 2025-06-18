@@ -53,7 +53,7 @@ public class SnakeRotator : MonoBehaviour
             if (direction != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _snakeHead.Speed * 1f);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _snakeHead.Speed * 0.6f);
 
                 if (transform.rotation == targetRotation)
                     StopRotateRoutine();
