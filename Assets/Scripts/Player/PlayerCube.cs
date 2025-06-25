@@ -7,8 +7,6 @@ using UnityEngine;
 public class PlayerCube : MonoBehaviour
 {
     [SerializeField] private float _speed;
-    [Range(0, 0.1f)]
-    [SerializeField] private float _maxDistanceRounding;
 
     public bool IsStatic { get; private set; } = true;
     public bool IsAvailable { get; private set; } = true;
@@ -22,12 +20,12 @@ public class PlayerCube : MonoBehaviour
         Mover = GetComponent<CubeMover>();
         _radar = GetComponent<TargetRadar>();
         _shooter = GetComponent<Shooter>();
-        Mover.Init(_speed, _maxDistanceRounding);
+        Mover.Init(_speed);
     }
 
-    public void Init(BulletSpawner bulletSpawner)
+    public void Init(BulletSpawner bulletSpawner, int bulletCount)
     {
-        _shooter.Init(bulletSpawner);
+        _shooter.Init(bulletSpawner, bulletCount);
     }
 
     private void OnEnable()

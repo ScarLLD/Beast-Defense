@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(SnakeMover), typeof(SnakeRotator), typeof(SnakeLocalSettings))]
@@ -8,11 +10,15 @@ public class SnakeSegment : MonoBehaviour
     private SnakeLocalSettings _localSettings;
     private PathHolder _pathHolder;
 
+    private Queue<GameObject> _cubes;
+
     private void Awake()
     {
         _mover = GetComponent<SnakeMover>();
         _rotator = GetComponent<SnakeRotator>();
         _localSettings = GetComponent<SnakeLocalSettings>();
+
+        _cubes = new Queue<GameObject>();
     }
 
     private void OnEnable()
@@ -23,6 +29,17 @@ public class SnakeSegment : MonoBehaviour
     private void OnDisable()
     {
         _mover.Arrived -= ChangePosition;
+    }
+
+    public void AddCube(GameObject cube)
+    {
+        _cubes.Enqueue(cube);
+    }
+
+    public bool TryGetCube(Color color)
+    {
+        if(_cubes.Count > 0)
+            _cubes[0].color = color;
     }
 
     public void Init(SnakeHead snakeHead, PathHolder pathHolder)

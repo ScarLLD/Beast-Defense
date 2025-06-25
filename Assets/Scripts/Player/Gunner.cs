@@ -11,17 +11,7 @@ public class Gunner : MonoBehaviour
     {
         _shooter = GetComponent<Shooter>();
         _targetRadar = GetComponent<TargetRadar>();
-    }
-
-    private void OnEnable()
-    {
-        _targetRadar.OnTargetFound += SelectTarget;
-    }
-
-    private void OnDisable()
-    {
-        _targetRadar.OnTargetFound -= SelectTarget;
-    }
+    }    
 
     private void SelectTarget(Transform target)
     {

@@ -45,4 +45,9 @@ public class PathHolder : MonoBehaviour
 
         return nextPosition != Vector3.zero;
     }
+
+    private void CreateDetectionPoint(Vector3 detectionPoint)
+    {
+        
+    }
 }

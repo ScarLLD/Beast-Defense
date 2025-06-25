@@ -20,7 +20,7 @@ public class CubesInteractor : MonoBehaviour
         if (_placesHolder.TryGetPlace(out ShootingPlace place) && cube.IsStatic)
         {
             cube.ChangeStaticStatus();
-            cube.Mover.StartMoving(place.gameObject.transform);
+            cube.Mover.StartMoving(place.transform.position);
         }
     }
 }

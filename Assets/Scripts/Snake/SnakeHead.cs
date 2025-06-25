@@ -19,8 +19,8 @@ public class SnakeHead : MonoBehaviour
     {
         _localSettings = GetComponent<SnakeLocalSettings>();
         _mover = GetComponent<SnakeMover>();
-        _mover.Init(this);
         _rotator = GetComponent<SnakeRotator>();
+        _mover.Init(this);
         _rotator.Init(this);
         _tail = GetComponent<SnakeTail>();
     }
@@ -40,8 +40,9 @@ public class SnakeHead : MonoBehaviour
         _speed = speed;
     }
 
-    public void Init(PathHolder pathHolder, Transform snakeTransform)
+    public void Init(PathHolder pathHolder, Transform snakeTransform, SpecificCubesCreator creator)
     {
+        _tail.Init(creator);
         _pathHolder = pathHolder;
 
         if (_pathHolder.TryGetStartPosition(out Vector3 startPosition))

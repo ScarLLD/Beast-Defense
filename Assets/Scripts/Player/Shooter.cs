@@ -7,9 +7,12 @@ public class Shooter : MonoBehaviour
 
     private BulletSpawner _bulletSpawner;
 
-    public void Init(BulletSpawner bulletSpawner)
+    private int _bulletCount;
+
+    public void Init(BulletSpawner bulletSpawner, int bulletCount)
     {
         _bulletSpawner = bulletSpawner;
+        _bulletCount = bulletCount;
     }
 
     public void Shoot(Transform targetTransform)

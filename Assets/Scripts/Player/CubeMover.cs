@@ -5,37 +5,38 @@ using UnityEngine;
 public class CubeMover : MonoBehaviour
 {
     private float _speed;
-    private float _maxDistanceRounding;
+    private float _maxDistanceRounding = 0.01f;
     private Coroutine _moveCoroutine;
 
     public event Action Arrived;
 
-    public void Init(float speed, float maxDistance)
+    public void Init(float speed)
     {
         _speed = speed;
-        _maxDistanceRounding = maxDistance;
     }
 
-    public void StartMoving(Transform targetTransform)
+    public void StartMoving(Vector3 target)
     {
-        _moveCoroutine = StartCoroutine(MoveRoutine(targetTransform));
+        _moveCoroutine = StartCoroutine(MoveRoutine(target));
     }
 
-    private IEnumerator MoveRoutine(Transform target)
+    private IEnumerator MoveRoutine(Vector3 target)
     {
         bool isWork = true;
 
+        target = new Vector3(target.x, transform.position.y, target.z);
+
         while (isWork)
         {
-            Vector3 direction = target.position - transform.position;
+            Vector3 direction = target - transform.position;
             transform.Translate(_speed * Time.deltaTime * direction.normalized);
 
-            if ((target.position - transform.position).magnitude < _maxDistanceRounding)
+            if ((target - transform.position).magnitude < _maxDistanceRounding)
             {
-                transform.position = target.position;
-                StopMoving();
+                transform.position = target;
                 Arrived?.Invoke();
                 isWork = false;
+                StopMoving();
             }
 
             yield return null;

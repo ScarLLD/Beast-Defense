@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class CustomCube : MonoBehaviour
+public class CustomCube
 {
     public int Count { get; private set; }
     public Color Color { get; private set; }

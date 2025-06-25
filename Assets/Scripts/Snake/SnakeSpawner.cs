@@ -1,20 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class SnakeSpawner : MonoBehaviour
 {
     [SerializeField] private SnakeHead _snakePrefab;
     [SerializeField] private PathHolder _pathHolder;
+    [SerializeField] private SpecificCubesCreator _specificCubesCreator;
 
     private void OnEnable()
     {
-        _pathHolder.PathInit += SpawnSnake;
+        _specificCubesCreator.Created += SpawnSnake;
     }
 
     private void OnDisable()
     {
-        _pathHolder.PathInit -= SpawnSnake;
+        _specificCubesCreator.Created -= SpawnSnake;
     }
 
     private void SpawnSnake()
@@ -24,7 +23,7 @@ public class SnakeSpawner : MonoBehaviour
         if (_pathHolder.TryGetStartPosition(out Vector3 spawnPoint))
         {
             var snakeHead = Instantiate(_snakePrefab, spawnPoint, Quaternion.identity, snake.transform);
-            snakeHead.Init(_pathHolder, snake.transform);
+            snakeHead.Init(_pathHolder, snake.transform, _specificCubesCreator);
         }
     }
 }
