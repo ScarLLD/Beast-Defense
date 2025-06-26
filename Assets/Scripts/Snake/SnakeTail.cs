@@ -10,7 +10,7 @@ public class SnakeTail : MonoBehaviour
     private float _DirectionMultiplier = 1f;
     private Vector3 _lastPosition;
     private SnakeSegmentsHolder _holder;
-    private SpecificCubesCreator _specificCubesCreator;
+    private CustomCubesCreator _customCubesCreator;
 
     private void Awake()
     {
@@ -18,21 +18,21 @@ public class SnakeTail : MonoBehaviour
         _holder = GetComponent<SnakeSegmentsHolder>();
     }
 
-    public void Init(SpecificCubesCreator specificCubesCreator)
+    public void Init(CustomCubesCreator specificCubesCreator)
     {
-        _specificCubesCreator = specificCubesCreator;
+        _customCubesCreator = specificCubesCreator;
     }
 
     public void Spawn(Vector3 direction, SnakeHead snakeHead, PathHolder pathHolder)
     {
-        int CubesCount = _specificCubesCreator.Cubes.Count;
+        int CubesCount = _customCubesCreator.Cubes.Count;
         int involvedCountInsideCube = 0;
 
         Vector3 centerPoint = _lastPosition + _DirectionMultiplier * _distanceBetweenSegments * GetObjectSizeInLocalDirection(-direction) * -direction.normalized;
 
         for (int i = 0; i < CubesCount;)
         {
-            int countInsideCube = _specificCubesCreator.Cubes[i].Count - involvedCountInsideCube;
+            int countInsideCube = _customCubesCreator.Cubes[i].Count - involvedCountInsideCube;
 
             GameObject segmentObject = new GameObject("Snake Segment");
             SnakeSegment segment = segmentObject.AddComponent<SnakeSegment>();
@@ -54,11 +54,11 @@ public class SnakeTail : MonoBehaviour
 
             for (int l = 0; l < points.Length; l++)
             {
-                SnakeCube cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
                 cube.transform.position = points[l];
                 cube.transform.localScale = Vector3.one * 0.7f;
                 cube.transform.parent = segment.transform;
-                cube.GetComponent<MeshRenderer>().material.color = _specificCubesCreator.Cubes[i].Color;
+                cube.GetComponent<MeshRenderer>().material = _customCubesCreator.Cubes[i].Material;
                 segment.AddCube(cube);
 
                 involvedCountInsideCube++;

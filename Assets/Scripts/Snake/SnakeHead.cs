@@ -40,7 +40,7 @@ public class SnakeHead : MonoBehaviour
         _speed = speed;
     }
 
-    public void Init(PathHolder pathHolder, Transform snakeTransform, SpecificCubesCreator creator)
+    public void Init(PathHolder pathHolder, Transform snakeTransform, CustomCubesCreator creator)
     {
         _tail.Init(creator);
         _pathHolder = pathHolder;

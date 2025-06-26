@@ -4,14 +4,7 @@ using UnityEngine;
 public class ColorsHolder : MonoBehaviour
 {
     [SerializeField]
-    private IReadOnlyList<Color> availableColors = new List<Color>()
-    {
-        Color.red,
-        Color.green,
-        Color.blue,
-        Color.yellow,
-        Color.magenta
-    };
+    private List<Material> availableColors = new List<Material>();
 
-    public Color GetRandomColor() => availableColors[Random.Range(0, availableColors.Count)];
+    public Material GetRandomMaterial() => availableColors[Random.Range(0, availableColors.Count)];
 }

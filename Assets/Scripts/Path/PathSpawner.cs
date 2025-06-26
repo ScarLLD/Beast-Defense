@@ -7,7 +7,7 @@ using System;
 public class PathSpawner : MonoBehaviour
 {
     [SerializeField] private BoundaryMaker _boundaryMaker;
-    [SerializeField] private TargetDetector _detectorPrefab;
+    [SerializeField] private TargetDetector _detector;
     [SerializeField] private float _segmentLength = 2f;
     [SerializeField] private int _minPathSegments = 5;
     [SerializeField] private int _maxPathSegments = 15;
@@ -38,7 +38,8 @@ public class PathSpawner : MonoBehaviour
 
             if (_pathPoints.Count > 0)
             {
-                CreateDetectionPoint(_pathPoints[1]);
+                _detector.transform.position = _pathPoints[1];
+                _detector.EnableTrigger();
             }
 
         }
@@ -46,12 +47,6 @@ public class PathSpawner : MonoBehaviour
         {
             Debug.LogWarning("Не удалось сгенерировать дорогу.");
         }
-    }
-
-    private void CreateDetectionPoint(Vector3 secondPathPoint)
-    {
-        TargetDetector detector = Instantiate(_detectorPrefab, transform);
-        detector.transform.localPosition = secondPathPoint;
     }
 
     private bool GeneratePath()

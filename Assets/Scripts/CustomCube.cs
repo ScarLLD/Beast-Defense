@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class CustomCube
+public class CustomCube 
 {
-    public int Count { get; private set; }
-    public Color Color { get; private set; }
-
-    public CustomCube(int count, Color color)
+    public CustomCube(int count, Material material)
     {
         Count = count;
-        Color = color;
+        Material = material;
     }
+
+    public int Count { get; private set; }
+    public Material Material { get; private set; }
 }

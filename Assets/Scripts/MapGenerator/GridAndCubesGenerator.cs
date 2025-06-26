@@ -47,7 +47,7 @@ public class GridAndCubesGenerator : MonoBehaviour
             PlayerCube cube = Instantiate(_cubePrefab, transform);
             cube.transform.localPosition = position;
             cube.Init(_bulletSpawner, customCube.Count);
-            cube.GetComponent<MeshRenderer>().material.color = customCube.Color;
+            cube.GetComponent<MeshRenderer>().material = customCube.Material;
 
             _holder.PutCube(cube);
         }

@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(ColorsHolder), typeof(CubesCounterHolder))]
-public class SpecificCubesCreator : MonoBehaviour
+public class CustomCubesCreator : MonoBehaviour
 {
     [SerializeField] private int _count;
     [SerializeField] private PathHolder _pathHolder;
-    [SerializeField] private GridAndCubesGenerator _generator;
+    [SerializeField] private GridAndCubesGenerator _gridGenerator;
 
     public IReadOnlyList<CustomCube> Cubes => _cubes;
 
@@ -37,14 +36,14 @@ public class SpecificCubesCreator : MonoBehaviour
 
     public void CreateCubes()
     {
-        if (_generator.TryGetGridPositions(out List<Vector3> positions))
+        if (_gridGenerator.TryGetGridPositions(out List<Vector3> positions))
         {
             for (int i = 0; i < positions.Count; i++)
             {
-                _cubes.Add(new CustomCube(_cubesCounterHolder.GetRandomCount(), _colorsHolder.GetRandomColor()));
+                _cubes.Add(new CustomCube(_cubesCounterHolder.GetRandomCount(), _colorsHolder.GetRandomMaterial()));
             }
 
-            _generator.SpawnCubes(_cubes);
+            _gridGenerator.SpawnCubes(_cubes);
             Created?.Invoke();
 
             Debug.Log($"Кубики созданы: {_cubes.Count}");
