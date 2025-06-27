@@ -4,16 +4,16 @@ public class SnakeSpawner : MonoBehaviour
 {
     [SerializeField] private SnakeHead _snakePrefab;
     [SerializeField] private PathHolder _pathHolder;
-    [SerializeField] private CustomCubesCreator _CustomCubesCreator;
+    [SerializeField] private CubeCreator _CustomCubesCreator;
 
     private void OnEnable()
     {
-        _CustomCubesCreator.Created += SpawnSnake;
+        //_CustomCubesCreator.Created += SpawnSnake;
     }
 
     private void OnDisable()
     {
-        _CustomCubesCreator.Created -= SpawnSnake;
+        //_CustomCubesCreator.Created -= SpawnSnake;
     }
 
     private void SpawnSnake()

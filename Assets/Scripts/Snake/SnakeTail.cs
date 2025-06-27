@@ -10,7 +10,7 @@ public class SnakeTail : MonoBehaviour
     private float _DirectionMultiplier = 1f;
     private Vector3 _lastPosition;
     private SnakeSegmentsHolder _holder;
-    private CustomCubesCreator _customCubesCreator;
+    private CubeCreator _customCubesCreator;
 
     private void Awake()
     {
@@ -18,64 +18,64 @@ public class SnakeTail : MonoBehaviour
         _holder = GetComponent<SnakeSegmentsHolder>();
     }
 
-    public void Init(CustomCubesCreator specificCubesCreator)
+    public void Init(CubeCreator specificCubesCreator)
     {
         _customCubesCreator = specificCubesCreator;
     }
 
-    public void Spawn(Vector3 direction, SnakeHead snakeHead, PathHolder pathHolder)
-    {
-        int CubesCount = _customCubesCreator.Cubes.Count;
-        int involvedCountInsideCube = 0;
+    //public void Spawn(Vector3 direction, SnakeHead snakeHead, PathHolder pathHolder)
+    //{
+    //    int CubesCount = _customCubesCreator.Cubes.Count;
+    //    int involvedCountInsideCube = 0;
 
-        Vector3 centerPoint = _lastPosition + _DirectionMultiplier * _distanceBetweenSegments * GetObjectSizeInLocalDirection(-direction) * -direction.normalized;
+    //    Vector3 centerPoint = _lastPosition + _DirectionMultiplier * _distanceBetweenSegments * GetObjectSizeInLocalDirection(-direction) * -direction.normalized;
 
-        for (int i = 0; i < CubesCount;)
-        {
-            int countInsideCube = _customCubesCreator.Cubes[i].Count - involvedCountInsideCube;
+    //    for (int i = 0; i < CubesCount;)
+    //    {
+    //        int countInsideCube = _customCubesCreator.Cubes[i].Count - involvedCountInsideCube;
 
-            GameObject segmentObject = new GameObject("Snake Segment");
-            SnakeSegment segment = segmentObject.AddComponent<SnakeSegment>();
-            segment.transform.position = centerPoint;
-            segment.transform.parent = snakeHead.transform.parent;
-            segment.Init(snakeHead, pathHolder);
-            segment.AddComponent<BoxCollider>().size = new Vector3(0.5f, 0.5f, 0.5f);
-            segment.gameObject.layer = 7;
+    //        GameObject segmentObject = new GameObject("Snake Segment");
+    //        SnakeSegment segment = segmentObject.AddComponent<SnakeSegment>();
+    //        segment.transform.position = centerPoint;
+    //        segment.transform.parent = snakeHead.transform.parent;
+    //        segment.Init(snakeHead, pathHolder);
+    //        segment.AddComponent<BoxCollider>().size = new Vector3(0.5f, 0.5f, 0.5f);
+    //        segment.gameObject.layer = 7;
 
-            Vector3[] points = new Vector3[4];
+    //        Vector3[] points = new Vector3[4];
 
-            Vector3 rightOffset = transform.right * _distanceBetweenCubes;
-            Vector3 upOffset = transform.up * _distanceBetweenCubes;
+    //        Vector3 rightOffset = transform.right * _distanceBetweenCubes;
+    //        Vector3 upOffset = transform.up * _distanceBetweenCubes;
 
-            points[0] = centerPoint + rightOffset + upOffset;
-            points[1] = centerPoint - rightOffset + upOffset;
-            points[2] = centerPoint - rightOffset - upOffset;
-            points[3] = centerPoint + rightOffset - upOffset;
+    //        points[0] = centerPoint + rightOffset + upOffset;
+    //        points[1] = centerPoint - rightOffset + upOffset;
+    //        points[2] = centerPoint - rightOffset - upOffset;
+    //        points[3] = centerPoint + rightOffset - upOffset;
 
-            for (int l = 0; l < points.Length; l++)
-            {
-                GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                cube.transform.position = points[l];
-                cube.transform.localScale = Vector3.one * 0.7f;
-                cube.transform.parent = segment.transform;
-                cube.GetComponent<MeshRenderer>().material = _customCubesCreator.Cubes[i].Material;
-                segment.AddCube(cube);
+    //        for (int l = 0; l < points.Length; l++)
+    //        {
+    //            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    //            cube.transform.position = points[l];
+    //            cube.transform.localScale = Vector3.one * 0.7f;
+    //            cube.transform.parent = segment.transform;
+    //            cube.GetComponent<MeshRenderer>().material = _customCubesCreator.Cubes[i].Material;
+    //            segment.AddCube(cube);
 
-                involvedCountInsideCube++;
-            }
+    //            involvedCountInsideCube++;
+    //        }
 
-            _holder.AddSegment(segment);
+    //        _holder.AddSegment(segment);
 
-            _lastPosition = centerPoint;
-            centerPoint = _lastPosition + -direction.normalized * GetObjectSizeInLocalDirection(-direction) / _sizeDivider * _distanceBetweenSegments;
+    //        _lastPosition = centerPoint;
+    //        centerPoint = _lastPosition + -direction.normalized * GetObjectSizeInLocalDirection(-direction) / _sizeDivider * _distanceBetweenSegments;
 
-            if (countInsideCube == 0)
-            {
-                involvedCountInsideCube = 0;
-                i++;
-            }
-        }
-    }
+    //        if (countInsideCube == 0)
+    //        {
+    //            involvedCountInsideCube = 0;
+    //            i++;
+    //        }
+    //    }
+    //}
 
     public float GetObjectSizeInLocalDirection(Vector3 localDirection)
     {

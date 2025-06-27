@@ -40,7 +40,7 @@ public class SnakeHead : MonoBehaviour
         _speed = speed;
     }
 
-    public void Init(PathHolder pathHolder, Transform snakeTransform, CustomCubesCreator creator)
+    public void Init(PathHolder pathHolder, Transform snakeTransform, CubeCreator creator)
     {
         _tail.Init(creator);
         _pathHolder = pathHolder;
@@ -50,7 +50,7 @@ public class SnakeHead : MonoBehaviour
             _localSettings.SetTarget(startPosition);
             _mover.StartMoveRoutine();
             _rotator.SetStartRotation();
-            _tail.Spawn(_localSettings.TargetPosition - startPosition, this, _pathHolder);
+            //_tail.Spawn(_localSettings.TargetPosition - startPosition, this, _pathHolder);
         }
     }
 

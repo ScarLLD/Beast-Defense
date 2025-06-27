@@ -10,7 +10,7 @@ public class SnakeSegment : MonoBehaviour
     private SnakeLocalSettings _localSettings;
     private PathHolder _pathHolder;
 
-    private Queue<CustomCube> _cubes;
+    private Queue<CubeStack> _cubes;
 
     private void Awake()
     {
@@ -18,7 +18,7 @@ public class SnakeSegment : MonoBehaviour
         _rotator = GetComponent<SnakeRotator>();
         _localSettings = GetComponent<SnakeLocalSettings>();
 
-        _cubes = new Queue<CustomCube>();
+        _cubes = new Queue<CubeStack>();
     }
 
     private void OnEnable()
@@ -31,17 +31,15 @@ public class SnakeSegment : MonoBehaviour
         _mover.Arrived -= ChangePosition;
     }
 
-    public void AddCube(GameObject cube)
+    public void AddCube(CubeStack cube)
     {
         _cubes.Enqueue(cube);
     }
 
-    public bool TryGetCube(Material material)
-    {
-        if(_cubes.Any().Get == )
-
-        return false;
-    }
+    //public bool TryGetCube(Material material)
+    //{
+       
+    //}
 
     public void Init(SnakeHead snakeHead, PathHolder pathHolder)
     {
@@ -50,6 +48,11 @@ public class SnakeSegment : MonoBehaviour
         _mover.Init(snakeHead);
         _rotator.Init(snakeHead);
 
+        Move();
+    }
+
+    public void Move()
+    {
         if (_pathHolder.TryGetStartPosition(out Vector3 startPosition))
         {
             _localSettings.SetTarget(startPosition);

@@ -215,7 +215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _snakePrefab: {fileID: 2371440335906684624, guid: 96a5fb1456a56ed4d88859044020f686, type: 3}
   _pathHolder: {fileID: 979470878}
-  _CustomCubesCreator: {fileID: 529893069}
+  _CustomCubesCreator: {fileID: 0}
 --- !u!1 &442903041
 GameObject:
   m_ObjectHideFlags: 0
@@ -331,11 +331,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 529893068}
-  - component: {fileID: 529893071}
-  - component: {fileID: 529893070}
-  - component: {fileID: 529893069}
   m_Layer: 0
-  m_Name: CustomCubesGenerator
+  m_Name: CubeCreator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -356,53 +353,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &529893069
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529893064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8c26f9f9cb6b198499f5f1d8774c67e9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _count: 5
-  _pathHolder: {fileID: 979470878}
-  _gridGenerator: {fileID: 1293396036}
---- !u!114 &529893070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529893064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c3025b3b9e217d44bab05b71b7da3b54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &529893071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529893064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 75a108c4e530f2347bc183274bcde949, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  availableColors:
-  - {fileID: 2100000, guid: e23c611b82215874cb3d1c77e3785156, type: 2}
-  - {fileID: 2100000, guid: 304135f78fc76ef459ea2511cebcb94c, type: 2}
-  - {fileID: 2100000, guid: f0c33f39586e9a2489347c96ad202592, type: 2}
-  - {fileID: 2100000, guid: 664dd83077f5cce46bd7a19a90532eac, type: 2}
-  - {fileID: 2100000, guid: 043543baaa58670418782cb3e9fd2eb4, type: 2}
-  - {fileID: 2100000, guid: 7e433d19536e08e4ea679168d5070746, type: 2}
-  - {fileID: 2100000, guid: 4c692737529829e4a81040a9045e7a98, type: 2}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,10 +722,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1293396035}
-  - component: {fileID: 1293396037}
   - component: {fileID: 1293396036}
   m_Layer: 0
-  m_Name: StaticCubes
+  m_Name: PlayerCubes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -805,27 +754,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1293396034}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87e61a8740f20574482718c317d59621, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cubePrefab: {fileID: 8604573234390706645, guid: 94578299867013545bf9d7e303908287, type: 3}
-  _bulletSpawner: {fileID: 117216348}
-  rows: 8
-  columns: 7
-  minX: -7
-  maxX: 7
-  minZ: -10
-  maxZ: 10
---- !u!114 &1293396037
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1293396034}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60aaf1f19addd634e8f036d933e7137b, type: 3}
+  m_Script: {fileID: 11500000, guid: f9b698ce6a174b34989d750f0f28857e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1370593099

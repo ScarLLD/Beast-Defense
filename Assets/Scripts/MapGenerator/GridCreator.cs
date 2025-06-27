@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(StaticCubesHolder))]
-public class GridAndCubesGenerator : MonoBehaviour
+public class GridCreator : MonoBehaviour
 {
     [Header("Основные настройки")]
     [SerializeField] private PlayerCube _cubePrefab;
@@ -19,51 +18,48 @@ public class GridAndCubesGenerator : MonoBehaviour
     [SerializeField] private float minZ;
     [SerializeField] private float maxZ;
 
-    private StaticCubesHolder _holder;
-    private List<Vector3> _positions;
+    private List<Vector3> _grid = new List<Vector3>();
+
+    public int GridCount => _grid.Count;
 
     private void Awake()
     {
-        _positions = new List<Vector3>();
 
-        _holder = GetComponent<StaticCubesHolder>();
 
         objectWidth = _cubePrefab.transform.localScale.x;
         objectDepth = _cubePrefab.transform.localScale.z;
     }
 
-    public void SpawnCubes(List<CustomCube> cubes)
+    //public void SpawnCubes(List<CubeStack> cubes)
+    //{
+    //    Queue<CubeStack> queue = new Queue<CubeStack>();
+
+    //    foreach (var cube in cubes)
+    //    {
+    //        queue.Enqueue(cube);
+    //    }
+
+    //    foreach (var position in _grid)
+    //    {
+    //        CubeStack stack = queue.Dequeue();
+    //        CubeStack cube = Instantiate(_cubePrefab, transform);
+    //        cube.transform.localPosition = position;
+    //        cube.Init(_bulletSpawner, stack.Count);
+    //        cube.GetComponent<MeshRenderer>().material = stack.Material;
+
+    //        _storage.Add(cube);
+    //    }
+    //}
+
+    public void Create()
     {
-        Queue<CustomCube> queue = new Queue<CustomCube>();
-
-        foreach (var cube in cubes)
-        {
-            queue.Enqueue(cube);
-        }
-
-        foreach (var position in _positions)
-        {
-            CustomCube customCube = queue.Dequeue();
-            PlayerCube cube = Instantiate(_cubePrefab, transform);
-            cube.transform.localPosition = position;
-            cube.Init(_bulletSpawner, customCube.Count);
-            cube.GetComponent<MeshRenderer>().material = customCube.Material;
-
-            _holder.PutCube(cube);
-        }
-    }
-
-    public bool TryGetGridPositions(out List<Vector3> positions)
-    {
-        positions = new List<Vector3>();
-
         float availableSpaceX = maxX - minX - (columns * objectWidth);
         float availableSpaceZ = maxZ - minZ - (rows * objectDepth);
 
         if (availableSpaceX < 0 || availableSpaceZ < 0)
         {
             Debug.LogError("Недостаточно места.");
-            return false;
+            return;
         }
 
         float spacingX = availableSpaceX / (columns - 1);
@@ -78,12 +74,8 @@ public class GridAndCubesGenerator : MonoBehaviour
 
                 Vector3 spawnPosition = new(localX, 0f, localZ);
 
-                positions.Add(spawnPosition);
+                _grid.Add(spawnPosition);
             }
         }
-
-        _positions = positions;
-
-        return positions.Count > 0;
     }
 }
