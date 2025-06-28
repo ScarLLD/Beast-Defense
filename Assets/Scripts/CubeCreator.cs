@@ -10,38 +10,34 @@ public class CubeCreator : MonoBehaviour
     [SerializeField]
     private List<int> _counts = new();
 
-    [SerializeField] private PathHolder _pathHolder;
     [SerializeField] private GridCreator _gridCreator;
+    [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private CubeSpawner _cubeSpawner;
 
     private void OnEnable()
     {
-        _pathHolder.PathInit += CreateCubes;
+        _gridCreator.Created += CreateCubes;
     }
 
     private void OnDisable()
     {
-        _pathHolder.PathInit -= CreateCubes;
+        _gridCreator.Created -= CreateCubes;
     }
 
     public void CreateCubes()
     {
-        if (_gridCreator.GridCount > 0)
+        if (_gridStorage.GridCount > 0)
         {
-            for (int i = 0; i < _gridCreator.GridCount; i++)
+            int gridCount = _gridStorage.GridCount;
+
+            for (int i = 0; i < gridCount; i++)
             {
                 int count = _counts[Random.Range(0, _counts.Count)];
                 Material material = _ñolors[Random.Range(0, _ñolors.Count)];
 
-                _cubeSpawner.Spawn()
+                if (_gridStorage.TryGet(i, out Vector3 spawnPoint))
+                    _cubeSpawner.Spawn(material, count, spawnPoint);
             }
-
-            //SpawnCubes();
-
-
-            //Debug.Log($"Êóáèêè ñîçäàíû: {_cubes.Count}");
         }
     }
-
-
 }

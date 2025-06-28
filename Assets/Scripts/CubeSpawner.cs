@@ -1,16 +1,28 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CubeSpawner : MonoBehaviour
 {
     [SerializeField] private CubeStack _cubeStackPrefab;
     [SerializeField] private CubeStorage _cubeStorage;
+    [SerializeField] private BoundaryMaker _boundaryMaker;
 
-    public void Spawn(Material material, int count)
+    public CubeStack CubePrefab => _cubeStackPrefab;
+
+    private void Start()
     {
-        CubeStack cube = Instantiate(_cubeStackPrefab);
-        cube.Init()
-        _cubeStorage.Add(cube);
+        if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
+        {
+            transform.position = bottomScreenCenter;
+            Debug.Log("CubeSpawner change POS");
+        }
+    }
+
+    public void Spawn(Material material, int count, Vector3 spawnPoint)
+    {
+        CubeStack cubeStack = Instantiate(_cubeStackPrefab, transform);
+        cubeStack.transform.localPosition = spawnPoint;
+        cubeStack.Init(material, count);
+
+        _cubeStorage.Add(cubeStack);
     }
 }

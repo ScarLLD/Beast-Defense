@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class CubeStack : MonoBehaviour
 {
-    public void Init(Cube cube, int count)
+    [SerializeField] private Cube _cube;
+
+    public void Init(Material material, int count)
     {
-        Cube = cube;
+        Cube = _cube;
+        Cube.Init(material);
         Count = count;
     }
 

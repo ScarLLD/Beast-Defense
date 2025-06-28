@@ -24,12 +24,12 @@ public class BoundaryMaker : MonoBehaviour
 
     private void OnEnable()
     {
-        _game.Started += GenerateMarkers;
+        _game.Started += GeneratePathMarkers;
     }
 
     private void OnDisable()
     {
-        _game.Started -= GenerateMarkers;
+        _game.Started -= GeneratePathMarkers;
     }
 
     public Vector3 GetRandomPointOnRandomLine()
@@ -40,7 +40,22 @@ public class BoundaryMaker : MonoBehaviour
         return GetRandomLinePoint(line.GetPosition(0), line.GetPosition(1));
     }
 
-    private void GenerateMarkers()
+    public bool TryGetScreenBottomCenter(out Vector3 bottomScreenCenter)
+    {
+        bottomScreenCenter = Vector3.zero;
+
+        Vector3 screenPoint = new(_camera.pixelWidth * 0.5f, _camera.pixelHeight * 0.5f * 0.5f, 0f);
+
+        Ray ray = _camera.ScreenPointToRay(screenPoint);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            bottomScreenCenter = hit.point;
+        }
+
+        return bottomScreenCenter != Vector3.zero;
+    }
+
+    private void GeneratePathMarkers()
     {
         float partHeight = _camera.pixelHeight * _borderReduction;
 

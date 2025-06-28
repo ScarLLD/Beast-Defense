@@ -1,17 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Cube : MonoBehaviour
 {
+    private MeshRenderer _meshRenderer;
+
     private void Awake()
     {
-        Material = GetComponent<MeshRenderer>().material;
+        _meshRenderer = GetComponent<MeshRenderer>();
+        Material = _meshRenderer.material;
     }
 
     public void Init(Material material)
-    {
-        Material = material;
+    {        
+        _meshRenderer.material = material; 
     }
 
     public Material Material { get; private set; }
