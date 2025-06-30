@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -215,7 +215,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _snakePrefab: {fileID: 2371440335906684624, guid: 96a5fb1456a56ed4d88859044020f686, type: 3}
   _pathHolder: {fileID: 979470878}
-  _cubeCreator: {fileID: 529893070}
+  _cubeStorage: {fileID: 529893071}
 --- !u!1 &442903041
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,8 +750,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2091bae87aadf184bbcef25b4b090fb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePathVisualizerPrefab: {fileID: 4878386789434510162, guid: ce0e995862c4ac944b6d7aa630ad8ee1, type: 3}
-  _cylinderVisualizerPrefab: {fileID: 8528694946071126882, guid: c19e6eff656f21f49bd4b6a3ab18ac84, type: 3}
+  _pathRoadPrefab: {fileID: 4878386789434510162, guid: ce0e995862c4ac944b6d7aa630ad8ee1, type: 3}
+  _pathCornerPrefab: {fileID: 8528694946071126882, guid: c19e6eff656f21f49bd4b6a3ab18ac84, type: 3}
   _prefabScale: 2.5
   _prefabScaleYmultiplier: 0.0001
 --- !u!114 &979470878
@@ -811,12 +811,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubePrefab: {fileID: 1900071841244829645, guid: c309c790d98bd9b45a4ae1212065f2a7, type: 3}
   _gridStorage: {fileID: 1295288259}
-  _rows: 7
+  _rows: 8
   _columns: 8
   _minX: -8
   maxX: 8
-  minZ: -11
-  maxZ: 11
+  minZ: -10
+  maxZ: 10
 --- !u!4 &1295288261
 Transform:
   m_ObjectHideFlags: 0

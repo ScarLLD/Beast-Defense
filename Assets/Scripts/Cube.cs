@@ -7,13 +7,12 @@ public class Cube : MonoBehaviour
     private void Awake()
     {
         _meshRenderer = GetComponent<MeshRenderer>();
-        Material = _meshRenderer.material;
     }
 
     public void Init(Material material)
-    {        
-        _meshRenderer.material = material; 
+    {
+        _meshRenderer.material = material;
     }
 
-    public Material Material { get; private set; }
+    public Material Material => _meshRenderer.material;
 }

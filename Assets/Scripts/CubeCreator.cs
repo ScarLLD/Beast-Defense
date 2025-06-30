@@ -36,7 +36,9 @@ public class CubeCreator : MonoBehaviour
                 Material material = _ñolors[Random.Range(0, _ñolors.Count)];
 
                 if (_gridStorage.TryGet(i, out Vector3 spawnPoint))
+                {
                     _cubeSpawner.Spawn(material, count, spawnPoint);
+                }
             }
         }
     }

@@ -7,6 +7,9 @@ public class SnakeHead : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
+    [SerializeField] private Cube _cubePrefab;
+    [SerializeField] private SnakeSegment _snakeSegmentPrefab;
+
     private PathHolder _pathHolder;
     private SnakeMover _mover;
     private SnakeRotator _rotator;
@@ -40,9 +43,9 @@ public class SnakeHead : MonoBehaviour
         _speed = speed;
     }
 
-    public void Init(PathHolder pathHolder, Transform snakeTransform, CubeCreator creator)
+    public void Init(PathHolder pathHolder, Transform snakeTransform, CubeStorage cubeStorage)
     {
-        _tail.Init(creator);
+        _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab);
         _pathHolder = pathHolder;
 
         if (_pathHolder.TryGetStartPosition(out Vector3 startPosition))
@@ -50,7 +53,7 @@ public class SnakeHead : MonoBehaviour
             _localSettings.SetTarget(startPosition);
             _mover.StartMoveRoutine();
             _rotator.SetStartRotation();
-            //_tail.Spawn(_localSettings.TargetPosition - startPosition, this, _pathHolder);
+            _tail.Spawn(_localSettings.TargetPosition - startPosition, this, _pathHolder);
         }
     }
 

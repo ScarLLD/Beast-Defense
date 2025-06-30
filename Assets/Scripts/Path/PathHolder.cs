@@ -9,7 +9,7 @@ public class PathHolder : MonoBehaviour
 
     private List<Vector3> _pathPoints;
 
-    public event Action PathInit;
+    public event Action Initialized;
 
     public void InitPoints(IReadOnlyList<Vector3> pathPoints)
     {
@@ -20,13 +20,17 @@ public class PathHolder : MonoBehaviour
             _pathPoints.Add(new Vector3(point.x, point.y + _snakeHead.transform.localScale.y / 2, point.z));
         }
 
-        PathInit?.Invoke();
+        Initialized?.Invoke();
     }
 
     public bool TryGetStartPosition(out Vector3 spawnPoint)
     {
-        spawnPoint = _pathPoints.FirstOrDefault();
-        return spawnPoint != null;
+        spawnPoint = Vector3.zero;
+
+        if(_pathPoints.Count > 0 )
+            spawnPoint = _pathPoints.FirstOrDefault();
+
+        return spawnPoint != Vector3.zero;
     }
 
     public bool TryGetNextPosition(Vector3 currentPosition, out Vector3 nextPosition)

@@ -10,11 +10,8 @@ public class CubeSpawner : MonoBehaviour
 
     private void Start()
     {
-        if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
-        {
+        if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))   
             transform.position = bottomScreenCenter;
-            Debug.Log("CubeSpawner change POS");
-        }
     }
 
     public void Spawn(Material material, int count, Vector3 spawnPoint)

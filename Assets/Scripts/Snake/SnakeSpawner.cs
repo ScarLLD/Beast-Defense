@@ -4,26 +4,26 @@ public class SnakeSpawner : MonoBehaviour
 {
     [SerializeField] private SnakeHead _snakePrefab;
     [SerializeField] private PathHolder _pathHolder;
-    [SerializeField] private CubeCreator _cubeCreator;
+    [SerializeField] private CubeStorage _cubeStorage;
 
     private void OnEnable()
     {
-        //_cubeCreator.Created += SpawnSnake;
+        _pathHolder.Initialized += SpawnSnake;
     }
 
     private void OnDisable()
     {
-        //_cubeCreator.Created -= SpawnSnake;
+        _pathHolder.Initialized -= SpawnSnake;
     }
 
     private void SpawnSnake()
     {
-        GameObject snake = new GameObject("snake");
+        GameObject snake = new("snake");
 
         if (_pathHolder.TryGetStartPosition(out Vector3 spawnPoint))
         {
             var snakeHead = Instantiate(_snakePrefab, spawnPoint, Quaternion.identity, snake.transform);
-            snakeHead.Init(_pathHolder, snake.transform, _cubeCreator);
+            snakeHead.Init(_pathHolder, snake.transform, _cubeStorage);
         }
     }
 }

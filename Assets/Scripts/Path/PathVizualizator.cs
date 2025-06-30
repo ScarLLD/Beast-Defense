@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class PathVizualizator : MonoBehaviour
 {
-    [SerializeField] private GameObject _cubePathVisualizerPrefab;
-    [SerializeField] private GameObject _cylinderVisualizerPrefab;
+    [SerializeField] private GameObject _pathRoadPrefab;
+    [SerializeField] private GameObject _pathCornerPrefab;
     [SerializeField] private float _prefabScale;
     [SerializeField] private float _prefabScaleYmultiplier;
 
@@ -24,14 +24,14 @@ public class PathVizualizator : MonoBehaviour
 
     private void CreatePathPoint(List<Vector3> pathPoints, int i)
     {
-        var point = Instantiate(_cylinderVisualizerPrefab, transform);
+        var point = Instantiate(_pathCornerPrefab, transform);
         point.transform.position = pathPoints[i + 1];
         point.transform.localScale = new Vector3(_prefabScale, _prefabScale / _divider * _prefabScaleYmultiplier, _prefabScale);
     }
 
     private void CreatePathSegment(List<Vector3> pathPoints, int index)
     {
-        var segment = Instantiate(_cubePathVisualizerPrefab, transform);
+        var segment = Instantiate(_pathRoadPrefab, transform);
         segment.transform.position = (pathPoints[index] + pathPoints[index + 1]) / _divider;
         segment.transform.LookAt(pathPoints[index + 1]);
         segment.transform.localScale = new Vector3(_prefabScale, _prefabScale * _prefabScaleYmultiplier, Vector3.Distance(pathPoints[index], pathPoints[index + 1]));
