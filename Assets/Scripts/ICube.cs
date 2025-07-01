@@ -1,5 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public interface ICube { }
+public interface ICube
+{
+    public int Count { get; }
+    public Material Material { get; }
+}

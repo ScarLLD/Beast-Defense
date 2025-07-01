@@ -2,21 +2,28 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+
 public class TargetRadar : MonoBehaviour
 {
-    private bool _isWork;
+    [SerializeField] Shooter _shooter;
+
+    private TargetStorage _targetStorage;
     private Coroutine _moveCoroutine;
-    
-    public void StartScanning()
+
+    public event Action<SnakeSegment> Found;
+
+    public void Init(TargetStorage targetStorage)
     {
-        _isWork = true;
-        _moveCoroutine = StartCoroutine(ScanRoutine());
+        _targetStorage = targetStorage;
+    }
+
+    public void StartScanning(Color color)
+    {
+        _moveCoroutine = StartCoroutine(ScanRoutine(color));
     }
 
     public void EndScan()
     {
-        _isWork = false;
-
         if (_moveCoroutine != null)
         {
             StopCoroutine(_moveCoroutine);
@@ -24,11 +31,12 @@ public class TargetRadar : MonoBehaviour
         }
     }
 
-    private IEnumerator ScanRoutine()
+    private IEnumerator ScanRoutine(Color color)
     {
-        while (_isWork)
+        while (_shooter.BulletCount > 0)
         {
-
+            if (_targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
+                Found?.Invoke(snakeSegment);
 
             yield return new WaitForSeconds(0.2f);
         }

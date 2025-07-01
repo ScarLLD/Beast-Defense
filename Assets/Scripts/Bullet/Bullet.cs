@@ -13,23 +13,27 @@ public class Bullet : MonoBehaviour
         _mover = GetComponent<BulletMover>();
     }
 
-    public void Init(Transform targetTransform)
+    private void OnEnable()
     {
-        IsAvailable = false;
-        if (targetTransform == null)
-            throw new ArgumentNullException(nameof(targetTransform), $"targetTransform не может быть null.");
+        _mover.Arrived += StopMove;
+    }
 
-        _mover.Init(targetTransform);
-
-    }       
-
-    private void OnCollisionEnter(Collision collision)
+    private void OnDisable()
     {
-        if (collision.gameObject.TryGetComponent(out ITarget target))
-        {
-            _mover.StopMoving();
-            gameObject.SetActive(false);
-            IsAvailable = true;
-        }
+        _mover.Arrived -= StopMove;
+    }
+
+    public void Init(Cube cube)
+    {
+        if (cube == null)
+            throw new ArgumentNullException(nameof(cube), $"cube не может быть null.");
+
+        _mover.Init(cube);
+    }
+
+    private void StopMove()
+    {
+        _mover.StopMove();
+        gameObject.SetActive(false);
     }
 }

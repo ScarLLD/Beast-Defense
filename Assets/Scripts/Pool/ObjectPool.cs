@@ -28,10 +28,11 @@ public class ObjectPool<T> where T : MonoBehaviour
         {
             if (tempObject.gameObject.activeInHierarchy == false)
             {
+                tempObject.gameObject.SetActive(true);
                 return tempObject;
             }
         }
 
-        return null;
+        return CreateObject();
     }
 }

@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(SnakeSegmentsHolder))]
+[RequireComponent(typeof(SnakeSegmentsStorage))]
 public class SnakeTail : MonoBehaviour
 {
     private float _distanceBetweenSegments = 0.8f;
@@ -10,7 +12,7 @@ public class SnakeTail : MonoBehaviour
     private float _DirectionMultiplier = 1f;
     private Vector3 _lastPosition;
 
-    private SnakeSegmentsHolder _holder;
+    private SnakeSegmentsStorage _segmentsStorage;
     private CubeStorage _cubeStorage;
     private Cube _cubePrefab;
     private SnakeSegment _snakeSegmentPrefab;
@@ -18,7 +20,7 @@ public class SnakeTail : MonoBehaviour
     private void Awake()
     {
         _lastPosition = transform.position;
-        _holder = GetComponent<SnakeSegmentsHolder>();
+        _segmentsStorage = GetComponent<SnakeSegmentsStorage>();
     }
 
     public void Init(CubeStorage cubeStorage, Cube cubePrefab, SnakeSegment snakeSegmentPrefab)
@@ -39,7 +41,7 @@ public class SnakeTail : MonoBehaviour
             int countInsideStack = _cubeStorage.Stacks[i].Count - remained—ountInsideStack;
 
             SnakeSegment snakeSegment = Instantiate(_snakeSegmentPrefab, centerPoint, Quaternion.identity, snakeHead.transform.parent);
-            snakeSegment.Init(snakeHead, pathHolder);            
+            snakeSegment.Init(snakeHead, pathHolder);
 
             Vector3[] points = new Vector3[4];
 
@@ -56,13 +58,14 @@ public class SnakeTail : MonoBehaviour
                 Cube cube = Instantiate(_cubePrefab, points[l], Quaternion.identity, snakeSegment.transform);
                 cube.transform.localScale *= 0.7f;
                 cube.Init(_cubeStorage.Stacks[i].Material);
+                cube.GetSegment(snakeSegment);
 
                 snakeSegment.AddCube(cube);
 
                 remained—ountInsideStack++;
             }
 
-            _holder.AddSegment(snakeSegment);
+            _segmentsStorage.AddSegment(snakeSegment);
 
             _lastPosition = centerPoint;
             centerPoint = _lastPosition + -direction.normalized * GetObjectSizeInLocalDirection(-direction) / _sizeDivider * _distanceBetweenSegments;
@@ -86,5 +89,16 @@ public class SnakeTail : MonoBehaviour
         float thickness = Vector3.Dot(bounds.size, worldDirection);
 
         return Mathf.Abs(thickness);
+    }
+
+    public void ProcessLoss(SnakeSegment snakeSegment)
+    {
+        if (_segmentsStorage.TryGetSeveredSegments(snakeSegment, out List<SnakeSegment> severedSegments))
+        {
+            foreach (var segments in severedSegments)
+            {
+
+            }
+        }
     }
 }

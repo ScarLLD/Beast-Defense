@@ -5,7 +5,7 @@ using UnityEngine;
 public class CubeMover : MonoBehaviour
 {
     private float _speed;
-    private float _maxDistanceRounding = 0.01f;
+    private float _maxDistanceRounding = 0.05f;
     private Coroutine _moveCoroutine;
 
     public event Action Arrived;
@@ -24,7 +24,7 @@ public class CubeMover : MonoBehaviour
     {
         bool isWork = true;
 
-        target = new Vector3(target.x, transform.position.y, target.z);
+        target = new Vector3(target.x, target.y + transform.localScale.y / 2, target.z);
 
         while (isWork)
         {
@@ -35,15 +35,13 @@ public class CubeMover : MonoBehaviour
             {
                 transform.position = target;
                 Arrived?.Invoke();
-                isWork = false;
-                StopMoving();
             }
 
             yield return null;
         }
     }
 
-    private void StopMoving()
+    public void StopMoving()
     {
         if (_moveCoroutine != null)
         {

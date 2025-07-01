@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -9,8 +10,10 @@ public class SnakeSegment : MonoBehaviour
     private SnakeRotator _rotator;
     private SnakeLocalSettings _localSettings;
     private PathHolder _pathHolder;
-
+    private SnakeHead _snakeHead;
     private Queue<Cube> _cubes;
+
+    public Material Material { get; private set; }
 
     private void Awake()
     {
@@ -31,19 +34,39 @@ public class SnakeSegment : MonoBehaviour
         _mover.Arrived -= ChangePosition;
     }
 
-    public void AddCube(Cube cube)
-    {
-        _cubes.Enqueue(cube);
-    }
-
     public void Init(SnakeHead snakeHead, PathHolder pathHolder)
     {
         _pathHolder = pathHolder;
+        _snakeHead = snakeHead;
 
         _mover.Init(snakeHead);
         _rotator.Init(snakeHead);
 
         Move();
+    }
+
+    public bool TryGetCube(out Cube cube)
+    {
+        cube = null;
+
+        if (_cubes.Count > 0)
+            cube = _cubes.Dequeue();
+
+        return cube != null;
+    }
+
+    public void AddCube(Cube cube)
+    {
+        _cubes.Enqueue(cube);
+        Material = cube.Material;
+    }
+
+    public void TryDestroy()
+    {
+        if (_cubes.Count == 0)
+        {
+            _snakeHead.ProcessLoss(this);
+        }
     }
 
     public void Move()

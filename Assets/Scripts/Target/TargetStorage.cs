@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TargetsHolder : MonoBehaviour
+public class TargetStorage : MonoBehaviour
 {
     private List<SnakeSegment> _segments;
 
@@ -15,7 +16,6 @@ public class TargetsHolder : MonoBehaviour
     public void AddTarget(SnakeSegment segment)
     {
         _segments.Add(segment);
-        Debug.Log(_segments.Count());
     }
 
     public void RemoveTarget(SnakeSegment segment)
@@ -23,9 +23,13 @@ public class TargetsHolder : MonoBehaviour
         _segments.Remove(segment);
     }
 
-    public bool TryGetSegment(Material material, out SnakeSegment segment)
+    public bool TryGetTarget(Color color, out SnakeSegment snakeSegment)
     {
-        segment = _segments.FirstOrDefault(segment => segment.enabled);
-        return segment != null;
+        snakeSegment = _segments.FirstOrDefault(segment => segment.Material.color == color);
+
+        if (snakeSegment != null)
+            _segments.Remove(snakeSegment);
+
+        return snakeSegment != null;
     }
 }

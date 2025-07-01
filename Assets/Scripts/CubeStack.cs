@@ -1,6 +1,7 @@
+using System;
 using UnityEngine;
 
-public class CubeStack : MonoBehaviour
+public class CubeStack : MonoBehaviour, ICube
 {
     [SerializeField] private Cube _cube;
 
@@ -15,12 +16,4 @@ public class CubeStack : MonoBehaviour
     public int Count { get; private set; }
 
     public Material Material => Cube.Material;
-
-    public void IncreaseCount()
-    {
-        if (Count > 0)
-        {
-            Count--;
-        }
-    }
 }

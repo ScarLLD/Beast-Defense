@@ -57,6 +57,11 @@ public class SnakeHead : MonoBehaviour
         }
     }
 
+    public void ProcessLoss(SnakeSegment snakeSegment)
+    {
+        _tail.ProcessLoss(snakeSegment);
+    }
+
     private void ChangePosition()
     {
         if (_pathHolder.TryGetNextPosition(_localSettings.TargetPosition, out Vector3 nextPosition))

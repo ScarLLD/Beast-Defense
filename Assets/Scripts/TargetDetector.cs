@@ -1,14 +1,14 @@
 using UnityEngine;
 
-[RequireComponent(typeof(TargetsHolder))]
+[RequireComponent(typeof(TargetStorage))]
 public class TargetDetector : MonoBehaviour
 {
-    private TargetsHolder _targetsHolder;
+    private TargetStorage _targetsHolder;
     private Collider _collider;
 
     private void Awake()
     {
-        _targetsHolder = GetComponent<TargetsHolder>();
+        _targetsHolder = GetComponent<TargetStorage>();
         _collider = GetComponent<Collider>();
     }
 

@@ -1,10 +1,11 @@
- using System;
+using System;
 using UnityEngine;
 
+[RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(CubeMover))]
 [RequireComponent(typeof(TargetRadar))]
 [RequireComponent(typeof(Shooter))]
-public class PlayerCube : MonoBehaviour
+public class PlayerCube : MonoBehaviour, ICube
 {
     [SerializeField] private float _speed;
 
@@ -12,20 +13,28 @@ public class PlayerCube : MonoBehaviour
     public bool IsAvailable { get; private set; } = true;
     public CubeMover Mover { get; private set; }
 
+    public int Count => _shooter.BulletCount;
+
+    public Material Material => _meshRenderer.material;
+
+    private MeshRenderer _meshRenderer;
     private TargetRadar _radar;
     private Shooter _shooter;
 
     private void Awake()
     {
+        _meshRenderer = GetComponent<MeshRenderer>();
         Mover = GetComponent<CubeMover>();
-        _radar = GetComponent<TargetRadar>();
         _shooter = GetComponent<Shooter>();
-        Mover.Init(_speed);
+        _radar = GetComponent<TargetRadar>();
     }
 
-    public void Init(BulletSpawner bulletSpawner, int bulletCount)
+    public void Init(Material material, int bulletCount, BulletSpawner bulletSpawner, TargetStorage targetStorage)
     {
+        _meshRenderer.material = material;
         _shooter.Init(bulletSpawner, bulletCount);
+        _radar.Init(targetStorage);
+        Mover.Init(_speed);
     }
 
     private void OnEnable()
@@ -50,6 +59,7 @@ public class PlayerCube : MonoBehaviour
 
     private void ActivateRadar()
     {
-        _radar.StartScanning();
+        _radar.StartScanning(Material.color);
+        Mover.StopMoving();
     }
 }

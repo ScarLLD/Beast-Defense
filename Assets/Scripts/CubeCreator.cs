@@ -12,7 +12,7 @@ public class CubeCreator : MonoBehaviour
 
     [SerializeField] private GridCreator _gridCreator;
     [SerializeField] private GridStorage _gridStorage;
-    [SerializeField] private CubeSpawner _cubeSpawner;
+    [SerializeField] private PlayerCubeSpawner _cubeSpawner;
 
     private void OnEnable()
     {

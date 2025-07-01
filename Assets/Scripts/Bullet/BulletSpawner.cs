@@ -12,8 +12,10 @@ public class BulletSpawner : MonoBehaviour
         _pool = new ObjectPool<Bullet>(_bulletPrefab, _container);
     }
 
-    public void SpawnBullet(Vector3 spawnPosition, Transform targetTransform)
+    public void SpawnBullet(Vector3 spawnPosition, Cube cube)
     {
-        
+        Bullet bullet = _pool.GetObject();
+        bullet.transform.position = spawnPosition;        
+        bullet.Init(cube);
     }
 }

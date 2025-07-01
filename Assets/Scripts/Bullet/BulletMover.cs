@@ -4,16 +4,29 @@ using UnityEngine;
 
 public class BulletMover : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private float _speed = 10f;
+
+    public event Action Arrived;
+    public Transform Target;
 
     private Coroutine _moveCoroutine;
 
-    public void Init(Transform targetTransform)
+    public void Init(Cube cube)
     {
-        _moveCoroutine = StartCoroutine(MoveRoutine(targetTransform));
+        if (cube == null)
+        {
+            Target = cube.transform;
+            Debug.LogError("Target is null!");
+            return;
+        }
+
+        if (_moveCoroutine != null)
+            StopCoroutine(_moveCoroutine);
+
+        _moveCoroutine = StartCoroutine(MoveToTarget(cube));
     }
 
-    public void StopMoving()
+    public void StopMove()
     {
         if (_moveCoroutine != null)
         {
@@ -22,14 +35,21 @@ public class BulletMover : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveRoutine(Transform target)
+    private IEnumerator MoveToTarget(Cube cube)
     {
         bool isWork = true;
 
         while (isWork)
         {
-            Vector3 direction = target.position - transform.position;
-            transform.Translate(_speed * Time.deltaTime * direction.normalized);
+            Vector3 direction = (cube.transform.position - transform.position).normalized;
+            transform.position += _speed * Time.deltaTime * direction;
+
+            if (Vector3.Distance(transform.position, cube.transform.position) < 0.2f)
+            {
+                Arrived?.Invoke();
+                cube.Destroy();
+                isWork = false;
+            }
 
             yield return null;
         }

@@ -5,12 +5,12 @@ using UnityEngine.ProBuilder.Shapes;
 
 public class CubeStorage : MonoBehaviour
 {
-    private List<CubeStack> _stacks = new List<CubeStack>();
+    private List<ICube> _stacks = new List<ICube>();
 
-    public IReadOnlyList<CubeStack> Stacks => _stacks;
+    public IReadOnlyList<ICube> Stacks => _stacks;
 
-    public void Add(CubeStack stack)
+    public void Add(ICube cube)
     {
-        _stacks.Add(stack);
+        _stacks.Add(cube);
     }
 }

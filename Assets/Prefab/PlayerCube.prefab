@@ -147,8 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1962c4e70e92724418b8a5838ad385d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sphereRadius: 3
-  maxDistance: 10
+  _shooter: {fileID: 3060330259778611814}
 --- !u!114 &8604573234390706645
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -162,7 +161,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 6
-  _maxDistanceRounding: 0.1
 --- !u!114 &4533960132311930740
 MonoBehaviour:
   m_ObjectHideFlags: 0
