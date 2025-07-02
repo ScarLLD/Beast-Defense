@@ -1,31 +1,49 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PathVizualizator : MonoBehaviour
+
+[RequireComponent(typeof(RoadSpawner))]
+public class RoadVizualizer : MonoBehaviour
 {
     [SerializeField] private GameObject _pathRoadPrefab;
     [SerializeField] private GameObject _pathCornerPrefab;
     [SerializeField] private float _prefabScale;
     [SerializeField] private float _prefabScaleYmultiplier;
 
+    private RoadSpawner _roadSpawner;
     private readonly float _divider = 2f;
 
-    public void VisualizePath(List<Vector3> pathPoints)
+    private void Awake()
+    {
+        _roadSpawner = GetComponent<RoadSpawner>();
+    }
+
+    private void OnEnable()
+    {
+        _roadSpawner.Spawned += VisualizeRoad;
+    }
+
+    private void OnDisable()
+    {
+        _roadSpawner.Spawned -= VisualizeRoad;
+    }
+
+    private void VisualizeRoad(List<Vector3> road)
     {
         foreach (Transform child in transform)
             Destroy(child.gameObject);
 
-        for (int i = 0; i < pathPoints.Count - 1; i++)
+        for (int i = 0; i < road.Count - 1; i++)
         {
-            CreatePathSegment(pathPoints, i);
-            CreatePathPoint(pathPoints, i);
+            CreatePathSegment(road, i);
+            CreateRoadPoint(road, i);
         }
     }
 
-    private void CreatePathPoint(List<Vector3> pathPoints, int i)
+    private void CreateRoadPoint(List<Vector3> pathPoints, int index)
     {
         var point = Instantiate(_pathCornerPrefab, transform);
-        point.transform.position = pathPoints[i + 1];
+        point.transform.position = pathPoints[index + 1];
         point.transform.localScale = new Vector3(_prefabScale, _prefabScale / _divider * _prefabScaleYmultiplier, _prefabScale);
     }
 

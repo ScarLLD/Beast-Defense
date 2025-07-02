@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class PathHolder : MonoBehaviour
+public class RoadStorage : MonoBehaviour
 {
-    [SerializeField] private SnakeHead _snakeHead;
-
     private List<Vector3> _pathPoints;
 
     public event Action Initialized;
@@ -17,7 +15,7 @@ public class PathHolder : MonoBehaviour
 
         foreach (var point in pathPoints)
         {
-            _pathPoints.Add(new Vector3(point.x, point.y + _snakeHead.transform.localScale.y / 2, point.z));
+            _pathPoints.Add(point);
         }
 
         Initialized?.Invoke();

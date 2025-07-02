@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(SnakeMover), typeof(SnakeRotator), typeof(SnakeTail))]
@@ -10,11 +11,11 @@ public class SnakeHead : MonoBehaviour
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private SnakeSegment _snakeSegmentPrefab;
 
-    private PathHolder _pathHolder;
     private SnakeMover _mover;
     private SnakeRotator _rotator;
     private SnakeTail _tail;
     private SnakeLocalSettings _localSettings;
+    private List<Vector3> _roadPoints;
 
     public float Speed => _speed;
 
@@ -23,30 +24,46 @@ public class SnakeHead : MonoBehaviour
         _localSettings = GetComponent<SnakeLocalSettings>();
         _mover = GetComponent<SnakeMover>();
         _rotator = GetComponent<SnakeRotator>();
-        _mover.Init(this);
-        _rotator.Init(this);
         _tail = GetComponent<SnakeTail>();
     }
 
-    private void OnEnable()
-    {
-        _mover.Arrived += ChangePosition;
-    }
+    //private void OnEnable()
+    //{
+    //    _mover.Arrived += SetNextPosition;
+    //}
 
-    private void OnDisable()
-    {
-        _mover.Arrived -= ChangePosition;
-    }
+    //private void OnDisable()
+    //{
+    //    _mover.Arrived -= SetNextPosition;
+    //}
 
     public void SetSpeed(float speed)
     {
         _speed = speed;
     }
 
-    public void Init(PathHolder pathHolder, Transform snakeTransform, CubeStorage cubeStorage)
+    public bool TryGetNextPoint(Vector3 point, out Vector3 nextPoint)
     {
+        
+
+        if (_roadPoints.Contains(point))
+            index = _roadPoints.IndexOf(point);
+
+        return index != null;
+    }
+
+    public bool TryGetPreviusPoint(Vector3 point, out Vector3 previusPoint) { }
+
+    public void Init(List<Vector3> road, Transform snakeTransform, CubeStorage cubeStorage)
+    {
+        _roadPoints = road;
+
+        _mover.Init(this);
+        _rotator.Init(this);
+
         _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab);
-        _pathHolder = pathHolder;
+
+        _mover.SetNextPosition();
 
         if (_pathHolder.TryGetStartPosition(out Vector3 startPosition))
         {
@@ -62,17 +79,5 @@ public class SnakeHead : MonoBehaviour
         _tail.ProcessLoss(snakeSegment);
     }
 
-    private void ChangePosition()
-    {
-        if (_pathHolder.TryGetNextPosition(_localSettings.TargetPosition, out Vector3 nextPosition))
-        {
-            _localSettings.SetTarget(nextPosition);
-            _rotator.StartRotateRoutine();
-        }
-        else
-        {
-            _mover.StopMoveRoutine();
-            SetSpeed(0);
-        }
-    }
+
 }

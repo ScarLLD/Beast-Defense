@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(DirectionHolder))]
-public class PathLimiter : MonoBehaviour
+[RequireComponent(typeof(DirectionAnalyzer))]
+public class RoadLimiter : MonoBehaviour
 {
     [SerializeField] private float _boundaryMargin = 1f;
     [SerializeField] private float _radiusBetweenSegments = 1.5f;
     [SerializeField] private float _endPointMargin = 3f;
 
-    private DirectionHolder _directionHolder;
+    private DirectionAnalyzer _directionHolder;
 
     private void Awake()
     {
-        _directionHolder = GetComponent<DirectionHolder>();
+        _directionHolder = GetComponent<DirectionAnalyzer>();
     }
 
     public bool IsTooCloseToBoundary(Vector3 point)
@@ -32,7 +32,7 @@ public class PathLimiter : MonoBehaviour
     }
 
     public bool IsPositionValid(Vector3 position, List<Vector3> pathPoints)
-    {        
+    {
         if (IsTooCloseToBoundary(position))
             return false;
 

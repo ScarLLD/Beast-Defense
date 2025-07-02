@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(PathSpawner))]
-public class DirectionHolder : MonoBehaviour
+[RequireComponent(typeof(RoadSpawner))]
+public class DirectionAnalyzer : MonoBehaviour
 {
     [SerializeField] private BoundaryMaker _boundaryMaker;
 
-    private PathSpawner _pathSpawner;
+    private RoadSpawner _road;
 
     public float LeftBoundX { get; private set; }
     public float RightBoundX { get; private set; }
@@ -19,7 +19,7 @@ public class DirectionHolder : MonoBehaviour
 
     private void Awake()
     {
-        _pathSpawner = GetComponent<PathSpawner>();
+        _road = GetComponent<RoadSpawner>();
     }
 
     private void OnEnable()
@@ -39,7 +39,7 @@ public class DirectionHolder : MonoBehaviour
         RightBoundX = _points[2].x;
         LowerBoundZ = _points[3].z * 0.25f;
 
-        _pathSpawner.SpawnPath();
+        _road.Spawn();
     }
 
     public Vector3 GetValidDirection(Vector3 point)

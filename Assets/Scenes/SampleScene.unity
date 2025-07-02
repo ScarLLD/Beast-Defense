@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 117216349}
   - component: {fileID: 117216348}
   m_Layer: 0
-  m_Name: BulletsSpawner
+  m_Name: Bullets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 437241862}
   - component: {fileID: 437241863}
   m_Layer: 0
-  m_Name: SnakeSpawner
+  m_Name: Snake
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _snakePrefab: {fileID: 2371440335906684624, guid: 96a5fb1456a56ed4d88859044020f686, type: 3}
-  _pathHolder: {fileID: 979470878}
+  _RoadStorage: {fileID: 979470878}
   _cubeStorage: {fileID: 529893071}
 --- !u!1 &442903041
 GameObject:
@@ -315,7 +315,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 442903041}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 8, y: 8, z: 9}
   m_ConstrainProportionsScale: 0
@@ -335,7 +335,7 @@ GameObject:
   - component: {fileID: 529893069}
   - component: {fileID: 529893070}
   m_Layer: 0
-  m_Name: CubeCreator
+  m_Name: Cubes
   m_TagString: Untagged
   m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 979470875}
   - component: {fileID: 979470878}
   m_Layer: 0
-  m_Name: PathGenerator
+  m_Name: Road
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -717,7 +717,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 979470867}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1dd911d982622ad4c895677fc2fb739d, type: 3}
+  m_Script: {fileID: 11500000, guid: 3cb1304ee65920d4c833c6f1e0f6e91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _boundaryMaker: {fileID: 1370593100}
@@ -765,10 +765,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 979470867}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 84d9852321066b54f985e022d6850f44, type: 3}
+  m_Script: {fileID: 11500000, guid: e6e8419a546ca744797667bf729cc767, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _snakeHead: {fileID: 2371440335906684624, guid: 96a5fb1456a56ed4d88859044020f686, type: 3}
 --- !u!1 &1295288258
 GameObject:
   m_ObjectHideFlags: 0
@@ -845,7 +844,7 @@ GameObject:
   - component: {fileID: 1370593101}
   - component: {fileID: 1370593100}
   m_Layer: 0
-  m_Name: MapGenerator
+  m_Name: Bounds
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1148,7 +1147,7 @@ GameObject:
   - component: {fileID: 2645583919960169801}
   - component: {fileID: 9171917265129906606}
   m_Layer: 0
-  m_Name: TargetDetector
+  m_Name: Targets
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1170,12 +1169,12 @@ MonoBehaviour:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 705507995}
   - {fileID: 1469608302}
   - {fileID: 963194228}
   - {fileID: 4874195528728397673}
   - {fileID: 529893068}
   - {fileID: 1295288261}
-  - {fileID: 705507995}
   - {fileID: 437241862}
   - {fileID: 979470872}
   - {fileID: 1370593101}

@@ -30,7 +30,7 @@ public class SnakeTail : MonoBehaviour
         _snakeSegmentPrefab = snakeSegmentPrefab;
     }
 
-    public void Spawn(Vector3 direction, SnakeHead snakeHead, PathHolder pathHolder)
+    public void Spawn(Vector3 direction, SnakeHead snakeHead, RoadStorage pathHolder)
     {
         int remained—ountInsideStack = 0;
 

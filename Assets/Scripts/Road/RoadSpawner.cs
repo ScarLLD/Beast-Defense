@@ -2,9 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-[RequireComponent(typeof(PathVizualizator), typeof(PathLimiter))]
-[RequireComponent(typeof(PathHolder), typeof(DirectionHolder))]
-public class PathSpawner : MonoBehaviour
+[RequireComponent(typeof(RoadVizualizer), typeof(DirectionAnalyzer))]
+public class RoadSpawner : MonoBehaviour
 {
     [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private TargetDetector _detector;
@@ -12,36 +11,32 @@ public class PathSpawner : MonoBehaviour
     [SerializeField] private int _minPathSegments = 5;
     [SerializeField] private int _maxPathSegments = 15;
 
-    private DirectionHolder _directionHolder;
-    private PathHolder _pathHolder;
-    private PathVizualizator _vizualizator;
-    private PathLimiter _limiter;
+    private DirectionAnalyzer _directionAnalyzer;
+    private RoadLimiter _limiter;
 
     private Vector3 _spawnPoint;
     private Vector3 _initialDirection;
-    private List<Vector3> _pathPoints = new List<Vector3>();
+    private readonly List<Vector3> _road = new List<Vector3>();
+
+    public event Action<List<Vector3>> Spawned;
 
     private void Awake()
     {
-        _directionHolder = GetComponent<DirectionHolder>();
-        _pathHolder = GetComponent<PathHolder>();
-        _vizualizator = GetComponent<PathVizualizator>();
-        _limiter = GetComponent<PathLimiter>();
+        _directionAnalyzer = GetComponent<DirectionAnalyzer>();
+        _limiter = GetComponent<RoadLimiter>();
     }
 
-    public void SpawnPath()
+    public void Spawn()
     {
-        if (GenerateValidPath())
+        if (GenerateValidRoad())
         {
-            _vizualizator.VisualizePath(_pathPoints);
-            _pathHolder.InitPoints(_pathPoints);
+            Spawned?.Invoke(_road);            
 
-            if (_pathPoints.Count > 0)
+            if (_road.Count > 0)
             {
-                _detector.transform.position = _pathPoints[1];
+                _detector.transform.position = _road[1];
                 _detector.EnableTrigger();
             }
-
         }
         else
         {
@@ -49,17 +44,17 @@ public class PathSpawner : MonoBehaviour
         }
     }
 
-    private bool GeneratePath()
+    private bool GenerateRoad()
     {
         Vector3 currentDirection = _initialDirection;
         Vector3 currentPosition = _spawnPoint;
         int safetyCounter = 0;
 
-        while (_pathPoints.Count < _maxPathSegments && safetyCounter++ < 200)
+        while (_road.Count < _maxPathSegments && safetyCounter++ < 200)
         {
             if (TryMoveForward(ref currentPosition, currentDirection))
             {
-                _pathPoints.Add(currentPosition);
+                _road.Add(currentPosition);
 
                 if (ShouldTurn())
                 {
@@ -79,27 +74,27 @@ public class PathSpawner : MonoBehaviour
             }
         }
 
-        return _pathPoints.Count >= _minPathSegments;
+        return _road.Count >= _minPathSegments;
     }
 
-    private bool GenerateValidPath()
+    private bool GenerateValidRoad()
     {
         int attempts = 0;
         int maxAttempts = 200;
 
         while (attempts++ < maxAttempts)
         {
-            _pathPoints.Clear();
+            _road.Clear();
             InitializeStartingPointAndDirection();
 
-            if (GeneratePath() && _pathPoints.Count >= _minPathSegments)
+            if (GenerateRoad() && _road.Count >= _minPathSegments)
             {
                 bool hasUpwardMovement = false;
-                Vector3 lastPoint = _pathPoints[_pathPoints.Count - 1];
+                Vector3 lastPoint = _road[_road.Count - 1];
 
-                for (int i = 1; i < _pathPoints.Count; i++)
+                for (int i = 1; i < _road.Count; i++)
                 {
-                    if (_pathPoints[i].z > _pathPoints[i - 1].z)
+                    if (_road[i].z > _road[i - 1].z)
                     {
                         hasUpwardMovement = true;
                     }
@@ -121,15 +116,15 @@ public class PathSpawner : MonoBehaviour
     private void InitializeStartingPointAndDirection()
     {
         _spawnPoint = _boundaryMaker.GetRandomPointOnRandomLine();
-        _pathPoints.Add(_spawnPoint);
+        _road.Add(_spawnPoint);
 
-        _initialDirection = _directionHolder.GetValidDirection(_spawnPoint);
+        _initialDirection = _directionAnalyzer.GetValidDirection(_spawnPoint);
     }
 
     private bool TryMoveForward(ref Vector3 position, Vector3 direction)
     {
         Vector3 newPosition = position + direction * _segmentLength;
-        if (_limiter.IsPositionValid(newPosition, _pathPoints))
+        if (_limiter.IsPositionValid(newPosition, _road))
         {
             position = newPosition;
             return true;
@@ -139,7 +134,7 @@ public class PathSpawner : MonoBehaviour
 
     private bool ShouldTurn()
     {
-        float turnProbability = 0.3f + (_pathPoints.Count * 0.02f);
+        float turnProbability = 0.3f + (_road.Count * 0.02f);
         return UnityEngine.Random.value < turnProbability;
     }
 
@@ -151,7 +146,7 @@ public class PathSpawner : MonoBehaviour
         foreach (var turn in possibleTurns)
         {
             Vector3 testPosition = currentPosition + turn * _segmentLength;
-            if (_limiter.IsPositionValid(testPosition, _pathPoints) && IsUpwardDirection(turn, currentDirection) == false)
+            if (_limiter.IsPositionValid(testPosition, _road) && IsUpwardDirection(turn, currentDirection) == false)
             {
                 validDirections.Add(turn);
             }
@@ -160,7 +155,7 @@ public class PathSpawner : MonoBehaviour
         if (validDirections.Count == 0)
         {
             Vector3 testPosition = currentPosition + currentDirection * _segmentLength;
-            if (_limiter.IsPositionValid(testPosition, _pathPoints))
+            if (_limiter.IsPositionValid(testPosition, _road))
             {
                 return currentDirection;
             }

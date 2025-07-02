@@ -9,7 +9,7 @@ public class SnakeSegment : MonoBehaviour
     private SnakeMover _mover;
     private SnakeRotator _rotator;
     private SnakeLocalSettings _localSettings;
-    private PathHolder _pathHolder;
+    private RoadStorage _pathHolder;
     private SnakeHead _snakeHead;
     private Queue<Cube> _cubes;
 
@@ -34,7 +34,7 @@ public class SnakeSegment : MonoBehaviour
         _mover.Arrived -= ChangePosition;
     }
 
-    public void Init(SnakeHead snakeHead, PathHolder pathHolder)
+    public void Init(SnakeHead snakeHead, RoadStorage pathHolder)
     {
         _pathHolder = pathHolder;
         _snakeHead = snakeHead;

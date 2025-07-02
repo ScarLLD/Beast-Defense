@@ -2,35 +2,28 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(SnakeLocalSettings))]
+[RequireComponent(typeof(SnakeMover))]
 public class SnakeRotator : MonoBehaviour
 {
-    private SnakeLocalSettings _localSettings;
+    private float _speedMultiplier = 0.6f;
     private Coroutine _coroutine;
     private SnakeHead _snakeHead;
-
-    private void Awake()
-    {
-        _localSettings = GetComponent<SnakeLocalSettings>();
-    }
+    private SnakeMover _snakeMover;
+    private Vector3 _direction;
 
     public void Init(SnakeHead snakeHead)
     {
         _snakeHead = snakeHead;
     }
 
-    public void SetStartRotation()
+    private void Start()
     {
-        if (_localSettings.TargetPosition != null)
-        {
-            Vector3 direction = _localSettings.TargetPosition - transform.position;
-            transform.rotation = Quaternion.LookRotation(direction);
-        }
+        StartRotateRoutine();
     }
 
     public void StartRotateRoutine()
     {
-        _coroutine = StartCoroutine(Rotate());
+        _coroutine = StartCoroutine(RotateToTarget());
     }
 
     public void StopRotateRoutine()
@@ -42,24 +35,28 @@ public class SnakeRotator : MonoBehaviour
         }
     }
 
-    private IEnumerator Rotate()
+    public void SetStartRotation()
     {
-        bool isWork = true;
-
-        while (isWork)
+        if (_snakeMover.TargetPosition != null)
         {
-            Vector3 direction = _localSettings.TargetPosition - transform.position;
-
-            if (direction != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _snakeHead.Speed * 0.6f);
-
-                if (transform.rotation == targetRotation)
-                    StopRotateRoutine();
-            }
-
-            yield return null;
+            Vector3 direction = _snakeMover.TargetPosition - transform.position;
+            transform.rotation = Quaternion.LookRotation(direction);
         }
+    }
+
+    private IEnumerator RotateToTarget()
+    {
+        while (_snakeMover.TargetPosition != null)
+        {
+            _direction = _snakeMover.TargetPosition - transform.position;
+
+            if (_snakeMover.IsForwardMoving == false)
+                _direction *= -1;
+
+            Quaternion targetRotation = Quaternion.LookRotation(_direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _snakeHead.Speed * _speedMultiplier);
+        }
+
+        yield return null;
     }
 }
