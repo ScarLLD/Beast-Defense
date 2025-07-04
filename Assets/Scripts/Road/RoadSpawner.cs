@@ -16,7 +16,7 @@ public class RoadSpawner : MonoBehaviour
 
     private Vector3 _spawnPoint;
     private Vector3 _initialDirection;
-    private readonly List<Vector3> _road = new List<Vector3>();
+    private readonly List<Vector3> _road = new();
 
     public event Action<List<Vector3>> Spawned;
 

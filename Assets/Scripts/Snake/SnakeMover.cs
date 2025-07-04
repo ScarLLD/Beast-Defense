@@ -1,28 +1,21 @@
 using System;
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
+[RequireComponent(typeof(SnakeSegment))]
 public class SnakeMover : MonoBehaviour
 {
     private Coroutine _coroutine;
     private SnakeHead _snakeHead;
     private readonly float _arrivalThreshold = 0.01f;
 
-    public event Action Arrived;
-
     public void Init(SnakeHead snakeHead)
     {
         _snakeHead = snakeHead;
     }
 
-    public bool IsForwardMoving;
-    public Vector3 TargetPosition { get; private set; }
-
-    private void Start()
-    {
-        StartMoveRoutine();
-    }
+    public bool IsForwardMoving { get; private set; } = true;
+    public Vector3 TargetPoint { get; private set; }
 
     public void StartMoveRoutine()
     {
@@ -38,59 +31,69 @@ public class SnakeMover : MonoBehaviour
         }
     }
 
-    public void SetNextPosition()
-    {
-        if (_snakeHead._roadPoints.Count > 0)
-        {
-            IsForwardMoving = true;
-
-            if (TargetPosition == null)
-            {
-                TargetPosition = _snakeHead._roadPoints.First();
-            }
-            else if (_snakeHead._roadPoints.Contains(TargetPosition))
-            {
-                int index = _snakeHead._roadPoints.IndexOf(TargetPosition);
-
-                if (_snakeHead.RoadPointsCount > index + 1)
-                    TargetPosition = _snakeHead._roadPoints[index + 1];
-            }
-        }
-    }
-
-    public void SetPreviusPosition()
-    {
-        if (_snakeHead.RoadPointsCount > 0)
-        {
-            IsForwardMoving = false;
-
-            if (_snakeHead.TryGetNextPoint(TargetPosition, out int index))
-            {
-                if (index > 0)
-                {
-                    TargetPosition = _snakeHead._roadPoints[index - 1];
-
-                }
-            }
-        }
-    }
-
     private IEnumerator MoveToTarget()
     {
-        while (TargetPosition != null)
+        bool isWork = true;
+
+        SetNextPosition(Vector3.zero);
+
+        while (isWork == true)
         {
             if (IsForwardMoving == true)
             {
-                transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPosition, _snakeHead.Speed * Time.deltaTime);
+                transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, _snakeHead.Speed * Time.deltaTime);
 
-                if ((TargetPosition - transform.localPosition).magnitude < _arrivalThreshold)
+                if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
                 {
-                    transform.localPosition = TargetPosition;
-                    Arrived?.Invoke();
+                    transform.localPosition = TargetPoint;
+                    SelectPosition();
                 }
+
+                if (TargetPoint == Vector3.zero)
+                    isWork = false;
             }
 
             yield return null;
         }
+
+    }
+
+    public void SetNextPosition(Vector3 targetPostion)
+    {
+        if (_snakeHead.RoadCount > 0)
+        {
+            IsForwardMoving = true;
+
+            if (targetPostion == Vector3.zero && _snakeHead.TryGetFirstRoadPoint(out Vector3 firstPoint))
+            {
+                TargetPoint = firstPoint;
+            }
+            else if (_snakeHead.TryGetNextRoadPoint(TargetPoint, out Vector3 nextPoint))
+            {
+                TargetPoint = nextPoint;
+            }
+        }
+    }
+
+
+    public void SetPreviusPosition(Vector3 targetPostion)
+    {
+        if (_snakeHead.RoadCount > 0)
+        {
+            IsForwardMoving = false;
+
+            if (_snakeHead.TryGetPreviusRoadPoint(TargetPoint, out Vector3 previusPoint))
+            {
+                TargetPoint = previusPoint;
+            }
+        }
+    }
+
+    private void SelectPosition()
+    {
+        if (IsForwardMoving == true)
+            SetNextPosition(TargetPoint);
+        else
+            SetPreviusPosition(TargetPoint);
     }
 }

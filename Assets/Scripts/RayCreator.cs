@@ -41,7 +41,7 @@ public class RayCreator : MonoBehaviour
                 && hit.transform.TryGetComponent(out PlayerCube cube)
                 && cube.IsAvailable)
             {
-                cube.ChangeAvailableStatus();
+                cube.ChangeAvailableStatus(false);
                 Clicked?.Invoke(cube);
             }
 

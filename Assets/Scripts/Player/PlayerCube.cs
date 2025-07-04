@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(MeshRenderer))]
@@ -47,14 +46,14 @@ public class PlayerCube : MonoBehaviour, ICube
         Mover.Arrived -= ActivateRadar;
     }
 
-    public void ChangeStaticStatus()
+    public void ChangeStaticStatus(bool isStatic)
     {
-        IsStatic = !IsStatic;
+        IsStatic = isStatic;
     }
 
-    public void ChangeAvailableStatus()
+    public void ChangeAvailableStatus(bool isAvailable)
     {
-        IsAvailable = !IsAvailable;
+        IsAvailable = isAvailable;
     }
 
     private void ActivateRadar()

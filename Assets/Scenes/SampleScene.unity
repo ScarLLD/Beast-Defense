@@ -214,7 +214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _snakePrefab: {fileID: 2371440335906684624, guid: 96a5fb1456a56ed4d88859044020f686, type: 3}
-  _RoadStorage: {fileID: 979470878}
+  _RoadSpawner: {fileID: 979470875}
   _cubeStorage: {fileID: 529893071}
 --- !u!1 &442903041
 GameObject:
@@ -1061,6 +1061,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8a5b151dc71e3a449d1ac52b51a7041, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _roadSpawner: {fileID: 979470875}
 --- !u!65 &3962944585904796678
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -1,48 +1,34 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
+using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(SnakeMover), typeof(SnakeRotator), typeof(SnakeLocalSettings))]
+[RequireComponent(typeof(SnakeMover), typeof(SnakeRotator))]
 public class SnakeSegment : MonoBehaviour
 {
-    private SnakeMover _mover;
-    private SnakeRotator _rotator;
-    private SnakeLocalSettings _localSettings;
-    private RoadStorage _pathHolder;
-    private SnakeHead _snakeHead;
+    private SnakeRotator _snakeRotator;
+    private SnakeMover _snakeMover;
     private Queue<Cube> _cubes;
 
     public Material Material { get; private set; }
 
     private void Awake()
     {
-        _mover = GetComponent<SnakeMover>();
-        _rotator = GetComponent<SnakeRotator>();
-        _localSettings = GetComponent<SnakeLocalSettings>();
-
+        _snakeMover = GetComponent<SnakeMover>();
+        _snakeRotator = GetComponent<SnakeRotator>();
         _cubes = new Queue<Cube>();
     }
 
-    private void OnEnable()
+    private void Start()
     {
-        _mover.Arrived += ChangePosition;
+        _snakeRotator.SetStartRotation();
+        _snakeMover.StartMoveRoutine();
+        _snakeRotator.StartRotateRoutine();
     }
 
-    private void OnDisable()
+    public void Init(SnakeHead snakeHead)
     {
-        _mover.Arrived -= ChangePosition;
-    }
-
-    public void Init(SnakeHead snakeHead, RoadStorage pathHolder)
-    {
-        _pathHolder = pathHolder;
-        _snakeHead = snakeHead;
-
-        _mover.Init(snakeHead);
-        _rotator.Init(snakeHead);
-
-        Move();
+        _snakeMover.Init(snakeHead);
+        _snakeRotator.Init(snakeHead);
     }
 
     public bool TryGetCube(out Cube cube)
@@ -57,38 +43,22 @@ public class SnakeSegment : MonoBehaviour
 
     public void AddCube(Cube cube)
     {
+        
+            Material = cube.Material;
+
         _cubes.Enqueue(cube);
-        Material = cube.Material;
+    }
+
+    public bool IsCurrectColor(Color color)
+    {
+        return Material != null && Material.color == color;
     }
 
     public void TryDestroy()
     {
         if (_cubes.Count == 0)
         {
-            _snakeHead.ProcessLoss(this);
-        }
-    }
-
-    public void Move()
-    {
-        if (_pathHolder.TryGetStartPosition(out Vector3 startPosition))
-        {
-            _localSettings.SetTarget(startPosition);
-            _mover.StartMoveRoutine();
-            _rotator.SetStartRotation();
-        }
-    }
-
-    private void ChangePosition()
-    {
-        if (_pathHolder.TryGetNextPosition(_localSettings.TargetPosition, out Vector3 nextPosition))
-        {
-            _localSettings.SetTarget(nextPosition);
-            _rotator.StartRotateRoutine();
-        }
-        else
-        {
-            _mover.StopMoveRoutine();
+            //_snakeHead.ProcessLoss(this);
         }
     }
 }

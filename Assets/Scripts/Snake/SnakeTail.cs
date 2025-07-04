@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-[RequireComponent(typeof(SnakeSegmentsStorage))]
 public class SnakeTail : MonoBehaviour
 {
     private float _distanceBetweenSegments = 0.8f;
@@ -12,7 +9,6 @@ public class SnakeTail : MonoBehaviour
     private float _DirectionMultiplier = 1f;
     private Vector3 _lastPosition;
 
-    private SnakeSegmentsStorage _segmentsStorage;
     private CubeStorage _cubeStorage;
     private Cube _cubePrefab;
     private SnakeSegment _snakeSegmentPrefab;
@@ -20,7 +16,6 @@ public class SnakeTail : MonoBehaviour
     private void Awake()
     {
         _lastPosition = transform.position;
-        _segmentsStorage = GetComponent<SnakeSegmentsStorage>();
     }
 
     public void Init(CubeStorage cubeStorage, Cube cubePrefab, SnakeSegment snakeSegmentPrefab)
@@ -30,8 +25,10 @@ public class SnakeTail : MonoBehaviour
         _snakeSegmentPrefab = snakeSegmentPrefab;
     }
 
-    public void Spawn(Vector3 direction, SnakeHead snakeHead, RoadStorage pathHolder)
+    public bool TryCreateSegments(Vector3 direction, out List<SnakeSegment> segments)
     {
+        segments = new();
+
         int remained—ountInsideStack = 0;
 
         Vector3 centerPoint = _lastPosition + _DirectionMultiplier * _distanceBetweenSegments * GetObjectSizeInLocalDirection(-direction) * -direction.normalized;
@@ -40,8 +37,7 @@ public class SnakeTail : MonoBehaviour
         {
             int countInsideStack = _cubeStorage.Stacks[i].Count - remained—ountInsideStack;
 
-            SnakeSegment snakeSegment = Instantiate(_snakeSegmentPrefab, centerPoint, Quaternion.identity, snakeHead.transform.parent);
-            snakeSegment.Init(snakeHead, pathHolder);
+            SnakeSegment snakeSegment = Instantiate(_snakeSegmentPrefab, centerPoint, Quaternion.identity);
 
             Vector3[] points = new Vector3[4];
 
@@ -65,7 +61,7 @@ public class SnakeTail : MonoBehaviour
                 remained—ountInsideStack++;
             }
 
-            _segmentsStorage.AddSegment(snakeSegment);
+            segments.Add(snakeSegment);
 
             _lastPosition = centerPoint;
             centerPoint = _lastPosition + -direction.normalized * GetObjectSizeInLocalDirection(-direction) / _sizeDivider * _distanceBetweenSegments;
@@ -76,6 +72,8 @@ public class SnakeTail : MonoBehaviour
                 i++;
             }
         }
+
+        return segments.Count != 0;
     }
 
     public float GetObjectSizeInLocalDirection(Vector3 localDirection)
@@ -89,16 +87,5 @@ public class SnakeTail : MonoBehaviour
         float thickness = Vector3.Dot(bounds.size, worldDirection);
 
         return Mathf.Abs(thickness);
-    }
-
-    public void ProcessLoss(SnakeSegment snakeSegment)
-    {
-        if (_segmentsStorage.TryGetSeveredSegments(snakeSegment, out List<SnakeSegment> severedSegments))
-        {
-            foreach (var segments in severedSegments)
-            {
-
-            }
-        }
     }
 }

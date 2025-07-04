@@ -1,83 +1,92 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(SnakeMover), typeof(SnakeRotator), typeof(SnakeTail))]
-[RequireComponent(typeof(SnakeLocalSettings))]
+[RequireComponent(typeof(SnakeSegment), typeof(SnakeTail))]
 public class SnakeHead : MonoBehaviour
 {
     [SerializeField] private float _speed;
-
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private SnakeSegment _snakeSegmentPrefab;
 
-    private SnakeMover _mover;
-    private SnakeRotator _rotator;
+    private SnakeSegment _snakeSegment;
     private SnakeTail _tail;
-    private SnakeLocalSettings _localSettings;
-    private List<Vector3> _roadPoints;
 
+    private List<SnakeSegment> _segments;
+    private List<Vector3> _road;
+
+    public int RoadCount => _road.Count;
     public float Speed => _speed;
 
     private void Awake()
     {
-        _localSettings = GetComponent<SnakeLocalSettings>();
-        _mover = GetComponent<SnakeMover>();
-        _rotator = GetComponent<SnakeRotator>();
+        _snakeSegment = GetComponent<SnakeSegment>();
         _tail = GetComponent<SnakeTail>();
     }
 
-    //private void OnEnable()
-    //{
-    //    _mover.Arrived += SetNextPosition;
-    //}
-
-    //private void OnDisable()
-    //{
-    //    _mover.Arrived -= SetNextPosition;
-    //}
-
-    public void SetSpeed(float speed)
+    public void ChangeSpeed(float speed)
     {
         _speed = speed;
     }
 
-    public bool TryGetNextPoint(Vector3 point, out Vector3 nextPoint)
+    public void Init(CubeStorage cubeStorage, List<Vector3> road)
     {
-        
-
-        if (_roadPoints.Contains(point))
-            index = _roadPoints.IndexOf(point);
-
-        return index != null;
+        _road = road;
+        _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab);
     }
 
-    public bool TryGetPreviusPoint(Vector3 point, out Vector3 previusPoint) { }
-
-    public void Init(List<Vector3> road, Transform snakeTransform, CubeStorage cubeStorage)
+    public bool TryGetFirstRoadPoint(out Vector3 point)
     {
-        _roadPoints = road;
+        point = Vector3.zero;
 
-        _mover.Init(this);
-        _rotator.Init(this);
-
-        _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab);
-
-        _mover.SetNextPosition();
-
-        if (_pathHolder.TryGetStartPosition(out Vector3 startPosition))
+        if (_road.Count > 0)
         {
-            _localSettings.SetTarget(startPosition);
-            _mover.StartMoveRoutine();
-            _rotator.SetStartRotation();
-            _tail.Spawn(_localSettings.TargetPosition - startPosition, this, _pathHolder);
+            point = _road.First();
+        }
+
+        return point != Vector3.zero;
+    }
+
+    public void CreateTail()
+    {
+        Vector3 direction = Vector3.zero;
+
+        _segments = new() { _snakeSegment };
+        _snakeSegment.Init(this);
+
+        if (TryGetFirstRoadPoint(out Vector3 firstPoint) && TryGetNextRoadPoint(firstPoint, out Vector3 secondPoint))
+            direction = secondPoint - transform.position;
+
+        if (direction != Vector3.zero && _tail.TryCreateSegments(direction, out List<SnakeSegment> segments))
+        {
+            foreach (var segment in segments)
+            {
+                _segments.Add(segment);
+                segment.Init(this);
+                segment.transform.parent = transform.parent;
+            }
         }
     }
 
-    public void ProcessLoss(SnakeSegment snakeSegment)
+    public bool TryGetNextRoadPoint(Vector3 point, out Vector3 nextPoint)
     {
-        _tail.ProcessLoss(snakeSegment);
+        nextPoint = Vector3.zero;
+
+        if (_road.Contains(point) == true && _road.Count > _road.IndexOf(point) + 1)
+            nextPoint = _road[_road.IndexOf(point) + 1];
+        else
+            ChangeSpeed(0);
+
+        return nextPoint != Vector3.zero;
     }
 
+    public bool TryGetPreviusRoadPoint(Vector3 point, out Vector3 previusPoint)
+    {
+        previusPoint = Vector3.zero;
 
+        if (_road.Contains(point) == true && _road.IndexOf(point) - 1 >= 0)
+            previusPoint = _road[_road.IndexOf(point) - 1];
+
+        return previusPoint != Vector3.zero;
+    }
 }

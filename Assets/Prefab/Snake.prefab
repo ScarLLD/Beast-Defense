@@ -120,11 +120,10 @@ GameObject:
   - component: {fileID: 3348984941262337173}
   - component: {fileID: 4138525187046013032}
   - component: {fileID: 2371440335906684624}
-  - component: {fileID: 1753530987907452757}
   - component: {fileID: 488540396108604353}
   - component: {fileID: 797038429605960421}
   - component: {fileID: 1520115947057629087}
-  - component: {fileID: 5250046311881642311}
+  - component: {fileID: 4262901886844694092}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -236,18 +235,6 @@ MonoBehaviour:
   _speed: 2
   _cubePrefab: {fileID: 1900071841244829645, guid: c309c790d98bd9b45a4ae1212065f2a7, type: 3}
   _snakeSegmentPrefab: {fileID: 8219311175271720262, guid: 303634adfc2769743b042a1876d290ac, type: 3}
---- !u!114 &1753530987907452757
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9129979811769017559}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: abdcf600526c40042a04a255499b45ef, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &488540396108604353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,7 +271,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81b0bf521efa34c4992d61af32d2f222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5250046311881642311
+--- !u!114 &4262901886844694092
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -293,6 +280,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 9129979811769017559}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd5919f14187ac641a72b84e25e73908, type: 3}
+  m_Script: {fileID: 11500000, guid: 669cd8468be16494189113b3602b42c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
