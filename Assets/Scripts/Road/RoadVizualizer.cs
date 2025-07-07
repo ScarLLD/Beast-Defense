@@ -18,17 +18,7 @@ public class RoadVizualizer : MonoBehaviour
         _roadSpawner = GetComponent<RoadSpawner>();
     }
 
-    private void OnEnable()
-    {
-        _roadSpawner.Spawned += VisualizeRoad;
-    }
-
-    private void OnDisable()
-    {
-        _roadSpawner.Spawned -= VisualizeRoad;
-    }
-
-    private void VisualizeRoad(List<Vector3> road)
+    public void VisualizeRoad(List<Vector3> road)
     {
         foreach (Transform child in transform)
             Destroy(child.gameObject);

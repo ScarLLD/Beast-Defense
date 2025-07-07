@@ -1,14 +1,16 @@
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(SnakeMover), typeof(SnakeRotator))]
 public class SnakeSegment : MonoBehaviour
 {
+    private int currentCubesCount = 4;
+    private SnakeHead _snakeHead;
     private SnakeRotator _snakeRotator;
     private SnakeMover _snakeMover;
     private Queue<Cube> _cubes;
 
+    public SnakeMover SnakeMover => _snakeMover;
     public Material Material { get; private set; }
 
     private void Awake()
@@ -27,6 +29,7 @@ public class SnakeSegment : MonoBehaviour
 
     public void Init(SnakeHead snakeHead)
     {
+        _snakeHead = snakeHead;
         _snakeMover.Init(snakeHead);
         _snakeRotator.Init(snakeHead);
     }
@@ -43,8 +46,8 @@ public class SnakeSegment : MonoBehaviour
 
     public void AddCube(Cube cube)
     {
-        
-            Material = cube.Material;
+
+        Material = cube.Material;
 
         _cubes.Enqueue(cube);
     }
@@ -56,9 +59,9 @@ public class SnakeSegment : MonoBehaviour
 
     public void TryDestroy()
     {
-        if (_cubes.Count == 0)
-        {
-            //_snakeHead.ProcessLoss(this);
-        }
+        currentCubesCount--;
+
+        if (currentCubesCount == 0)
+            _snakeHead.ProcessLoss(this);
     }
 }

@@ -1,13 +1,14 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(SnakeSegment))]
 public class SnakeMover : MonoBehaviour
 {
+    private float _speedMultiplier = 1.2f;
+    private readonly float _arrivalThreshold = 0.01f;
+    private SnakeSegment _targetSegment;
     private Coroutine _coroutine;
     private SnakeHead _snakeHead;
-    private readonly float _arrivalThreshold = 0.01f;
 
     public void Init(SnakeHead snakeHead)
     {
@@ -39,23 +40,34 @@ public class SnakeMover : MonoBehaviour
 
         while (isWork == true)
         {
-            if (IsForwardMoving == true)
+            float speed = _snakeHead.Speed;
+
+            if (IsForwardMoving == false)
+                speed *= _speedMultiplier;
+
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, speed * Time.deltaTime);
+
+            if (_targetSegment != null && (_targetSegment.transform.position - transform.localPosition).magnitude < _arrivalThreshold)
             {
-                transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, _snakeHead.Speed * Time.deltaTime);
-
-                if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
-                {
-                    transform.localPosition = TargetPoint;
-                    SelectPosition();
-                }
-
-                if (TargetPoint == Vector3.zero)
-                    isWork = false;
+                _targetSegment = null;
             }
+
+            if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
+            {
+                transform.localPosition = TargetPoint;
+
+                if (_targetSegment == null)
+                    SelectPosition();
+                else
+                    SetNextPosition(TargetPoint);
+
+            }
+
+            if (TargetPoint == Vector3.zero)
+                isWork = false;
 
             yield return null;
         }
-
     }
 
     public void SetNextPosition(Vector3 targetPostion)
@@ -76,7 +88,7 @@ public class SnakeMover : MonoBehaviour
     }
 
 
-    public void SetPreviusPosition(Vector3 targetPostion)
+    public void SetPreviusPosition()
     {
         if (_snakeHead.RoadCount > 0)
         {
@@ -91,9 +103,9 @@ public class SnakeMover : MonoBehaviour
 
     private void SelectPosition()
     {
-        if (IsForwardMoving == true)
-            SetNextPosition(TargetPoint);
+        if (_targetSegment != null || IsForwardMoving == false)
+            SetPreviusPosition();
         else
-            SetPreviusPosition(TargetPoint);
+            SetNextPosition(TargetPoint);
     }
 }

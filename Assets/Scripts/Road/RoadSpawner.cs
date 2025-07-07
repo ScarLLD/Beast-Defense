@@ -1,10 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 [RequireComponent(typeof(RoadVizualizer), typeof(DirectionAnalyzer))]
 public class RoadSpawner : MonoBehaviour
 {
+    [SerializeField] private SnakeSpawner _snakeSpawner;
+    [SerializeField] private RoadVizualizer _roadVizualizer;
     [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private TargetDetector _detector;
     [SerializeField] private float _segmentLength = 2f;
@@ -18,8 +19,6 @@ public class RoadSpawner : MonoBehaviour
     private Vector3 _initialDirection;
     private readonly List<Vector3> _road = new();
 
-    public event Action<List<Vector3>> Spawned;
-
     private void Awake()
     {
         _directionAnalyzer = GetComponent<DirectionAnalyzer>();
@@ -30,13 +29,10 @@ public class RoadSpawner : MonoBehaviour
     {
         if (GenerateValidRoad())
         {
-            Spawned?.Invoke(_road);            
-
-            if (_road.Count > 0)
-            {
-                _detector.transform.position = _road[1];
-                _detector.EnableTrigger();
-            }
+            _detector.transform.position = _road[1];
+            _detector.EnableTrigger();
+            _roadVizualizer.VisualizeRoad(_road);
+            _snakeSpawner.Spawn(_road);
         }
         else
         {

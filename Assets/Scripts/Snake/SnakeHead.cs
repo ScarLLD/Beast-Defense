@@ -84,9 +84,40 @@ public class SnakeHead : MonoBehaviour
     {
         previusPoint = Vector3.zero;
 
-        if (_road.Contains(point) == true && _road.IndexOf(point) - 1 >= 0)
-            previusPoint = _road[_road.IndexOf(point) - 1];
+        if (_road.Contains(point) == true)
+        {
+            if (_road.IndexOf(point) - 1 > 0)
+                previusPoint = _road[_road.IndexOf(point) - 1];
+            else
+                previusPoint = _road[0];
+        }
 
         return previusPoint != Vector3.zero;
+    }
+
+    public void ProcessLoss(SnakeSegment snakeSegment)
+    {
+        if (TryGetSeveredSegments(snakeSegment, out List<SnakeSegment> segments))
+        {
+            for (int i = 0; i < segments.Count - 1; i++)
+            {
+                segments[i].SnakeMover.SetPreviusPosition(segments[i + 1].transform.position);
+            }
+        }
+    }
+
+    private bool TryGetSeveredSegments(SnakeSegment segment, out List<SnakeSegment> segments)
+    {
+        segments = new();
+
+        if (_segments.Contains(segment))
+        {
+            for (int i = 0; i <= _segments.IndexOf(segment) + 1; i++)
+            {
+                segments.Add(_segments[i]);
+            }
+        }
+
+        return segments.Count != 0;
     }
 }
