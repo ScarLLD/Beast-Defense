@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -62,6 +63,6 @@ public class SnakeSegment : MonoBehaviour
         currentCubesCount--;
 
         if (currentCubesCount == 0)
-            _snakeHead.ProcessLoss(this);
+            _snakeHead.DeleteSegment(this);
     }
 }

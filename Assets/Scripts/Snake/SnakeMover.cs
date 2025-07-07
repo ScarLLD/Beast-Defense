@@ -6,7 +6,8 @@ public class SnakeMover : MonoBehaviour
 {
     private float _speedMultiplier = 1.2f;
     private readonly float _arrivalThreshold = 0.01f;
-    private SnakeSegment _targetSegment;
+    private readonly float _thresholdBetweenSegments = 1f;
+    private SnakeSegment _previousSegment;
     private Coroutine _coroutine;
     private SnakeHead _snakeHead;
 
@@ -17,6 +18,11 @@ public class SnakeMover : MonoBehaviour
 
     public bool IsForwardMoving { get; private set; } = true;
     public Vector3 TargetPoint { get; private set; }
+
+    public void SetPreviousSegment(SnakeSegment previousSegment)
+    {
+        _previousSegment = previousSegment;
+    }
 
     public void StartMoveRoutine()
     {
@@ -47,19 +53,17 @@ public class SnakeMover : MonoBehaviour
 
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, speed * Time.deltaTime);
 
-            if (_targetSegment != null && (_targetSegment.transform.position - transform.localPosition).magnitude < _arrivalThreshold)
+            if (_previousSegment != null && IsForwardMoving == true && (_previousSegment.transform.position - transform.localPosition).magnitude > _thresholdBetweenSegments)
             {
-                _targetSegment = null;
+                SetPreviousPosition();
+                Debug.Log("SetPreviousPosition");
             }
 
             if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
             {
                 transform.localPosition = TargetPoint;
-
-                if (_targetSegment == null)
-                    SelectPosition();
-                else
-                    SetNextPosition(TargetPoint);
+                SelectPosition();
+                //Debug.Log("SelectPos");
 
             }
 
@@ -88,13 +92,13 @@ public class SnakeMover : MonoBehaviour
     }
 
 
-    public void SetPreviusPosition()
+    public void SetPreviousPosition()
     {
         if (_snakeHead.RoadCount > 0)
         {
             IsForwardMoving = false;
 
-            if (_snakeHead.TryGetPreviusRoadPoint(TargetPoint, out Vector3 previusPoint))
+            if (_snakeHead.TryGetPreviousRoadPoint(TargetPoint, out Vector3 previusPoint))
             {
                 TargetPoint = previusPoint;
             }
@@ -103,8 +107,8 @@ public class SnakeMover : MonoBehaviour
 
     private void SelectPosition()
     {
-        if (_targetSegment != null || IsForwardMoving == false)
-            SetPreviusPosition();
+        if (_previousSegment != null && IsForwardMoving == false)
+            SetPreviousPosition();
         else
             SetNextPosition(TargetPoint);
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(SnakeSegment))]
 public class SnakeRotator : MonoBehaviour
 {
-    private readonly float _speedMultiplier = 0.8f;
+    private readonly float _speedMultiplier = 1.5f;
     private Coroutine _coroutine;
     private SnakeHead _snakeHead;
     private SnakeMover _snakeMover;
@@ -62,7 +62,7 @@ public class SnakeRotator : MonoBehaviour
                     Quaternion targetRotation = Quaternion.LookRotation(_direction);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _snakeHead.Speed * _speedMultiplier);
                 }
-                
+
             }
 
             yield return null;

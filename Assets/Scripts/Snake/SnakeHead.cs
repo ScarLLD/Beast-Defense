@@ -59,11 +59,11 @@ public class SnakeHead : MonoBehaviour
 
         if (direction != Vector3.zero && _tail.TryCreateSegments(direction, out List<SnakeSegment> segments))
         {
-            foreach (var segment in segments)
+            for (int i = 0; i < segments.Count; i++)
             {
-                _segments.Add(segment);
-                segment.Init(this);
-                segment.transform.parent = transform.parent;
+                _segments.Add(segments[i]);
+                segments[i].Init(this);
+                segments[i].transform.parent = transform.parent;
             }
         }
     }
@@ -80,7 +80,7 @@ public class SnakeHead : MonoBehaviour
         return nextPoint != Vector3.zero;
     }
 
-    public bool TryGetPreviusRoadPoint(Vector3 point, out Vector3 previusPoint)
+    public bool TryGetPreviousRoadPoint(Vector3 point, out Vector3 previusPoint)
     {
         previusPoint = Vector3.zero;
 
@@ -95,29 +95,20 @@ public class SnakeHead : MonoBehaviour
         return previusPoint != Vector3.zero;
     }
 
-    public void ProcessLoss(SnakeSegment snakeSegment)
+    public void DeleteSegment(SnakeSegment snakeSegment)
     {
-        if (TryGetSeveredSegments(snakeSegment, out List<SnakeSegment> segments))
-        {
-            for (int i = 0; i < segments.Count - 1; i++)
-            {
-                segments[i].SnakeMover.SetPreviusPosition(segments[i + 1].transform.position);
-            }
-        }
+        if (_segments.Contains(snakeSegment))
+            _segments.Remove(snakeSegment);
+
+        SetPreviousSegments();
+        Debug.Log(_segments.Count);
     }
 
-    private bool TryGetSeveredSegments(SnakeSegment segment, out List<SnakeSegment> segments)
+    private void SetPreviousSegments()
     {
-        segments = new();
-
-        if (_segments.Contains(segment))
+        for (int i = 0; i < _segments.Count - 1; i++)
         {
-            for (int i = 0; i <= _segments.IndexOf(segment) + 1; i++)
-            {
-                segments.Add(_segments[i]);
-            }
+            _segments[i].SnakeMover.SetPreviousSegment(_segments[i + 1]);
         }
-
-        return segments.Count != 0;
     }
 }
