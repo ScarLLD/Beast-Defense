@@ -5,6 +5,7 @@ public class SnakeTail : MonoBehaviour
 {
     private float _distanceBetweenSegments = 0.8f;
     private float _distanceBetweenCubes = 0.5f;
+    private float _scaleMultiplier = 0.7f;
     private float _sizeDivider = 2;
     private float _DirectionMultiplier = 1f;
     private Vector3 _lastPosition;
@@ -25,10 +26,10 @@ public class SnakeTail : MonoBehaviour
         _snakeSegmentPrefab = snakeSegmentPrefab;
     }
 
-    public bool TryCreateSegments(Vector3 direction, out List<SnakeSegment> segments)
+    public bool TryCreateSegments(Vector3 direction, out List<SnakeSegment> segments, out float scaleMultiplier)
     {
         segments = new();
-
+        scaleMultiplier = _scaleMultiplier;
         int remained—ountInsideStack = 0;
 
         Vector3 centerPoint = _lastPosition + _DirectionMultiplier * _distanceBetweenSegments * GetObjectSizeInLocalDirection(-direction) * -direction.normalized;
@@ -52,7 +53,7 @@ public class SnakeTail : MonoBehaviour
             for (int l = 0; l < points.Length; l++)
             {
                 Cube cube = Instantiate(_cubePrefab, points[l], Quaternion.identity, snakeSegment.transform);
-                cube.transform.localScale *= 0.7f;
+                cube.transform.localScale *= scaleMultiplier;
                 cube.Init(_cubeStorage.Stacks[i].Material);
                 cube.GetSegment(snakeSegment);
 

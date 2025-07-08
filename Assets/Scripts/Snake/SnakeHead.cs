@@ -9,6 +9,7 @@ public class SnakeHead : MonoBehaviour
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private SnakeSegment _snakeSegmentPrefab;
 
+    private float _lengthMultiplier = 0f;
     private SnakeSegment _snakeSegment;
     private SnakeTail _tail;
 
@@ -51,17 +52,19 @@ public class SnakeHead : MonoBehaviour
     {
         Vector3 direction = Vector3.zero;
 
-        _segments = new() { _snakeSegment };
-        _snakeSegment.Init(this);
-
         if (TryGetFirstRoadPoint(out Vector3 firstPoint) && TryGetNextRoadPoint(firstPoint, out Vector3 secondPoint))
             direction = secondPoint - transform.position;
 
-        if (direction != Vector3.zero && _tail.TryCreateSegments(direction, out List<SnakeSegment> segments))
+        if (direction != Vector3.zero && _tail.TryCreateSegments(direction, out List<SnakeSegment> segments, out float cubeScale))
         {
+            _segments = new() { _snakeSegment };
+            _snakeSegment.Init(this);
+            _snakeSegment.SnakeMover.SetLengths((_snakeSegment.transform.localScale.magnitude + _lengthMultiplier) / 2, _snakeSegment.transform.localScale.magnitude / 2);
+
             for (int i = 0; i < segments.Count; i++)
             {
                 _segments.Add(segments[i]);
+                segments[i].SnakeMover.SetLengths((segments[i].transform.localScale.magnitude + _lengthMultiplier) / 2, segments[i].transform.localScale.magnitude / 2);
                 segments[i].Init(this);
                 segments[i].transform.parent = transform.parent;
             }
@@ -98,10 +101,12 @@ public class SnakeHead : MonoBehaviour
     public void DeleteSegment(SnakeSegment snakeSegment)
     {
         if (_segments.Contains(snakeSegment))
+        {
             _segments.Remove(snakeSegment);
+            snakeSegment.gameObject.SetActive(false);
+        }
 
         SetPreviousSegments();
-        Debug.Log(_segments.Count);
     }
 
     private void SetPreviousSegments()

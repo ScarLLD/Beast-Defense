@@ -232,7 +232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8b580b84ee96e24bb15de2aa9a7d71f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 2
+  _speed: 1
   _cubePrefab: {fileID: 1900071841244829645, guid: c309c790d98bd9b45a4ae1212065f2a7, type: 3}
   _snakeSegmentPrefab: {fileID: 8219311175271720262, guid: 303634adfc2769743b042a1876d290ac, type: 3}
 --- !u!114 &488540396108604353

@@ -4,12 +4,21 @@ using UnityEngine;
 [RequireComponent(typeof(SnakeSegment))]
 public class SnakeMover : MonoBehaviour
 {
-    private float _speedMultiplier = 1.2f;
+    private float _speedMultiplier = 4f;
+    private float _lengthMultiplier = 1.5f;
     private readonly float _arrivalThreshold = 0.01f;
-    private readonly float _thresholdBetweenSegments = 1f;
+    private float _thresholdBetweenSegments;
+    private float _gapLengthBetweenSegments;
     private SnakeSegment _previousSegment;
-    private Coroutine _coroutine;
     private SnakeHead _snakeHead;
+    private Coroutine _coroutine;
+
+    public void SetLengths(float threshold, float gap)
+    {
+        _thresholdBetweenSegments = threshold;
+        _gapLengthBetweenSegments = gap;
+
+    }
 
     public void Init(SnakeHead snakeHead)
     {
@@ -47,24 +56,39 @@ public class SnakeMover : MonoBehaviour
         while (isWork == true)
         {
             float speed = _snakeHead.Speed;
+            float thresholdBetweenSegments = _thresholdBetweenSegments;
+            float gapLengthBetweenSegments = _gapLengthBetweenSegments;
 
             if (IsForwardMoving == false)
                 speed *= _speedMultiplier;
 
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, speed * Time.deltaTime);
 
-            if (_previousSegment != null && IsForwardMoving == true && (_previousSegment.transform.position - transform.localPosition).magnitude > _thresholdBetweenSegments)
+            if (_previousSegment != null)
             {
-                SetPreviousPosition();
-                Debug.Log("SetPreviousPosition");
+                if (transform.localRotation.eulerAngles.y - _previousSegment.transform.localRotation.eulerAngles.y > 20f)
+                {
+                    thresholdBetweenSegments *= _lengthMultiplier;
+                    gapLengthBetweenSegments *= _lengthMultiplier;
+                }
+
+                float lengthBetweenSegments = (transform.localPosition - _previousSegment.transform.localPosition).magnitude;
+
+                if (IsForwardMoving == true && (lengthBetweenSegments > thresholdBetweenSegments))
+                {
+                    SetPreviousPosition();
+                }
+                else if (IsForwardMoving == false && (lengthBetweenSegments <= gapLengthBetweenSegments))
+                {
+                    SetNextPosition(TargetPoint);
+                }
             }
+
 
             if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
             {
                 transform.localPosition = TargetPoint;
                 SelectPosition();
-                //Debug.Log("SelectPos");
-
             }
 
             if (TargetPoint == Vector3.zero)
@@ -90,7 +114,6 @@ public class SnakeMover : MonoBehaviour
             }
         }
     }
-
 
     public void SetPreviousPosition()
     {
