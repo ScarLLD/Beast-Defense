@@ -50,6 +50,7 @@ public class SnakeMover : MonoBehaviour
     private IEnumerator MoveToTarget()
     {
         bool isWork = true;
+        float initialSpeed = _snakeHead.Speed;
 
         SetNextPosition(Vector3.zero);
 
@@ -60,7 +61,14 @@ public class SnakeMover : MonoBehaviour
             float gapLengthBetweenSegments = _gapLengthBetweenSegments;
 
             if (IsForwardMoving == false)
+            {
+                if (_snakeHead.Speed < initialSpeed)
+                {
+                    speed = initialSpeed;
+                }
+
                 speed *= _speedMultiplier;
+            }
 
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, speed * Time.deltaTime);
 
@@ -83,7 +91,6 @@ public class SnakeMover : MonoBehaviour
                     SetNextPosition(TargetPoint);
                 }
             }
-
 
             if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
             {

@@ -38,12 +38,14 @@ public class PlayerCube : MonoBehaviour, ICube
 
     private void OnEnable()
     {
-        Mover.Arrived += ActivateRadar;
+        Mover.Arrived += OnMoverArrived;
+        _shooter.BulletsOut += OnBulletsOut;
     }
 
     private void OnDisable()
     {
-        Mover.Arrived -= ActivateRadar;
+        Mover.Arrived -= OnMoverArrived;
+        _shooter.BulletsOut -= OnBulletsOut;
     }
 
     public void ChangeStaticStatus(bool isStatic)
@@ -56,9 +58,14 @@ public class PlayerCube : MonoBehaviour, ICube
         IsAvailable = isAvailable;
     }
 
-    private void ActivateRadar()
+    private void OnMoverArrived()
     {
         _radar.StartScanning(Material.color);
         Mover.StopMoving();
+    }
+
+    private void OnBulletsOut()
+    {
+        Mover.GoEscape();
     }
 }

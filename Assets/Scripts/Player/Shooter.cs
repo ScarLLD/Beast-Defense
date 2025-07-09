@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Shooter : MonoBehaviour
 {
     [SerializeField] private float _timeBetweenShoot;
@@ -14,6 +15,8 @@ public class Shooter : MonoBehaviour
     private int _bulletCount;
 
     public int BulletCount => _bulletCount;
+
+    public event Action BulletsOut;
 
     private void Awake()
     {
@@ -36,19 +39,28 @@ public class Shooter : MonoBehaviour
 
     private IEnumerator Shoot()
     {
-        while (_targets.Count > 0)
+        while (_bulletCount > 0)
         {
-            var target = _targets.Dequeue();
-
-            while (target.TryGetCube(out Cube cube))
+            if (_targets.Count > 0)
             {
-                _bulletSpawner.SpawnBullet(transform.position, cube);
-                _bulletCount--;
+                var target = _targets.Dequeue();
+                target.SetIsTarget();
 
-                yield return new WaitForSeconds(0.2f);
+                while (target.TryGetCube(out Cube cube))
+                {
+                    _bulletSpawner.SpawnBullet(transform.position, cube);
+                    _bulletCount--;
+
+                    yield return new WaitForSeconds(0.2f);
+                }
+
             }
+
+            yield return null;
         }
 
-        _coroutine = null;
+        Debug.Log($"Out: {BulletCount}");
+
+        BulletsOut?.Invoke();
     }
 }

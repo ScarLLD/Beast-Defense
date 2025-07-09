@@ -1,20 +1,21 @@
 using UnityEngine;
 
-[RequireComponent(typeof(ShootingPlacesHolder))]
-public class ShootingPlacesGenerator : MonoBehaviour
+[RequireComponent(typeof(PlaceStorage))]
+public class PlaceSpawner : MonoBehaviour
 {
     [SerializeField] private Game _game;
     [SerializeField] private ShootingPlace _placePrefab;
     [SerializeField] private int _placesCount;
     [SerializeField] private float _leftBound;
     [SerializeField] private float _rightBound;
+    [SerializeField] private float _movingAwayFromShootingPlace;
 
-    private ShootingPlacesHolder _holder;
+    private PlaceStorage _storage;
     private Camera _camera;
 
     private void Awake()
     {
-        _holder = GetComponent<ShootingPlacesHolder>();
+        _storage = GetComponent<PlaceStorage>();
         _camera = Camera.main;
     }
 
@@ -36,11 +37,12 @@ public class ShootingPlacesGenerator : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-            GeneratePlaces();
+            GenerateShootingPlaces();
+            GenerateEscapePlaces();
         }
     }
 
-    private void GeneratePlaces()
+    private void GenerateShootingPlaces()
     {
         float placeWeight = _placePrefab.transform.localScale.x;
         float availableSpace = _rightBound - _leftBound - (_placesCount * placeWeight);
@@ -55,7 +57,29 @@ public class ShootingPlacesGenerator : MonoBehaviour
             ShootingPlace place = Instantiate(_placePrefab, transform);
             place.transform.localPosition = spawnPosition;
 
-            _holder.PutPlace(place);
+            _storage.PutPlace(place);
         }
+    }
+
+    private void GenerateEscapePlaces()
+    {
+        Vector3 escapePlace;
+
+        if (_storage.TryGetFirstPlace(out ShootingPlace firstPlace))
+        {
+            escapePlace = new Vector3(firstPlace.transform.position.x - _movingAwayFromShootingPlace,
+                firstPlace.transform.position.y, firstPlace.transform.position.z + _movingAwayFromShootingPlace);
+
+            _storage.PutEscapePlace(escapePlace);
+        }
+
+        if (_storage.TryGetLastPlace(out ShootingPlace lastPlace))
+        {
+            escapePlace = new Vector3(lastPlace.transform.position.x + _movingAwayFromShootingPlace,
+                lastPlace.transform.position.y, lastPlace.transform.position.z + _movingAwayFromShootingPlace);
+
+            _storage.PutEscapePlace(escapePlace);
+        }
+
     }
 }

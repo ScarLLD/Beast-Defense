@@ -44,7 +44,7 @@ public class BulletMover : MonoBehaviour
             Vector3 direction = (cube.transform.position - transform.position).normalized;
             transform.position += _speed * Time.deltaTime * direction;
 
-            if (Vector3.Distance(transform.position, cube.transform.position) < 0.2f)
+            if (Vector3.Distance(transform.position, cube.transform.position) < 1f)
             {
                 Arrived?.Invoke();
                 cube.Destroy();

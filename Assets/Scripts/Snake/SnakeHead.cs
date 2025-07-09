@@ -1,8 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(SnakeSegment), typeof(SnakeTail))]
+[RequireComponent(typeof(SnakeSegment), typeof(SnakeTail), typeof(SnakeSpeedControl))]
 public class SnakeHead : MonoBehaviour
 {
     [SerializeField] private float _speed;
@@ -10,7 +11,6 @@ public class SnakeHead : MonoBehaviour
     [SerializeField] private SnakeSegment _snakeSegmentPrefab;
 
     private float _lengthMultiplier = 0f;
-    private SnakeSegment _snakeSegment;
     private SnakeTail _tail;
 
     private List<SnakeSegment> _segments;
@@ -18,6 +18,7 @@ public class SnakeHead : MonoBehaviour
 
     public int RoadCount => _road.Count;
     public float Speed => _speed;
+    private SnakeSegment _snakeSegment;
 
     private void Awake()
     {
@@ -43,6 +44,18 @@ public class SnakeHead : MonoBehaviour
         if (_road.Count > 0)
         {
             point = _road.First();
+        }
+
+        return point != Vector3.zero;
+    }
+
+    public bool TryGetLastRoadPoint(out Vector3 point)
+    {
+        point = Vector3.zero;
+
+        if (_road.Count > 0)
+        {
+            point = _road.Last();
         }
 
         return point != Vector3.zero;
@@ -109,11 +122,30 @@ public class SnakeHead : MonoBehaviour
         SetPreviousSegments();
     }
 
+    public bool CompareRoadPoint(int minRoadCountToEnd, int thresholdSlowdown, out float duration)
+    {
+        duration = int.MaxValue;
+
+        var point = _snakeSegment.SnakeMover.TargetPoint;
+
+        if (_road.Contains(point) && minRoadCountToEnd >= _road.Count - _road.IndexOf(point))
+        {
+            duration = (_road.Last() - transform.position).magnitude;
+        }
+
+        return duration < thresholdSlowdown;
+    }
+
     private void SetPreviousSegments()
     {
         for (int i = 0; i < _segments.Count - 1; i++)
         {
             _segments[i].SnakeMover.SetPreviousSegment(_segments[i + 1]);
         }
+    }
+
+    internal bool CompareRoadPoint(object minRoadCountToEnd, int thresholdSlowdown, out float distanceToEnd)
+    {
+        throw new NotImplementedException();
     }
 }
