@@ -5,7 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(SnakeMover), typeof(SnakeRotator))]
 public class SnakeSegment : MonoBehaviour
 {
-    public bool IsTarget = false;
 
     private int currentCubesCount = 4;
     private SnakeHead _snakeHead;
@@ -15,6 +14,7 @@ public class SnakeSegment : MonoBehaviour
 
     public SnakeMover SnakeMover => _snakeMover;
     public Material Material { get; private set; }
+    public bool IsTarget { get; private set; } = false;
 
     private void Awake()
     {
@@ -37,9 +37,9 @@ public class SnakeSegment : MonoBehaviour
         _snakeRotator.Init(snakeHead);
     }
 
-    public void SetIsTarget()
+    public void SetIsTarget(bool isTarget)
     {
-        IsTarget = true;
+        IsTarget = isTarget;
     }
 
     public bool TryGetCube(out Cube cube)

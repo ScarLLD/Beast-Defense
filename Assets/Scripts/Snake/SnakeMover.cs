@@ -4,7 +4,6 @@ using UnityEngine;
 [RequireComponent(typeof(SnakeSegment))]
 public class SnakeMover : MonoBehaviour
 {
-    private float _speedMultiplier = 4f;
     private float _lengthMultiplier = 1.5f;
     private readonly float _arrivalThreshold = 0.01f;
     private float _thresholdBetweenSegments;
@@ -12,6 +11,8 @@ public class SnakeMover : MonoBehaviour
     private SnakeSegment _previousSegment;
     private SnakeHead _snakeHead;
     private Coroutine _coroutine;
+
+    public float SpeedMultiplier { get; private set; } = 4f;
 
     public void SetLengths(float threshold, float gap)
     {
@@ -67,7 +68,7 @@ public class SnakeMover : MonoBehaviour
                     speed = initialSpeed;
                 }
 
-                speed *= _speedMultiplier;
+                speed *= SpeedMultiplier;
             }
 
             transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, speed * Time.deltaTime);

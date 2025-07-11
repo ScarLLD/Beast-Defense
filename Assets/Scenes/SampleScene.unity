@@ -392,7 +392,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 7e433d19536e08e4ea679168d5070746, type: 2}
   - {fileID: 2100000, guid: 043543baaa58670418782cb3e9fd2eb4, type: 2}
   - {fileID: 2100000, guid: 4c692737529829e4a81040a9045e7a98, type: 2}
-  _counts: 080000001000000020000000
+  _counts: 080000000c00000010000000140000001800000020000000
   _gridCreator: {fileID: 1295288260}
   _gridStorage: {fileID: 1295288259}
   _cubeSpawner: {fileID: 529893069}
@@ -408,6 +408,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9b698ce6a174b34989d750f0f28857e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _cubesPerSegment: 4
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1002,7 +1003,7 @@ Transform:
   m_GameObject: {fileID: 1842505874}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.49, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1022,6 +1023,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _game: {fileID: 1469608301}
   _placePrefab: {fileID: 7268623950954736030, guid: df4c662850db070458a0356e420be51c, type: 3}
+  _cubePrefab: {fileID: 0}
   _placesCount: 4
   _leftBound: -6
   _rightBound: 6

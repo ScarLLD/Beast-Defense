@@ -23,7 +23,7 @@ public class TargetStorage : MonoBehaviour
 
     public bool TryGetTarget(Color color, out SnakeSegment snakeSegment)
     {
-        snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrectColor(color));
+        snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrectColor(color) && segment.IsTarget == false);
 
         if (snakeSegment != null)
             _segments.Remove(snakeSegment);

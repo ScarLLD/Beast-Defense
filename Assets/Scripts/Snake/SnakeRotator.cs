@@ -47,6 +47,7 @@ public class SnakeRotator : MonoBehaviour
     private IEnumerator RotateToTarget()
     {
         bool isWork = true;
+        float Speed = _snakeHead.Speed;
 
         while (isWork == true)
         {
@@ -55,7 +56,10 @@ public class SnakeRotator : MonoBehaviour
                 _direction = _snakeMover.TargetPoint - transform.position;
 
                 if (_snakeMover.IsForwardMoving == false)
+                {
                     _direction *= -1;
+                    Speed *= _snakeMover.SpeedMultiplier;
+                }
 
                 if (_direction != Vector3.zero)
                 {

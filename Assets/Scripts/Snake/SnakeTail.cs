@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class SnakeTail : MonoBehaviour
 {
-    private float _distanceBetweenSegments = 0.8f;
-    private float _distanceBetweenCubes = 0.5f;
-    private float _scaleMultiplier = 0.7f;
-    private float _sizeDivider = 2;
-    private float _DirectionMultiplier = 1f;
+    private readonly float _distanceBetweenSegments = 0.8f;
+    private readonly float _distanceBetweenCubes = 0.5f;
+    private readonly float _scaleMultiplier = 0.7f;
+    private readonly float _sizeDivider = 2;
+    private readonly float _DirectionMultiplier = 1f;
     private Vector3 _lastPosition;
 
     private CubeStorage _cubeStorage;
@@ -30,47 +30,39 @@ public class SnakeTail : MonoBehaviour
     {
         segments = new();
         scaleMultiplier = _scaleMultiplier;
-        int remained—ountInsideStack = 0;
 
         Vector3 centerPoint = _lastPosition + _DirectionMultiplier * _distanceBetweenSegments * GetObjectSizeInLocalDirection(-direction) * -direction.normalized;
 
-        for (int i = 0; i < _cubeStorage.Stacks.Count;)
+        for (int i = 0; i < _cubeStorage.Stacks.Count; i++)
         {
-            int countInsideStack = _cubeStorage.Stacks[i].Count - remained—ountInsideStack;
-
-            SnakeSegment snakeSegment = Instantiate(_snakeSegmentPrefab, centerPoint, Quaternion.identity);
-
-            Vector3[] points = new Vector3[4];
-
-            Vector3 rightOffset = transform.right * _distanceBetweenCubes;
-            Vector3 upOffset = transform.up * _distanceBetweenCubes;
-
-            points[0] = centerPoint + rightOffset + upOffset;
-            points[1] = centerPoint - rightOffset + upOffset;
-            points[2] = centerPoint - rightOffset - upOffset;
-            points[3] = centerPoint + rightOffset - upOffset;
-
-            for (int l = 0; l < points.Length; l++)
+            for (int j = 0; j < _cubeStorage.Stacks[i].Count / 4; j++)
             {
-                Cube cube = Instantiate(_cubePrefab, points[l], Quaternion.identity, snakeSegment.transform);
-                cube.transform.localScale *= scaleMultiplier;
-                cube.Init(_cubeStorage.Stacks[i].Material);
-                cube.GetSegment(snakeSegment);
+                SnakeSegment snakeSegment = Instantiate(_snakeSegmentPrefab, centerPoint, Quaternion.identity);
 
-                snakeSegment.AddCube(cube);
+                Vector3[] points = new Vector3[4];
 
-                remained—ountInsideStack++;
-            }
+                Vector3 rightOffset = transform.right * _distanceBetweenCubes;
+                Vector3 upOffset = transform.up * _distanceBetweenCubes;
 
-            segments.Add(snakeSegment);
+                points[0] = centerPoint + rightOffset + upOffset;
+                points[1] = centerPoint - rightOffset + upOffset;
+                points[2] = centerPoint - rightOffset - upOffset;
+                points[3] = centerPoint + rightOffset - upOffset;
 
-            _lastPosition = centerPoint;
-            centerPoint = _lastPosition + -direction.normalized * GetObjectSizeInLocalDirection(-direction) / _sizeDivider * _distanceBetweenSegments;
+                for (int l = 0; l < points.Length; l++)
+                {
+                    Cube cube = Instantiate(_cubePrefab, points[l], Quaternion.identity, snakeSegment.transform);
+                    cube.transform.localScale *= scaleMultiplier;
+                    cube.Init(_cubeStorage.Stacks[i].Material);
+                    cube.GetSegment(snakeSegment);
 
-            if (countInsideStack == 0)
-            {
-                remained—ountInsideStack = 0;
-                i++;
+                    snakeSegment.AddCube(cube);
+                }
+
+                segments.Add(snakeSegment);
+
+                _lastPosition = centerPoint;
+                centerPoint = _lastPosition + -direction.normalized * GetObjectSizeInLocalDirection(-direction) / _sizeDivider * _distanceBetweenSegments;
             }
         }
 

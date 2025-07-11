@@ -5,6 +5,7 @@ public class PlaceSpawner : MonoBehaviour
 {
     [SerializeField] private Game _game;
     [SerializeField] private ShootingPlace _placePrefab;
+    [SerializeField] private PlayerCube _cubePrefab;
     [SerializeField] private int _placesCount;
     [SerializeField] private float _leftBound;
     [SerializeField] private float _rightBound;
@@ -34,15 +35,17 @@ public class PlaceSpawner : MonoBehaviour
         Vector3 cameraCenter = new Vector3(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 10);
 
         Ray ray = _camera.ScreenPointToRay(cameraCenter);
+
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
-            GenerateShootingPlaces();
+
+            GenerateShootingPlaces(hit.point);
             GenerateEscapePlaces();
         }
     }
 
-    private void GenerateShootingPlaces()
+    private void GenerateShootingPlaces(Vector3 hit)
     {
         float placeWeight = _placePrefab.transform.localScale.x;
         float availableSpace = _rightBound - _leftBound - (_placesCount * placeWeight);
@@ -52,7 +55,7 @@ public class PlaceSpawner : MonoBehaviour
         for (int i = 0; i < _placesCount; i++)
         {
             float x = _leftBound + (placeWeight / 2) + i * (placeWeight + spacing);
-            Vector3 spawnPosition = new(x, 0, 0);
+            Vector3 spawnPosition = new(x, hit.y + 0.01f, 0);
 
             ShootingPlace place = Instantiate(_placePrefab, transform);
             place.transform.localPosition = spawnPosition;
@@ -80,6 +83,5 @@ public class PlaceSpawner : MonoBehaviour
 
             _storage.PutEscapePlace(escapePlace);
         }
-
     }
 }

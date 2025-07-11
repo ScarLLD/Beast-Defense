@@ -5,7 +5,7 @@ using UnityEngine;
 public class CubeMover : MonoBehaviour
 {
     private float _speed;
-    private float _maxDistanceRounding = 0.1f;
+    private float _arrivalThreshold = 0.1f;
     private Coroutine _moveCoroutine;
     private Vector3 _escapePlace;
     private ShootingPlace _shootingPlace;
@@ -25,7 +25,9 @@ public class CubeMover : MonoBehaviour
     public void SetPlaces(ShootingPlace shootingPlace, Vector3 escapePlace)
     {
         _shootingPlace = shootingPlace;
-        _escapePlace = escapePlace;
+
+        double targetY = Math.Round(escapePlace.y + transform.localScale.y / 2);
+        _escapePlace = new Vector3(escapePlace.x, (float)targetY, escapePlace.z);
     }
 
     public void GoEscape()
@@ -47,21 +49,28 @@ public class CubeMover : MonoBehaviour
     {
         bool isWork = true;
 
-        target = new Vector3(target.x, target.y + transform.localScale.y / 2, target.z);
+        double targetY = Math.Round(target.y + transform.localScale.y / 2);
+        target = new Vector3(target.x, (float)targetY, target.z);
 
         while (isWork)
         {
             Vector3 direction = target - transform.position;
             transform.Translate(_speed * Time.deltaTime * direction.normalized);
 
-            if ((target - transform.position).magnitude < _maxDistanceRounding)
+            if (Vector3.Distance(target, transform.position) < _arrivalThreshold)
             {
                 transform.position = target;
 
                 if (target != _escapePlace)
+                {
                     Arrived?.Invoke();
+                }
                 else
+                {
                     StopMoving();
+                    gameObject.SetActive(false);
+                    Debug.Log("It Escaped");
+                }
             }
 
             yield return null;

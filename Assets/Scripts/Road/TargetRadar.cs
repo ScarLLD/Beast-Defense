@@ -33,10 +33,17 @@ public class TargetRadar : MonoBehaviour
 
     private IEnumerator ScanRoutine(Color color)
     {
+        int bulletsPerSegment = _shooter.BulletCount / 4;
+
         while (_shooter.BulletCount > 0)
         {
-            if (_targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
+
+            if (bulletsPerSegment > 0 && _targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
+            {
+                snakeSegment.SetIsTarget(true);
                 Found?.Invoke(snakeSegment);
+                bulletsPerSegment--;
+            }
 
             yield return new WaitForSeconds(0.2f);
         }

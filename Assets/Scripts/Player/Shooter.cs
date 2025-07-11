@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class Shooter : MonoBehaviour
 {
     [SerializeField] private float _timeBetweenShoot;
@@ -39,12 +38,15 @@ public class Shooter : MonoBehaviour
 
     private IEnumerator Shoot()
     {
-        while (_bulletCount > 0)
+        bool isWork = true;
+
+        Debug.Log($"In: {BulletCount}");
+
+        while (isWork)
         {
             if (_targets.Count > 0)
             {
                 var target = _targets.Dequeue();
-                target.SetIsTarget();
 
                 while (target.TryGetCube(out Cube cube))
                 {
@@ -54,6 +56,8 @@ public class Shooter : MonoBehaviour
                     yield return new WaitForSeconds(0.2f);
                 }
 
+                if (BulletCount == 0)
+                    isWork = false;
             }
 
             yield return null;
