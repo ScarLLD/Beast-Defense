@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -13,6 +14,8 @@ public class CubeCreator : MonoBehaviour
     [SerializeField] private GridCreator _gridCreator;
     [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private PlayerCubeSpawner _cubeSpawner;
+
+    public event Action Created;
 
     private void OnEnable()
     {
@@ -40,6 +43,8 @@ public class CubeCreator : MonoBehaviour
                     _cubeSpawner.Spawn(material, count, spawnPoint);
                 }
             }
+
+            Created?.Invoke();
         }
     }
 }

@@ -15,7 +15,7 @@ public class Shooter : MonoBehaviour
 
     public int BulletCount => _bulletCount;
 
-    public event Action BulletsOut;
+    public event Action BulletsDecreased;
 
     private void Awake()
     {
@@ -40,18 +40,21 @@ public class Shooter : MonoBehaviour
     {
         bool isWork = true;
 
-        Debug.Log($"In: {BulletCount}");
+        Quaternion initialRotation = transform.rotation;
 
         while (isWork)
         {
             if (_targets.Count > 0)
             {
-                var target = _targets.Dequeue();
+                SnakeSegment segment = _targets.Dequeue();                
 
-                while (target.TryGetCube(out Cube cube))
+                while (segment.TryGetCube(out Cube cube))
                 {
+                    transform.LookAt(segment.transform.position);
                     _bulletSpawner.SpawnBullet(transform.position, cube);
                     _bulletCount--;
+
+                    BulletsDecreased?.Invoke();
 
                     yield return new WaitForSeconds(0.2f);
                 }
@@ -59,12 +62,14 @@ public class Shooter : MonoBehaviour
                 if (BulletCount == 0)
                     isWork = false;
             }
+            else
+            {
+                transform.rotation = initialRotation;
+            }
+
+            transform.rotation = initialRotation;
 
             yield return null;
         }
-
-        Debug.Log($"Out: {BulletCount}");
-
-        BulletsOut?.Invoke();
     }
 }

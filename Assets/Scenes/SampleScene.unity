@@ -333,6 +333,7 @@ GameObject:
   - component: {fileID: 529893071}
   - component: {fileID: 529893069}
   - component: {fileID: 529893070}
+  - component: {fileID: 529893072}
   m_Layer: 0
   m_Name: Cubes
   m_TagString: Untagged
@@ -409,6 +410,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cubesPerSegment: 4
+--- !u!114 &529893072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 529893064}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02e69dca97387124ab9838dd035c1cb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cubeStorage: {fileID: 529893071}
+  _cubeCreator: {fileID: 529893070}
+  _gridCreator: {fileID: 1295288260}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -802,11 +818,11 @@ MonoBehaviour:
   _cubePrefab: {fileID: 1900071841244829645, guid: c309c790d98bd9b45a4ae1212065f2a7, type: 3}
   _gridStorage: {fileID: 1295288259}
   _rows: 8
-  _columns: 8
+  _columns: 7
   _minX: -8
-  maxX: 8
-  minZ: -10
-  maxZ: 10
+  _maxX: 8
+  _minZ: -10
+  _maxZ: 10
 --- !u!4 &1295288261
 Transform:
   m_ObjectHideFlags: 0
@@ -976,6 +992,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _ray: {fileID: 1469608303}
   _placesHolder: {fileID: 1842505878}
+  _availabilityManagement: {fileID: 529893072}
 --- !u!1 &1842505874
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,7 +1040,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _game: {fileID: 1469608301}
   _placePrefab: {fileID: 7268623950954736030, guid: df4c662850db070458a0356e420be51c, type: 3}
-  _cubePrefab: {fileID: 0}
   _placesCount: 4
   _leftBound: -6
   _rightBound: 6

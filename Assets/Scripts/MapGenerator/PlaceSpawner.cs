@@ -5,7 +5,6 @@ public class PlaceSpawner : MonoBehaviour
 {
     [SerializeField] private Game _game;
     [SerializeField] private ShootingPlace _placePrefab;
-    [SerializeField] private PlayerCube _cubePrefab;
     [SerializeField] private int _placesCount;
     [SerializeField] private float _leftBound;
     [SerializeField] private float _rightBound;

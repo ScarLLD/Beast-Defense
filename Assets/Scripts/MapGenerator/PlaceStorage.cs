@@ -24,7 +24,7 @@ public class PlaceStorage : MonoBehaviour
 
         if (shootingPlace != null)
         {
-            shootingPlace.ChangeEmptyStatus();
+            shootingPlace.ChangeEmptyStatus(false);
             var tempShootingPlace = shootingPlace;
             escapePlace = _escapePlaces.OrderBy(place => Vector3.Distance(place, tempShootingPlace.transform.position)).FirstOrDefault();
         }

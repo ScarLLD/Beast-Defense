@@ -25,14 +25,12 @@ public class CubeMover : MonoBehaviour
     public void SetPlaces(ShootingPlace shootingPlace, Vector3 escapePlace)
     {
         _shootingPlace = shootingPlace;
-
-        double targetY = Math.Round(escapePlace.y + transform.localScale.y / 2);
-        _escapePlace = new Vector3(escapePlace.x, (float)targetY, escapePlace.z);
+        _escapePlace = escapePlace;
     }
 
     public void GoEscape()
     {
-        _shootingPlace.ChangeEmptyStatus();
+        _shootingPlace.ChangeEmptyStatus(true);
         _moveCoroutine = StartCoroutine(MoveRoutine(_escapePlace));
     }
 
@@ -48,9 +46,6 @@ public class CubeMover : MonoBehaviour
     private IEnumerator MoveRoutine(Vector3 target)
     {
         bool isWork = true;
-
-        double targetY = Math.Round(target.y + transform.localScale.y / 2);
-        target = new Vector3(target.x, (float)targetY, target.z);
 
         while (isWork)
         {
@@ -69,7 +64,6 @@ public class CubeMover : MonoBehaviour
                 {
                     StopMoving();
                     gameObject.SetActive(false);
-                    Debug.Log("It Escaped");
                 }
             }
 

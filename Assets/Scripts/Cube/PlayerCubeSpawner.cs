@@ -8,12 +8,10 @@ public class PlayerCubeSpawner : MonoBehaviour
     [SerializeField] private BulletSpawner _bulletSpawner;
     [SerializeField] private TargetStorage _targetStorage;
 
-    public PlayerCube CubePrefab => _cubePrefab;
-
     private void Start()
     {
         if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
-            transform.position = bottomScreenCenter;
+            transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cubePrefab.transform.localScale.y / 2, bottomScreenCenter.z);
     }
 
     public void Spawn(Material material, int count, Vector3 spawnPoint)

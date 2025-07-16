@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GridCreator : MonoBehaviour
 {
-    [Header("Основные настройки")]
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private int _rows;
@@ -13,13 +11,15 @@ public class GridCreator : MonoBehaviour
     private float _objectWidth;
     private float _objectDepth;
 
-    [Header("Границы спавна")]
     [SerializeField] private float _minX;
-    [SerializeField] private float maxX;
-    [SerializeField] private float minZ;
-    [SerializeField] private float maxZ;
+    [SerializeField] private float _maxX;
+    [SerializeField] private float _minZ;
+    [SerializeField] private float _maxZ;
 
     public event Action Created;
+
+    public int Rows => _rows;
+    public int Columns => _columns;
 
     private void Start()
     {
@@ -31,8 +31,8 @@ public class GridCreator : MonoBehaviour
 
     public void Create()
     {
-        float availableSpaceX = maxX - _minX - (_columns * _objectWidth);
-        float availableSpaceZ = maxZ - minZ - (_rows * _objectDepth);
+        float availableSpaceX = _maxX - _minX - (_columns * _objectWidth);
+        float availableSpaceZ = _maxZ - _minZ - (_rows * _objectDepth);
 
         if (availableSpaceX < 0 || availableSpaceZ < 0)
         {
@@ -48,7 +48,7 @@ public class GridCreator : MonoBehaviour
             for (int col = 0; col < _columns; col++)
             {
                 float localX = _minX + (_objectWidth / 2) + col * (_objectWidth + spacingX);
-                float localZ = minZ + (_objectDepth / 2) + row * (_objectDepth + spacingZ);
+                float localZ = _minZ + (_objectDepth / 2) + row * (_objectDepth + spacingZ);
 
                 Vector3 spawnPosition = new(localX, 0f, localZ);
 

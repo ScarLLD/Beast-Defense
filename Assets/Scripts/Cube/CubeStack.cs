@@ -16,4 +16,13 @@ public class CubeStack : MonoBehaviour, ICube
     public int Count { get; private set; }
 
     public Material Material => Cube.Material;
+
+    public bool IsStatic { get; private set; }
+
+    public bool IsAvailable { get; private set; }
+
+    public void ChangeStaticStatus(bool isStatic)
+    {
+        IsStatic = isStatic;
+    }
 }
