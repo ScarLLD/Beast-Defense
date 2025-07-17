@@ -71,31 +71,31 @@ public class AvailabilityManagement : MonoBehaviour
 
                         bool isAvailable = false;
 
-                        if (isLeftEdge)
+                        if (isBottomEdge)
                         {
-                            if (isTopRow && haveStaticBottom == false || haveStaticRight == false)
+                            if (isLeftEdge && (haveStaticTop == false || haveStaticRight == false))
                                 isAvailable = true;
-                            else if (isBottomEdge && haveStaticTop == false || haveStaticRight == false)
+                            else if (isRightEdge && (haveStaticTop == false || haveStaticLeft == false))
                                 isAvailable = true;
-                            else if (haveStaticTop == false || haveStaticRight == false || haveStaticBottom == false)
+                            else if (isLeftEdge == false && isRightEdge == false && (haveStaticTop == false || haveStaticLeft == false || haveStaticRight == false))
+                                isAvailable = true;
+                        }
+                        else if (isLeftEdge)
+                        {
+                            if (isTopRow && (haveStaticBottom == false || haveStaticRight == false))
+                                isAvailable = true;
+                            else if (isBottomEdge && (haveStaticTop == false || haveStaticRight == false))
+                                isAvailable = true;
+                            else if (isBottomEdge == false && isTopRow == false && (haveStaticTop == false || haveStaticRight == false || haveStaticBottom == false))
                                 isAvailable = true;
                         }
                         else if (isRightEdge)
                         {
-                            if (isTopRow && haveStaticBottom == false || haveStaticLeft == false)
+                            if (isTopRow && (haveStaticBottom == false || haveStaticLeft == false))
                                 isAvailable = true;
-                            else if (isBottomEdge && haveStaticTop == false || haveStaticLeft == false)
+                            else if (isBottomEdge && (haveStaticTop == false || haveStaticLeft == false))
                                 isAvailable = true;
-                            else if (haveStaticTop == false || haveStaticLeft == false || haveStaticBottom == false)
-                                isAvailable = true;
-                        }
-                        else if (isBottomEdge)
-                        {
-                            if (isLeftEdge && haveStaticTop == false || haveStaticRight == false)
-                                isAvailable = true;
-                            else if (isRightEdge && haveStaticTop == false || haveStaticLeft == false)
-                                isAvailable = true;
-                            else if (haveStaticTop == false || haveStaticLeft == false || haveStaticRight == false)
+                            else if (isBottomEdge == false && isTopRow == false && (haveStaticTop == false || haveStaticLeft == false || haveStaticBottom == false))
                                 isAvailable = true;
                         }
                         else if (!isLeftEdge && !isRightEdge && !isBottomEdge && (!haveStaticLeft || !haveStaticRight || !haveStaticBottom || !haveStaticTop))
@@ -104,6 +104,8 @@ public class AvailabilityManagement : MonoBehaviour
                         }
 
                         cube.ChangeAvailableStatus(isAvailable);
+                        if (isAvailable)
+                            Debug.Log($"{i}, {j}");
                     }
                 }
             }
