@@ -10,7 +10,6 @@ public class SnakeHead : MonoBehaviour
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private SnakeSegment _snakeSegmentPrefab;
 
-    private float _lengthMultiplier = 0f;
     private SnakeTail _tail;
 
     private List<SnakeSegment> _segments;
@@ -63,24 +62,15 @@ public class SnakeHead : MonoBehaviour
 
     public void CreateTail()
     {
-        Vector3 direction = Vector3.zero;
-
         if (TryGetFirstRoadPoint(out Vector3 firstPoint) && TryGetNextRoadPoint(firstPoint, out Vector3 secondPoint))
-            direction = secondPoint - transform.position;
-
-        if (direction != Vector3.zero && _tail.TryCreateSegments(direction, out List<SnakeSegment> segments, out float cubeScale))
         {
+            Vector3 direction = secondPoint - transform.position;
+
             _segments = new() { _snakeSegment };
             _snakeSegment.Init(this);
-            _snakeSegment.SnakeMover.SetLengths((_snakeSegment.transform.localScale.magnitude + _lengthMultiplier) / 2, _snakeSegment.transform.localScale.magnitude / 2);
+            _snakeSegment.SnakeMover.SetLengths(_snakeSegment.transform.localScale.magnitude / 2, _snakeSegment.transform.localScale.magnitude / 2);
 
-            for (int i = 0; i < segments.Count; i++)
-            {
-                _segments.Add(segments[i]);
-                segments[i].SnakeMover.SetLengths((segments[i].transform.localScale.magnitude + _lengthMultiplier) / 2, segments[i].transform.localScale.magnitude / 2);
-                segments[i].Init(this);
-                segments[i].transform.parent = transform.parent;
-            }
+            _tail.StartSpawn(direction);
         }
     }
 
@@ -119,6 +109,7 @@ public class SnakeHead : MonoBehaviour
             snakeSegment.gameObject.SetActive(false);
         }
 
+        _tail.DecreaseActiveSegmentsCount();
         SetPreviousSegments();
     }
 
@@ -136,16 +127,11 @@ public class SnakeHead : MonoBehaviour
         return duration < thresholdSlowdown;
     }
 
-    private void SetPreviousSegments()
+    public void SetPreviousSegments()
     {
         for (int i = 0; i < _segments.Count - 1; i++)
         {
             _segments[i].SnakeMover.SetPreviousSegment(_segments[i + 1]);
         }
-    }
-
-    internal bool CompareRoadPoint(object minRoadCountToEnd, int thresholdSlowdown, out float distanceToEnd)
-    {
-        throw new NotImplementedException();
     }
 }
