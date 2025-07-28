@@ -11,6 +11,8 @@ public class TargetStorage : MonoBehaviour
         _segments = new List<SnakeSegment>();
     }
 
+    public int Count => _segments.Count;
+
     public void AddTarget(SnakeSegment segment)
     {
         _segments.Add(segment);

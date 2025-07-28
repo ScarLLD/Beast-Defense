@@ -34,16 +34,6 @@ public class SnakeRotator : MonoBehaviour
         }
     }
 
-    public void SetStartRotation()
-    {
-        if (_snakeHead != null && _snakeHead.TryGetFirstRoadPoint(out Vector3 firstPoint)
-            && _snakeHead.TryGetNextRoadPoint(firstPoint, out Vector3 secondPoint))
-        {
-            Vector3 direction = secondPoint - transform.position;
-            transform.rotation = Quaternion.LookRotation(direction);
-        }
-    }
-
     private IEnumerator RotateToTarget()
     {
         bool isWork = true;

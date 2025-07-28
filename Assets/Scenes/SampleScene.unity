@@ -213,6 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593f0c9eb8ebf42469616f045a60005e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetStorage: {fileID: 9171917265129906606}
   _snakePrefab: {fileID: 2371440335906684624, guid: 96a5fb1456a56ed4d88859044020f686, type: 3}
   _cubeStorage: {fileID: 529893071}
 --- !u!1 &442903041
@@ -409,7 +410,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9b698ce6a174b34989d750f0f28857e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubesPerSegment: 4
 --- !u!114 &529893072
 MonoBehaviour:
   m_ObjectHideFlags: 0

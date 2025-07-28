@@ -52,7 +52,6 @@ public class AvailabilityManagement : MonoBehaviour
                 {
                     if (cube.IsStatic)
                     {
-                        // Определяем позицию куба
                         bool isTopRow = i == _stacks.GetLength(0) - 1;
                         bool isLeftEdge = j == 0;
                         bool isRightEdge = j == _stacks.GetLength(1) - 1;
@@ -104,8 +103,6 @@ public class AvailabilityManagement : MonoBehaviour
                         }
 
                         cube.ChangeAvailableStatus(isAvailable);
-                        if (isAvailable)
-                            Debug.Log($"{i}, {j}");
                     }
                 }
             }

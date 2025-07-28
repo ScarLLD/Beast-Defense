@@ -11,13 +11,13 @@ public class SnakeHead : MonoBehaviour
     [SerializeField] private SnakeSegment _snakeSegmentPrefab;
 
     private SnakeTail _tail;
-
+    private TargetStorage _targetStorage;
+    private SnakeSegment _snakeSegment;
     private List<SnakeSegment> _segments;
     private List<Vector3> _road;
 
     public int RoadCount => _road.Count;
     public float Speed => _speed;
-    private SnakeSegment _snakeSegment;
 
     private void Awake()
     {
@@ -30,10 +30,11 @@ public class SnakeHead : MonoBehaviour
         _speed = speed;
     }
 
-    public void Init(CubeStorage cubeStorage, List<Vector3> road)
+    public void Init(CubeStorage cubeStorage, List<Vector3> road, TargetStorage targetStorage)
     {
         _road = road;
-        _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab);
+        _targetStorage = targetStorage;
+        _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab, targetStorage);
     }
 
     public bool TryGetFirstRoadPoint(out Vector3 point)
@@ -69,8 +70,10 @@ public class SnakeHead : MonoBehaviour
             _segments = new() { _snakeSegment };
             _snakeSegment.Init(this);
             _snakeSegment.SnakeMover.SetLengths(_snakeSegment.transform.localScale.magnitude / 2, _snakeSegment.transform.localScale.magnitude / 2);
+            _snakeSegment.transform.rotation = Quaternion.LookRotation(direction);
+            _snakeSegment.StartRoutine();
 
-            _tail.StartSpawn(direction);
+            _tail.StartSpawn(direction, _segments);
         }
     }
 
@@ -104,12 +107,11 @@ public class SnakeHead : MonoBehaviour
     public void DeleteSegment(SnakeSegment snakeSegment)
     {
         if (_segments.Contains(snakeSegment))
-        {
+        {            
             _segments.Remove(snakeSegment);
             snakeSegment.gameObject.SetActive(false);
         }
 
-        _tail.DecreaseActiveSegmentsCount();
         SetPreviousSegments();
     }
 

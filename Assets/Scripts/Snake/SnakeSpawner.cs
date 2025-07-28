@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SnakeSpawner : MonoBehaviour
 {
+    [SerializeField] private TargetStorage _targetStorage;
     [SerializeField] private SnakeHead _snakePrefab;
     [SerializeField] private CubeStorage _cubeStorage;
 
@@ -14,7 +15,7 @@ public class SnakeSpawner : MonoBehaviour
         if (road.Count > 0)
         {
             var snakeHead = Instantiate(_snakePrefab, road.First(), Quaternion.identity, transform);
-            snakeHead.Init(_cubeStorage, road);
+            snakeHead.Init(_cubeStorage, road, _targetStorage);
             snakeHead.CreateTail();
         }
     }

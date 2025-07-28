@@ -5,7 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(SnakeHead))]
 public class SnakeTail : MonoBehaviour
 {
-    private readonly int _maxActiveSegmentsCount = 20;
     private readonly float _lengthMultiplier = 0f;
     private readonly float _distanceBetweenSegments = 0.8f;
     private readonly float _distanceBetweenCubes = 0.5f;
@@ -15,6 +14,8 @@ public class SnakeTail : MonoBehaviour
     private Coroutine _coroutine;
 
     private int _currentActiveSegmentsCount = 0;
+    private TargetStorage _targetStorage;
+    private Transform _lastSegment;
     private SnakeHead _snakeHead;
     private CubeStorage _cubeStorage;
     private Cube _cubePrefab;
@@ -26,55 +27,55 @@ public class SnakeTail : MonoBehaviour
         _snakeHead = GetComponent<SnakeHead>();
     }
 
-    public void Init(CubeStorage cubeStorage, Cube cubePrefab, SnakeSegment snakeSegmentPrefab)
+    public void Init(CubeStorage cubeStorage, Cube cubePrefab, SnakeSegment snakeSegmentPrefab, TargetStorage targetStorage)
     {
         _cubeStorage = cubeStorage;
         _cubePrefab = cubePrefab;
+        _targetStorage = targetStorage;
 
         _pool = new ObjectPool<SnakeSegment>(snakeSegmentPrefab, this.transform.parent);
     }
 
-    public void StartSpawn(Vector3 direction)
+    public void StartSpawn(Vector3 direction, List<SnakeSegment> segments)
     {
-        _coroutine = StartCoroutine(Spawn(direction));
+        _coroutine = StartCoroutine(Spawn(direction, segments));
     }
 
-    private IEnumerator Spawn(Vector3 direction)
+    private IEnumerator Spawn(Vector3 direction, List<SnakeSegment> segments)
     {
         bool isWork = true;
         Queue<ICube> stacks = new(_cubeStorage.Stacks);
-        ICube tempCube = null;
-        Transform lastSegment = null; // Для хранения ссылки на последний сегмент
         Vector3 centerPoint;
 
         while (isWork)
         {
-            if (_currentActiveSegmentsCount < _maxActiveSegmentsCount && stacks.Count > 0)
+            if (segments.Count - _targetStorage.Count < 10 && stacks.Count > 0)
             {
                 var stack = stacks.Dequeue();
                 int segmentCount = stack.Count / 4;
 
                 for (int i = 0; i < segmentCount; i++)
                 {
-                    // Обновляем centerPoint перед созданием нового сегмента
-                    if (lastSegment != null)
-                    {
-                        centerPoint = lastSegment.position + -direction.normalized * GetObjectSizeInLocalDirection(-direction) / _sizeDivider * _distanceBetweenSegments;
-                    }
+                    if (_lastSegment != null)
+                        centerPoint = _lastSegment.position + -direction.normalized * 2 / _sizeDivider * _distanceBetweenSegments;
                     else
-                    {
-                        centerPoint = transform.position + _DirectionMultiplier * _distanceBetweenSegments * GetObjectSizeInLocalDirection(-direction) * -direction.normalized;
-                    }
+                        centerPoint = transform.position + _DirectionMultiplier * _distanceBetweenSegments * 2 * -direction.normalized;
 
                     var segment = _pool.GetObject();
                     segment.Init(_snakeHead);
-                    segment.transform.position = centerPoint;                    
-                    lastSegment = segment.transform;
-                    transform.rotation = Quaternion.LookRotation(lastSegment.transform.position - transform.position * 90f);
+                    segment.transform.SetPositionAndRotation(centerPoint, Quaternion.LookRotation(direction));
 
                     Vector3[] points = new Vector3[4];
                     Vector3 rightOffset = transform.right * _distanceBetweenCubes;
                     Vector3 upOffset = transform.up * _distanceBetweenCubes;
+
+                    if (_lastSegment != null)
+                    {
+                        rightOffset = _lastSegment.right * _distanceBetweenCubes;
+                        upOffset = _lastSegment.up * _distanceBetweenCubes;
+                    }
+
+                    _lastSegment = segment.transform;
 
                     points[0] = centerPoint + rightOffset + upOffset;
                     points[1] = centerPoint - rightOffset + upOffset;
@@ -91,10 +92,11 @@ public class SnakeTail : MonoBehaviour
                         segment.AddCube(cube);
                     }
 
-                    segment.SnakeMover.SetLengths((segment.transform.localScale.magnitude + _lengthMultiplier) / 2, segment.transform.localScale.magnitude / 2);
 
-                    _currentActiveSegmentsCount++;
-                    tempCube = stack;
+                    segment.SnakeMover.SetLengths((segment.transform.localScale.magnitude + _lengthMultiplier) / 2, segment.transform.localScale.magnitude / 2);
+                    segments.Add(segment);
+                    _snakeHead.SetPreviousSegments();
+                    segment.StartRoutine();
                 }
             }
 

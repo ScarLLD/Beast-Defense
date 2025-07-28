@@ -24,9 +24,8 @@ public class SnakeSegment : MonoBehaviour
         _cubes = new Queue<Cube>();
     }
 
-    private void Start()
-    {
-        _snakeRotator.SetStartRotation();
+    public void StartRoutine()
+    {        
         _snakeMover.StartMoveRoutine();
         _snakeRotator.StartRotateRoutine();
     }
