@@ -62,7 +62,7 @@ public class SnakeTail : MonoBehaviour
                         centerPoint = transform.position + _DirectionMultiplier * _distanceBetweenSegments * 2 * -direction.normalized;
 
                     var segment = _pool.GetObject();
-                    segment.Init(_snakeHead);
+
                     segment.transform.SetPositionAndRotation(centerPoint, Quaternion.LookRotation(direction));
 
                     Vector3[] points = new Vector3[4];
@@ -75,39 +75,38 @@ public class SnakeTail : MonoBehaviour
                         upOffset = _lastSegment.up * _distanceBetweenCubes;
                     }
 
-                    _lastSegment = segment.transform;
-
                     points[0] = centerPoint + rightOffset + upOffset;
                     points[1] = centerPoint - rightOffset + upOffset;
                     points[2] = centerPoint - rightOffset - upOffset;
                     points[3] = centerPoint + rightOffset - upOffset;
 
-                    for (int l = 0; l < points.Length; l++)
+                    if (segment.IsNullHead)
                     {
-                        Cube cube = Instantiate(_cubePrefab, points[l], Quaternion.identity, segment.transform);
-                        cube.transform.localScale *= _scaleMultiplier;
-                        cube.Init(stack.Material);
-                        cube.GetSegment(segment);
+                        segment.Init(_snakeHead);
 
-                        segment.AddCube(cube);
+                        for (int l = 0; l < points.Length; l++)
+                        {
+                            Cube cube = Instantiate(_cubePrefab, points[l], Quaternion.identity, segment.transform);
+                            cube.transform.localScale *= _scaleMultiplier;
+                            cube.Init(stack.Material);
+                            cube.GetSegment(segment);
+
+                            segment.AddCube(cube);
+                        }
+
+                        segments.Add(segment);
+                        segment.StartRoutine();
                     }
 
-
                     segment.SnakeMover.SetLengths((segment.transform.localScale.magnitude + _lengthMultiplier) / 2, segment.transform.localScale.magnitude / 2);
-                    segments.Add(segment);
                     _snakeHead.SetPreviousSegments();
-                    segment.StartRoutine();
+
+                    _lastSegment = segment.transform;
                 }
             }
 
             yield return null;
         }
-    }
-
-    public void DecreaseActiveSegmentsCount()
-    {
-        if (_currentActiveSegmentsCount > 0)
-            _currentActiveSegmentsCount--;
     }
 
     public float GetObjectSizeInLocalDirection(Vector3 localDirection)

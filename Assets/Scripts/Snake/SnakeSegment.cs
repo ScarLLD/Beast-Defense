@@ -16,6 +16,7 @@ public class SnakeSegment : MonoBehaviour
     public SnakeMover SnakeMover => _snakeMover;
     public Material Material { get; private set; }
     public bool IsTarget { get; private set; } = false;
+    public bool IsNullHead => _snakeHead == null;
 
     private void Awake()
     {
@@ -25,7 +26,7 @@ public class SnakeSegment : MonoBehaviour
     }
 
     public void StartRoutine()
-    {        
+    {
         _snakeMover.StartMoveRoutine();
         _snakeRotator.StartRotateRoutine();
     }
