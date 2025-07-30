@@ -15,6 +15,11 @@ public class SnakeRotator : MonoBehaviour
         _snakeHead = snakeHead;
     }
 
+    private void OnDisable()
+    {
+        StopRotateRoutine();
+    }
+
     private void Awake()
     {
         _snakeMover = GetComponent<SnakeMover>();
@@ -22,7 +27,7 @@ public class SnakeRotator : MonoBehaviour
 
     public void StartRotateRoutine()
     {
-        _coroutine = StartCoroutine(RotateToTarget());
+        _coroutine ??= StartCoroutine(RotateToTarget());
     }
 
     public void StopRotateRoutine()

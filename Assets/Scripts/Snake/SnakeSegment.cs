@@ -5,8 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(SnakeMover), typeof(SnakeRotator))]
 public class SnakeSegment : MonoBehaviour
 {
-
-    private int currentCubesCount = 4;
+    private int currentCubesCount = 0;
     private SnakeHead _snakeHead;
     private SnakeRotator _snakeRotator;
     private SnakeMover _snakeMover;
@@ -25,17 +24,17 @@ public class SnakeSegment : MonoBehaviour
         _cubes = new Queue<Cube>();
     }
 
-    public void StartRoutine()
-    {
-        _snakeMover.StartMoveRoutine();
-        _snakeRotator.StartRotateRoutine();
-    }
-
     public void Init(SnakeHead snakeHead)
     {
         _snakeHead = snakeHead;
         _snakeMover.Init(snakeHead);
         _snakeRotator.Init(snakeHead);
+    }
+
+    public void StartRoutine()
+    {
+        _snakeMover.StartMoveRoutine();
+        _snakeRotator.StartRotateRoutine();
     }
 
     public void SetIsTarget(bool isTarget)
@@ -55,8 +54,8 @@ public class SnakeSegment : MonoBehaviour
 
     public void AddCube(Cube cube)
     {
-
         Material = cube.Material;
+        currentCubesCount++;
 
         _cubes.Enqueue(cube);
     }
@@ -72,5 +71,20 @@ public class SnakeSegment : MonoBehaviour
 
         if (currentCubesCount == 0)
             _snakeHead.DeleteSegment(this);
+    }
+
+    public void ActivateCubes(Material material)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Transform child = transform.GetChild(i);
+
+            if (child.TryGetComponent(out Cube cube))
+            {
+                cube.Init(material);
+                AddCube(cube);
+                cube.gameObject.SetActive(true);
+            }
+        }
     }
 }

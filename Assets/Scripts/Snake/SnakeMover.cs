@@ -24,6 +24,11 @@ public class SnakeMover : MonoBehaviour
         _snakeHead = snakeHead;
     }
 
+    private void OnDisable()
+    {
+        StopMoveRoutine();
+    }
+
     public float SpeedMultiplier { get; private set; } = 4f;
     public bool IsForwardMoving { get; private set; } = true;
     public Vector3 TargetPoint { get; private set; }
@@ -35,7 +40,7 @@ public class SnakeMover : MonoBehaviour
 
     public void StartMoveRoutine()
     {
-        _coroutine = StartCoroutine(MoveToTarget());
+        _coroutine ??= StartCoroutine(MoveToTarget());
     }
 
     public void StopMoveRoutine()
@@ -131,8 +136,6 @@ public class SnakeMover : MonoBehaviour
                 TargetPoint = previusPoint;
             }
         }
-
-        Debug.Log($"{this.name} is Move Back");
     }
 
     private void SelectPosition()

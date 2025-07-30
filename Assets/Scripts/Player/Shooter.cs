@@ -32,8 +32,7 @@ public class Shooter : MonoBehaviour
     {
         _targets.Enqueue(snakeSegment);
 
-        if (_coroutine == null)
-            _coroutine = StartCoroutine(Shoot());
+        _coroutine ??= StartCoroutine(Shoot());
     }
 
     private IEnumerator Shoot()
@@ -46,10 +45,12 @@ public class Shooter : MonoBehaviour
         {
             if (_targets.Count > 0)
             {
-                SnakeSegment segment = _targets.Dequeue();                
+                SnakeSegment segment = _targets.Dequeue();
+                int spawnedBullet = 0;
 
-                while (segment.TryGetCube(out Cube cube))
+                while (segment.TryGetCube(out Cube cube) && spawnedBullet < 4)
                 {
+                    spawnedBullet++;
                     transform.LookAt(segment.transform.position);
                     _bulletSpawner.SpawnBullet(transform.position, cube);
                     _bulletCount--;

@@ -11,10 +11,10 @@ public class SnakeHead : MonoBehaviour
     [SerializeField] private SnakeSegment _snakeSegmentPrefab;
 
     private SnakeTail _tail;
-    private TargetStorage _targetStorage;
     private SnakeSegment _snakeSegment;
     private List<SnakeSegment> _segments;
     private List<Vector3> _road;
+    private bool _isSorting = false;
 
     public int RoadCount => _road.Count;
     public float Speed => _speed;
@@ -33,7 +33,6 @@ public class SnakeHead : MonoBehaviour
     public void Init(CubeStorage cubeStorage, List<Vector3> road, TargetStorage targetStorage)
     {
         _road = road;
-        _targetStorage = targetStorage;
         _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab, targetStorage);
     }
 
@@ -107,8 +106,9 @@ public class SnakeHead : MonoBehaviour
     public void DeleteSegment(SnakeSegment snakeSegment)
     {
         if (_segments.Contains(snakeSegment))
-        {            
+        {
             _segments.Remove(snakeSegment);
+            snakeSegment.SetIsTarget(false);
             snakeSegment.gameObject.SetActive(false);
         }
 
@@ -131,9 +131,16 @@ public class SnakeHead : MonoBehaviour
 
     public void SetPreviousSegments()
     {
-        for (int i = 0; i < _segments.Count - 1; i++)
+        if (_isSorting == false)
         {
-            _segments[i].SnakeMover.SetPreviousSegment(_segments[i + 1]);
+            _isSorting = true;
+
+            for (int i = 0; i < _segments.Count - 1; i++)
+            {
+                _segments[i].SnakeMover.SetPreviousSegment(_segments[i + 1]);
+            }
+
+            _isSorting = false;
         }
     }
 }

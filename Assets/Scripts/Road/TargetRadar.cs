@@ -37,7 +37,6 @@ public class TargetRadar : MonoBehaviour
 
         while (_shooter.BulletCount > 0)
         {
-
             if (bulletsPerSegment > 0 && _targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
             {
                 snakeSegment.SetIsTarget(true);
