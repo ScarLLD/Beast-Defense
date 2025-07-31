@@ -102,7 +102,7 @@ public class AvailabilityManagement : MonoBehaviour
                             isAvailable = true;
                         }
 
-                        cube.ChangeAvailableStatus(true);
+                        cube.ChangeAvailableStatus(isAvailable);
                     }
                 }
             }

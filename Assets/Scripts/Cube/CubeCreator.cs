@@ -29,8 +29,6 @@ public class CubeCreator : MonoBehaviour
 
     public void CreateCubes()
     {
-        int totalCubes = 0;
-
         if (_gridStorage.GridCount > 0)
         {
             int gridCount = _gridStorage.GridCount;
@@ -40,16 +38,13 @@ public class CubeCreator : MonoBehaviour
                 int count = _counts[Random.Range(0, _counts.Count)];
                 Material material = _сolors[Random.Range(0, _сolors.Count)];
 
-                if (_gridStorage.TryGet(i, out Vector3 spawnPoint))
+                if (_gridStorage.TryGet(i, out GridCell gridCell))
                 {
-                    _cubeSpawner.Spawn(material, count, spawnPoint);
-                    totalCubes += count;
+                    _cubeSpawner.Spawn(material, count, gridCell.transform.position);
                 }
             }
 
             Created?.Invoke();
         }
-
-        Debug.Log($"ќбщ. кол-во кубов на сетке: {totalCubes}");
     }
 }

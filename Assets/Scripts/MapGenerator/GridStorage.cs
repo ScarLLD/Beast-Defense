@@ -3,27 +3,27 @@ using UnityEngine;
 
 public class GridStorage : MonoBehaviour
 {
-    private List<Vector3> _grid;
+    private List<GridCell> _grid;
 
     public int GridCount => _grid.Count;
 
     private void Awake()
     {
-        _grid = new List<Vector3>();
+        _grid = new List<GridCell>();
     }
 
-    public void Add(Vector3 spawnPoint)
+    public void Add(GridCell gridCell)
     {
-        _grid.Add(spawnPoint);
+        _grid.Add(gridCell);
     }
 
-    public bool TryGet(int index, out Vector3 spawnPoint)
+    public bool TryGet(int index, out GridCell gridCell)
     {
-        spawnPoint = Vector3.zero;
+        gridCell = null;
 
         if (_grid.Count >= index)
-            spawnPoint = _grid[index];
+            gridCell = _grid[index];
 
-        return spawnPoint != Vector3.zero;
+        return gridCell != null;
     }
 }

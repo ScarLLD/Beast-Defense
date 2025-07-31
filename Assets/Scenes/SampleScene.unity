@@ -816,9 +816,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cubePrefab: {fileID: 1900071841244829645, guid: c309c790d98bd9b45a4ae1212065f2a7, type: 3}
+  _cellPrefab: {fileID: 4139206488417349038, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
   _gridStorage: {fileID: 1295288259}
-  _rows: 8
-  _columns: 7
+  _boundaryMaker: {fileID: 1370593100}
+  _rows: 4
+  _columns: 3
   _minX: -8
   _maxX: 8
   _minZ: -10
@@ -832,7 +834,7 @@ Transform:
   m_GameObject: {fileID: 1295288258}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.88373, y: -0.21555948, z: -13.244347}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

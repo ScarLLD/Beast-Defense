@@ -4,7 +4,9 @@ using UnityEngine;
 public class GridCreator : MonoBehaviour
 {
     [SerializeField] private Cube _cubePrefab;
+    [SerializeField] private GridCell _cellPrefab;
     [SerializeField] private GridStorage _gridStorage;
+    [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private int _rows;
     [SerializeField] private int _columns;
 
@@ -23,6 +25,9 @@ public class GridCreator : MonoBehaviour
 
     private void Start()
     {
+        if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
+            transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cellPrefab.transform.localScale.y / 2, bottomScreenCenter.z);
+
         _objectWidth = _cubePrefab.transform.localScale.x;
         _objectDepth = _cubePrefab.transform.localScale.z;
 
@@ -51,8 +56,9 @@ public class GridCreator : MonoBehaviour
                 float localZ = _minZ + (_objectDepth / 2) + row * (_objectDepth + spacingZ);
 
                 Vector3 spawnPosition = new(localX, 0f, localZ);
-
-                _gridStorage.Add(spawnPosition);
+                GridCell gridCell = Instantiate(_cellPrefab, transform);
+                gridCell.transform.localPosition = spawnPosition;
+                _gridStorage.Add(gridCell);
             }
         }
 
