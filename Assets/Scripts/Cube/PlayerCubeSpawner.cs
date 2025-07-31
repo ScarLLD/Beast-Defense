@@ -16,10 +16,9 @@ public class PlayerCubeSpawner : MonoBehaviour
 
     public void Spawn(Material material, int count, Vector3 spawnPoint)
     {
-        PlayerCube cubeStack = Instantiate(_cubePrefab, transform);
-        cubeStack.transform.localPosition = spawnPoint;
-        cubeStack.Init(material, count, _bulletSpawner, _targetStorage);
-
-        _cubeStorage.Add(cubeStack);
+        PlayerCube playerCube = Instantiate(_cubePrefab, transform);
+        playerCube.transform.localPosition = spawnPoint;
+        playerCube.Init(material, count, _bulletSpawner, _targetStorage);
+        _cubeStorage.Add(playerCube);
     }
 }

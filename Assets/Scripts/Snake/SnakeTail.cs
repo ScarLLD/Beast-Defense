@@ -41,26 +41,26 @@ public class SnakeTail : MonoBehaviour
 
     private IEnumerator Spawn(Vector3 direction, List<SnakeSegment> segments)
     {
-        bool isWork = true;
-        Queue<ICube> stacks = new(_cubeStorage.Stacks);
+        Queue<CubeStack> stacks = new(_cubeStorage.GetStacks());
+
+        Debug.Log(stacks.Count);
+
         Vector3 centerPoint;
-
-        int totalCubes = 0;
-
-        foreach (var stack in stacks)
-        {
-            totalCubes += stack.Count;
-        }
-
-        Debug.Log($"cubeStorage stacks {_cubeStorage.Stacks.Count}");
-        Debug.Log($"Общее количество кубов в змее: {totalCubes}");
+        bool isWork = true;
 
         while (isWork)
         {
-            if (segments.Count - _targetStorage.Count < 10)
+            if (segments.Count - _targetStorage.Count < 10 && stacks.Count > 0)
             {
                 var stack = stacks.Dequeue();
                 int segmentCount = stack.Count / 4;
+
+                if (stack == null)
+                    Debug.Log("Stack is null");
+
+                if (stack.Count == 0)
+                    Debug.Log($"{stack.Count} - {stack.Material} - {stack.Material.color}");
+
 
                 for (int i = 0; i < segmentCount; i++)
                 {
@@ -116,8 +116,6 @@ public class SnakeTail : MonoBehaviour
 
                     _lastSegment = segment;
                 }
-
-                Debug.Log(stacks.Count);
             }
 
             yield return null;

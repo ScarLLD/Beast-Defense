@@ -77,9 +77,7 @@ public class SnakeSegment : MonoBehaviour
     {
         for (int i = 0; i < transform.childCount; i++)
         {
-            Transform child = transform.GetChild(i);
-
-            if (child.TryGetComponent(out Cube cube))
+            if (transform.GetChild(i).TryGetComponent(out Cube cube))
             {
                 cube.Init(material);
                 AddCube(cube);

@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(CubeMover))]
 [RequireComponent(typeof(TargetRadar))]
 [RequireComponent(typeof(Shooter))]
+[RequireComponent(typeof(CubeStack))]
 public class PlayerCube : MonoBehaviour, ICube
 {
     [SerializeField] private float _speed;
@@ -16,8 +17,10 @@ public class PlayerCube : MonoBehaviour, ICube
     public CubeMover Mover { get; private set; }
     public Material Material => _meshRenderer.material;
     public int Count => _shooter.BulletCount;
+    public CubeStack GetStack => _stack;
 
     private Outline _outline;
+    private CubeStack _stack;
     private MeshRenderer _meshRenderer;
     private TargetRadar _radar;
     private Shooter _shooter;
@@ -31,14 +34,16 @@ public class PlayerCube : MonoBehaviour, ICube
         _shooter = GetComponent<Shooter>();
         _radar = GetComponent<TargetRadar>();
         _view = GetComponent<View>();
+        _stack = GetComponent<CubeStack>();
     }
 
-    public void Init(Material material, int bulletCount, BulletSpawner bulletSpawner, TargetStorage targetStorage)
+    public void Init(Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
     {
         _meshRenderer.material = material;
-        _shooter.Init(bulletSpawner, bulletCount);
+        _shooter.Init(bulletSpawner, count);
         _radar.Init(targetStorage);
         Mover.Init(_speed);
+        _stack.Init(material, count);
     }
 
     private void OnEnable()

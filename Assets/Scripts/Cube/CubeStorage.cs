@@ -3,12 +3,24 @@ using UnityEngine;
 
 public class CubeStorage : MonoBehaviour
 {
-    private readonly List<ICube> _stacks = new();
+    private readonly List<PlayerCube> _cubes = new();
 
-    public IReadOnlyList<ICube> Stacks => _stacks;
+    public IReadOnlyList<PlayerCube> Stacks => _cubes;
 
-    public void Add(ICube cube)
+    public void Add(PlayerCube cube)
     {
-        _stacks.Add(cube);
+        _cubes.Add(cube);
+    }
+
+    public List<CubeStack> GetStacks()
+    {
+        List<CubeStack> cubeStacks = new List<CubeStack>();
+
+        foreach (var cube in _cubes)
+        {
+            cubeStacks.Add(cube.GetStack);
+        }
+
+        return cubeStacks;
     }
 }
