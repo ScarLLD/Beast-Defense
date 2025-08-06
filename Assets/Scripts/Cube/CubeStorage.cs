@@ -5,8 +5,6 @@ public class CubeStorage : MonoBehaviour
 {
     private readonly List<PlayerCube> _cubes = new();
 
-    public IReadOnlyList<PlayerCube> Stacks => _cubes;
-
     public void Add(PlayerCube cube)
     {
         _cubes.Add(cube);

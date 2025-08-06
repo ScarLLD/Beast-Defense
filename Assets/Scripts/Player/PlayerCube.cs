@@ -5,19 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(TargetRadar))]
 [RequireComponent(typeof(Shooter))]
 [RequireComponent(typeof(CubeStack))]
-public class PlayerCube : MonoBehaviour, ICube
+public class PlayerCube : MonoBehaviour
 {
     [SerializeField] private float _speed;
-
     [SerializeField] private float _outlineActive = 4.4f;
     [SerializeField] private float _outlineDisable = 0f;
-
-    public bool IsStatic { get; private set; } = true;
-    public bool IsAvailable { get; private set; } = false;
-    public CubeMover Mover { get; private set; }
-    public Material Material => _meshRenderer.material;
-    public int Count => _shooter.BulletCount;
-    public CubeStack GetStack => _stack;
 
     private Outline _outline;
     private CubeStack _stack;
@@ -25,6 +17,13 @@ public class PlayerCube : MonoBehaviour, ICube
     private TargetRadar _radar;
     private Shooter _shooter;
     private View _view;
+
+    public bool IsStatic { get; private set; } = true;
+    public bool IsAvailable { get; private set; } = false;
+    public GridCell GridCell { get; private set; }
+    public CubeMover Mover { get; private set; }
+    public CubeStack GetStack => _stack;
+    public Material Material => _meshRenderer.material;
 
     private void Awake()
     {
@@ -37,8 +36,9 @@ public class PlayerCube : MonoBehaviour, ICube
         _stack = GetComponent<CubeStack>();
     }
 
-    public void Init(Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
+    public void Init(GridCell cell, Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
     {
+        GridCell = cell;
         _meshRenderer.material = material;
         _shooter.Init(bulletSpawner, count);
         _radar.Init(targetStorage);
@@ -73,7 +73,9 @@ public class PlayerCube : MonoBehaviour, ICube
             _view.DisplayBullets();
         }
         else
+        {
             _outline.OutlineWidth = _outlineDisable;
+        }
     }
 
     private void OnMoverArrived()

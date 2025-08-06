@@ -422,7 +422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02e69dca97387124ab9838dd035c1cb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubeStorage: {fileID: 529893071}
+  _gridStorage: {fileID: 1295288259}
   _cubeCreator: {fileID: 529893070}
   _gridCreator: {fileID: 1295288260}
 --- !u!1 &705507993
@@ -819,8 +819,8 @@ MonoBehaviour:
   _cellPrefab: {fileID: 4139206488417349038, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
   _gridStorage: {fileID: 1295288259}
   _boundaryMaker: {fileID: 1370593100}
-  _rows: 4
-  _columns: 3
+  _rows: 8
+  _columns: 7
   _minX: -8
   _maxX: 8
   _minZ: -10

@@ -43,8 +43,6 @@ public class SnakeTail : MonoBehaviour
     {
         Queue<CubeStack> stacks = new(_cubeStorage.GetStacks());
 
-        Debug.Log(stacks.Count);
-
         Vector3 centerPoint;
         bool isWork = true;
 
@@ -120,17 +118,5 @@ public class SnakeTail : MonoBehaviour
 
             yield return null;
         }
-    }
-
-    public float GetObjectSizeInLocalDirection(Vector3 localDirection)
-    {
-        if (!TryGetComponent<Collider>(out var collider)) return 0f;
-
-        Vector3 worldDirection = transform.TransformDirection(localDirection.normalized);
-
-        Bounds bounds = collider.bounds;
-        float thickness = Vector3.Dot(bounds.size, worldDirection);
-
-        return Mathf.Abs(thickness);
     }
 }

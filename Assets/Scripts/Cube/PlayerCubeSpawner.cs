@@ -14,10 +14,13 @@ public class PlayerCubeSpawner : MonoBehaviour
             transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cubePrefab.transform.localScale.y / 2, bottomScreenCenter.z);
     }
 
-    public void Spawn(Material material, int count, Vector3 spawnPoint)
+    public void Spawn(Material material, int count, GridCell cell)
     {
+        Vector3 spawnPoint = new(cell.transform.position.x, cell.transform.position.y + _cubePrefab.transform.localScale.y / 2, cell.transform.position.z);
+
         PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, transform);
-        playerCube.Init(material, count, _bulletSpawner, _targetStorage);
+        playerCube.Init(cell, material, count, _bulletSpawner, _targetStorage);
+        cell.TakeCube(playerCube);
         _cubeStorage.Add(playerCube);
     }
 }

@@ -24,7 +24,7 @@ public class RayCreator : MonoBehaviour
 
     private void ActivateRay()
     {
-        _rayCoroutine = StartCoroutine(MouseRaycastInteraction());
+        _rayCoroutine ??= StartCoroutine(MouseRaycastInteraction());
     }
 
     private IEnumerator MouseRaycastInteraction()

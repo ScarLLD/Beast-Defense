@@ -2,36 +2,56 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(RoadFinder))]
 public class CubeMover : MonoBehaviour
 {
+    private readonly float _arrivalThreshold = 0.1f;
     private float _speed;
-    private float _arrivalThreshold = 0.1f;
-    private Coroutine _moveCoroutine;
-    private Vector3 _escapePlace;
+    private bool _isNewMove = true;
     private ShootingPlace _shootingPlace;
+    private RoadFinder _roadfinder;
+    private GridCell _cell;
+    private Coroutine _moveCoroutine;
+    private Vector3 _initialPosition;
+    private Vector3 _escapePlace;
+    private Vector3 _target;
 
     public event Action Arrived;
+
+    private void Awake()
+    {
+        _roadfinder = GetComponent<RoadFinder>();
+        _initialPosition = transform.position;
+    }
 
     public void Init(float speed)
     {
         _speed = speed;
     }
 
-    public void StartMoving(Vector3 target)
+    public void StartMoving()
     {
-        _moveCoroutine = StartCoroutine(MoveRoutine(target));
+        if (_isNewMove)
+        {
+            _isNewMove = false;
+            _target = GetCurrentTarget(_cell.transform.position);
+        }
+
+        _moveCoroutine ??= StartCoroutine(MoveRoutine());
     }
 
-    public void SetPlaces(ShootingPlace shootingPlace, Vector3 escapePlace)
+    public void SetPlaces(ShootingPlace shootingPlace, Vector3 escapePlace, GridCell cell)
     {
         _shootingPlace = shootingPlace;
         _escapePlace = escapePlace;
+        _cell = cell;
     }
 
     public void GoEscape()
     {
         _shootingPlace.ChangeEmptyStatus(true);
-        _moveCoroutine = StartCoroutine(MoveRoutine(_escapePlace));
+        _target = _escapePlace;
+        _moveCoroutine = StartCoroutine(MoveRoutine());
     }
 
     public void StopMoving()
@@ -43,31 +63,54 @@ public class CubeMover : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveRoutine(Vector3 target)
+    private IEnumerator MoveRoutine()
     {
         bool isWork = true;
 
         while (isWork)
         {
-            Vector3 direction = target - transform.position;
+            Vector3 direction = _target - transform.position;
             transform.Translate(_speed * Time.deltaTime * direction.normalized);
 
-            if (Vector3.Distance(target, transform.position) < _arrivalThreshold)
+            if (Vector3.Distance(_target, transform.position) < _arrivalThreshold)
             {
-                transform.position = target;
+                transform.position = _target;
 
-                if (target != _escapePlace)
-                {
+                if (_target == GetCurrentTarget(_shootingPlace.transform.position))
                     Arrived?.Invoke();
-                }
-                else
-                {
-                    StopMoving();
-                    gameObject.SetActive(false);
-                }
+
+                SelectTarget();
             }
 
             yield return null;
         }
+    }
+
+    private void SelectTarget()
+    {
+        if (_target == GetCurrentTarget(_cell.transform.position))
+        {
+            var nextCell = _roadfinder.GetOptimalNextCell(_cell);
+
+            if (nextCell != null)
+            {
+                _cell = nextCell;
+                _target = GetCurrentTarget(_cell.transform.position);
+            }
+            else
+            {
+                _target = GetCurrentTarget(_shootingPlace.transform.position);
+            }
+        }
+        else if (_target == _escapePlace)
+        {
+            StopMoving();
+            gameObject.SetActive(false);
+        }
+    }
+
+    private Vector3 GetCurrentTarget(Vector3 targetPosition)
+    {
+        return new(targetPosition.x, _initialPosition.y, targetPosition.z);
     }
 }

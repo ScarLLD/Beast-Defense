@@ -40,7 +40,7 @@ public class CubeCreator : MonoBehaviour
 
                 if (_gridStorage.TryGet(i, out GridCell gridCell))
                 {
-                    _cubeSpawner.Spawn(material, count, gridCell.transform.position);
+                    _cubeSpawner.Spawn(material, count, gridCell);
                 }
             }
 

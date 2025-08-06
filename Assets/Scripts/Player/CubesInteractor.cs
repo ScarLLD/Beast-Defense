@@ -18,14 +18,18 @@ public class CubesInteractor : MonoBehaviour
 
     private void TryGetMove(PlayerCube cube)
     {
-        if (_placesHolder.TryGetPlace(out ShootingPlace shootingPlace, out Vector3 escapePlace) && cube.IsStatic)
+        if (_placesHolder.TryGetPlace(out ShootingPlace shootingPlace, out Vector3 escapePlace))
         {
-            Vector3 place = new Vector3(shootingPlace.transform.position.x, shootingPlace.transform.position.y + cube.transform.localScale.y / 2, shootingPlace.transform.position.z);
             cube.ChangeStaticStatus(false);
             cube.ChangeAvailableStatus(false);
-            cube.Mover.StartMoving(place);
-            cube.Mover.SetPlaces(shootingPlace, escapePlace);
+            cube.Mover.SetPlaces(shootingPlace, escapePlace, cube.GridCell);
+            cube.Mover.StartMoving();
+
             _availabilityManagement.UpdateAvailability();
+        }
+        else
+        {
+            Debug.Log("Нет доступных мест для стрельбы.");
         }
     }
 }

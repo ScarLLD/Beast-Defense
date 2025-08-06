@@ -41,7 +41,7 @@ public class GridCreator : MonoBehaviour
 
         if (availableSpaceX < 0 || availableSpaceZ < 0)
         {
-            Debug.LogError("Недостаточно места.");
+            Debug.LogError("Недостаточно места для сетки.");
             return;
         }
 
