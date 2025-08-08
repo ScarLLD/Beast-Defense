@@ -16,6 +16,6 @@ public class BulletSpawner : MonoBehaviour
     {
         Bullet bullet = _pool.GetObject();
         bullet.transform.position = spawnPosition;        
-        bullet.Init(cube);
+        bullet.InitTarget(cube);
     }
 }

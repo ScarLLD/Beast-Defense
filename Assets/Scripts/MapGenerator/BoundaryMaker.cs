@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -6,6 +7,7 @@ public class BoundaryMaker : MonoBehaviour
     [SerializeField] private Game _game;
     [SerializeField] private GameObject _pointPrefab;
     [SerializeField] private Material _lineMeterial;
+
     [Range(0.1f, 0.9f)]
     [SerializeField] private float _borderReduction;
 
@@ -13,7 +15,7 @@ public class BoundaryMaker : MonoBehaviour
     private List<LineRenderer> _lines;
     private Camera _camera;
 
-    public event System.Action<List<Vector3>> PointsInitialized;
+    public event Action<List<Vector3>> PointsInitialized;
 
     private void Awake()
     {
@@ -34,7 +36,7 @@ public class BoundaryMaker : MonoBehaviour
 
     public Vector3 GetRandomPointOnRandomLine()
     {
-        int index = Random.Range(0, _lines.Count);
+        int index = UserUtils.GetIntRandomNumber(0, _lines.Count);
         var line = _lines[index];
 
         return GetRandomLinePoint(line.GetPosition(0), line.GetPosition(1));
@@ -111,7 +113,7 @@ public class BoundaryMaker : MonoBehaviour
 
     private Vector3 GetRandomLinePoint(Vector3 start, Vector3 end)
     {
-        float randomT = Random.Range(0.3f, 0.7f);
+        float randomT = UserUtils.GetFloatRandomNumber(0.3f, 0.7f);
         Vector3 randomPosition = Vector3.Lerp(start, end, randomT);
 
         return randomPosition;

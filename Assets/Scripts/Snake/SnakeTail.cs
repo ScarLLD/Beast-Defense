@@ -96,7 +96,7 @@ public class SnakeTail : MonoBehaviour
                             Cube cube = Instantiate(_cubePrefab, points[j], Quaternion.identity, segment.transform);
                             cube.transform.localScale *= _scaleMultiplier;
                             cube.Init(stack.Material);
-                            cube.GetSegment(segment);
+                            cube.InitSegment(segment);
 
                             segment.AddCube(cube);
                         }

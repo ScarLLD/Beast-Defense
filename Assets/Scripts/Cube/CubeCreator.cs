@@ -5,15 +5,15 @@ using Random = UnityEngine.Random;
 
 public class CubeCreator : MonoBehaviour
 {
+    [SerializeField] private GridCreator _gridCreator;
+    [SerializeField] private GridStorage _gridStorage;
+    [SerializeField] private PlayerCubeSpawner _cubeSpawner;
+
     [SerializeField]
     private List<Material> _ñolors = new();
 
     [SerializeField]
     private List<int> _counts = new();
-
-    [SerializeField] private GridCreator _gridCreator;
-    [SerializeField] private GridStorage _gridStorage;
-    [SerializeField] private PlayerCubeSpawner _cubeSpawner;
 
     public event Action Created;
 

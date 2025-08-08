@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Cube : MonoBehaviour
@@ -6,17 +5,19 @@ public class Cube : MonoBehaviour
     private MeshRenderer _meshRenderer;
     private SnakeSegment _snakeSegment;
 
-    private void Awake()
-    {
-        _meshRenderer = GetComponent<MeshRenderer>();
-    }
+    public Material Material => _meshRenderer.material;
 
     public void Init(Material material)
     {
         _meshRenderer.material = material;
     }
 
-    public void GetSegment(SnakeSegment snakeSegment)
+    private void Awake()
+    {
+        _meshRenderer = GetComponent<MeshRenderer>();
+    }
+
+    public void InitSegment(SnakeSegment snakeSegment)
     {
         _snakeSegment = snakeSegment;
     }
@@ -28,6 +29,4 @@ public class Cube : MonoBehaviour
         if (_snakeSegment != null)
             _snakeSegment.TryDestroy();
     }
-
-    public Material Material => _meshRenderer.material;
 }

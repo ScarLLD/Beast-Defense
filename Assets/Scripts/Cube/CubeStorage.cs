@@ -12,7 +12,7 @@ public class CubeStorage : MonoBehaviour
 
     public List<CubeStack> GetStacks()
     {
-        List<CubeStack> cubeStacks = new List<CubeStack>();
+        List<CubeStack> cubeStacks = new();
 
         foreach (var cube in _cubes)
         {

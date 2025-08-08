@@ -12,6 +12,8 @@ public class PlayerCubeSpawner : MonoBehaviour
     {
         if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
             transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cubePrefab.transform.localScale.y / 2, bottomScreenCenter.z);
+        else
+            Debug.LogWarning("Не удалось найти центр нижней половины экрана.");
     }
 
     public void Spawn(Material material, int count, GridCell cell)
@@ -20,7 +22,7 @@ public class PlayerCubeSpawner : MonoBehaviour
 
         PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, transform);
         playerCube.Init(cell, material, count, _bulletSpawner, _targetStorage);
-        cell.TakeCube(playerCube);
+        cell.InitCube(playerCube);
         _cubeStorage.Add(playerCube);
     }
 }
