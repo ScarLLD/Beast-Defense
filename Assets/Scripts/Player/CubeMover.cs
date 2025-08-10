@@ -8,13 +8,13 @@ public class CubeMover : MonoBehaviour
     private readonly float _arrivalThreshold = 0.1f;
     private float _speed;
     private bool _isNewMove = true;
-    private ShootingPlace _shootingPlace;
-    private RoadFinder _roadfinder;
-    private GridCell _cell;
-    private Coroutine _moveCoroutine;
     private Vector3 _initialPosition;
     private Vector3 _escapePlace;
     private Vector3 _target;
+    private ShootingPlace _shootingPlace;
+    private Coroutine _moveCoroutine;
+    private RoadFinder _roadfinder;
+    private GridCell _cell;
 
     public event Action Arrived;
 

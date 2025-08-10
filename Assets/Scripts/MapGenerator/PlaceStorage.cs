@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,25 +7,28 @@ public class PlaceStorage : MonoBehaviour
     private List<ShootingPlace> _shootingPlaces;
     private List<Vector3> _escapePlaces;
 
-    public int PlaceCount => _shootingPlaces.Count;
-
     private void Awake()
     {
         _shootingPlaces = new List<ShootingPlace>();
         _escapePlaces = new List<Vector3>();
     }
 
-    public bool TryGetPlace(out ShootingPlace shootingPlace, out Vector3 escapePlace)
+    public bool TryGetPlace(PlayerCube cube, out ShootingPlace shootingPlace, out Vector3 escapePlace)
     {
         escapePlace = Vector3.zero;
 
-        shootingPlace = _shootingPlaces.FirstOrDefault(place => place.IsEmpty == true);
+        shootingPlace = _shootingPlaces
+            .OrderBy(place => Vector3.Distance(place.transform.position, cube.transform.position))
+            .FirstOrDefault(place => place.IsEmpty == true);
 
         if (shootingPlace != null)
         {
             shootingPlace.ChangeEmptyStatus(false);
             var tempShootingPlace = shootingPlace;
-            escapePlace = _escapePlaces.OrderBy(place => Vector3.Distance(place, tempShootingPlace.transform.position)).FirstOrDefault();
+
+            escapePlace = _escapePlaces
+                .OrderBy(place => Vector3.Distance(place, tempShootingPlace.transform.position))
+                .FirstOrDefault();
         }
 
         return shootingPlace != null && escapePlace != null;

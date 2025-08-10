@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -386,6 +386,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f6d3b1b54d7dce4ba10a83360e22e5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gridStorage: {fileID: 1295288259}
+  _cubeSpawner: {fileID: 529893069}
   "_\u0441olors":
   - {fileID: 2100000, guid: e23c611b82215874cb3d1c77e3785156, type: 2}
   - {fileID: 2100000, guid: 304135f78fc76ef459ea2511cebcb94c, type: 2}
@@ -395,9 +397,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 043543baaa58670418782cb3e9fd2eb4, type: 2}
   - {fileID: 2100000, guid: 4c692737529829e4a81040a9045e7a98, type: 2}
   _counts: 080000000c00000010000000140000001800000020000000
-  _gridCreator: {fileID: 1295288260}
-  _gridStorage: {fileID: 1295288259}
-  _cubeSpawner: {fileID: 529893069}
 --- !u!114 &529893071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -423,8 +422,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridStorage: {fileID: 1295288259}
-  _cubeCreator: {fileID: 529893070}
-  _gridCreator: {fileID: 1295288260}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -818,7 +815,9 @@ MonoBehaviour:
   _cubePrefab: {fileID: 1900071841244829645, guid: c309c790d98bd9b45a4ae1212065f2a7, type: 3}
   _cellPrefab: {fileID: 4139206488417349038, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
   _gridStorage: {fileID: 1295288259}
+  _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1370593100}
+  _availabilityManagement: {fileID: 529893072}
   _rows: 8
   _columns: 7
   _minX: -8

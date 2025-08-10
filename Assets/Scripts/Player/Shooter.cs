@@ -10,6 +10,7 @@ public class Shooter : MonoBehaviour
     private BulletSpawner _bulletSpawner;
     private Coroutine _coroutine;
     private Queue<SnakeSegment> _targets;
+    private WaitForSeconds _sleepTime;
 
     private int _bulletCount;
 
@@ -20,6 +21,7 @@ public class Shooter : MonoBehaviour
     private void Awake()
     {
         _targets = new Queue<SnakeSegment>();
+        _sleepTime = new WaitForSeconds(_timeBetweenShoot);
     }
 
     public void Init(BulletSpawner bulletSpawner, int bulletCount)
@@ -57,7 +59,7 @@ public class Shooter : MonoBehaviour
 
                     BulletsDecreased?.Invoke();
 
-                    yield return new WaitForSeconds(0.2f);
+                    yield return _sleepTime;
                 }
 
                 if (BulletCount == 0)

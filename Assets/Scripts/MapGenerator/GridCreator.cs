@@ -6,22 +6,22 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private GridCell _cellPrefab;
     [SerializeField] private GridStorage _gridStorage;
+    [SerializeField] private CubeCreator _cubeCreator;
     [SerializeField] private BoundaryMaker _boundaryMaker;
+    [SerializeField] private AvailabilityManagement _availabilityManagement;
+
     [SerializeField] private int _rows;
     [SerializeField] private int _columns;
-
-    private float _objectWidth;
-    private float _objectDepth;
 
     [SerializeField] private float _minX;
     [SerializeField] private float _maxX;
     [SerializeField] private float _minZ;
     [SerializeField] private float _maxZ;
 
-    public event Action Created;
+    private float _objectWidth;
+    private float _objectDepth;
 
-    public int Rows => _rows;
-    public int Columns => _columns;
+    public event Action Created;
 
     private void Start()
     {
@@ -31,10 +31,13 @@ public class GridCreator : MonoBehaviour
         _objectWidth = _cubePrefab.transform.localScale.x;
         _objectDepth = _cubePrefab.transform.localScale.z;
 
-        Create();
+        CreateGrid();
+        _cubeCreator.CreateCubes();
+        _gridStorage.CreateCells(_rows, _columns);
+        _availabilityManagement.UpdateAvailability();
     }
 
-    public void Create()
+    public void CreateGrid()
     {
         float availableSpaceX = _maxX - _minX - (_columns * _objectWidth);
         float availableSpaceZ = _maxZ - _minZ - (_rows * _objectDepth);
@@ -58,10 +61,12 @@ public class GridCreator : MonoBehaviour
                 Vector3 spawnPosition = new(localX, 0f, localZ);
                 GridCell gridCell = Instantiate(_cellPrefab, transform);
                 gridCell.transform.localPosition = spawnPosition;
+
                 _gridStorage.Add(gridCell);
             }
         }
 
         Created?.Invoke();
     }
+
 }

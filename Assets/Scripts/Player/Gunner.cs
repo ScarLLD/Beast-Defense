@@ -15,15 +15,15 @@ public class Gunner : MonoBehaviour
 
     private void OnEnable()
     {
-        _targetRadar.Found += SelectTarget;
+        _targetRadar.Found += OnTargetFound;
     }
 
     private void OnDisable()
     {
-        _targetRadar.Found -= SelectTarget;
+        _targetRadar.Found -= OnTargetFound;
     }
 
-    private void SelectTarget(SnakeSegment snakeSegment)
+    private void OnTargetFound(SnakeSegment snakeSegment)
     {
         _shooter.AddTarget(snakeSegment);
     }
