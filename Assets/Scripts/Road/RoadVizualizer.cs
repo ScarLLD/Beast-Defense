@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [RequireComponent(typeof(RoadSpawner))]
 public class RoadVizualizer : MonoBehaviour
 {
@@ -10,13 +9,7 @@ public class RoadVizualizer : MonoBehaviour
     [SerializeField] private float _prefabScale;
     [SerializeField] private float _prefabScaleYmultiplier;
 
-    private RoadSpawner _roadSpawner;
     private readonly float _divider = 2f;
-
-    private void Awake()
-    {
-        _roadSpawner = GetComponent<RoadSpawner>();
-    }
 
     public void VisualizeRoad(List<Vector3> road)
     {

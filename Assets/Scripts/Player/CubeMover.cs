@@ -16,6 +16,10 @@ public class CubeMover : MonoBehaviour
     private RoadFinder _roadfinder;
     private GridCell _cell;
 
+    private Vector3 _cachedCellTarget;
+    private Vector3 _cachedShootingTarget;
+    private Vector3 _cachedEscapeTarget;
+
     public event Action Arrived;
 
     private void Awake()
@@ -34,7 +38,7 @@ public class CubeMover : MonoBehaviour
         if (_isNewMove)
         {
             _isNewMove = false;
-            _target = GetCurrentTarget(_cell.transform.position);
+            _target = _cachedCellTarget; 
         }
 
         _moveCoroutine ??= StartCoroutine(MoveRoutine());
@@ -45,12 +49,16 @@ public class CubeMover : MonoBehaviour
         _shootingPlace = shootingPlace;
         _escapePlace = escapePlace;
         _cell = cell;
+
+        _cachedCellTarget = GetCurrentTarget(cell.transform.position);
+        _cachedShootingTarget = GetCurrentTarget(shootingPlace.transform.position);
+        _cachedEscapeTarget = GetCurrentTarget(escapePlace);
     }
 
     public void GoEscape()
     {
         _shootingPlace.ChangeEmptyStatus(true);
-        _target = _escapePlace;
+        _target = _cachedEscapeTarget; 
         _moveCoroutine = StartCoroutine(MoveRoutine());
     }
 
@@ -76,7 +84,7 @@ public class CubeMover : MonoBehaviour
             {
                 transform.position = _target;
 
-                if (_target == GetCurrentTarget(_shootingPlace.transform.position))
+                if (_target == _cachedShootingTarget)
                     Arrived?.Invoke();
 
                 SelectTarget();
@@ -88,21 +96,22 @@ public class CubeMover : MonoBehaviour
 
     private void SelectTarget()
     {
-        if (_target == GetCurrentTarget(_cell.transform.position))
+        if (_target == _cachedCellTarget)
         {
             var nextCell = _roadfinder.GetOptimalNextCell(_cell);
 
             if (nextCell != null)
             {
                 _cell = nextCell;
-                _target = GetCurrentTarget(_cell.transform.position);
+                _cachedCellTarget = GetCurrentTarget(_cell.transform.position); 
+                _target = _cachedCellTarget;
             }
             else
             {
-                _target = GetCurrentTarget(_shootingPlace.transform.position);
+                _target = _cachedShootingTarget;
             }
         }
-        else if (_target == _escapePlace)
+        else if (_target == _cachedEscapeTarget)
         {
             StopMoving();
             gameObject.SetActive(false);

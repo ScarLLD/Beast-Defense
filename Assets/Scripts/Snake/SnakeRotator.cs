@@ -10,9 +10,9 @@ public class SnakeRotator : MonoBehaviour
     private SnakeMover _snakeMover;
     private Vector3 _direction;
 
-    public void Init(SnakeHead snakeHead)
+    private void Awake()
     {
-        _snakeHead = snakeHead;
+        _snakeMover = GetComponent<SnakeMover>();
     }
 
     private void OnDisable()
@@ -20,9 +20,9 @@ public class SnakeRotator : MonoBehaviour
         StopRotateRoutine();
     }
 
-    private void Awake()
+    public void Init(SnakeHead snakeHead)
     {
-        _snakeMover = GetComponent<SnakeMover>();
+        _snakeHead = snakeHead;
     }
 
     public void StartRotateRoutine()

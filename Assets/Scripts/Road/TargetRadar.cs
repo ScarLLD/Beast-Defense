@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-
 public class TargetRadar : MonoBehaviour
 {
     [SerializeField] Shooter _shooter;
@@ -19,10 +18,10 @@ public class TargetRadar : MonoBehaviour
 
     public void StartScanning(Color color)
     {
-        _moveCoroutine = StartCoroutine(ScanRoutine(color));
+        _moveCoroutine ??= StartCoroutine(ScanRoutine(color));
     }
 
-    public void EndScan()
+    private void EndScan()
     {
         if (_moveCoroutine != null)
         {
@@ -46,5 +45,7 @@ public class TargetRadar : MonoBehaviour
 
             yield return new WaitForSeconds(0.2f);
         }
+
+        EndScan();
     }
 }

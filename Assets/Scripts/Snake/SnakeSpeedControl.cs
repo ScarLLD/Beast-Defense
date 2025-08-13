@@ -4,11 +4,12 @@ using System.Collections;
 [RequireComponent(typeof(SnakeHead))]
 public class SnakeSpeedControl : MonoBehaviour
 {
-    [SerializeField] private float _minSpeed = 0f;          // ћинимальна€ скорость (0 дл€ полной остановки)
-    [SerializeField] private int _thresholdSlowdown = 5;    // ƒистанци€, на которой начинаем замедл€тьс€
+    [SerializeField] private float _minSpeed = 0f;
+    [SerializeField] private int _thresholdSlowdown = 5;
     [SerializeField] private int _minRoadCountToEnd = 3;
 
     private SnakeHead _snakeHead;
+    private Coroutine _coroutine;
     private float _initialSpeed;
     private bool _isSlowingDown = false;
     private float _slowdownStartDistance;
@@ -19,9 +20,30 @@ public class SnakeSpeedControl : MonoBehaviour
         _initialSpeed = _snakeHead.Speed;
     }
 
+    private void OnDisable()
+    {
+        EndControl();
+    }
+
+    private void Start()
+    {
+        _coroutine ??= StartCoroutine(ControlSpeed());
+    }
+
+    private void EndControl()
+    {
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+            _coroutine = null;
+        }
+    }
+
     private IEnumerator ControlSpeed()
     {
-        while (true)
+        bool isWork = true;
+
+        while (isWork)
         {
             if (_snakeHead.CompareRoadPoint(_minRoadCountToEnd, _thresholdSlowdown, out float distanceToEnd))
             {
@@ -31,14 +53,11 @@ public class SnakeSpeedControl : MonoBehaviour
                     _slowdownStartDistance = distanceToEnd;
                 }
 
-                // Ќормализуем оставшеес€ рассто€ние (от 1 до 0)
                 float progress = 1f - (distanceToEnd / _slowdownStartDistance);
 
-                // ѕлавно уменьшаем скорость (можно заменить на SmoothStep дл€ более м€гкого замедлени€)
                 float newSpeed = Mathf.Lerp(_initialSpeed, _minSpeed, progress);
                 _snakeHead.ChangeSpeed(newSpeed);
 
-                // ≈сли достигли конца или почти остановились
                 if (distanceToEnd <= 0.1f || newSpeed <= _minSpeed + 0.1f)
                 {
                     _snakeHead.ChangeSpeed(_minSpeed);
@@ -53,10 +72,5 @@ public class SnakeSpeedControl : MonoBehaviour
 
             yield return null;
         }
-    }
-
-    private void Start()
-    {
-        StartCoroutine(ControlSpeed());
     }
 }

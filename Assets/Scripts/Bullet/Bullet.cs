@@ -6,10 +6,17 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private float _speed = 10f;
-    [SerializeField] private float _arrivalThreshold = 0.1f;
+    [SerializeField] private float _arrivalThreshold = 0.7f;
 
+    private ParticleCreator _creator;
     private Rigidbody _rigidbody;
     private Coroutine _moveCoroutine;
+
+    public void Init(ParticleCreator creator)
+    {
+        if (_creator == null)
+            _creator = creator;
+    }
 
     public void InitTarget(Cube cube)
     {
@@ -38,6 +45,7 @@ public class Bullet : MonoBehaviour
 
             if (Vector3.Distance(transform.position, cube.transform.position) < _arrivalThreshold)
             {
+                _creator.Create(cube);
                 _rigidbody.velocity = Vector3.zero;
                 cube.Destroy();
 

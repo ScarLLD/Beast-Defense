@@ -11,7 +11,6 @@ public class SnakeSegment : MonoBehaviour
     private SnakeMover _snakeMover;
     private Queue<Cube> _cubes;
 
-    public SnakeRotator SnakeRotator => _snakeRotator;
     public SnakeMover SnakeMover => _snakeMover;
     public Material Material { get; private set; }
     public bool IsTarget { get; private set; } = false;
@@ -27,7 +26,7 @@ public class SnakeSegment : MonoBehaviour
     public void Init(SnakeHead snakeHead)
     {
         _snakeHead = snakeHead;
-        _snakeMover.Init(snakeHead);
+        _snakeMover.InitHead(snakeHead);
         _snakeRotator.Init(snakeHead);
     }
 

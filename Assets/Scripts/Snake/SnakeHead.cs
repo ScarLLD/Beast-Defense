@@ -68,7 +68,7 @@ public class SnakeHead : MonoBehaviour
 
             _segments = new() { _snakeSegment };
             _snakeSegment.Init(this);
-            _snakeSegment.SnakeMover.SetLengths(_snakeSegment.transform.localScale.magnitude / 2, _snakeSegment.transform.localScale.magnitude / 2);
+            _snakeSegment.SnakeMover.InitLengths(_snakeSegment.transform.localScale.magnitude / 2, _snakeSegment.transform.localScale.magnitude / 2);
             _snakeSegment.transform.rotation = Quaternion.LookRotation(direction);
             _snakeSegment.StartRoutine();
 

@@ -12,6 +12,7 @@ public class SnakeTail : MonoBehaviour
     private readonly float _sizeDivider = 2;
     private readonly float _DirectionMultiplier = 1f;
 
+    private Coroutine _coroutine;
     private TargetStorage _targetStorage;
     private SnakeSegment _lastSegment;
     private SnakeHead _snakeHead;
@@ -25,6 +26,11 @@ public class SnakeTail : MonoBehaviour
         _snakeHead = GetComponent<SnakeHead>();
     }
 
+    private void OnDisable()
+    {
+        EndSpawn();
+    }
+
     public void Init(CubeStorage cubeStorage, Cube cubePrefab, SnakeSegment snakeSegmentPrefab, TargetStorage targetStorage)
     {
         _cubeStorage = cubeStorage;
@@ -36,14 +42,23 @@ public class SnakeTail : MonoBehaviour
 
     public void StartSpawn(Vector3 direction, List<SnakeSegment> segments)
     {
-        StartCoroutine(Spawn(direction, segments));
+        _coroutine ??= StartCoroutine(Spawn(direction, segments));
+    }
+
+    private void EndSpawn()
+    {
+        if (_coroutine != null)
+        {
+            StopCoroutine(_coroutine);
+            _coroutine = null;
+        }
     }
 
     private IEnumerator Spawn(Vector3 direction, List<SnakeSegment> segments)
     {
         Queue<CubeStack> stacks = new(_cubeStorage.GetStacks());
-
         Vector3 centerPoint;
+
         bool isWork = true;
 
         while (isWork)
@@ -101,7 +116,7 @@ public class SnakeTail : MonoBehaviour
                             segment.AddCube(cube);
                         }
 
-                        segment.SnakeMover.SetLengths((segment.transform.localScale.magnitude + _lengthMultiplier) / 2, segment.transform.localScale.magnitude / 2);
+                        segment.SnakeMover.InitLengths((segment.transform.localScale.magnitude + _lengthMultiplier) / 2, segment.transform.localScale.magnitude / 2);
                     }
                     else
                     {

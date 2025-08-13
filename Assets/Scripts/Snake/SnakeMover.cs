@@ -4,22 +4,26 @@ using UnityEngine;
 [RequireComponent(typeof(SnakeSegment))]
 public class SnakeMover : MonoBehaviour
 {
-    private float _lengthMultiplier = 1.5f;
+    private readonly float _lengthMultiplier = 1.5f;
     private readonly float _arrivalThreshold = 0.01f;
     private float _thresholdBetweenSegments;
     private float _gapLengthBetweenSegments;
+    private bool isNewMover = true;
     private SnakeSegment _previousSegment;
     private SnakeHead _snakeHead;
     private Coroutine _coroutine;
-    private bool isNewMover = true;
 
-    public void SetLengths(float threshold, float gap)
+    public float SpeedMultiplier { get; private set; } = 4f;
+    public bool IsForwardMoving { get; private set; } = true;
+    public Vector3 TargetPoint { get; private set; }
+
+    public void InitLengths(float threshold, float gap)
     {
         _thresholdBetweenSegments = threshold;
         _gapLengthBetweenSegments = gap;
     }
 
-    public void Init(SnakeHead snakeHead)
+    public void InitHead(SnakeHead snakeHead)
     {
         _snakeHead = snakeHead;
     }
@@ -28,10 +32,6 @@ public class SnakeMover : MonoBehaviour
     {
         StopMoveRoutine();
     }
-
-    public float SpeedMultiplier { get; private set; } = 4f;
-    public bool IsForwardMoving { get; private set; } = true;
-    public Vector3 TargetPoint { get; private set; }
 
     public void SetPreviousSegment(SnakeSegment previousSegment)
     {
@@ -49,6 +49,36 @@ public class SnakeMover : MonoBehaviour
         {
             StopCoroutine(_coroutine);
             _coroutine = null;
+        }
+    }
+
+    public void SetNextPosition(Vector3 targetPostion)
+    {
+        if (_snakeHead.RoadCount > 0)
+        {
+            IsForwardMoving = true;
+
+            if (targetPostion == Vector3.zero && _snakeHead.TryGetFirstRoadPoint(out Vector3 firstPoint))
+            {
+                TargetPoint = firstPoint;
+            }
+            else if (_snakeHead.TryGetNextRoadPoint(TargetPoint, out Vector3 nextPoint))
+            {
+                TargetPoint = nextPoint;
+            }
+        }
+    }
+
+    public void SetPreviousPosition()
+    {
+        if (_snakeHead.RoadCount > 0)
+        {
+            IsForwardMoving = false;
+
+            if (_snakeHead.TryGetPreviousRoadPoint(TargetPoint, out Vector3 previusPoint))
+            {
+                TargetPoint = previusPoint;
+            }
         }
     }
 
@@ -105,36 +135,6 @@ public class SnakeMover : MonoBehaviour
             }
 
             yield return null;
-        }
-    }
-
-    public void SetNextPosition(Vector3 targetPostion)
-    {
-        if (_snakeHead.RoadCount > 0)
-        {
-            IsForwardMoving = true;
-
-            if (targetPostion == Vector3.zero && _snakeHead.TryGetFirstRoadPoint(out Vector3 firstPoint))
-            {
-                TargetPoint = firstPoint;
-            }
-            else if (_snakeHead.TryGetNextRoadPoint(TargetPoint, out Vector3 nextPoint))
-            {
-                TargetPoint = nextPoint;
-            }
-        }
-    }
-
-    public void SetPreviousPosition()
-    {
-        if (_snakeHead.RoadCount > 0)
-        {
-            IsForwardMoving = false;
-
-            if (_snakeHead.TryGetPreviousRoadPoint(TargetPoint, out Vector3 previusPoint))
-            {
-                TargetPoint = previusPoint;
-            }
         }
     }
 
