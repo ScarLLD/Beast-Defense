@@ -6,6 +6,7 @@ public class Cube : MonoBehaviour
     private SnakeSegment _snakeSegment;
 
     public Material Material => _meshRenderer.material;
+    public Quaternion GetSegmentRotation => _snakeSegment.transform.rotation;
 
     public void Init(Material material)
     {

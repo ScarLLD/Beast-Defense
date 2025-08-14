@@ -8,27 +8,19 @@ public class SnakeSpawner : MonoBehaviour
     [SerializeField] private SnakeHead _snakePrefab;
     [SerializeField] private CubeStorage _cubeStorage;
 
-    public void Spawn(List<Vector3> road)
+    public bool TrySpawn(List<Vector3> road, out SnakeHead snakeHead)
     {
-        road = GetRaisedRoad(road);
+        snakeHead = null;
+
+        road = UserUtils.GetRaisedRoad(road, _snakePrefab.transform.localScale.y / 2);
 
         if (road.Count > 0)
         {
-            var snakeHead = Instantiate(_snakePrefab, road.First(), Quaternion.identity, transform);
+            snakeHead = Instantiate(_snakePrefab, road.First(), Quaternion.identity, transform);
             snakeHead.Init(_cubeStorage, road, _targetStorage);
             snakeHead.CreateTail();
         }
-    }
 
-    private List<Vector3> GetRaisedRoad(List<Vector3> road)
-    {
-        List<Vector3> RaisedRoad = new();
-
-        for (int i = 0; i < road.Count; i++)
-        {
-            RaisedRoad.Add(new Vector3(road[i].x, road[i].y + _snakePrefab.transform.localScale.y / 2, road[i].z));
-        }
-
-        return RaisedRoad;
+        return snakeHead != null;
     }
 }

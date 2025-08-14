@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class RoadSpawner : MonoBehaviour
 {
     [SerializeField] private SnakeSpawner _snakeSpawner;
+    [SerializeField] private BeastSpawner _beastSpawner;
     [SerializeField] private RoadVizualizer _roadVizualizer;
     [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private TargetDetector _detector;
@@ -32,7 +33,8 @@ public class RoadSpawner : MonoBehaviour
             _detector.transform.position = _road[1];
             _detector.EnableTrigger();
             _roadVizualizer.VisualizeRoad(_road);
-            _snakeSpawner.Spawn(_road);
+            if (_snakeSpawner.TrySpawn(_road, out SnakeHead snakeHead))
+                _beastSpawner.Spawn(_road, snakeHead);
         }
         else
         {

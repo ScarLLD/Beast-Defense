@@ -129,6 +129,21 @@ public class SnakeHead : MonoBehaviour
         return duration < thresholdSlowdown;
     }
 
+    public bool CompareBeastPoint(Beast beast, int minRoadCountToBeast, int thresholdSlowdown, out float duration)
+    {
+        duration = int.MaxValue;
+
+        var point = _snakeSegment.SnakeMover.TargetPoint;
+
+        if (_road.Contains(point) && _road.Contains(beast.CurrentRoadPoint)
+            && minRoadCountToBeast >= _road.IndexOf(point) - _road.IndexOf(beast.CurrentRoadPoint))
+        {
+            duration = (beast.transform.position - transform.position).magnitude;
+        }
+
+        return duration < thresholdSlowdown;
+    }
+
     public void SetPreviousSegments()
     {
         if (_isSorting == false)

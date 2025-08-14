@@ -18,6 +18,6 @@ public class ParticleCreator : MonoBehaviour
         var particle = _pool.GetObject();
         particle.ChangeMaterial(cube.Material);
         particle.transform.position = cube.transform.position;
-        particle.transform.rotation = cube.transform.rotation;
+        particle.transform.rotation = cube.GetSegmentRotation;
     }
 }
