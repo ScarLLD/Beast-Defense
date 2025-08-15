@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,18 +7,39 @@ public class Beast : MonoBehaviour
 {
     [SerializeField] private float _speed;
 
-    private BeastMover _beastMover;
-    private SnakeHead _snakeHead;
-    private List<Vector3> _road;    
+    private List<Vector3> _road;
+
+    private Vector3 _startPosition;
+
+    public BeastMover Mover { get; private set; }
+    public float Speed => _speed;
 
     private void Awake()
     {
-        _beastMover = GetComponent<BeastMover>();
+        Mover = GetComponent<BeastMover>();
     }
 
-    public void Init(SnakeHead snakeHead, List<Vector3> road)
+    public void Init(List<Vector3> road)
     {
-        _snakeHead = snakeHead;
+        if (road == null || road.Count == 0)
+            throw new ArgumentOutOfRangeException("road не может быть null или быть пустым.", typeof(road));
+
         _road = road;
+
+        Mover.SetRoadTarget(_road);
+        Mover.StartMove();
+    }
+
+    public bool TryGetNextRoadPosition(out Vector3 nextPosition)
+    {
+        nextPosition = Vector3.zero;
+
+        if (_road.Contains(Mover.LocalTargetPoint)
+            && _road.Count >= _road.IndexOf(Mover.LocalTargetPoint) + 1)
+        {
+            nextPosition = _road[_road.IndexOf(Mover.LocalTargetPoint) + 1];
+        }
+
+        return nextPosition != Vector3.zero;
     }
 }
