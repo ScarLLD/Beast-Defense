@@ -5,7 +5,6 @@ using UnityEngine;
 public class RayCreator : MonoBehaviour
 {
     [SerializeField] private Game _game;
-    [SerializeField] private Camera _mainCamera;
     [SerializeField] private float _rayDirection;
 
     private Coroutine _rayCoroutine;
@@ -33,7 +32,7 @@ public class RayCreator : MonoBehaviour
 
         while (isWork)
         {
-            Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             if (Input.GetKeyUp(KeyCode.Mouse0)
                 && Physics.Raycast(ray.origin, ray.direction,

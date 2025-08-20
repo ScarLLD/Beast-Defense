@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class GridCreator : MonoBehaviour
 {
+    [SerializeField] private Game _game;
+
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private GridCell _cellPrefab;
     [SerializeField] private GridStorage _gridStorage;
@@ -23,7 +25,17 @@ public class GridCreator : MonoBehaviour
 
     public event Action Created;
 
-    private void Start()
+    private void OnEnable()
+    {
+        _game.Started += OnGameStarted;
+    }
+
+    private void OnDisable()
+    {
+        _game.Started -= OnGameStarted;
+    }
+
+    private void OnGameStarted()
     {
         if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
             transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cellPrefab.transform.localScale.y / 2, bottomScreenCenter.z);

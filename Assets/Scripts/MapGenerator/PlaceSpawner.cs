@@ -21,15 +21,15 @@ public class PlaceSpawner : MonoBehaviour
 
     private void OnEnable()
     {
-        _game.Started += SelectSpawnPoint;
+        _game.Started += OnGameStarted;
     }
 
     private void OnDisable()
     {
-        _game.Started -= SelectSpawnPoint;
+        _game.Started -= OnGameStarted;
     }
 
-    private void SelectSpawnPoint()
+    private void OnGameStarted()
     {
         Vector3 cameraCenter = new Vector3(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 10);
 
