@@ -158,4 +158,14 @@ public class SnakeHead : MonoBehaviour
             _isSorting = false;
         }
     }
+
+    public bool TryGetRoadIndex(out int snakeIndex)
+    {
+        snakeIndex = 0;
+
+        if (_road.Contains(_snakeSegment.SnakeMover.TargetPoint))
+            snakeIndex = _road.IndexOf(_snakeSegment.SnakeMover.TargetPoint);
+
+        return snakeIndex != 0;
+    }
 }

@@ -5,9 +5,12 @@ using UnityEngine;
 [RequireComponent(typeof(Beast))]
 public class BeastMover : MonoBehaviour
 {
+    private readonly int _escapeTriggerDistance = 1;
+    private readonly float _speedMultiplier = 2f;
     private readonly float _arrivalThreshold = 0.01f;
     private Queue<Vector3> _roadTargets;
     private Coroutine _coroutine;
+    private SnakeHead _snakeHead;
     private Beast _beast;
 
     public Vector3 LocalTargetPoint { get; private set; }
@@ -17,11 +20,16 @@ public class BeastMover : MonoBehaviour
         _beast = GetComponent<Beast>();
     }
 
+    public void Init(SnakeHead snakeHead)
+    {
+        _snakeHead = snakeHead;
+    }
+
     public void SetRoadTarget(List<Vector3> road)
     {
         _roadTargets = new Queue<Vector3>();
         _roadTargets.Enqueue(road[(int)(road.Count * 0.75f)]);
-        _roadTargets.Enqueue(road[road.Count]);
+        _roadTargets.Enqueue(road[^1]);
 
         var spawnPoint = road[road.Count / 2];
 
@@ -40,35 +48,64 @@ public class BeastMover : MonoBehaviour
     private IEnumerator MoveRoutine()
     {
         bool isWork = true;
+        bool isMoving = false;
 
-        Vector3 globalTargetPosition = _roadTargets.Dequeue();
-
-        if (_beast.TryGetNextRoadPosition(out Vector3 nextPosition))
-            LocalTargetPoint = nextPosition;
+        Vector3 globalTargetPosition = Vector3.zero;
 
         while (isWork && LocalTargetPoint != Vector3.zero)
         {
-            transform.localPosition = Vector3.MoveTowards(transform.localPosition, LocalTargetPoint, _beast.Speed * Time.deltaTime);
-
-            if ((LocalTargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
+            if (isMoving == true || CheckSnakeProximity())
             {
-                transform.localPosition = LocalTargetPoint;
+                Debug.Log("Start move!");
 
-                if (LocalTargetPoint == globalTargetPosition)
+                if (globalTargetPosition == Vector3.zero)
                 {
-                    isWork = false;
-                    EndMove();
+                    if (_roadTargets.Count == 0)
+                    {
+                        isWork = false;
+                        EndMove();
+                    }
+                    else
+                    {
+                        globalTargetPosition = _roadTargets.Dequeue();
+                        isMoving = true;
+                    }
                 }
-                else if (_beast.TryGetNextRoadPosition(out nextPosition))
+
+                if ((LocalTargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
                 {
-                    LocalTargetPoint = nextPosition;
+                    transform.localPosition = LocalTargetPoint;
+
+                    if (LocalTargetPoint == globalTargetPosition)
+                    {
+                        isMoving = false;
+                        globalTargetPosition = Vector3.zero;
+                        Debug.Log("Stop move!");
+                    }
+                    else if (_beast.TryGetNextRoadPosition(out Vector3 nextPosition))
+                    {
+                        LocalTargetPoint = nextPosition;
+                        Debug.Log("Next move!");
+                    }
                 }
+
+
+                transform.localPosition = Vector3.MoveTowards(transform.localPosition, LocalTargetPoint, _snakeHead.Speed * _speedMultiplier * Time.deltaTime);
             }
-
 
             yield return null;
         }
     }
+
+    private bool CheckSnakeProximity()
+    {
+        if (_snakeHead.TryGetRoadIndex(out int snakeIndex) && _beast.TryGetRoadIndex(LocalTargetPoint, out int beastIndex))
+            return beastIndex - snakeIndex < _escapeTriggerDistance;
+
+        return false;
+    }
+
+
 
     private void EndMove()
     {
@@ -77,5 +114,7 @@ public class BeastMover : MonoBehaviour
             StopCoroutine(_coroutine);
             _coroutine = null;
         }
+
+        Debug.Log("Move ENDED");
     }
 }

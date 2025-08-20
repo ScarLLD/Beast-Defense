@@ -133,7 +133,7 @@ public class RoadSpawner : MonoBehaviour
     private bool ShouldTurn()
     {
         float turnProbability = 0.3f + (_road.Count * 0.02f);
-        return UnityEngine.Random.value < turnProbability;
+        return Random.value < turnProbability;
     }
 
     private Vector3 GetValidTurnDirection(Vector3 currentDirection, Vector3 currentPosition)

@@ -12,12 +12,12 @@ public class SnakeSpawner : MonoBehaviour
     {
         snakeHead = null;
 
-        road = UserUtils.GetRaisedRoad(road, _snakePrefab.transform.localScale.y / 2);
+        var tempRoad = UserUtils.GetRaisedRoad(road, _snakePrefab.transform.localScale.y / 2);
 
-        if (road.Count > 0)
+        if (tempRoad.Count > 0)
         {
-            snakeHead = Instantiate(_snakePrefab, road.First(), Quaternion.identity, transform);
-            snakeHead.Init(_cubeStorage, road, _targetStorage);
+            snakeHead = Instantiate(_snakePrefab, tempRoad.First(), Quaternion.identity, transform);
+            snakeHead.Init(_cubeStorage, tempRoad, _targetStorage);
             snakeHead.CreateTail();
         }
 

@@ -7,9 +7,9 @@ public class BeastSpawner : MonoBehaviour
 
     public void Spawn(List<Vector3> road, SnakeHead snakeHead)
     {
-        road = UserUtils.GetRaisedRoad(road, _beastPrefab.transform.localScale.y);
+        road = UserUtils.GetRaisedRoad(road, _beastPrefab.transform.localScale.y / 2);
 
         var beast = Instantiate(_beastPrefab);
-        beast.Init(snakeHead, road);
+        beast.Init(road, snakeHead);
     }
 }
