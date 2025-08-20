@@ -11,13 +11,16 @@ public class BeastMover : MonoBehaviour
     private Queue<Vector3> _roadTargets;
     private Coroutine _coroutine;
     private SnakeHead _snakeHead;
+    private BeastRotator _beastRotator;
     private Beast _beast;
 
-    public Vector3 LocalTargetPoint { get; private set; }
+    public Vector3 TargetPoint { get; private set; }
+    public bool IsMoving { get; private set; } = false;
 
     private void Awake()
     {
         _beast = GetComponent<Beast>();
+        _beastRotator = GetComponent<BeastRotator>();
     }
 
     public void Init(SnakeHead snakeHead)
@@ -35,12 +38,12 @@ public class BeastMover : MonoBehaviour
 
         if (spawnPoint != null)
         {
-            LocalTargetPoint = spawnPoint;
-            transform.position = LocalTargetPoint;
+            TargetPoint = spawnPoint;
+            transform.position = TargetPoint;
         }
     }
 
-    public void StartMove()
+    public void StartMoveRoutine()
     {
         _coroutine ??= StartCoroutine(MoveRoutine());
     }
@@ -48,13 +51,12 @@ public class BeastMover : MonoBehaviour
     private IEnumerator MoveRoutine()
     {
         bool isWork = true;
-        bool isMoving = false;
 
         Vector3 globalTargetPosition = Vector3.zero;
 
-        while (isWork && LocalTargetPoint != Vector3.zero)
+        while (isWork)
         {
-            if (isMoving == true || CheckSnakeProximity())
+            if ((IsMoving == true || CheckSnakeProximity()) && TargetPoint != Vector3.zero)
             {
                 Debug.Log("Start move!");
 
@@ -63,34 +65,34 @@ public class BeastMover : MonoBehaviour
                     if (_roadTargets.Count == 0)
                     {
                         isWork = false;
-                        EndMove();
+                        StopMoveRoutine();
                     }
                     else
                     {
                         globalTargetPosition = _roadTargets.Dequeue();
-                        isMoving = true;
+                        IsMoving = true;
                     }
                 }
 
-                if ((LocalTargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
+                if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
                 {
-                    transform.localPosition = LocalTargetPoint;
+                    transform.localPosition = TargetPoint;
 
-                    if (LocalTargetPoint == globalTargetPosition)
+                    if (TargetPoint == globalTargetPosition)
                     {
-                        isMoving = false;
+                        IsMoving = false;
                         globalTargetPosition = Vector3.zero;
                         Debug.Log("Stop move!");
                     }
                     else if (_beast.TryGetNextRoadPosition(out Vector3 nextPosition))
                     {
-                        LocalTargetPoint = nextPosition;
+                        TargetPoint = nextPosition;
                         Debug.Log("Next move!");
                     }
                 }
 
 
-                transform.localPosition = Vector3.MoveTowards(transform.localPosition, LocalTargetPoint, _snakeHead.Speed * _speedMultiplier * Time.deltaTime);
+                transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, _snakeHead.Speed * _speedMultiplier * Time.deltaTime);
             }
 
             yield return null;
@@ -99,15 +101,13 @@ public class BeastMover : MonoBehaviour
 
     private bool CheckSnakeProximity()
     {
-        if (_snakeHead.TryGetRoadIndex(out int snakeIndex) && _beast.TryGetRoadIndex(LocalTargetPoint, out int beastIndex))
+        if (_snakeHead.TryGetRoadIndex(out int snakeIndex) && _beast.TryGetRoadIndex(TargetPoint, out int beastIndex))
             return beastIndex - snakeIndex < _escapeTriggerDistance;
 
         return false;
     }
 
-
-
-    private void EndMove()
+    private void StopMoveRoutine()
     {
         if (_coroutine != null)
         {
@@ -115,6 +115,6 @@ public class BeastMover : MonoBehaviour
             _coroutine = null;
         }
 
-        Debug.Log("Move ENDED");
+        _beastRotator.StopRotateRoutine();
     }
 }

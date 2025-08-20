@@ -9,7 +9,7 @@ public class BeastSpawner : MonoBehaviour
     {
         road = UserUtils.GetRaisedRoad(road, _beastPrefab.transform.localScale.y / 2);
 
-        var beast = Instantiate(_beastPrefab);
+        var beast = Instantiate(_beastPrefab, transform);
         beast.Init(road, snakeHead);
     }
 }

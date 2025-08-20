@@ -61,7 +61,6 @@ public class SnakeRotator : MonoBehaviour
                     Quaternion targetRotation = Quaternion.LookRotation(_direction);
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _snakeHead.Speed * _speedMultiplier);
                 }
-
             }
 
             yield return null;

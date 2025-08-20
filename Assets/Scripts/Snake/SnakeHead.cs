@@ -135,8 +135,8 @@ public class SnakeHead : MonoBehaviour
 
         var point = _snakeSegment.SnakeMover.TargetPoint;
 
-        if (_road.Contains(point) && _road.Contains(beast.Mover.LocalTargetPoint)
-            && minRoadCountToBeast >= _road.IndexOf(point) - _road.IndexOf(beast.Mover.LocalTargetPoint))
+        if (_road.Contains(point) && _road.Contains(beast.Mover.TargetPoint)
+            && minRoadCountToBeast >= _road.IndexOf(point) - _road.IndexOf(beast.Mover.TargetPoint))
         {
             duration = (beast.transform.position - transform.position).magnitude;
         }
