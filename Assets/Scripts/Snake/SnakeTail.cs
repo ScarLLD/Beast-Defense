@@ -40,9 +40,9 @@ public class SnakeTail : MonoBehaviour
         _pool = new ObjectPool<SnakeSegment>(snakeSegmentPrefab, this.transform.parent);
     }
 
-    public void StartSpawn(Vector3 direction, List<SnakeSegment> segments)
+    public void StartSpawnRoutine(Vector3 direction, List<SnakeSegment> segments)
     {
-        _coroutine ??= StartCoroutine(Spawn(direction, segments));
+        _coroutine ??= StartCoroutine(SpawnRoutine(direction, segments));
     }
 
     private void EndSpawn()
@@ -54,7 +54,7 @@ public class SnakeTail : MonoBehaviour
         }
     }
 
-    private IEnumerator Spawn(Vector3 direction, List<SnakeSegment> segments)
+    private IEnumerator SpawnRoutine(Vector3 direction, List<SnakeSegment> segments)
     {
         Queue<CubeStack> stacks = new(_cubeStorage.GetStacks());
         Vector3 centerPoint;

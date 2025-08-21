@@ -58,8 +58,6 @@ public class BeastMover : MonoBehaviour
         {
             if ((IsMoving == true || CheckSnakeProximity()) && TargetPoint != Vector3.zero)
             {
-                Debug.Log("Start move!");
-
                 if (globalTargetPosition == Vector3.zero)
                 {
                     if (_roadTargets.Count == 0)
@@ -82,15 +80,12 @@ public class BeastMover : MonoBehaviour
                     {
                         IsMoving = false;
                         globalTargetPosition = Vector3.zero;
-                        Debug.Log("Stop move!");
                     }
                     else if (_beast.TryGetNextRoadPosition(out Vector3 nextPosition))
                     {
                         TargetPoint = nextPosition;
-                        Debug.Log("Next move!");
                     }
                 }
-
 
                 transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, _snakeHead.Speed * _speedMultiplier * Time.deltaTime);
             }

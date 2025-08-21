@@ -228,6 +228,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593f0c9eb8ebf42469616f045a60005e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _game: {fileID: 1469608301}
   _targetStorage: {fileID: 9171917265129906606}
   _snakePrefab: {fileID: 2371440335906684624, guid: 96a5fb1456a56ed4d88859044020f686, type: 3}
   _cubeStorage: {fileID: 529893071}
@@ -836,8 +837,8 @@ MonoBehaviour:
   _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1370593100}
   _availabilityManagement: {fileID: 529893072}
-  _rows: 8
-  _columns: 7
+  _rows: 0
+  _columns: 0
   _minX: -8
   _maxX: 8
   _minZ: -10

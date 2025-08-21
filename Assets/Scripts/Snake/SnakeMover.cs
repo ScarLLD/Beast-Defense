@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -5,17 +6,19 @@ using UnityEngine;
 public class SnakeMover : MonoBehaviour
 {
     private readonly float _lengthMultiplier = 1.5f;
-    private readonly float _arrivalThreshold = 0.01f;
+    private readonly float _arrivalThreshold = 0.05f;
     private float _thresholdBetweenSegments;
     private float _gapLengthBetweenSegments;
-    private bool isNewMover = true;
     private SnakeSegment _previousSegment;
     private SnakeHead _snakeHead;
     private Coroutine _coroutine;
+    private bool isNewMover = true;
 
     public float SpeedMultiplier { get; private set; } = 4f;
     public bool IsForwardMoving { get; private set; } = true;
     public Vector3 TargetPoint { get; private set; }
+
+    public event Action Arrival;
 
     public void InitLengths(float threshold, float gap)
     {
@@ -52,7 +55,7 @@ public class SnakeMover : MonoBehaviour
         }
     }
 
-    public void SetNextPosition(Vector3 targetPostion)
+    public bool TrySetNextPosition(Vector3 targetPostion)
     {
         if (_snakeHead.RoadCount > 0)
         {
@@ -61,15 +64,19 @@ public class SnakeMover : MonoBehaviour
             if (targetPostion == Vector3.zero && _snakeHead.TryGetFirstRoadPoint(out Vector3 firstPoint))
             {
                 TargetPoint = firstPoint;
+                return true;
             }
             else if (_snakeHead.TryGetNextRoadPoint(TargetPoint, out Vector3 nextPoint))
             {
                 TargetPoint = nextPoint;
+                return true;
             }
         }
+
+        return false;
     }
 
-    public void SetPreviousPosition()
+    public bool TrySetPreviousPosition()
     {
         if (_snakeHead.RoadCount > 0)
         {
@@ -78,8 +85,11 @@ public class SnakeMover : MonoBehaviour
             if (_snakeHead.TryGetPreviousRoadPoint(TargetPoint, out Vector3 previusPoint))
             {
                 TargetPoint = previusPoint;
+                return true;
             }
         }
+
+        return false;
     }
 
     private IEnumerator MoveToTarget()
@@ -87,7 +97,7 @@ public class SnakeMover : MonoBehaviour
         bool isWork = true;
         float initialSpeed = _snakeHead.Speed;
 
-        SetNextPosition(Vector3.zero);
+        TrySetNextPosition(Vector3.zero);
 
         while (isWork == true)
         {
@@ -119,30 +129,47 @@ public class SnakeMover : MonoBehaviour
 
                 if (IsForwardMoving == true && (lengthBetweenSegments > thresholdBetweenSegments) && isNewMover == false)
                 {
-                    SetPreviousPosition();
+                    TrySetPreviousPosition();
                 }
                 else if (IsForwardMoving == false && (lengthBetweenSegments <= gapLengthBetweenSegments))
                 {
-                    SetNextPosition(TargetPoint);
+                    TrySetNextPosition(TargetPoint);
                 }
             }
 
+            if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold == true)
+                Debug.Log("Дистанция приближения ниже указаной");
+
+
             if (TargetPoint != null && TargetPoint != Vector3.zero && (TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
             {
+                Debug.Log("Точка достигнута.");
+
                 transform.localPosition = TargetPoint;
                 isNewMover = false;
-                SelectPosition();
+
+                if (TrySelectPosition() == false)
+                {
+                    isWork = false;
+                    Debug.Log("Позиция не выбрана.");
+                }
+                else
+                    Debug.Log("Позиция выбрана.");
             }
 
             yield return null;
         }
+
+        Arrival?.Invoke();
     }
 
-    private void SelectPosition()
+    private bool TrySelectPosition()
     {
-        if (_previousSegment != null && IsForwardMoving == false)
-            SetPreviousPosition();
-        else
-            SetNextPosition(TargetPoint);
+        if (_previousSegment != null && IsForwardMoving == false && TrySetPreviousPosition())
+            return true;
+        else if (TrySetNextPosition(TargetPoint))
+            return true;
+
+        return false;
     }
 }

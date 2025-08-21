@@ -11,8 +11,6 @@ public class SnakeSpeedControl : MonoBehaviour
     private SnakeHead _snakeHead;
     private Coroutine _coroutine;
     private float _initialSpeed;
-    private bool _isSlowingDown = false;
-    private float _slowdownStartDistance;
 
     private void Awake()
     {
@@ -42,18 +40,20 @@ public class SnakeSpeedControl : MonoBehaviour
     private IEnumerator ControlSpeed()
     {
         bool isWork = true;
+        bool isSlowingDown = false;
+        float slowdownStartDistance = 0;
 
         while (isWork)
         {
             if (_snakeHead.CompareRoadPoint(_minRoadCountToEnd, _thresholdSlowdown, out float distanceToEnd))
             {
-                if (!_isSlowingDown)
+                if (isSlowingDown == false)
                 {
-                    _isSlowingDown = true;
-                    _slowdownStartDistance = distanceToEnd;
+                    isSlowingDown = true;
+                    slowdownStartDistance = distanceToEnd;
                 }
 
-                float progress = 1f - (distanceToEnd / _slowdownStartDistance);
+                float progress = 1f - (distanceToEnd / slowdownStartDistance);
 
                 float newSpeed = Mathf.Lerp(_initialSpeed, _minSpeed, progress);
                 _snakeHead.ChangeSpeed(newSpeed);
@@ -61,12 +61,12 @@ public class SnakeSpeedControl : MonoBehaviour
                 if (distanceToEnd <= 0.1f || newSpeed <= _minSpeed + 0.1f)
                 {
                     _snakeHead.ChangeSpeed(_minSpeed);
-                    _isSlowingDown = false;
+                    isSlowingDown = false;
                 }
             }
-            else if (_isSlowingDown)
+            else if (isSlowingDown)
             {
-                _isSlowingDown = false;
+                isSlowingDown = false;
                 _snakeHead.ChangeSpeed(_initialSpeed);
             }
 
