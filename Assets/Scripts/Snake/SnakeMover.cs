@@ -137,24 +137,15 @@ public class SnakeMover : MonoBehaviour
                 }
             }
 
-            if ((TargetPoint - transform.localPosition).magnitude < _arrivalThreshold == true)
-                Debug.Log("Дистанция приближения ниже указаной");
-
-
             if (TargetPoint != null && TargetPoint != Vector3.zero && (TargetPoint - transform.localPosition).magnitude < _arrivalThreshold)
             {
-                Debug.Log("Точка достигнута.");
-
                 transform.localPosition = TargetPoint;
                 isNewMover = false;
 
                 if (TrySelectPosition() == false)
                 {
                     isWork = false;
-                    Debug.Log("Позиция не выбрана.");
                 }
-                else
-                    Debug.Log("Позиция выбрана.");
             }
 
             yield return null;

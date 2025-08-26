@@ -33,8 +33,12 @@ public class RoadSpawner : MonoBehaviour
             _detector.transform.position = _road[1];
             _detector.EnableTrigger();
             _roadVizualizer.VisualizeRoad(_road);
+
             if (_snakeSpawner.TrySpawn(_road, out SnakeHead snakeHead))
-                _beastSpawner.Spawn(_road, snakeHead);
+            {
+                var beast = _beastSpawner.Spawn(_road, snakeHead);
+                snakeHead.InitBeast(beast);
+            }
         }
         else
         {

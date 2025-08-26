@@ -837,8 +837,8 @@ MonoBehaviour:
   _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1370593100}
   _availabilityManagement: {fileID: 529893072}
-  _rows: 0
-  _columns: 0
+  _rows: 8
+  _columns: 7
   _minX: -8
   _maxX: 8
   _minZ: -10
@@ -935,6 +935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1c0cd8185390b84bba1241c53a39dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _game: {fileID: 1469608301}
   _beastPrefab: {fileID: -8336317201343123663, guid: 79cfff96645791d4593426d1b5466aba, type: 3}
 --- !u!4 &1441411480
 Transform:

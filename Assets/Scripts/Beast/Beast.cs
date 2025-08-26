@@ -5,8 +5,11 @@ using UnityEngine;
 [RequireComponent(typeof(BeastMover), typeof(BeastRotator))]
 public class Beast : MonoBehaviour
 {
+    [SerializeField] private ParticleSystem _dieParticle;
+
     private List<Vector3> _road;
     private BeastRotator _beastRotator;
+    private Game _game;
 
     public BeastMover Mover { get; private set; }
 
@@ -16,14 +19,18 @@ public class Beast : MonoBehaviour
         Mover = GetComponent<BeastMover>();
     }
 
-    public void Init(List<Vector3> road, SnakeHead snakeHead)
+    public void Init(List<Vector3> road, SnakeHead snakeHead, Game game)
     {
         if (snakeHead == null)
             throw new ArgumentException("road не может быть null.", nameof(snakeHead));
 
+        if (game == null)
+            throw new ArgumentException("game не может быть null.", nameof(game));
+
         if (road == null || road.Count == 0)
             throw new ArgumentOutOfRangeException("road не может быть null или быть пустым.", nameof(road));
 
+        _game = game;
         _road = road;
 
         Mover.Init(snakeHead);
@@ -59,5 +66,14 @@ public class Beast : MonoBehaviour
             beastIndex = _road.IndexOf(position);
 
         return beastIndex != 0;
+    }
+
+    public void Destroy()
+    {
+        var particle = Instantiate(_dieParticle);
+        particle.transform.position = transform.position;
+        Destroy(this.gameObject);
+
+        _game.AnnounceGameOver("Зверь слопан.");
     }
 }

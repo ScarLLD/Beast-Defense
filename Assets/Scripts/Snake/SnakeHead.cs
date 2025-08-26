@@ -1,19 +1,20 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(SnakeSegment), typeof(SnakeTail), typeof(SnakeSpeedControl))]
+[RequireComponent(typeof(SnakeSegment), typeof(SnakeTail), typeof(SnakeMouth))]
 public class SnakeHead : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private SnakeSegment _snakeSegmentPrefab;
 
-    private SnakeSpeedControl _snakeSpeedControl;
     private List<SnakeSegment> _segments;
     private SnakeSegment _snakeSegment;
     private List<Vector3> _road;
     private SnakeTail _tail;
+    private SnakeMouth _snakeMouth;
     private Game _game;
     private bool _isSorting = false;
 
@@ -24,7 +25,7 @@ public class SnakeHead : MonoBehaviour
     {
         _tail = GetComponent<SnakeTail>();
         _snakeSegment = GetComponent<SnakeSegment>();
-        _snakeSpeedControl = GetComponent<SnakeSpeedControl>();
+        _snakeMouth = GetComponent<SnakeMouth>();
     }
 
     private void Start()
@@ -35,11 +36,6 @@ public class SnakeHead : MonoBehaviour
     private void OnDisable()
     {
         _snakeSegment.SnakeMover.Arrival -= OnSnakeArrival;
-    }
-
-    private void OnSnakeArrival()
-    {
-        _game.AnnounceGameOver("«мей добралс€ до звер€.");
     }
 
     public void ChangeSpeed(float speed)
@@ -53,6 +49,11 @@ public class SnakeHead : MonoBehaviour
         _road = road;
 
         _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab, targetStorage);
+    }
+
+    public void InitBeast(Beast beast)
+    {
+        _snakeMouth.Init(beast);
     }
 
     public void CreateTail()
@@ -162,5 +163,10 @@ public class SnakeHead : MonoBehaviour
 
             _isSorting = false;
         }
+    }
+
+    private void OnSnakeArrival()
+    {
+        _game.AnnounceGameOver("«мей добралс€ до звер€.");
     }
 }
