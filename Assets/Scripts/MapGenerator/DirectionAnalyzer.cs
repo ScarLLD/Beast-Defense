@@ -6,8 +6,6 @@ public class DirectionAnalyzer : MonoBehaviour
 {
     [SerializeField] private BoundaryMaker _boundaryMaker;
 
-    private RoadSpawner _road;
-
     public float LeftBoundX { get; private set; }
     public float RightBoundX { get; private set; }
     public float UpperBoundZ { get; private set; }
@@ -16,11 +14,6 @@ public class DirectionAnalyzer : MonoBehaviour
     public bool IsLeftBound(Vector3 point) => CompareDifference(point.x, LeftBoundX);
     public bool IsRightBound(Vector3 point) => CompareDifference(point.x, RightBoundX);
     public bool IsUpperBound(Vector3 point) => CompareDifference(point.z, UpperBoundZ);
-
-    private void Awake()
-    {
-        _road = GetComponent<RoadSpawner>();
-    }
 
     private void OnEnable()
     {
@@ -38,8 +31,6 @@ public class DirectionAnalyzer : MonoBehaviour
         UpperBoundZ = _points[1].z;
         RightBoundX = _points[2].x;
         LowerBoundZ = _points[3].z * 0.25f;
-
-        _road.Spawn();
     }
 
     public Vector3 GetValidDirection(Vector3 point)

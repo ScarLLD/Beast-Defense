@@ -4,11 +4,8 @@ using System.Collections.Generic;
 [RequireComponent(typeof(RoadVizualizer), typeof(DirectionAnalyzer))]
 public class RoadSpawner : MonoBehaviour
 {
-    [SerializeField] private SnakeSpawner _snakeSpawner;
-    [SerializeField] private BeastSpawner _beastSpawner;
     [SerializeField] private RoadVizualizer _roadVizualizer;
     [SerializeField] private BoundaryMaker _boundaryMaker;
-    [SerializeField] private TargetDetector _detector;
     [SerializeField] private float _segmentLength = 2f;
     [SerializeField] private int _minPathSegments = 5;
     [SerializeField] private int _maxPathSegments = 15;
@@ -26,24 +23,22 @@ public class RoadSpawner : MonoBehaviour
         _limiter = GetComponent<RoadLimiter>();
     }
 
-    public void Spawn()
+    public bool TrySpawn(out List<Vector3> road)
     {
+        road = null;
+
         if (GenerateValidRoad())
         {
-            _detector.transform.position = _road[1];
-            _detector.EnableTrigger();
+            road = _road;
             _roadVizualizer.VisualizeRoad(_road);
-
-            if (_snakeSpawner.TrySpawn(_road, out SnakeHead snakeHead))
-            {
-                var beast = _beastSpawner.Spawn(_road, snakeHead);
-                snakeHead.InitBeast(beast);
-            }
+            return true;
         }
         else
         {
             Debug.LogWarning("Не удалось сгенерировать дорогу.");
         }
+
+        return false;
     }
 
     private bool GenerateRoad()

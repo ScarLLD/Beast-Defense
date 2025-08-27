@@ -749,11 +749,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cb1304ee65920d4c833c6f1e0f6e91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _snakeSpawner: {fileID: 437241863}
-  _beastSpawner: {fileID: 1441411479}
   _roadVizualizer: {fileID: 979470877}
   _boundaryMaker: {fileID: 1370593100}
-  _detector: {fileID: 2645583919960169801}
   _segmentLength: 4
   _minPathSegments: 10
   _maxPathSegments: 15
@@ -830,13 +827,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e61a8740f20574482718c317d59621, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1469608301}
   _cubePrefab: {fileID: 1900071841244829645, guid: c309c790d98bd9b45a4ae1212065f2a7, type: 3}
   _cellPrefab: {fileID: 4139206488417349038, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
   _gridStorage: {fileID: 1295288259}
   _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1370593100}
-  _availabilityManagement: {fileID: 529893072}
   _rows: 8
   _columns: 7
   _minX: -8
@@ -887,7 +882,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5588065a101592044b292902ef342c20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1469608301}
   _pointPrefab: {fileID: 4878386789434510162, guid: ce0e995862c4ac944b6d7aa630ad8ee1, type: 3}
   _lineMeterial: {fileID: 2100000, guid: 3d96b70da33c5a24cb58812461d00eed, type: 2}
   _borderReduction: 0.9
@@ -963,6 +957,7 @@ GameObject:
   - component: {fileID: 1469608302}
   - component: {fileID: 1469608301}
   - component: {fileID: 1469608303}
+  - component: {fileID: 1469608304}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -1011,6 +1006,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _game: {fileID: 1469608301}
   _rayDirection: 100
+--- !u!114 &1469608304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1469608300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 438ea0957dd099548994fdc016ed031c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  game: {fileID: 0}
+  _boundaryMaker: {fileID: 0}
+  _gridCreator: {fileID: 0}
+  _splineCreator: {fileID: 0}
+  _roadSpawner: {fileID: 0}
+  _detector: {fileID: 0}
+  _cubeCreator: {fileID: 0}
+  _snakeSpawner: {fileID: 0}
+  _bastSpawner: {fileID: 0}
+  _availabilityManagement: {fileID: 0}
 --- !u!1 &1716784348
 GameObject:
   m_ObjectHideFlags: 0

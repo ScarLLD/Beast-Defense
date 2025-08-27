@@ -13,11 +13,14 @@ public class CubeCreator : MonoBehaviour
     [SerializeField]
     private List<int> _counts = new();
 
-    public void CreateCubes()
+    public bool TryCreate()
     {
         if (_gridStorage.GridCount > 0)
         {
             int gridCount = _gridStorage.GridCount;
+
+            if (gridCount == 0)
+                return false;
 
             for (int i = 0; i < gridCount; i++)
             {
@@ -29,6 +32,10 @@ public class CubeCreator : MonoBehaviour
                     _cubeSpawner.Spawn(material, count, gridCell);
                 }
             }
+
+            return true;
         }
+
+        return false;
     }
 }

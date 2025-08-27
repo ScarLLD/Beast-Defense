@@ -3,14 +3,11 @@ using UnityEngine;
 
 public class GridCreator : MonoBehaviour
 {
-    [SerializeField] private Game _game;
-
     [SerializeField] private Cube _cubePrefab;
     [SerializeField] private GridCell _cellPrefab;
     [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private CubeCreator _cubeCreator;
-    [SerializeField] private BoundaryMaker _boundaryMaker;
-    [SerializeField] private AvailabilityManagement _availabilityManagement;
+    [SerializeField] private BoundaryMaker _boundaryMaker;    
 
     [SerializeField] private int _rows;
     [SerializeField] private int _columns;
@@ -25,31 +22,16 @@ public class GridCreator : MonoBehaviour
 
     public event Action Created;
 
-    private void OnEnable()
-    {
-        _game.Started += OnGameStarted;
-    }
-
-    private void OnDisable()
-    {
-        _game.Started -= OnGameStarted;
-    }
-
-    private void OnGameStarted()
+    private void Start()
     {
         if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
             transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cellPrefab.transform.localScale.y / 2, bottomScreenCenter.z);
 
         _objectWidth = _cubePrefab.transform.localScale.x;
         _objectDepth = _cubePrefab.transform.localScale.z;
-
-        CreateGrid();
-        _cubeCreator.CreateCubes();
-        _gridStorage.CreateCells(_rows, _columns);
-        _availabilityManagement.UpdateAvailability();
     }
 
-    public void CreateGrid()
+    public bool TryCreate()
     {
         float availableSpaceX = _maxX - _minX - (_columns * _objectWidth);
         float availableSpaceZ = _maxZ - _minZ - (_rows * _objectDepth);
@@ -57,7 +39,7 @@ public class GridCreator : MonoBehaviour
         if (availableSpaceX < 0 || availableSpaceZ < 0)
         {
             Debug.LogError("Недостаточно места для сетки.");
-            return;
+            return false;
         }
 
         float spacingX = availableSpaceX / (_columns - 1);
@@ -78,7 +60,12 @@ public class GridCreator : MonoBehaviour
             }
         }
 
-        Created?.Invoke();
-    }
+        if (_gridStorage.GridCount == 0)
+            return false;
+        else
+            _gridStorage.CreateCells(_rows, _columns);
 
+        Created?.Invoke();
+        return true;
+    }
 }

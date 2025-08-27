@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class BoundaryMaker : MonoBehaviour
 {
-    [SerializeField] private Game _game;
     [SerializeField] private GameObject _pointPrefab;
     [SerializeField] private Material _lineMeterial;
 
@@ -22,16 +21,6 @@ public class BoundaryMaker : MonoBehaviour
         _planePoints = new List<Vector3>();
         _lines = new List<LineRenderer>();
         _camera = Camera.main;
-    }
-
-    private void OnEnable()
-    {
-        _game.Started += GeneratePathMarkers;
-    }
-
-    private void OnDisable()
-    {
-        _game.Started -= GeneratePathMarkers;
     }
 
     public Vector3 GetRandomPointOnRandomLine()
@@ -57,7 +46,7 @@ public class BoundaryMaker : MonoBehaviour
         return bottomScreenCenter != Vector3.zero;
     }
 
-    private void GeneratePathMarkers()
+    public bool TryGeneratePathMarkers()
     {
         float partHeight = _camera.pixelHeight * _borderReduction;
 
@@ -82,6 +71,8 @@ public class BoundaryMaker : MonoBehaviour
 
         CreateBorderLines();
         PointsInitialized?.Invoke(_planePoints);
+
+        return _planePoints.Count > 0;
     }
 
     private void CreateBorderLines()
