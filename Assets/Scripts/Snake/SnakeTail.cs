@@ -16,7 +16,7 @@ public class SnakeTail : MonoBehaviour
     private TargetStorage _targetStorage;
     private SnakeSegment _lastSegment;
     private SnakeHead _snakeHead;
-    private CubeStorage _cubeStorage;
+    private Queue<CubeStack> _stacks;
     private Cube _cubePrefab;
 
     private ObjectPool<SnakeSegment> _pool;
@@ -31,13 +31,13 @@ public class SnakeTail : MonoBehaviour
         EndSpawn();
     }
 
-    public void Init(CubeStorage cubeStorage, Cube cubePrefab, SnakeSegment snakeSegmentPrefab, TargetStorage targetStorage)
+    public void Init(List<CubeStack> stacks, Cube cubePrefab, SnakeSegment snakeSegmentPrefab, TargetStorage targetStorage)
     {
-        _cubeStorage = cubeStorage;
         _cubePrefab = cubePrefab;
         _targetStorage = targetStorage;
 
-        _pool = new ObjectPool<SnakeSegment>(snakeSegmentPrefab, this.transform.parent);
+        _stacks = new Queue<CubeStack>(stacks);
+        _pool = new ObjectPool<SnakeSegment>(snakeSegmentPrefab, transform.parent);
     }
 
     public void StartSpawnRoutine(Vector3 direction, List<SnakeSegment> segments)
@@ -56,16 +56,15 @@ public class SnakeTail : MonoBehaviour
 
     private IEnumerator SpawnRoutine(Vector3 direction, List<SnakeSegment> segments)
     {
-        Queue<CubeStack> stacks = new(_cubeStorage.GetStacks());
         Vector3 centerPoint;
 
         bool isWork = true;
 
         while (isWork)
         {
-            if (segments.Count - _targetStorage.Count < 10 && stacks.Count > 0)
+            if (segments.Count - _targetStorage.Count < 10 && _stacks.Count > 0)
             {
-                var stack = stacks.Dequeue();
+                var stack = _stacks.Dequeue();
                 int segmentCount = stack.Count / 4;
 
                 if (stack == null)

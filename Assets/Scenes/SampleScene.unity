@@ -228,10 +228,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593f0c9eb8ebf42469616f045a60005e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1469608301}
   _targetStorage: {fileID: 9171917265129906606}
-  _snakePrefab: {fileID: 2371440335906684624, guid: 96a5fb1456a56ed4d88859044020f686, type: 3}
-  _cubeStorage: {fileID: 529893071}
+  _snakePrefab: {fileID: 1056603179970402766, guid: d9447595fb08d8241add5f1bf8bfca5a, type: 3}
 --- !u!1 &442903041
 GameObject:
   m_ObjectHideFlags: 0
@@ -439,6 +437,70 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _gridStorage: {fileID: 1295288259}
+--- !u!1 &561811625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 561811628}
+  - component: {fileID: 561811627}
+  - component: {fileID: 561811626}
+  m_Layer: 0
+  m_Name: Spline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &561811626
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561811625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f32133697296013498a095693c554571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roadMaterial: {fileID: 2100000, guid: c04ac38b63c2ea842b7b9364f204f7e1, type: 2}
+  _roadWidth: 2.5
+  _textureTiling: 0
+  _endPlatformRadius: 1.6
+  _platformSegments: 16
+  _resolution: 500
+--- !u!114 &561811627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561811625}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84e5315938d3f5c438184b9b360788e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tangentLength: 1
+--- !u!4 &561811628
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561811625}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 33.327335, y: -69.745, z: 21.051178}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,7 +761,6 @@ GameObject:
   m_Component:
   - component: {fileID: 979470872}
   - component: {fileID: 979470874}
-  - component: {fileID: 979470877}
   - component: {fileID: 979470876}
   - component: {fileID: 979470875}
   m_Layer: 0
@@ -749,7 +810,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cb1304ee65920d4c833c6f1e0f6e91f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roadVizualizer: {fileID: 979470877}
   _boundaryMaker: {fileID: 1370593100}
   _segmentLength: 4
   _minPathSegments: 10
@@ -769,22 +829,6 @@ MonoBehaviour:
   _boundaryMargin: 1
   _radiusBetweenSegments: 1.5
   _endPointMargin: 3
---- !u!114 &979470877
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 979470867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2091bae87aadf184bbcef25b4b090fb0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _pathRoadPrefab: {fileID: 4878386789434510162, guid: ce0e995862c4ac944b6d7aa630ad8ee1, type: 3}
-  _pathCornerPrefab: {fileID: 8528694946071126882, guid: c19e6eff656f21f49bd4b6a3ab18ac84, type: 3}
-  _prefabScale: 2.5
-  _prefabScaleYmultiplier: 0.0001
 --- !u!1 &1295288258
 GameObject:
   m_ObjectHideFlags: 0
@@ -1018,16 +1062,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 438ea0957dd099548994fdc016ed031c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  game: {fileID: 0}
-  _boundaryMaker: {fileID: 0}
-  _gridCreator: {fileID: 0}
-  _splineCreator: {fileID: 0}
-  _roadSpawner: {fileID: 0}
-  _detector: {fileID: 0}
-  _cubeCreator: {fileID: 0}
-  _snakeSpawner: {fileID: 0}
-  _bastSpawner: {fileID: 0}
-  _availabilityManagement: {fileID: 0}
+  _game: {fileID: 1469608301}
+  _boundaryMaker: {fileID: 1370593100}
+  _gridCreator: {fileID: 1295288260}
+  _splineCreator: {fileID: 561811627}
+  _roadSpawner: {fileID: 979470875}
+  _splineRoad: {fileID: 561811626}
+  _detector: {fileID: 2645583919960169801}
+  _cubeCreator: {fileID: 529893070}
+  _cubeStorage: {fileID: 529893071}
+  _snakeSpawner: {fileID: 437241863}
+  _bastSpawner: {fileID: 1441411479}
+  _availabilityManagement: {fileID: 529893072}
 --- !u!1 &1716784348
 GameObject:
   m_ObjectHideFlags: 0
@@ -1266,6 +1312,7 @@ SceneRoots:
   - {fileID: 1295288261}
   - {fileID: 437241862}
   - {fileID: 979470872}
+  - {fileID: 561811628}
   - {fileID: 1441411480}
   - {fileID: 1370593101}
   - {fileID: 117216349}

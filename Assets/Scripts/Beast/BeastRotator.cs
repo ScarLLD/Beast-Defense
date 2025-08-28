@@ -4,11 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(BeastMover))]
 public class BeastRotator : MonoBehaviour
 {
-    private readonly float _speedMultiplier = 5f;
+    private float _rotationSpeed;
     private Coroutine _coroutine;
-    private SnakeHead _snakeHead;
     private BeastMover _beastMover;
     private Vector3 _direction;
+    private Snake _snake;
 
     private void Awake()
     {
@@ -20,9 +20,9 @@ public class BeastRotator : MonoBehaviour
         StopRotateRoutine();
     }
 
-    public void Init(SnakeHead snakeHead)
+    public void Init(Snake snake)
     {
-        _snakeHead = snakeHead;
+        _snake = snake;
     }
 
     public void StartRotateRoutine()
@@ -44,9 +44,8 @@ public class BeastRotator : MonoBehaviour
             if (_direction != Vector3.zero)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(_direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _snakeHead.Speed * _speedMultiplier);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
             }
-
 
             yield return null;
         }

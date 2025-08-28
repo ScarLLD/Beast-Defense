@@ -27,8 +27,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -46,7 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 1
   _rotationSpeed: 200
-  _initialLength: 15
-  _segmentDistance: 0.6
+  _initialLength: 400
+  _segmentDistance: 0.7
+  _rotationSmoothness: 5
   _segmentPrefab: {fileID: 4251143158575705588, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
   _headPrefab: {fileID: 7123472319561932084, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}

@@ -19,13 +19,13 @@ public class Beast : MonoBehaviour
         Mover = GetComponent<BeastMover>();
     }
 
-    public void Init(List<Vector3> road, SnakeHead snakeHead, Game game)
+    public void Init(List<Vector3> road, Snake snake, Game game)
     {
-        if (snakeHead == null)
-            throw new ArgumentException("road не может быть null.", nameof(snakeHead));
+        if (snake == null)
+            throw new ArgumentException("road не может быть null.", nameof(snake));
 
         if (game == null)
-            throw new ArgumentException("game не может быть null.", nameof(game));
+            throw new ArgumentException("_game не может быть null.", nameof(game));
 
         if (road == null || road.Count == 0)
             throw new ArgumentOutOfRangeException("road не может быть null или быть пустым.", nameof(road));
@@ -33,11 +33,11 @@ public class Beast : MonoBehaviour
         _game = game;
         _road = road;
 
-        Mover.Init(snakeHead);
+        Mover.Init(snake);
         Mover.SetRoadTarget(_road);
         Mover.StartMoveRoutine();
 
-        _beastRotator.Init(snakeHead);
+        _beastRotator.Init(snake);
         _beastRotator.StartRotateRoutine();
     }
 

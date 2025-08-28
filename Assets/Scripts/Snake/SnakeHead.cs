@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -43,12 +44,12 @@ public class SnakeHead : MonoBehaviour
         _speed = speed;
     }
 
-    public void Init(Game game, CubeStorage cubeStorage, List<Vector3> road, TargetStorage targetStorage)
+    public void Init(Game game, List<CubeStack> stacks, List<Vector3> road, TargetStorage targetStorage)
     {
         _game = game;
         _road = road;
 
-        _tail.Init(cubeStorage, _cubePrefab, _snakeSegmentPrefab, targetStorage);
+        _tail.Init(stacks, _cubePrefab, _snakeSegmentPrefab, targetStorage);
     }
 
     public void InitBeast(Beast beast)

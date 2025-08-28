@@ -8,9 +8,9 @@ public class Snake : MonoBehaviour
 
     [Header("Snake Settings")]
     [SerializeField] private float _moveSpeed = 2f;
-    [SerializeField] private float _rotationSpeed = 90f;
-    [SerializeField] private int _initialLength = 5;
-    [SerializeField] private float _segmentDistance = 0.5f;
+    [SerializeField] private float _rotationSpeed = 200f;
+    [SerializeField] private int _initialLength = 15;
+    [SerializeField] private float _segmentDistance = 2f;
     [SerializeField] private float _rotationSmoothness = 5f;
 
     [Header("Prefabs")]
@@ -22,6 +22,9 @@ public class Snake : MonoBehaviour
     private Transform _head;
     private bool _reachedEnd = false;
     private float _splineLength;
+
+    public float NormalizedDistance { get; private set; }
+    public float MoveSpeed => _moveSpeed;
 
     public void InitializeSnake(SplineContainer splineContainer)
     {
@@ -35,17 +38,15 @@ public class Snake : MonoBehaviour
         _head = Instantiate(_headPrefab, transform).transform;
         _segments = new Transform[_initialLength];
 
-        // Создаем сегменты тела
         for (int i = 0; i < _initialLength; i++)
         {
             _segments[i] = Instantiate(_segmentPrefab, transform).transform;
         }
 
-        // Позиционируем голову в начале сплайна
         MoveHeadToStart();
     }
 
-    void MoveHeadToStart()
+    private void MoveHeadToStart()
     {
         if (_splineContainer == null) return;
 
@@ -58,7 +59,7 @@ public class Snake : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         if (_splineContainer == null) return;
 
@@ -67,26 +68,23 @@ public class Snake : MonoBehaviour
         UpdateSegments();
     }
 
-    void HandleInput()
+    private void HandleInput()
     {
         if (_reachedEnd) return;
 
-        // Управление с клавиатуры
         float horizontal = Input.GetAxis("Horizontal");
         _moveSpeed += horizontal * _rotationSpeed * Time.deltaTime;
         _moveSpeed = Mathf.Clamp(_moveSpeed, 1f, 10f);
     }
 
-    void MoveAlongSpline()
+    private void MoveAlongSpline()
     {
         if (_splineContainer == null || _splineContainer.Spline == null || _head == null) return;
 
-        // Двигаемся только если не достигли конца
         if (!_reachedEnd)
         {
             _currentDistance += _moveSpeed * Time.deltaTime;
 
-            // Проверяем достижение конца
             if (_currentDistance >= _splineLength)
             {
                 _currentDistance = _splineLength;
@@ -98,11 +96,12 @@ public class Snake : MonoBehaviour
         UpdateHeadPosition();
     }
 
-    void UpdateHeadPosition()
+    private void UpdateHeadPosition()
     {
-        float normalizedDistance = Mathf.Clamp01(_currentDistance / _splineLength);
+        NormalizedDistance = Mathf.Clamp01(_currentDistance / _splineLength);
+        Debug.Log(NormalizedDistance);
 
-        _splineContainer.Evaluate(normalizedDistance,
+        _splineContainer.Evaluate(NormalizedDistance,
             out float3 position, out float3 tangent, out float3 upVector);
 
         _head.position = position;
@@ -115,15 +114,15 @@ public class Snake : MonoBehaviour
         }
     }
 
-    void UpdateSegments()
+    private void UpdateSegments()
     {
         if (_segments == null || _segments.Length == 0 || _splineContainer == null) return;
 
         for (int i = 0; i < _segments.Length; i++)
         {
-            float segmentDist = _currentDistance - _segmentDistance * (i + 1);
+            // Увеличиваем расстояние между сегментами
+            float segmentDist = _currentDistance - _segmentDistance * (i + 1) * 1.5f;
 
-            // Если сегмент еще не должен появиться
             if (segmentDist < 0)
             {
                 _segments[i].gameObject.SetActive(false);
@@ -132,25 +131,13 @@ public class Snake : MonoBehaviour
 
             _segments[i].gameObject.SetActive(true);
 
-            // Обрабатываем зацикливание (если нужно)
-            if (_reachedEnd)
-            {
-                segmentDist = Mathf.Clamp(segmentDist, 0, _splineLength);
-            }
-            else
-            {
-                segmentDist %= _splineLength;
-            }
-
             float normalizedDistance = Mathf.Clamp01(segmentDist / _splineLength);
 
             _splineContainer.Evaluate(normalizedDistance,
                 out float3 position, out float3 tangent, out float3 upVector);
 
-            // Позиция
             _segments[i].position = position;
 
-            // Поворот - каждый сегмент имеет свой собственный целевой поворот
             if (((Vector3)tangent).magnitude > 0.1f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation((Vector3)tangent, (Vector3)upVector);
@@ -162,11 +149,9 @@ public class Snake : MonoBehaviour
 
     public void AddSegment()
     {
-        // Увеличиваем массив сегментов
         Transform[] newSegments = new Transform[_segments.Length + 1];
         _segments.CopyTo(newSegments, 0);
 
-        // Создаем новый сегмент
         newSegments[^1] = Instantiate(_segmentPrefab, transform).transform;
         newSegments[^1].gameObject.SetActive(false); // Сначала скрываем
 
@@ -180,7 +165,6 @@ public class Snake : MonoBehaviour
         _moveSpeed = 2f;
         MoveHeadToStart();
 
-        // Активируем все сегменты
         foreach (var segment in _segments)
         {
             if (segment != null)
@@ -204,7 +188,6 @@ public class Snake : MonoBehaviour
     {
         if (_splineContainer != null && _splineContainer.Spline != null)
         {
-            // Рисуем сплайн
             Gizmos.color = Color.green;
             for (float t = 0; t < 1f; t += 0.02f)
             {
@@ -212,7 +195,6 @@ public class Snake : MonoBehaviour
                 Gizmos.DrawSphere((Vector3)position, 0.1f);
             }
 
-            // Рисуем позицию головы
             if (Application.isPlaying)
             {
                 Gizmos.color = Color.red;

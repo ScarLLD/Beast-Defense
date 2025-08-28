@@ -1,10 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(RoadVizualizer), typeof(DirectionAnalyzer))]
+[RequireComponent(typeof(DirectionAnalyzer))]
 public class RoadSpawner : MonoBehaviour
 {
-    [SerializeField] private RoadVizualizer _roadVizualizer;
     [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private float _segmentLength = 2f;
     [SerializeField] private int _minPathSegments = 5;
@@ -30,7 +29,6 @@ public class RoadSpawner : MonoBehaviour
         if (GenerateValidRoad())
         {
             road = _road;
-            _roadVizualizer.VisualizeRoad(_road);
             return true;
         }
         else

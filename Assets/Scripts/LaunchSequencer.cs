@@ -4,26 +4,28 @@ using UnityEngine.Splines;
 
 public class LaunchSequencer : MonoBehaviour
 {
-    [SerializeField] private Game game;
+    [SerializeField] private Game _game;
 
     [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private GridCreator _gridCreator;
     [SerializeField] private SplineCreator _splineCreator;
     [SerializeField] private RoadSpawner _roadSpawner;
+    [SerializeField] private SplineRoad _splineRoad;
     [SerializeField] private TargetDetector _detector;
     [SerializeField] private CubeCreator _cubeCreator;
+    [SerializeField] private CubeStorage _cubeStorage;
     [SerializeField] private SnakeSpawner _snakeSpawner;
     [SerializeField] private BeastSpawner _bastSpawner;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
 
     private void OnEnable()
     {
-        game.Started += OnGameStarted;
+        _game.Started += OnGameStarted;
     }
 
     private void OnDisable()
     {
-        game.Started -= OnGameStarted;
+        _game.Started -= OnGameStarted;
     }
 
     private void OnGameStarted()
@@ -34,14 +36,14 @@ public class LaunchSequencer : MonoBehaviour
 
             if (_roadSpawner.TrySpawn(out List<Vector3> road)
                 && _splineCreator.TryCreateSplineWith90DegreeCorners(road, out SplineContainer splineContainer)
-                && _snakeSpawner.TrySpawn(road, out SnakeHead snakeHead)
-                && _bastSpawner.TrySpawn(road, snakeHead, out Beast beast))
+                && _splineRoad.TryGenerateRoadFromSpline(splineContainer) 
+                && _snakeSpawner.TrySpawn(_game, road, _cubeStorage.GetStacks(), splineContainer, out Snake snake)
+                && _bastSpawner.TrySpawn(road, snake, out Beast beast))
             {
                 _detector.transform.position = road[1];
                 _detector.EnableTrigger();
-                beast.Init(road, snakeHead, game);
+                beast.Init(road, snake, _game);
             }
         }
-
     }
 }

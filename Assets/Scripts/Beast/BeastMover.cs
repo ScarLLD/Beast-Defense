@@ -10,7 +10,7 @@ public class BeastMover : MonoBehaviour
     private readonly float _arrivalThreshold = 0.01f;
     private Queue<Vector3> _roadTargets;
     private Coroutine _coroutine;
-    private SnakeHead _snakeHead;
+    private Snake _snake;
     private BeastRotator _beastRotator;
     private Beast _beast;
 
@@ -23,9 +23,9 @@ public class BeastMover : MonoBehaviour
         _beastRotator = GetComponent<BeastRotator>();
     }
 
-    public void Init(SnakeHead snakeHead)
+    public void Init(Snake snake)
     {
-        _snakeHead = snakeHead;
+        _snake = snake;
     }
 
     public void SetRoadTarget(List<Vector3> road)
@@ -87,7 +87,7 @@ public class BeastMover : MonoBehaviour
                     }
                 }
 
-                transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, _snakeHead.Speed * _speedMultiplier * Time.deltaTime);
+                transform.localPosition = Vector3.MoveTowards(transform.localPosition, TargetPoint, _snake.MoveSpeed * _speedMultiplier * Time.deltaTime);
             }
 
             yield return null;
@@ -96,10 +96,7 @@ public class BeastMover : MonoBehaviour
 
     private bool CheckSnakeProximity()
     {
-        if (_snakeHead.TryGetRoadIndex(out int snakeIndex) && _beast.TryGetRoadIndex(TargetPoint, out int beastIndex))
-            return beastIndex - snakeIndex < _escapeTriggerDistance;
-
-        return false;
+        return false; //_snake.GetRoadCompletionNumber - _beast.E         
     }
 
     private void StopMoveRoutine()
