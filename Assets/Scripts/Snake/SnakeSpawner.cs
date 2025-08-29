@@ -12,7 +12,7 @@ public class SnakeSpawner : MonoBehaviour
         AlignSpline(splineContainer);
 
         snake = Instantiate(_snakePrefab, transform);
-        snake.InitializeSnake(splineContainer);
+        snake.InitializeSnake(stacks, splineContainer);
     }
 
     private void AlignSpline(SplineContainer splineContainer)

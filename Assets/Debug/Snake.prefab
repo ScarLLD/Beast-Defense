@@ -46,8 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _moveSpeed: 1
   _rotationSpeed: 1
-  _initialLength: 400
   _segmentDistance: 0.55
   _rotationSmoothness: 20
-  _segmentPrefab: {fileID: 4251143158575705588, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
+  _segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
   _headPrefab: {fileID: 7123472319561932084, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}

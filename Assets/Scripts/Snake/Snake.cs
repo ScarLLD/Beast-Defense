@@ -1,34 +1,46 @@
 ﻿using UnityEngine;
 using UnityEngine.Splines;
 using Unity.Mathematics;
+using System.Collections.Generic;
+using UnityEngine.ProBuilder.Shapes;
 
 public class Snake : MonoBehaviour
 {
-    private SplineContainer _splineContainer;
-
     [Header("Snake Settings")]
     [SerializeField] private float _moveSpeed = 2f;
     [SerializeField] private float _rotationSpeed = 200f;
-    [SerializeField] private int _initialLength = 15;
     [SerializeField] private float _segmentDistance = 2f;
     [SerializeField] private float _rotationSmoothness = 5f;
 
     [Header("Prefabs")]
-    [SerializeField] private GameObject _segmentPrefab;
+    [SerializeField] private SnakeSegment _segmentPrefab;
     [SerializeField] private GameObject _headPrefab;
 
-    private float _currentDistance;
-    private Transform[] _segments;
+    private Queue<CubeStack> _stacks;
+    private SplineContainer _splineContainer;
+    private SnakeSegment[] _segments;
     private Transform _head;
-    private bool _reachedEnd = false;
+    private float _currentDistance;
     private float _splineLength;
+    private bool _reachedEnd = false;
 
     public float NormalizedDistance { get; private set; }
     public float MoveSpeed => _moveSpeed;
 
-    public void InitializeSnake(SplineContainer splineContainer)
+    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer)
     {
+        _stacks = new Queue<CubeStack>(stacks);
         _splineContainer = splineContainer;
+
+        int stacksLength = 0;
+
+        foreach (var stack in stacks)
+        {
+            stacksLength += stack.Count;
+        }
+
+        int initialLength = stacksLength / 4;
+        Debug.Log(initialLength);
 
         if (_splineContainer != null && _splineContainer.Spline != null)
         {
@@ -36,11 +48,20 @@ public class Snake : MonoBehaviour
         }
 
         _head = Instantiate(_headPrefab, transform).transform;
-        _segments = new Transform[_initialLength];
+        _segments = new SnakeSegment[initialLength];
 
-        for (int i = 0; i < _initialLength; i++)
+        int index = 0;
+
+        while (_stacks.Count > 0)
         {
-            _segments[i] = Instantiate(_segmentPrefab, transform).transform;
+            var stack = _stacks.Dequeue();
+
+            for (int i = 0; i < stack.Count / 4; i++)
+            {
+                _segments[index] = Instantiate(_segmentPrefab, transform);
+                _segments[index].Init(stack.Material);
+                index++;
+            }
         }
 
         MoveHeadToStart();
@@ -134,12 +155,12 @@ public class Snake : MonoBehaviour
             _splineContainer.Evaluate(normalizedDistance,
                 out float3 position, out float3 tangent, out float3 upVector);
 
-            _segments[i].position = position;
+            _segments[i].transform.position = position;
 
             if (((Vector3)tangent).magnitude > 0.1f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation((Vector3)tangent, (Vector3)upVector);
-                _segments[i].rotation = Quaternion.Slerp(_segments[i].rotation, targetRotation,
+                _segments[i].transform.rotation = Quaternion.Slerp(_segments[i].transform.rotation, targetRotation,
                     _rotationSmoothness * Time.deltaTime);
             }
         }
@@ -147,10 +168,10 @@ public class Snake : MonoBehaviour
 
     public void AddSegment()
     {
-        Transform[] newSegments = new Transform[_segments.Length + 1];
+        SnakeSegment[] newSegments = new SnakeSegment[_segments.Length + 1];
         _segments.CopyTo(newSegments, 0);
 
-        newSegments[^1] = Instantiate(_segmentPrefab, transform).transform;
+        newSegments[^1] = Instantiate(_segmentPrefab, transform);
         newSegments[^1].gameObject.SetActive(false); // Сначала скрываем
 
         _segments = newSegments;

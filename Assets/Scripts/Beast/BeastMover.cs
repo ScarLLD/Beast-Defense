@@ -101,9 +101,7 @@ public class BeastMover : MonoBehaviour
 
     private bool CheckSnakeProximity()
     {
-        float distanceBetweenAnimals = _beast.NormalizedDistance - _snake.NormalizedDistance;
-        Debug.Log(distanceBetweenAnimals);
-        return distanceBetweenAnimals < _escapeThreshold;
+        return _beast.NormalizedDistance - _snake.NormalizedDistance < _escapeThreshold;
     }
 
     private void StopMoveRoutine()

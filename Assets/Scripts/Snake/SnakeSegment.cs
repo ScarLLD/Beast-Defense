@@ -2,38 +2,23 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SnakeMover), typeof(SnakeRotator))]
 public class SnakeSegment : MonoBehaviour
 {
-    private int currentCubesCount = 0;
-    private SnakeHead _snakeHead;
-    private SnakeRotator _snakeRotator;
-    private SnakeMover _snakeMover;
-    private Queue<Cube> _cubes;
+    [SerializeField] private List<Cube> _cubes;
 
-    public SnakeMover SnakeMover => _snakeMover;
+    private int currentCubesCount = 0;
+
     public Material Material { get; private set; }
     public bool IsTarget { get; private set; } = false;
-    public bool IsNullHead => _snakeHead == null;
 
-    private void Awake()
+    public void Init(Material material)
     {
-        _snakeMover = GetComponent<SnakeMover>();
-        _snakeRotator = GetComponent<SnakeRotator>();
-        _cubes = new Queue<Cube>();
-    }
+        Material = material;
 
-    public void Init(SnakeHead snakeHead)
-    {
-        _snakeHead = snakeHead;
-        _snakeMover.InitHead(snakeHead);
-        _snakeRotator.Init(snakeHead);
-    }
-
-    public void StartRoutine()
-    {
-        _snakeMover.StartMoveRoutine();
-        _snakeRotator.StartRotateRoutine();
+        foreach (var cube in _cubes)
+        {
+            cube.Init(material);
+        }
     }
 
     public void SetIsTarget(bool isTarget)
@@ -45,8 +30,7 @@ public class SnakeSegment : MonoBehaviour
     {
         cube = null;
 
-        if (_cubes.Count > 0)
-            cube = _cubes.Dequeue();
+        //
 
         return cube != null;
     }
@@ -56,7 +40,7 @@ public class SnakeSegment : MonoBehaviour
         Material = cube.Material;
         currentCubesCount++;
 
-        _cubes.Enqueue(cube);
+        _cubes.Add(cube);
     }
 
     public bool IsCurrectColor(Color color)
@@ -66,10 +50,7 @@ public class SnakeSegment : MonoBehaviour
 
     public void TryDestroy()
     {
-        currentCubesCount--;
-
-        if (currentCubesCount == 0)
-            _snakeHead.DeleteSegment(this);
+        //
     }
 
     public void ActivateCubes(Material material)
