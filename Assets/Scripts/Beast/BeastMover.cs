@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Splines;
 
 [RequireComponent(typeof(Beast))]
 public class BeastMover : MonoBehaviour
 {
-    private readonly int _escapeTriggerDistance = 1;
     private readonly float _speedMultiplier = 2f;
+    private readonly float _escapeThreshold = 0.03f;
     private readonly float _arrivalThreshold = 0.01f;
     private Queue<Vector3> _roadTargets;
     private Coroutine _coroutine;
@@ -16,6 +17,7 @@ public class BeastMover : MonoBehaviour
 
     public Vector3 TargetPoint { get; private set; }
     public bool IsMoving { get; private set; } = false;
+    public float NormalizedDistance { get; private set; }
 
     private void Awake()
     {
@@ -41,6 +43,8 @@ public class BeastMover : MonoBehaviour
             TargetPoint = spawnPoint;
             transform.position = TargetPoint;
         }
+
+        _beast.SetNormalizedDistance();
     }
 
     public void StartMoveRoutine()
@@ -84,6 +88,7 @@ public class BeastMover : MonoBehaviour
                     else if (_beast.TryGetNextRoadPosition(out Vector3 nextPosition))
                     {
                         TargetPoint = nextPosition;
+                        _beast.SetNormalizedDistance();
                     }
                 }
 
@@ -96,7 +101,9 @@ public class BeastMover : MonoBehaviour
 
     private bool CheckSnakeProximity()
     {
-        return false; //_snake.GetRoadCompletionNumber - _beast.E         
+        float distanceBetweenAnimals = _beast.NormalizedDistance - _snake.NormalizedDistance;
+        Debug.Log(distanceBetweenAnimals);
+        return distanceBetweenAnimals < _escapeThreshold;
     }
 
     private void StopMoveRoutine()

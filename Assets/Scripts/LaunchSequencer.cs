@@ -36,13 +36,13 @@ public class LaunchSequencer : MonoBehaviour
 
             if (_roadSpawner.TrySpawn(out List<Vector3> road)
                 && _splineCreator.TryCreateSplineWith90DegreeCorners(road, out SplineContainer splineContainer)
-                && _splineRoad.TryGenerateRoadFromSpline(splineContainer) 
-                && _snakeSpawner.TrySpawn(_game, road, _cubeStorage.GetStacks(), splineContainer, out Snake snake)
-                && _bastSpawner.TrySpawn(road, snake, out Beast beast))
+                && _splineRoad.TryGenerateRoadFromSpline(splineContainer))
             {
                 _detector.transform.position = road[1];
                 _detector.EnableTrigger();
-                beast.Init(road, snake, _game);
+
+                _snakeSpawner.Spawn(_cubeStorage.GetStacks(), splineContainer, out Snake snake);
+                _bastSpawner.Spawn(road, snake, out Beast beast);
             }
         }
     }

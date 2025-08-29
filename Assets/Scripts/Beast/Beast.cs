@@ -11,6 +11,7 @@ public class Beast : MonoBehaviour
     private BeastRotator _beastRotator;
     private Game _game;
 
+    public float NormalizedDistance;
     public BeastMover Mover { get; private set; }
 
     private void Awake()
@@ -34,11 +35,16 @@ public class Beast : MonoBehaviour
         _road = road;
 
         Mover.Init(snake);
-        Mover.SetRoadTarget(_road);
+        Mover.SetRoadTarget(_road);        
         Mover.StartMoveRoutine();
 
         _beastRotator.Init(snake);
         _beastRotator.StartRotateRoutine();
+    }
+
+    public void SetNormalizedDistance()
+    {
+        NormalizedDistance = (float)_road.IndexOf(Mover.TargetPoint) / (float)_road.Count;
     }
 
     public bool TryGetNextRoadPosition(out Vector3 nextPosition)
@@ -52,6 +58,7 @@ public class Beast : MonoBehaviour
             if (currentIndex + 1 < _road.Count)
             {
                 nextPosition = _road[currentIndex + 1];
+                NormalizedDistance = (float)_road.IndexOf(Mover.TargetPoint) / (float)_road.Count;
             }
         }
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+п»їusing UnityEngine;
 using UnityEngine.Splines;
 using Unity.Mathematics;
 
@@ -89,7 +89,7 @@ public class Snake : MonoBehaviour
             {
                 _currentDistance = _splineLength;
                 _reachedEnd = true;
-                Debug.Log("Змейка достигла конца пути!");
+                Debug.Log("Р—РјРµР№РєР° РґРѕСЃС‚РёРіР»Р° РєРѕРЅС†Р° РїСѓС‚Рё!");
             }
         }
 
@@ -99,7 +99,6 @@ public class Snake : MonoBehaviour
     private void UpdateHeadPosition()
     {
         NormalizedDistance = Mathf.Clamp01(_currentDistance / _splineLength);
-        Debug.Log(NormalizedDistance);
 
         _splineContainer.Evaluate(NormalizedDistance,
             out float3 position, out float3 tangent, out float3 upVector);
@@ -120,7 +119,6 @@ public class Snake : MonoBehaviour
 
         for (int i = 0; i < _segments.Length; i++)
         {
-            // Увеличиваем расстояние между сегментами
             float segmentDist = _currentDistance - _segmentDistance * (i + 1) * 1.5f;
 
             if (segmentDist < 0)
@@ -153,7 +151,7 @@ public class Snake : MonoBehaviour
         _segments.CopyTo(newSegments, 0);
 
         newSegments[^1] = Instantiate(_segmentPrefab, transform).transform;
-        newSegments[^1].gameObject.SetActive(false); // Сначала скрываем
+        newSegments[^1].gameObject.SetActive(false); // РЎРЅР°С‡Р°Р»Р° СЃРєСЂС‹РІР°РµРј
 
         _segments = newSegments;
     }
