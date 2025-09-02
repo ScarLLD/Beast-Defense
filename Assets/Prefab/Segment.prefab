@@ -202,6 +202,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6891316509075415109}
   - component: {fileID: 2981236321332471647}
+  - component: {fileID: 7957221908334490119}
   m_Layer: 0
   m_Name: Segment
   m_TagString: Untagged
@@ -245,6 +246,27 @@ MonoBehaviour:
   - {fileID: 2459739600685695218}
   - {fileID: 2378365472977053487}
   - {fileID: 6795379361098121261}
+--- !u!65 &7957221908334490119
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4251143158575705588}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.5, y: 0.5, z: 0.05}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6944241903850809726
 GameObject:
   m_ObjectHideFlags: 0

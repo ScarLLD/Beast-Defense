@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -8,8 +7,6 @@ public class TargetRadar : MonoBehaviour
 
     private TargetStorage _targetStorage;
     private Coroutine _moveCoroutine;
-
-    public event Action<SnakeSegment> Found;
 
     public void Init(TargetStorage targetStorage)
     {
@@ -39,7 +36,7 @@ public class TargetRadar : MonoBehaviour
             if (bulletsPerSegment > 0 && _targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
             {
                 snakeSegment.SetIsTarget(true);
-                Found?.Invoke(snakeSegment);
+                _shooter.AddTarget(snakeSegment);
                 bulletsPerSegment--;
             }
 

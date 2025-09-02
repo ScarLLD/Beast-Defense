@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BulletSpawner : MonoBehaviour
 {
-    [SerializeField] private ParticleCreator _creator;
+    [SerializeField] private ParticleCreator _particleCreator;
     [SerializeField] private Bullet _bulletPrefab;
     [SerializeField] private Transform _container;
 
@@ -17,7 +17,7 @@ public class BulletSpawner : MonoBehaviour
     {
         Bullet bullet = _pool.GetObject();
         bullet.transform.position = spawnPosition;
-        bullet.Init(_creator);
+        bullet.Init(_particleCreator);
         bullet.InitTarget(cube);
     }
 }

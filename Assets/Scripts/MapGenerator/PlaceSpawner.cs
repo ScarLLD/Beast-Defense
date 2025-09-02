@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(PlaceStorage))]
 public class PlaceSpawner : MonoBehaviour
 {
-    [SerializeField] private Game _game;
+    [SerializeField] private Camera _camera;
     [SerializeField] private ShootingPlace _placePrefab;
     [SerializeField] private int _placesCount;
     [SerializeField] private float _leftBound;
@@ -11,37 +11,29 @@ public class PlaceSpawner : MonoBehaviour
     [SerializeField] private float _movingAwayFromShootingPlace;
 
     private PlaceStorage _storage;
-    private Camera _camera;
 
     private void Awake()
     {
         _storage = GetComponent<PlaceStorage>();
-        _camera = Camera.main;
     }
 
-    private void OnEnable()
+    public bool TryGeneratePlaces()
     {
-        _game.Started += OnGameStarted;
-    }
-
-    private void OnDisable()
-    {
-        _game.Started -= OnGameStarted;
-    }
-
-    private void OnGameStarted()
-    {
-        Vector3 cameraCenter = new Vector3(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 10);
+        Vector3 cameraCenter = new(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 0f);
 
         Ray ray = _camera.ScreenPointToRay(cameraCenter);
 
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
             transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
 
             GenerateShootingPlaces(hit.point);
             GenerateEscapePlaces();
+
+            return true;
         }
+
+        return false;
     }
 
     private void GenerateShootingPlaces(Vector3 hit)

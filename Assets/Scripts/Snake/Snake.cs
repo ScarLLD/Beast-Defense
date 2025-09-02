@@ -1,226 +1,166 @@
-﻿using UnityEngine;
-using UnityEngine.Splines;
-using Unity.Mathematics;
+﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.ProBuilder.Shapes;
+using UnityEngine;
+using UnityEngine.Splines;
 
 public class Snake : MonoBehaviour
 {
     [Header("Snake Settings")]
     [SerializeField] private float _moveSpeed = 2f;
-    [SerializeField] private float _rotationSpeed = 200f;
     [SerializeField] private float _segmentDistance = 2f;
-    [SerializeField] private float _rotationSmoothness = 5f;
 
     [Header("Prefabs")]
     [SerializeField] private SnakeSegment _segmentPrefab;
     [SerializeField] private GameObject _headPrefab;
 
-    private Queue<CubeStack> _stacks;
-    private SplineContainer _splineContainer;
-    private SnakeSegment[] _segments;
-    private Transform _head;
-    private float _currentDistance;
-    private float _splineLength;
-    private bool _reachedEnd = false;
+    [Header("Recoil Settings")]
+    [SerializeField] private float _recoilDuration = 0.3f;
 
-    public float NormalizedDistance { get; private set; }
+    private SplineContainer _splineContainer;
+    private Transform _head;
+    private readonly List<SnakeSegment> _segments = new();
+    private float _currentDistance = 0f;
+
+    private readonly Queue<RecoilRequest> _recoilQueue = new();
+    private bool _isRecoiling = false;
+
     public float MoveSpeed => _moveSpeed;
+    public float NormalizedDistance { get; private set; }
+
+    private class RecoilRequest
+    {
+        public SnakeSegment Segment;
+        public int Index;
+    }
 
     public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer)
     {
-        _stacks = new Queue<CubeStack>(stacks);
         _splineContainer = splineContainer;
+        _segments.Clear();
+        _currentDistance = 0f;
 
-        int stacksLength = 0;
-
-        foreach (var stack in stacks)
-        {
-            stacksLength += stack.Count;
-        }
-
-        int initialLength = stacksLength / 4;
-        Debug.Log(initialLength);
-
-        if (_splineContainer != null && _splineContainer.Spline != null)
-        {
-            _splineLength = _splineContainer.Spline.GetLength();
-        }
-
+        if (_head != null) Destroy(_head.gameObject);
         _head = Instantiate(_headPrefab, transform).transform;
-        _segments = new SnakeSegment[initialLength];
+        PlaceOnSpline(_head, 0f);
 
-        int index = 0;
-
-        while (_stacks.Count > 0)
+        if (stacks != null)
         {
-            var stack = _stacks.Dequeue();
-
-            for (int i = 0; i < stack.Count / 4; i++)
+            foreach (var stack in stacks)
             {
-                _segments[index] = Instantiate(_segmentPrefab, transform);
-                _segments[index].Init(stack.Material);
-                index++;
+                if (stack == null) continue;
+                int count = Mathf.Max(1, stack.Count / 4);
+                for (int i = 0; i < count; i++)
+                {
+                    var seg = Instantiate(_segmentPrefab, transform);
+                    seg.Init(stack.Material, this);
+                    seg.SetActiveSegment(false);
+                    _segments.Add(seg);
+                }
             }
         }
 
-        MoveHeadToStart();
-    }
-
-    private void MoveHeadToStart()
-    {
-        if (_splineContainer == null) return;
-
-        _splineContainer.Evaluate(0f, out float3 position, out float3 tangent, out float3 upVector);
-        _head.position = position;
-
-        if (((Vector3)tangent).magnitude > 0.1f)
-        {
-            _head.rotation = Quaternion.LookRotation((Vector3)tangent, (Vector3)upVector);
-        }
+        UpdateAllSegments();
     }
 
     private void Update()
     {
+        if (_splineContainer == null || _isRecoiling) return;
+
+        _currentDistance += _moveSpeed * Time.deltaTime;
+        PlaceOnSpline(_head, _currentDistance);
+        NormalizedDistance = _splineContainer.Spline.GetLength() > 0
+            ? Mathf.Clamp01(_currentDistance / _splineContainer.Spline.GetLength())
+            : 0f;
+
+        UpdateAllSegments();
+    }
+
+    private void PlaceOnSpline(Transform target, float distance)
+    {
         if (_splineContainer == null) return;
-
-        HandleInput();
-        MoveAlongSpline();
-        UpdateSegments();
+        float t = Mathf.Clamp01(distance / _splineContainer.Spline.GetLength());
+        _splineContainer.Evaluate(t, out var pos, out var tangent, out var up);
+        target.position = pos;
+        target.rotation = Quaternion.LookRotation(tangent, up);
     }
 
-    private void HandleInput()
+    private void UpdateAllSegments()
     {
-        if (_reachedEnd) return;
-
-        float horizontal = Input.GetAxis("Horizontal");
-        _moveSpeed += horizontal * _rotationSpeed * Time.deltaTime;
-        _moveSpeed = Mathf.Clamp(_moveSpeed, 1f, 10f);
-    }
-
-    private void MoveAlongSpline()
-    {
-        if (_splineContainer == null || _splineContainer.Spline == null || _head == null) return;
-
-        if (!_reachedEnd)
+        for (int i = 0; i < _segments.Count; i++)
         {
-            _currentDistance += _moveSpeed * Time.deltaTime;
-
-            if (_currentDistance >= _splineLength)
+            float dist = _currentDistance - _segmentDistance * (i + 1);
+            if (dist > 0f)
             {
-                _currentDistance = _splineLength;
-                _reachedEnd = true;
-                Debug.Log("Змейка достигла конца пути!");
-            }
-        }
-
-        UpdateHeadPosition();
-    }
-
-    private void UpdateHeadPosition()
-    {
-        NormalizedDistance = Mathf.Clamp01(_currentDistance / _splineLength);
-
-        _splineContainer.Evaluate(NormalizedDistance,
-            out float3 position, out float3 tangent, out float3 upVector);
-
-        _head.position = position;
-
-        if (((Vector3)tangent).magnitude > 0.1f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation((Vector3)tangent, (Vector3)upVector);
-            _head.rotation = Quaternion.Slerp(_head.rotation, targetRotation,
-                _rotationSmoothness * Time.deltaTime);
-        }
-    }
-
-    private void UpdateSegments()
-    {
-        if (_segments == null || _segments.Length == 0 || _splineContainer == null) return;
-
-        for (int i = 0; i < _segments.Length; i++)
-        {
-            float segmentDist = _currentDistance - _segmentDistance * (i + 1) * 1.5f;
-
-            if (segmentDist < 0)
-            {
-                _segments[i].gameObject.SetActive(false);
-                continue;
-            }
-
-            _segments[i].gameObject.SetActive(true);
-
-            float normalizedDistance = Mathf.Clamp01(segmentDist / _splineLength);
-
-            _splineContainer.Evaluate(normalizedDistance,
-                out float3 position, out float3 tangent, out float3 upVector);
-
-            _segments[i].transform.position = position;
-
-            if (((Vector3)tangent).magnitude > 0.1f)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation((Vector3)tangent, (Vector3)upVector);
-                _segments[i].transform.rotation = Quaternion.Slerp(_segments[i].transform.rotation, targetRotation,
-                    _rotationSmoothness * Time.deltaTime);
+                _segments[i].SetActiveSegment(true);
+                PlaceOnSpline(_segments[i].transform, dist);
             }
         }
     }
-
-    public void AddSegment()
+    
+    public void DestroySegment(SnakeSegment segmentToDestroy)
     {
-        SnakeSegment[] newSegments = new SnakeSegment[_segments.Length + 1];
-        _segments.CopyTo(newSegments, 0);
+        int destroyedIndex = _segments.IndexOf(segmentToDestroy);
+        if (destroyedIndex == -1) return;
 
-        newSegments[^1] = Instantiate(_segmentPrefab, transform);
-        newSegments[^1].gameObject.SetActive(false); // Сначала скрываем
+        _recoilQueue.Enqueue(new RecoilRequest { Segment = segmentToDestroy, Index = destroyedIndex });
 
-        _segments = newSegments;
+        if (!_isRecoiling)
+            StartCoroutine(ProcessRecoilQueue());
     }
 
-    public void ResetSnake()
+    private IEnumerator ProcessRecoilQueue()
     {
-        _currentDistance = 0f;
-        _reachedEnd = false;
-        _moveSpeed = 2f;
-        MoveHeadToStart();
+        _isRecoiling = true;
 
-        foreach (var segment in _segments)
+        while (_recoilQueue.Count > 0)
         {
-            if (segment != null)
+            RecoilRequest request = _recoilQueue.Dequeue();
+
+            List<SnakeSegment> segmentsToRecoil = new List<SnakeSegment>();
+            for (int i = 0; i < request.Index; i++)
+                segmentsToRecoil.Add(_segments[i]);
+
+            float startHead = _currentDistance;
+            float targetHead = _currentDistance - _segmentDistance;
+
+            float[] startDistances = new float[segmentsToRecoil.Count];
+            float[] targetDistances = new float[segmentsToRecoil.Count];
+
+            for (int i = 0; i < segmentsToRecoil.Count; i++)
             {
-                segment.gameObject.SetActive(true);
+                startDistances[i] = _currentDistance - _segmentDistance * (i + 1);
+                targetDistances[i] = startDistances[i] - _segmentDistance;
             }
+
+            float timer = 0f;
+            while (timer < _recoilDuration)
+            {
+                timer += Time.deltaTime;
+                float t = Mathf.Clamp01(timer / _recoilDuration);
+                float smooth = 1f - Mathf.Pow(1f - t, 2f);
+
+                _currentDistance = Mathf.Lerp(startHead, targetHead, smooth);
+                PlaceOnSpline(_head, _currentDistance);
+
+                for (int i = 0; i < segmentsToRecoil.Count; i++)
+                {
+                    segmentsToRecoil[i].SetActiveSegment(true);
+                    float dist = Mathf.Lerp(startDistances[i], targetDistances[i], smooth);
+                    PlaceOnSpline(segmentsToRecoil[i].transform, dist);
+                }
+
+                yield return null;
+            }
+
+            _currentDistance = targetHead;
+            PlaceOnSpline(_head, _currentDistance);
+            for (int i = 0; i < segmentsToRecoil.Count; i++)
+                PlaceOnSpline(segmentsToRecoil[i].transform, targetDistances[i]);
+
+            _segments.Remove(request.Segment);
+            Destroy(request.Segment.gameObject);
         }
-    }
 
-    public bool HasReachedEnd()
-    {
-        return _reachedEnd;
-    }
-
-    public float GetProgress()
-    {
-        return Mathf.Clamp01(_currentDistance / _splineLength);
-    }
-
-    void OnDrawGizmos()
-    {
-        if (_splineContainer != null && _splineContainer.Spline != null)
-        {
-            Gizmos.color = Color.green;
-            for (float t = 0; t < 1f; t += 0.02f)
-            {
-                _splineContainer.Evaluate(t, out float3 position, out _, out _);
-                Gizmos.DrawSphere((Vector3)position, 0.1f);
-            }
-
-            if (Application.isPlaying)
-            {
-                Gizmos.color = Color.red;
-                float progress = GetProgress();
-                _splineContainer.Evaluate(progress, out float3 headPos, out _, out _);
-                Gizmos.DrawWireSphere((Vector3)headPos, 0.3f);
-            }
-        }
+        _isRecoiling = false;
     }
 }

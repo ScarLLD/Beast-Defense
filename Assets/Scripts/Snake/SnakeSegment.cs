@@ -1,24 +1,34 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class SnakeSegment : MonoBehaviour
 {
     [SerializeField] private List<Cube> _cubes;
-
-    private int currentCubesCount = 0;
+    private int _currentCubeIndex = 0;
+    private Snake _snake;
 
     public Material Material { get; private set; }
     public bool IsTarget { get; private set; } = false;
 
-    public void Init(Material material)
+    private int _maxVisibleCubes = 20;
+    private bool _isDestroyed = false; 
+
+    public void Init(Material material, Snake snake)
     {
+        _snake = snake;
         Material = material;
+        _currentCubeIndex = 0;
+        IsTarget = false;
+        _isDestroyed = false;
 
         foreach (var cube in _cubes)
         {
+            cube.InitSegment(this);
             cube.Init(material);
+            cube.Deactivate();
         }
+
+        gameObject.SetActive(false);
     }
 
     public void SetIsTarget(bool isTarget)
@@ -26,43 +36,51 @@ public class SnakeSegment : MonoBehaviour
         IsTarget = isTarget;
     }
 
-    public bool TryGetCube(out Cube cube)
-    {
-        cube = null;
-
-        //
-
-        return cube != null;
-    }
-
-    public void AddCube(Cube cube)
-    {
-        Material = cube.Material;
-        currentCubesCount++;
-
-        _cubes.Add(cube);
-    }
-
     public bool IsCurrectColor(Color color)
     {
         return Material != null && Material.color == color;
     }
 
-    public void TryDestroy()
+    private void ActivateVisibleCubes()
     {
-        //
-    }
-
-    public void ActivateCubes(Material material)
-    {
-        for (int i = 0; i < transform.childCount; i++)
+        for (int i = 0; i < _cubes.Count; i++)
         {
-            if (transform.GetChild(i).TryGetComponent(out Cube cube))
-            {
-                cube.Init(material);
-                AddCube(cube);
-                cube.gameObject.SetActive(true);
-            }
+            _cubes[i].gameObject.SetActive(i >= _currentCubeIndex && i < _currentCubeIndex + _maxVisibleCubes);
         }
     }
+
+    public bool TryGetCube(out Cube cube)
+    {
+        cube = null;
+        if (_currentCubeIndex < _cubes.Count)
+        {
+            cube = _cubes[_currentCubeIndex];
+            _currentCubeIndex++;
+            ActivateVisibleCubes();
+            return true;
+        }
+        return false;
+    }
+
+
+    public void TryDestroy()
+    {
+        if (_isDestroyed) return;
+                
+        if (_currentCubeIndex >= _cubes.Count)
+        {
+            _isDestroyed = true;
+            _snake?.DestroySegment(this);
+        }
+    }
+
+    public void SetActiveSegment(bool active)
+    {        
+        if (_isDestroyed) return;
+
+        gameObject.SetActive(active);
+        if (active) ActivateVisibleCubes();
+    }
+
+    public bool IsDestroyed() => _isDestroyed;
 }

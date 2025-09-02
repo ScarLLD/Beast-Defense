@@ -85,7 +85,7 @@ public class RoadSpawner : MonoBehaviour
             if (GenerateRoad() && _road.Count >= _minPathSegments)
             {
                 bool hasUpwardMovement = false;
-                Vector3 lastPoint = _road[_road.Count - 1];
+                Vector3 lastPoint = _road[^1];
 
                 for (int i = 1; i < _road.Count; i++)
                 {
@@ -135,7 +135,7 @@ public class RoadSpawner : MonoBehaviour
 
     private Vector3 GetValidTurnDirection(Vector3 currentDirection, Vector3 currentPosition)
     {
-        List<Vector3> validDirections = new List<Vector3>();
+        List<Vector3> validDirections = new();
         Vector3[] possibleTurns = GetPossibleTurns(currentDirection);
 
         foreach (var turn in possibleTurns)

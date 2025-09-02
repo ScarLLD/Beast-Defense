@@ -9,7 +9,6 @@ public class Beast : MonoBehaviour
 
     private List<Vector3> _road;
     private BeastRotator _beastRotator;
-    private Game _game;
 
     public float NormalizedDistance;
     public BeastMover Mover { get; private set; }
@@ -20,22 +19,18 @@ public class Beast : MonoBehaviour
         Mover = GetComponent<BeastMover>();
     }
 
-    public void Init(List<Vector3> road, Snake snake, Game game)
+    public void Init(List<Vector3> road, Snake snake)
     {
         if (snake == null)
             throw new ArgumentException("road не может быть null.", nameof(snake));
 
-        if (game == null)
-            throw new ArgumentException("_game не может быть null.", nameof(game));
-
         if (road == null || road.Count == 0)
             throw new ArgumentOutOfRangeException("road не может быть null или быть пустым.", nameof(road));
 
-        _game = game;
         _road = road;
 
         Mover.Init(snake);
-        Mover.SetRoadTarget(_road);        
+        Mover.SetRoadTarget(_road);
         Mover.StartMoveRoutine();
 
         _beastRotator.Init(snake);
@@ -80,7 +75,5 @@ public class Beast : MonoBehaviour
         var particle = Instantiate(_dieParticle);
         particle.transform.position = transform.position;
         Destroy(this.gameObject);
-
-        _game.AnnounceGameOver("Зверь слопан.");
     }
 }

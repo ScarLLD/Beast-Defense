@@ -40,8 +40,6 @@ public class SnakeSpeedControl : MonoBehaviour
     private IEnumerator ControlSpeed()
     {
         bool isWork = true;
-        bool isSlowingDown = false;
-        float slowdownStartDistance = 0;
 
         while (isWork)
         {

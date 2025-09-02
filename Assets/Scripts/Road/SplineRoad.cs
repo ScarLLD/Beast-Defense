@@ -40,7 +40,7 @@ public class SplineRoad : MonoBehaviour
         return true;
     }
 
-    void SetupRoadMaterial()
+    private void SetupRoadMaterial()
     {
         if (roadMaterial != null)
         {
@@ -49,21 +49,22 @@ public class SplineRoad : MonoBehaviour
         }
     }
 
-    void GenerateSmoothRoadMesh()
+    private void GenerateSmoothRoadMesh()
     {
         if (_splineContainer == null) return;
 
-        _roadMesh = new Mesh();
-        _roadMesh.name = "RoadMesh";
+        _roadMesh = new Mesh
+        {
+            name = "RoadMesh"
+        };
 
-        List<Vector3> vertices = new List<Vector3>();
-        List<int> triangles = new List<int>();
-        List<Vector2> uv = new List<Vector2>();
-        List<Vector3> normals = new List<Vector3>();
+        List<Vector3> vertices = new();
+        List<int> triangles = new();
+        List<Vector2> uv = new();
+        List<Vector3> normals = new();
 
         Spline spline = _splineContainer.Spline;
-
-        // Основная часть дороги
+               
         for (int i = 0; i <= resolution; i++)
         {
             float t = i / (float)resolution;
@@ -73,31 +74,27 @@ public class SplineRoad : MonoBehaviour
             Vector3 tangentNormalized = ((Vector3)tangent).normalized;
             Vector3 upNormalized = ((Vector3)upVector).normalized;
             Vector3 right = Vector3.Cross(tangentNormalized, upNormalized).normalized;
-
-            // Закругление только в конце
+                        
             float widthMultiplier = 1f;
-            if (t > 0.91f) // Только последние 10% дороги
+            if (t > 0.91f)
             {
                 widthMultiplier = Mathf.SmoothStep(1f, 0f, (t - 0.91f) / 0.1f) * endRoundness;
             }
 
-            Vector3 leftEdge = (Vector3)position - right * roadWidth * 0.5f * widthMultiplier;
-            Vector3 rightEdge = (Vector3)position + right * roadWidth * 0.5f * widthMultiplier;
+            Vector3 leftEdge = (Vector3)position - 0.5f * roadWidth * widthMultiplier * right;
+            Vector3 rightEdge = (Vector3)position + 0.5f * roadWidth * widthMultiplier * right;
 
             vertices.Add(leftEdge);
             vertices.Add(rightEdge);
 
-            // UV координаты
             float uvY = t * textureTiling;
             uv.Add(new Vector2(0f, uvY));
             uv.Add(new Vector2(1f, uvY));
 
-            // Нормали (вверх)
             normals.Add(upNormalized);
             normals.Add(upNormalized);
         }
 
-        // Создаем треугольники ПРАВИЛЬНОГО порядка (по часовой стрелке)
         for (int i = 0; i < resolution; i++)
         {
             int currentLeft = i * 2;
@@ -105,24 +102,18 @@ public class SplineRoad : MonoBehaviour
             int nextLeft = (i + 1) * 2;
             int nextRight = (i + 1) * 2 + 1;
 
-            // Первый треугольник (по часовой стрелке)
             triangles.Add(currentLeft);
             triangles.Add(currentRight);
             triangles.Add(nextLeft);
 
-            // Второй треугольник (по часовой стрелке)
             triangles.Add(currentRight);
             triangles.Add(nextRight);
             triangles.Add(nextLeft);
         }
 
-        // Добавляем конечное закругление
         AddEndCap(vertices, uv, normals, triangles);
+        AddEndPlatform();
 
-        // Добавляем отдельную платформу (отдельный GameObject и Mesh)
-        AddEndPlatform(vertices, uv, normals, triangles);
-
-        // Применяем данные к mesh
         _roadMesh.vertices = vertices.ToArray();
         _roadMesh.triangles = triangles.ToArray();
         _roadMesh.uv = uv.ToArray();
@@ -134,14 +125,12 @@ public class SplineRoad : MonoBehaviour
         _meshFilter.mesh = _roadMesh;
     }
 
-    void AddEndPlatform(List<Vector3> roadVertices, List<Vector2> roadUV, List<Vector3> roadNormals, List<int> roadTriangles)
+    private void AddEndPlatform()
     {
-        // Смещение платформы вниз относительно дороги
         float platformYOffset = -0.001f;
 
-        // Создание списков для платформы
-        List<Vector3> vertices = new List<Vector3>();
-        List<Vector2> uv = new List<Vector2>();
+        List<Vector3> vertices = new();
+        List<Vector2> uv = new();
         List<Vector3> normals = new();
         List<int> triangles = new();
 
@@ -149,7 +138,6 @@ public class SplineRoad : MonoBehaviour
 
         Vector3 tangentNormalized = ((Vector3)endTangent).normalized;
         Vector3 upNormalized = ((Vector3)endUp).normalized;
-        Vector3 right = Vector3.Cross(tangentNormalized, upNormalized).normalized;
 
         Vector3 center = (Vector3)endPosition;
         int centerIndex = 0;
@@ -163,7 +151,7 @@ public class SplineRoad : MonoBehaviour
         for (int i = 0; i <= _platformSegments; i++)
         {
             float angle = startAngle + i / (float)_platformSegments * Mathf.PI * 2f;
-            Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
+            Vector3 direction = new(Mathf.Cos(angle), 0, Mathf.Sin(angle));
             Vector3 platformEdge = center + direction * endPlatformRadius;
 
             vertices.Add(platformEdge);
@@ -181,27 +169,25 @@ public class SplineRoad : MonoBehaviour
             triangles.Add(i);
         }
 
-        // Замыкающий треугольник
         triangles.Add(centerIndex);
         triangles.Add(1);
         triangles.Add(_platformSegments);
 
-        // Создание и заполнение Mesh
-        Mesh platformMesh = new();
-        platformMesh.name = "EndPlatform";
+        Mesh platformMesh = new()
+        {
+            name = "EndPlatform"
+        };
+
         platformMesh.SetVertices(vertices);
         platformMesh.SetUVs(0, uv);
         platformMesh.SetNormals(normals);
         platformMesh.SetTriangles(triangles, 0);
         platformMesh.RecalculateBounds();
 
-        // Создание GameObject платформы
         GameObject platformObj = new("EndPlatform");
         platformObj.transform.SetParent(this.transform);
 
-        // Смещение вниз
-        platformObj.transform.localPosition = Vector3.up * platformYOffset;
-        platformObj.transform.localRotation = Quaternion.identity;
+        platformObj.transform.SetLocalPositionAndRotation(Vector3.up * platformYOffset, Quaternion.identity);
         platformObj.transform.localScale = Vector3.one;
 
         var meshFilter = platformObj.AddComponent<MeshFilter>();
@@ -211,9 +197,8 @@ public class SplineRoad : MonoBehaviour
         meshRenderer.material = endPlatformMaterial != null ? endPlatformMaterial : new Material(Shader.Find("Standard"));
     }
 
-    void AddEndCap(List<Vector3> vertices, List<Vector2> uv, List<Vector3> normals, List<int> triangles)
+    private void AddEndCap(List<Vector3> vertices, List<Vector2> uv, List<Vector3> normals, List<int> triangles)
     {
-        // Получаем данные конечной точки
         _splineContainer.Evaluate(1f, out float3 endPosition, out float3 endTangent, out float3 endUp);
 
         Vector3 tangentNormalized = ((Vector3)endTangent).normalized;
@@ -223,12 +208,10 @@ public class SplineRoad : MonoBehaviour
         int centerIndex = vertices.Count;
         Vector3 center = (Vector3)endPosition;
 
-        // Центральная точка конца
         vertices.Add(center);
         uv.Add(new Vector2(0.5f, 1f));
         normals.Add(upNormalized);
 
-        // Вершины для закругления (полукруг)
         int segments = 8;
         for (int i = 0; i <= segments; i++)
         {
@@ -244,9 +227,7 @@ public class SplineRoad : MonoBehaviour
             normals.Add(upNormalized);
         }
 
-        // Соединяем закругление с последним сегментом дороги (по часовой стрелке)
         int lastRoadLeft = (resolution) * 2;
-        int lastRoadRight = (resolution) * 2 + 1;
 
         for (int i = 0; i < segments; i++)
         {
@@ -255,7 +236,6 @@ public class SplineRoad : MonoBehaviour
             triangles.Add(centerIndex + i + 1);
         }
 
-        // Заполняем полукруг (по часовой стрелке)
         for (int i = 0; i < segments; i++)
         {
             triangles.Add(centerIndex);
@@ -271,7 +251,6 @@ public class SplineRoad : MonoBehaviour
             DestroyImmediate(_meshFilter.mesh);
         }
 
-        // Удаляем платформу, если есть
         Transform platformTransform = transform.Find("EndPlatform");
         if (platformTransform != null)
         {

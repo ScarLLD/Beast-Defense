@@ -21,20 +21,17 @@ public class SplineCreator : MonoBehaviour
         Spline spline = splineContainer.Spline;
         spline.Clear();
 
-        // ƒобавл€ем точки
         for (int i = 0; i < roadPoints.Count; i++)
         {
             if (roadPoints[i] == null) continue;
 
             BezierKnot knot = new(roadPoints[i]);
 
-            // Ќастраиваем касательные дл€ 90-градусных поворотов
             if (i > 0 && i < roadPoints.Count - 1)
             {
                 Vector3 prevDir = (roadPoints[i] - roadPoints[i - 1]).normalized;
                 Vector3 nextDir = (roadPoints[i + 1] - roadPoints[i]).normalized;
 
-                // ¬ычисл€ем биссектрису угла дл€ плавного поворота
                 Vector3 bisector = (prevDir + nextDir).normalized;
 
                 knot.TangentIn = new float3(-bisector * _tangentLength);
@@ -45,7 +42,6 @@ public class SplineCreator : MonoBehaviour
         }
 
         spline.Closed = false;
-        Debug.Log($"—оздан сплайн с плавными 90-градусными поворотами");
         return true;
     }
 }

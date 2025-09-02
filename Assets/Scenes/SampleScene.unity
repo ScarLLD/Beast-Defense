@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbc6846c92cfa7747bdc711f7fffb203, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _creator: {fileID: 117216350}
+  _particleCreator: {fileID: 117216350}
   _bulletPrefab: {fileID: 1745246047339103753, guid: b2d1767d0c9d1ad46873383905e528e3, type: 3}
   _container: {fileID: 117216349}
 --- !u!4 &117216349
@@ -383,7 +383,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 816fdc1316a3f374994c264625a4e2c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1469608301}
   _cubePrefab: {fileID: 8604573234390706645, guid: 94578299867013545bf9d7e303908287, type: 3}
   _cubeStorage: {fileID: 529893071}
   _boundaryMaker: {fileID: 1370593100}
@@ -474,7 +473,7 @@ MonoBehaviour:
   endPlatformRadius: 2
   _platformSegments: 36
   resolution: 200
-  endRoundness: 1.8
+  endRoundness: 1.6
 --- !u!114 &561811627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,7 +486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84e5315938d3f5c438184b9b360788e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tangentLength: 0.8
+  _tangentLength: 1
 --- !u!4 &561811628
 Transform:
   m_ObjectHideFlags: 0
@@ -928,7 +927,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5588065a101592044b292902ef342c20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pointPrefab: {fileID: 4878386789434510162, guid: ce0e995862c4ac944b6d7aa630ad8ee1, type: 3}
   _lineMeterial: {fileID: 2100000, guid: 3d96b70da33c5a24cb58812461d00eed, type: 2}
   _borderReduction: 0.9
 --- !u!4 &1370593101
@@ -975,7 +973,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1c0cd8185390b84bba1241c53a39dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1469608301}
   _beastPrefab: {fileID: -8336317201343123663, guid: 79cfff96645791d4593426d1b5466aba, type: 3}
 --- !u!4 &1441411480
 Transform:
@@ -1066,11 +1063,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _game: {fileID: 1469608301}
   _boundaryMaker: {fileID: 1370593100}
+  _placeSpawner: {fileID: 1842505877}
   _gridCreator: {fileID: 1295288260}
   _splineCreator: {fileID: 561811627}
   _roadSpawner: {fileID: 979470875}
   _splineRoad: {fileID: 561811626}
   _detector: {fileID: 2645583919960169801}
+  _playerCubeSpawner: {fileID: 529893069}
   _cubeCreator: {fileID: 529893070}
   _cubeStorage: {fileID: 529893071}
   _snakeSpawner: {fileID: 437241863}
@@ -1168,7 +1167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ed5f1a4222190a42bdb7d299af833a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1469608301}
+  _camera: {fileID: 963194227}
   _placePrefab: {fileID: 7268623950954736030, guid: df4c662850db070458a0356e420be51c, type: 3}
   _placesCount: 4
   _leftBound: -6
@@ -1213,7 +1212,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1229,8 +1228,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.3064, z: 0}
-  m_LocalScale: {x: 0.2, y: 3, z: 0.2}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1289,7 +1288,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &9171917265129906606
 MonoBehaviour:
   m_ObjectHideFlags: 0

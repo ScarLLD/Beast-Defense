@@ -15,15 +15,15 @@ public class RoadFinder : MonoBehaviour
         {
             var currentPath = queue.Dequeue();
             var lastCell = currentPath.Last();
-                        
+
             if (lastCell.IsTopRow)
             {
                 return currentPath;
             }
-            
+
             foreach (var neighbor in lastCell.AvailableCells)
             {
-                if (!visited.Contains(neighbor))
+                if (visited.Contains(neighbor) == false)
                 {
                     visited.Add(neighbor);
                     var newPath = new List<GridCell>(currentPath) { neighbor };

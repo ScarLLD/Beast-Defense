@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(BeastMover))]
 public class BeastRotator : MonoBehaviour
 {
-    private float _rotationSpeed;
+    private readonly float _rotationSpeed;
     private Coroutine _coroutine;
     private BeastMover _beastMover;
     private Vector3 _direction;

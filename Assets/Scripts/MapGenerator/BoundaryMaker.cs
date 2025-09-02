@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class BoundaryMaker : MonoBehaviour
 {
-    [SerializeField] private GameObject _pointPrefab;
     [SerializeField] private Material _lineMeterial;
 
     [Range(0.1f, 0.9f)]
