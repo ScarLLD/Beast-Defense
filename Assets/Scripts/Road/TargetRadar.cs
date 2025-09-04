@@ -31,11 +31,12 @@ public class TargetRadar : MonoBehaviour
     {
         int bulletsPerSegment = _shooter.BulletCount / 4;
 
+        _shooter.SetInitialRotation();
+
         while (_shooter.BulletCount > 0)
         {
             if (bulletsPerSegment > 0 && _targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
             {
-                snakeSegment.SetIsTarget(true);
                 _shooter.AddTarget(snakeSegment);
                 bulletsPerSegment--;
             }

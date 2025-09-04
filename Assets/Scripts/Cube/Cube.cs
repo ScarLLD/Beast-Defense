@@ -4,7 +4,8 @@ public class Cube : MonoBehaviour
 {
     private MeshRenderer _meshRenderer;
     private SnakeSegment _snakeSegment;
-    private bool _isDestroyed = false;
+
+    public bool IsDestroyed { get; private set; } = false;
 
     public Material Material => _meshRenderer.material;
 
@@ -16,7 +17,6 @@ public class Cube : MonoBehaviour
     public void Init(Material material)
     {
         _meshRenderer.material = material;
-        _isDestroyed = false;
         gameObject.SetActive(false);
     }
 
@@ -24,25 +24,26 @@ public class Cube : MonoBehaviour
     {
         _snakeSegment = snakeSegment;
     }
-    
+
     public void Hit()
     {
-        if (_isDestroyed) return;
-
-        _isDestroyed = true;
-        gameObject.SetActive(false);
-        _snakeSegment.TryDestroy();
+        if (IsDestroyed == false)
+        {
+            Deactivate();
+            IsDestroyed = true;
+            _snakeSegment.TryDestroy();
+        }
     }
 
     public void Deactivate()
     {
-        if (!_isDestroyed)
+        if (IsDestroyed == false)
             gameObject.SetActive(false);
     }
 
     public void Activate()
     {
-        if (!_isDestroyed)
+        if (IsDestroyed == false)
             gameObject.SetActive(true);
     }
 }

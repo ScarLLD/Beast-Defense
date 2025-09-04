@@ -13,6 +13,7 @@ public class Shooter : MonoBehaviour
     private WaitForSeconds _sleepTime;
 
     private int _bulletCount;
+    private Quaternion _initialRotation;
 
     public int BulletCount => _bulletCount;
 
@@ -28,20 +29,25 @@ public class Shooter : MonoBehaviour
     {
         _bulletSpawner = bulletSpawner;
         _bulletCount = bulletCount;
+        _initialRotation = transform.rotation;
     }
 
     public void AddTarget(SnakeSegment snakeSegment)
     {
-        _targets.Enqueue(snakeSegment);
+        if (_targets.Contains(snakeSegment) == false)
+            _targets.Enqueue(snakeSegment);
 
         _coroutine ??= StartCoroutine(Shoot());
+    }
+
+    public void SetInitialRotation()
+    {
+        transform.rotation = _initialRotation;
     }
 
     private IEnumerator Shoot()
     {
         bool isWork = true;
-
-        Quaternion initialRotation = transform.rotation;
 
         while (isWork)
         {
@@ -65,12 +71,8 @@ public class Shooter : MonoBehaviour
                 if (BulletCount == 0)
                     isWork = false;
             }
-            else
-            {
-                transform.rotation = initialRotation;
-            }
 
-            transform.rotation = initialRotation;
+            SetInitialRotation();
 
             yield return null;
         }

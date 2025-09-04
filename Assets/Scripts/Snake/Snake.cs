@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -60,19 +61,36 @@ public class Snake : MonoBehaviour
         }
 
         UpdateAllSegments();
+
+        // запускаем движение через корутину
+        StartCoroutine(SnakeMovement());
     }
 
-    private void Update()
+    private IEnumerator SnakeMovement()
     {
-        if (_splineContainer == null || _isRecoiling) return;
+        bool isWork = true;
 
-        _currentDistance += _moveSpeed * Time.deltaTime;
-        PlaceOnSpline(_head, _currentDistance);
-        NormalizedDistance = _splineContainer.Spline.GetLength() > 0
-            ? Mathf.Clamp01(_currentDistance / _splineContainer.Spline.GetLength())
-            : 0f;
+        while (isWork)
+        {
+            if (_splineContainer != null && !_isRecoiling)
+            {
+                _currentDistance += _moveSpeed * Time.deltaTime;
+                PlaceOnSpline(_head, _currentDistance);
 
-        UpdateAllSegments();
+                NormalizedDistance = _splineContainer.Spline.GetLength() > 0
+                    ? Mathf.Clamp01(_currentDistance / _splineContainer.Spline.GetLength())
+                    : 0f;
+
+                UpdateAllSegments();
+            }
+
+            if (_segments.Count == 0)
+            {
+                isWork = false;
+            }
+
+            yield return null;
+        }
     }
 
     private void PlaceOnSpline(Transform target, float distance)
@@ -89,6 +107,7 @@ public class Snake : MonoBehaviour
         for (int i = 0; i < _segments.Count; i++)
         {
             float dist = _currentDistance - _segmentDistance * (i + 1);
+
             if (dist > 0f)
             {
                 _segments[i].SetActiveSegment(true);
@@ -96,7 +115,7 @@ public class Snake : MonoBehaviour
             }
         }
     }
-    
+
     public void DestroySegment(SnakeSegment segmentToDestroy)
     {
         int destroyedIndex = _segments.IndexOf(segmentToDestroy);
@@ -137,7 +156,7 @@ public class Snake : MonoBehaviour
             {
                 timer += Time.deltaTime;
                 float t = Mathf.Clamp01(timer / _recoilDuration);
-                float smooth = 1f - Mathf.Pow(1f - t, 2f);
+                float smooth = Mathf.Pow(t, 0.5f);
 
                 _currentDistance = Mathf.Lerp(startHead, targetHead, smooth);
                 PlaceOnSpline(_head, _currentDistance);

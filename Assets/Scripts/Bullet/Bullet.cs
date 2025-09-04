@@ -11,6 +11,8 @@ public class Bullet : MonoBehaviour
     private Rigidbody _rigidbody;
     private Coroutine _moveCoroutine;
 
+    public Cube Target;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -31,6 +33,8 @@ public class Bullet : MonoBehaviour
 
     private IEnumerator MoveToTarget(Cube cube)
     {
+        Target = cube;
+
         while (true)
         {
             Vector3 direction = (cube.transform.position - transform.position).normalized;
@@ -40,7 +44,7 @@ public class Bullet : MonoBehaviour
             {
                 _rigidbody.velocity = Vector3.zero;
                 _particleCreator?.Create(cube);
-                cube.Hit(); 
+                cube.Hit();
                 break;
             }
 

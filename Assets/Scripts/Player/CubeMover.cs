@@ -18,7 +18,6 @@ public class CubeMover : MonoBehaviour
 
     private Vector3 _cachedCellTarget;
     private Vector3 _cachedShootingTarget;
-    private Vector3 _cachedEscapeTarget;
 
     public event Action Arrived;
 
@@ -38,7 +37,7 @@ public class CubeMover : MonoBehaviour
         if (_isNewMove)
         {
             _isNewMove = false;
-            _target = _cachedCellTarget; 
+            _target = _cachedCellTarget;
         }
 
         _moveCoroutine ??= StartCoroutine(MoveRoutine());
@@ -47,18 +46,17 @@ public class CubeMover : MonoBehaviour
     public void SetPlaces(ShootingPlace shootingPlace, Vector3 escapePlace, GridCell cell)
     {
         _shootingPlace = shootingPlace;
-        _escapePlace = escapePlace;
         _cell = cell;
 
         _cachedCellTarget = GetCurrentTarget(cell.transform.position);
         _cachedShootingTarget = GetCurrentTarget(shootingPlace.transform.position);
-        _cachedEscapeTarget = GetCurrentTarget(escapePlace);
+        _escapePlace = GetCurrentTarget(escapePlace);
     }
 
     public void GoEscape()
     {
         _shootingPlace.ChangeEmptyStatus(true);
-        _target = _cachedEscapeTarget; 
+        _target = _escapePlace;
         _moveCoroutine = StartCoroutine(MoveRoutine());
     }
 
@@ -78,7 +76,9 @@ public class CubeMover : MonoBehaviour
         while (isWork)
         {
             Vector3 direction = _target - transform.position;
-            transform.Translate(_speed * Time.deltaTime * direction.normalized);
+            transform.position += _speed * Time.deltaTime * direction.normalized;
+            transform.LookAt(_target);
+
 
             if (Vector3.Distance(_target, transform.position) < _arrivalThreshold)
             {
@@ -103,7 +103,7 @@ public class CubeMover : MonoBehaviour
             if (nextCell != null)
             {
                 _cell = nextCell;
-                _cachedCellTarget = GetCurrentTarget(_cell.transform.position); 
+                _cachedCellTarget = GetCurrentTarget(_cell.transform.position);
                 _target = _cachedCellTarget;
             }
             else
@@ -111,7 +111,7 @@ public class CubeMover : MonoBehaviour
                 _target = _cachedShootingTarget;
             }
         }
-        else if (_target == _cachedEscapeTarget)
+        else if (_target == _escapePlace)
         {
             StopMoving();
             gameObject.SetActive(false);

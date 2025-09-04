@@ -486,7 +486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84e5315938d3f5c438184b9b360788e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tangentLength: 1
+  _tangentLength: 0.6
 --- !u!4 &561811628
 Transform:
   m_ObjectHideFlags: 0

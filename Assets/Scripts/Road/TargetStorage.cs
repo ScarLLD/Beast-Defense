@@ -23,8 +23,11 @@ public class TargetStorage : MonoBehaviour
         snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrectColor(color) && segment.IsTarget == false);
 
         if (snakeSegment != null)
-            _segments.Remove(snakeSegment);
+        {
+            snakeSegment.SetIsTarget(true);
+            return true;
+        }
 
-        return snakeSegment != null;
+        return false;
     }
 }
