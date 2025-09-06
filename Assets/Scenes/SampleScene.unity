@@ -352,7 +352,7 @@ GameObject:
   m_Layer: 0
   m_Name: Cubes
   m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -383,7 +383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 816fdc1316a3f374994c264625a4e2c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePrefab: {fileID: 8604573234390706645, guid: 94578299867013545bf9d7e303908287, type: 3}
+  _cubePrefab: {fileID: 1413323032612479480, guid: 944c89b7b26af4240a2b4893386999e8, type: 3}
   _cubeStorage: {fileID: 529893071}
   _boundaryMaker: {fileID: 1370593100}
   _bulletSpawner: {fileID: 117216348}
@@ -466,14 +466,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f32133697296013498a095693c554571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadWidth: 2.5
+  roadWidth: 2.7
   textureTiling: 0
   roadMaterial: {fileID: 2100000, guid: 076e769133efbf544bae83ea5c6182d7, type: 2}
   endPlatformMaterial: {fileID: 2100000, guid: d819ba9e5e0f624459723d3d55227d8e, type: 2}
   endPlatformRadius: 2
   _platformSegments: 36
-  resolution: 200
-  endRoundness: 1.6
+  resolution: 350
+  endRoundness: 1.8
 --- !u!114 &561811627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -486,7 +486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84e5315938d3f5c438184b9b360788e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tangentLength: 0.6
+  _tangentLength: 0.8
 --- !u!4 &561811628
 Transform:
   m_ObjectHideFlags: 0
@@ -812,8 +812,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boundaryMaker: {fileID: 1370593100}
-  _segmentLength: 4
-  _minPathSegments: 10
+  _segmentLength: 7
+  _minPathSegments: 5
   _maxPathSegments: 15
 --- !u!114 &979470876
 MonoBehaviour:
@@ -829,7 +829,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boundaryMargin: 1
   _radiusBetweenSegments: 1.5
-  _endPointMargin: 3
+  _endPointMargin: 2
 --- !u!1 &1295288258
 GameObject:
   m_ObjectHideFlags: 0
@@ -872,16 +872,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87e61a8740f20574482718c317d59621, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cubePrefab: {fileID: 1900071841244829645, guid: c309c790d98bd9b45a4ae1212065f2a7, type: 3}
-  _cellPrefab: {fileID: 4139206488417349038, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
+  _cubePrefab: {fileID: 1413323032612479480, guid: 944c89b7b26af4240a2b4893386999e8, type: 3}
+  _cellPrefab: {fileID: 8177197784567442016, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
   _gridStorage: {fileID: 1295288259}
   _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1370593100}
   _rows: 8
   _columns: 7
-  _minX: -8
-  _maxX: 8
-  _minZ: -10
+  _minX: -8.5
+  _maxX: 8.5
+  _minZ: -11
   _maxZ: 10
 --- !u!4 &1295288261
 Transform:
@@ -928,7 +928,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lineMeterial: {fileID: 2100000, guid: 3d96b70da33c5a24cb58812461d00eed, type: 2}
-  _borderReduction: 0.9
+  _borderReduction: 0.8
 --- !u!4 &1370593101
 Transform:
   m_ObjectHideFlags: 0
@@ -1075,6 +1075,111 @@ MonoBehaviour:
   _snakeSpawner: {fileID: 437241863}
   _bastSpawner: {fileID: 1441411479}
   _availabilityManagement: {fileID: 529893072}
+--- !u!1 &1472531147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1472531151}
+  - component: {fileID: 1472531150}
+  - component: {fileID: 1472531149}
+  - component: {fileID: 1472531148}
+  m_Layer: 0
+  m_Name: Cube
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &1472531148
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472531147}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1472531149
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472531147}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &1472531150
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472531147}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &1472531151
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472531147}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -43.42923, y: 14.833161, z: -11.27383}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1716784348
 GameObject:
   m_ObjectHideFlags: 0
@@ -1168,7 +1273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _camera: {fileID: 963194227}
-  _placePrefab: {fileID: 7268623950954736030, guid: df4c662850db070458a0356e420be51c, type: 3}
+  _placePrefab: {fileID: 775908119623022719, guid: df4c662850db070458a0356e420be51c, type: 3}
   _placesCount: 4
   _leftBound: -6
   _rightBound: 6
@@ -1320,3 +1425,4 @@ SceneRoots:
   - {fileID: 1716784349}
   - {fileID: 1842505876}
   - {fileID: 442903045}
+  - {fileID: 1472531151}

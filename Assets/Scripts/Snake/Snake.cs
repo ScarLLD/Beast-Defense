@@ -62,7 +62,6 @@ public class Snake : MonoBehaviour
 
         UpdateAllSegments();
 
-        // запускаем движение через корутину
         StartCoroutine(SnakeMovement());
     }
 
@@ -121,7 +120,7 @@ public class Snake : MonoBehaviour
         int destroyedIndex = _segments.IndexOf(segmentToDestroy);
         if (destroyedIndex == -1) return;
 
-        _recoilQueue.Enqueue(new RecoilRequest { Segment = segmentToDestroy, Index = destroyedIndex });
+            _recoilQueue.Enqueue(new RecoilRequest { Segment = segmentToDestroy, Index = destroyedIndex });
 
         if (!_isRecoiling)
             StartCoroutine(ProcessRecoilQueue());

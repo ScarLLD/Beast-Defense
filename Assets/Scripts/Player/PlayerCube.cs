@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(CubeMover))]
@@ -7,7 +9,8 @@ using UnityEngine;
 [RequireComponent(typeof(CubeStack))]
 public class PlayerCube : MonoBehaviour
 {
-    [SerializeField] private float _speed;
+    [SerializeField] private float _moveSpeed = 10f;
+    [SerializeField] private float _transformSpeed = 10f;
     [SerializeField] private float _outlineActive = 4.4f;
     [SerializeField] private float _outlineDisable = 0f;
 
@@ -17,6 +20,8 @@ public class PlayerCube : MonoBehaviour
     private TargetRadar _radar;
     private Shooter _shooter;
     private View _view;
+    private Vector3 _originalScale;
+    private Vector3 _originalPosition;
 
     public bool IsStatic { get; private set; } = true;
     public bool IsAvailable { get; private set; } = false;
@@ -42,8 +47,13 @@ public class PlayerCube : MonoBehaviour
         _meshRenderer.material = material;
         _shooter.Init(bulletSpawner, count);
         _radar.Init(targetStorage);
-        Mover.Init(_speed);
+        Mover.Init(_moveSpeed);
         _stack.Init(material, count);
+
+        _originalScale = transform.localScale;
+        _originalPosition = transform.position;
+
+        DeactivateAvailability();
     }
 
     private void OnEnable()
@@ -68,14 +78,40 @@ public class PlayerCube : MonoBehaviour
         IsAvailable = isAvailable;
 
         if (IsAvailable)
+            ActivateAvailability();
+    }
+
+    private void ActivateAvailability()
+    {
+        _outline.OutlineWidth = _outlineActive;
+        StartCoroutine(ScaleRoutine());
+        _view.DisplayBullets();
+    }
+
+    private void DeactivateAvailability()
+    {
+        transform.localScale = new(_originalScale.x, _originalScale.y / 2, _originalScale.z);
+        transform.position = new(_originalPosition.x, _originalPosition.y - transform.localScale.y / 2, _originalPosition.z);
+        _outline.OutlineWidth = _outlineDisable;
+    }
+
+    private IEnumerator ScaleRoutine()
+    {
+        Vector3 startScale = transform.localScale;
+        Vector3 startPosition = transform.position;
+
+        float progress = 0f;
+
+        while (progress < 1f)
         {
-            _outline.OutlineWidth = _outlineActive;
-            _view.DisplayBullets();
+            progress += Time.deltaTime * _transformSpeed;
+            transform.localScale = Vector3.Lerp(startScale, _originalScale, progress);
+            transform.position = Vector3.Lerp(startPosition, _originalPosition, progress);
+            yield return null;
         }
-        else
-        {
-            _outline.OutlineWidth = _outlineDisable;
-        }
+
+        transform.localScale = _originalScale;
+        transform.position = _originalPosition;
     }
 
     private void OnMoverArrived()

@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class GridCell : MonoBehaviour
 {
-    public PlayerCube Cube;
-
     private List<GridCell> _availableCells;
+    public PlayerCube Cube { get; private set; }
 
     public bool IsTopRow { get; private set; } = false;
     public IReadOnlyList<GridCell> AvailableCells => _availableCells;

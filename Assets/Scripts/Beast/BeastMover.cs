@@ -44,7 +44,7 @@ public class BeastMover : MonoBehaviour
             transform.position = TargetPoint;
         }
 
-        _beast.SetNormalizedDistance();
+        _beast.GetNormalizedDistance();
     }
 
     public void StartMoveRoutine()
@@ -88,7 +88,6 @@ public class BeastMover : MonoBehaviour
                     else if (_beast.TryGetNextRoadPosition(out Vector3 nextPosition))
                     {
                         TargetPoint = nextPosition;
-                        _beast.SetNormalizedDistance();
                     }
                 }
 
@@ -101,7 +100,7 @@ public class BeastMover : MonoBehaviour
 
     private bool CheckSnakeProximity()
     {
-        return _beast.NormalizedDistance - _snake.NormalizedDistance < _escapeThreshold;
+        return _beast.GetNormalizedDistance() - _snake.NormalizedDistance < _escapeThreshold;
     }
 
     private void StopMoveRoutine()

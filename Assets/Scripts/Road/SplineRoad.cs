@@ -76,9 +76,9 @@ public class SplineRoad : MonoBehaviour
             Vector3 right = Vector3.Cross(tangentNormalized, upNormalized).normalized;
                         
             float widthMultiplier = 1f;
-            if (t > 0.91f)
+            if (t > 0.88f)
             {
-                widthMultiplier = Mathf.SmoothStep(1f, 0f, (t - 0.91f) / 0.1f) * endRoundness;
+                widthMultiplier = Mathf.SmoothStep(1f, 0f, (t - 0.88f) / 0.1f) * endRoundness;
             }
 
             Vector3 leftEdge = (Vector3)position - 0.5f * roadWidth * widthMultiplier * right;

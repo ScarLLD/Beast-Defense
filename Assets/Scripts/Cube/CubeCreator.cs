@@ -35,6 +35,7 @@ public class CubeCreator : MonoBehaviour
             return true;
         }
 
+        Debug.Log("Не удалось сгенерировать кубы.");
         return false;
     }
 }

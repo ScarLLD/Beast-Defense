@@ -32,8 +32,8 @@ public class LaunchSequencer : MonoBehaviour
 
     private void OnGameStarted()
     {
-        if (_placeSpawner.TryGeneratePlaces() && _boundaryMaker.TryGeneratePathMarkers() 
-            && _playerCubeSpawner.TryMoveToCenterScreenBottom() && _gridCreator.TryCreate() && _cubeCreator.TryCreate())
+        if (_boundaryMaker.TryGeneratePathMarkers() && _playerCubeSpawner.TryMoveToCenterScreenBottom()
+            && _gridCreator.TryCreate(out Vector3 cubeScale) && _placeSpawner.TryGeneratePlaces(cubeScale) && _cubeCreator.TryCreate())
         {
             _availabilityManagement.UpdateAvailability();
 

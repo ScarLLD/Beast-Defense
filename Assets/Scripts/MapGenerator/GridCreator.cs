@@ -3,11 +3,11 @@ using UnityEngine;
 
 public class GridCreator : MonoBehaviour
 {
-    [SerializeField] private Cube _cubePrefab;
+    [SerializeField] private PlayerCube _cubePrefab;
     [SerializeField] private GridCell _cellPrefab;
     [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private CubeCreator _cubeCreator;
-    [SerializeField] private BoundaryMaker _boundaryMaker;    
+    [SerializeField] private BoundaryMaker _boundaryMaker;
 
     [SerializeField] private int _rows;
     [SerializeField] private int _columns;
@@ -29,10 +29,14 @@ public class GridCreator : MonoBehaviour
 
         _objectWidth = _cubePrefab.transform.localScale.x;
         _objectDepth = _cubePrefab.transform.localScale.z;
+
+        _cellPrefab.transform.localScale = new(_cubePrefab.transform.localScale.x, 0.01f, _cubePrefab.transform.localScale.z);
     }
 
-    public bool TryCreate()
+    public bool TryCreate(out Vector3 cubeScale)
     {
+        cubeScale = _cubePrefab.transform.localScale;
+
         float availableSpaceX = _maxX - _minX - (_columns * _objectWidth);
         float availableSpaceZ = _maxZ - _minZ - (_rows * _objectDepth);
 
@@ -53,7 +57,7 @@ public class GridCreator : MonoBehaviour
                 float localZ = _minZ + (_objectDepth / 2) + row * (_objectDepth + spacingZ);
 
                 Vector3 spawnPosition = new(localX, 0f, localZ);
-                GridCell gridCell = Instantiate(_cellPrefab, transform);
+                GridCell gridCell = Instantiate(_cellPrefab, transform);                
                 gridCell.transform.localPosition = spawnPosition;
 
                 _gridStorage.Add(gridCell);
@@ -61,9 +65,12 @@ public class GridCreator : MonoBehaviour
         }
 
         if (_gridStorage.GridCount == 0)
+        {
+            Debug.Log("Не удалось сгенерировать сетку.");
             return false;
-        else
-            _gridStorage.CreateCells(_rows, _columns);
+        }
+
+        _gridStorage.CreateCells(_rows, _columns);
 
         Created?.Invoke();
         return true;

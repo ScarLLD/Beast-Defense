@@ -1,12 +1,17 @@
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(Shooter))]
 public class TargetRadar : MonoBehaviour
 {
-    [SerializeField] Shooter _shooter;
-
+    private Shooter _shooter;
     private TargetStorage _targetStorage;
     private Coroutine _moveCoroutine;
+
+    private void Awake()
+    {
+        _shooter = GetComponent<Shooter>();
+    }
 
     public void Init(TargetStorage targetStorage)
     {

@@ -71,6 +71,9 @@ public class BoundaryMaker : MonoBehaviour
         CreateBorderLines();
         PointsInitialized?.Invoke(_planePoints);
 
+        if(_planePoints.Count == 0)
+            Debug.Log("Не удалось сгенерировать грань карты.");
+
         return _planePoints.Count > 0;
     }
 

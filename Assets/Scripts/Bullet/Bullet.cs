@@ -11,8 +11,6 @@ public class Bullet : MonoBehaviour
     private Rigidbody _rigidbody;
     private Coroutine _moveCoroutine;
 
-    public Cube Target;
-
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
@@ -33,8 +31,6 @@ public class Bullet : MonoBehaviour
 
     private IEnumerator MoveToTarget(Cube cube)
     {
-        Target = cube;
-
         while (true)
         {
             Vector3 direction = (cube.transform.position - transform.position).normalized;

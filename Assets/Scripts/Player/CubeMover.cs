@@ -79,7 +79,6 @@ public class CubeMover : MonoBehaviour
             transform.position += _speed * Time.deltaTime * direction.normalized;
             transform.LookAt(_target);
 
-
             if (Vector3.Distance(_target, transform.position) < _arrivalThreshold)
             {
                 transform.position = _target;

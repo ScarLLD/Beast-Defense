@@ -17,8 +17,9 @@ public class PlaceSpawner : MonoBehaviour
         _storage = GetComponent<PlaceStorage>();
     }
 
-    public bool TryGeneratePlaces()
+    public bool TryGeneratePlaces(Vector3 cubeScale)
     {
+        _placePrefab.transform.localScale = new(cubeScale.x, 0.01f, cubeScale.z);
         Vector3 cameraCenter = new(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 0f);
 
         Ray ray = _camera.ScreenPointToRay(cameraCenter);
@@ -33,6 +34,7 @@ public class PlaceSpawner : MonoBehaviour
             return true;
         }
 
+        Debug.Log("Не удалось сгенерировать точки стрельбы.");
         return false;
     }
 
