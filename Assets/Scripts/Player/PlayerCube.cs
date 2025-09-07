@@ -1,27 +1,28 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-[RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(CubeMover))]
 [RequireComponent(typeof(TargetRadar))]
 [RequireComponent(typeof(Shooter))]
 [RequireComponent(typeof(CubeStack))]
+[RequireComponent(typeof(Animator))]
 public class PlayerCube : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 10f;
     [SerializeField] private float _transformSpeed = 10f;
     [SerializeField] private float _outlineActive = 4.4f;
     [SerializeField] private float _outlineDisable = 0f;
+    [SerializeField] private MeshRenderer _meshRenderer;
+    [SerializeField] private Outline _outline;
 
-    private Outline _outline;
     private CubeStack _stack;
-    private MeshRenderer _meshRenderer;
     private TargetRadar _radar;
     private Shooter _shooter;
     private View _view;
     private Vector3 _originalScale;
     private Vector3 _originalPosition;
+    private Animator _animator;
+    private bool _isScaled = false;
 
     public bool IsStatic { get; private set; } = true;
     public bool IsAvailable { get; private set; } = false;
@@ -32,13 +33,12 @@ public class PlayerCube : MonoBehaviour
 
     private void Awake()
     {
-        _outline = GetComponent<Outline>();
-        _meshRenderer = GetComponent<MeshRenderer>();
         Mover = GetComponent<CubeMover>();
         _shooter = GetComponent<Shooter>();
         _radar = GetComponent<TargetRadar>();
         _view = GetComponent<View>();
         _stack = GetComponent<CubeStack>();
+        _animator = GetComponent<Animator>();
     }
 
     public void Init(GridCell cell, Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
@@ -79,6 +79,8 @@ public class PlayerCube : MonoBehaviour
 
         if (IsAvailable)
             ActivateAvailability();
+        else
+            DeactivateAvailability();
     }
 
     private void ActivateAvailability()
@@ -86,13 +88,19 @@ public class PlayerCube : MonoBehaviour
         _outline.OutlineWidth = _outlineActive;
         StartCoroutine(ScaleRoutine());
         _view.DisplayBullets();
+        _animator.SetBool("isAvailable", true);
     }
 
     private void DeactivateAvailability()
     {
-        transform.localScale = new(_originalScale.x, _originalScale.y / 2, _originalScale.z);
-        transform.position = new(_originalPosition.x, _originalPosition.y - transform.localScale.y / 2, _originalPosition.z);
+        if (_isScaled == false)
+        {
+            transform.localScale = new(_originalScale.x, _originalScale.y / 2, _originalScale.z);
+            transform.position = new(_originalPosition.x, _originalPosition.y - transform.localScale.y / 2, _originalPosition.z);
+        }
+
         _outline.OutlineWidth = _outlineDisable;
+        _animator.SetBool("isAvailable", false);
     }
 
     private IEnumerator ScaleRoutine()
@@ -112,6 +120,8 @@ public class PlayerCube : MonoBehaviour
 
         transform.localScale = _originalScale;
         transform.position = _originalPosition;
+
+        _isScaled = true;
     }
 
     private void OnMoverArrived()

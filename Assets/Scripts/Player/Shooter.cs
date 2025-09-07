@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class Shooter : MonoBehaviour
 {
     [SerializeField] private float _timeBetweenShoot;
 
     private BulletSpawner _bulletSpawner;
     private Coroutine _coroutine;
+    private Animator _animator;
     private Queue<SnakeSegment> _targets;
     private WaitForSeconds _sleepTime;
 
@@ -21,6 +23,7 @@ public class Shooter : MonoBehaviour
 
     private void Awake()
     {
+        _animator = GetComponent<Animator>();
         _targets = new Queue<SnakeSegment>();
         _sleepTime = new WaitForSeconds(_timeBetweenShoot);
     }
@@ -65,14 +68,16 @@ public class Shooter : MonoBehaviour
 
                     BulletsDecreased?.Invoke();
 
+                    _animator.ResetTrigger("Shoot");
+                    _animator.SetTrigger("Shoot");
                     yield return _sleepTime;
                 }
 
                 if (BulletCount == 0)
                     isWork = false;
+                else
+                    SetInitialRotation();
             }
-
-            SetInitialRotation();
 
             yield return null;
         }

@@ -17,6 +17,7 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private float _minZ;
     [SerializeField] private float _maxZ;
 
+    private float _scaleMultiplier = 0.9f;
     private float _objectWidth;
     private float _objectDepth;
 
@@ -30,7 +31,7 @@ public class GridCreator : MonoBehaviour
         _objectWidth = _cubePrefab.transform.localScale.x;
         _objectDepth = _cubePrefab.transform.localScale.z;
 
-        _cellPrefab.transform.localScale = new(_cubePrefab.transform.localScale.x, 0.01f, _cubePrefab.transform.localScale.z);
+        _cellPrefab.transform.localScale = new(_cubePrefab.transform.localScale.x * _scaleMultiplier, 0.01f, _cubePrefab.transform.localScale.z * _scaleMultiplier);
     }
 
     public bool TryCreate(out Vector3 cubeScale)
@@ -57,7 +58,7 @@ public class GridCreator : MonoBehaviour
                 float localZ = _minZ + (_objectDepth / 2) + row * (_objectDepth + spacingZ);
 
                 Vector3 spawnPosition = new(localX, 0f, localZ);
-                GridCell gridCell = Instantiate(_cellPrefab, transform);                
+                GridCell gridCell = Instantiate(_cellPrefab, transform);
                 gridCell.transform.localPosition = spawnPosition;
 
                 _gridStorage.Add(gridCell);

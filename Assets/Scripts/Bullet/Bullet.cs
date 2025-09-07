@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody), typeof(BulletTrail))]
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private float _speed = 30f;
@@ -9,11 +9,13 @@ public class Bullet : MonoBehaviour
 
     private ParticleCreator _particleCreator;
     private Rigidbody _rigidbody;
+    private BulletTrail _bulletTrail;
     private Coroutine _moveCoroutine;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
+        _bulletTrail = GetComponent<BulletTrail>();
     }
 
     public void Init(ParticleCreator creator)
@@ -26,6 +28,7 @@ public class Bullet : MonoBehaviour
         if (_moveCoroutine != null)
             StopCoroutine(_moveCoroutine);
 
+        _bulletTrail.ResetTrail();
         _moveCoroutine = StartCoroutine(MoveToTarget(cube));
     }
 

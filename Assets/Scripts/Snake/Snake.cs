@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 
+[RequireComponent(typeof(SnakeSpeedControl))]
 public class Snake : MonoBehaviour
 {
     [Header("Snake Settings")]
@@ -17,25 +18,25 @@ public class Snake : MonoBehaviour
     [Header("Recoil Settings")]
     [SerializeField] private float _recoilDuration = 0.3f;
 
-    private SplineContainer _splineContainer;
-    private Transform _head;
     private readonly List<SnakeSegment> _segments = new();
-    private float _currentDistance = 0f;
-
     private readonly Queue<RecoilRequest> _recoilQueue = new();
+    private SplineContainer _splineContainer;
+    private SnakeSpeedControl _speedControl;
+    private float _currentDistance = 0f;
     private bool _isRecoiling = false;
+    private Transform _head;
 
-    public float MoveSpeed => _moveSpeed;
+    public float MoveSpeed { get; private set; }
     public float NormalizedDistance { get; private set; }
 
-    private class RecoilRequest
+    private void Awake()
     {
-        public SnakeSegment Segment;
-        public int Index;
+        _speedControl = GetComponent<SnakeSpeedControl>();
     }
 
     public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer)
     {
+        MoveSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _segments.Clear();
         _currentDistance = 0f;
@@ -61,8 +62,24 @@ public class Snake : MonoBehaviour
         }
 
         UpdateAllSegments();
-
         StartCoroutine(SnakeMovement());
+        _speedControl.StartControl();
+    }
+
+    public void DestroySegment(SnakeSegment segmentToDestroy)
+    {
+        int destroyedIndex = _segments.IndexOf(segmentToDestroy);
+        if (destroyedIndex == -1) return;
+
+        _recoilQueue.Enqueue(new RecoilRequest { Segment = segmentToDestroy, Index = destroyedIndex });
+
+        if (!_isRecoiling)
+            StartCoroutine(ProcessRecoilQueue());
+    }
+
+    public void ChangeSpeed(float moveSpeed)
+    {
+        MoveSpeed = moveSpeed;
     }
 
     private IEnumerator SnakeMovement()
@@ -73,7 +90,7 @@ public class Snake : MonoBehaviour
         {
             if (_splineContainer != null && !_isRecoiling)
             {
-                _currentDistance += _moveSpeed * Time.deltaTime;
+                _currentDistance += MoveSpeed * Time.deltaTime;
                 PlaceOnSpline(_head, _currentDistance);
 
                 NormalizedDistance = _splineContainer.Spline.GetLength() > 0
@@ -96,9 +113,8 @@ public class Snake : MonoBehaviour
     {
         if (_splineContainer == null) return;
         float t = Mathf.Clamp01(distance / _splineContainer.Spline.GetLength());
-        _splineContainer.Evaluate(t, out var pos, out var tangent, out var up);
-        target.position = pos;
-        target.rotation = Quaternion.LookRotation(tangent, up);
+        _splineContainer.Evaluate(t, out var position, out var tangent, out var up);
+        target.SetPositionAndRotation(position, Quaternion.LookRotation(tangent, up));
     }
 
     private void UpdateAllSegments()
@@ -115,17 +131,6 @@ public class Snake : MonoBehaviour
         }
     }
 
-    public void DestroySegment(SnakeSegment segmentToDestroy)
-    {
-        int destroyedIndex = _segments.IndexOf(segmentToDestroy);
-        if (destroyedIndex == -1) return;
-
-            _recoilQueue.Enqueue(new RecoilRequest { Segment = segmentToDestroy, Index = destroyedIndex });
-
-        if (!_isRecoiling)
-            StartCoroutine(ProcessRecoilQueue());
-    }
-
     private IEnumerator ProcessRecoilQueue()
     {
         _isRecoiling = true;
@@ -134,7 +139,7 @@ public class Snake : MonoBehaviour
         {
             RecoilRequest request = _recoilQueue.Dequeue();
 
-            List<SnakeSegment> segmentsToRecoil = new List<SnakeSegment>();
+            List<SnakeSegment> segmentsToRecoil = new();
             for (int i = 0; i < request.Index; i++)
                 segmentsToRecoil.Add(_segments[i]);
 
@@ -180,5 +185,11 @@ public class Snake : MonoBehaviour
         }
 
         _isRecoiling = false;
+    }
+
+    private class RecoilRequest
+    {
+        public SnakeSegment Segment;
+        public int Index;
     }
 }

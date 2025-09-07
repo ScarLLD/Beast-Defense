@@ -10,6 +10,7 @@ public class PlaceSpawner : MonoBehaviour
     [SerializeField] private float _rightBound;
     [SerializeField] private float _movingAwayFromShootingPlace;
 
+    private float _scaleMultiplier = 0.9f;
     private PlaceStorage _storage;
 
     private void Awake()
@@ -19,7 +20,7 @@ public class PlaceSpawner : MonoBehaviour
 
     public bool TryGeneratePlaces(Vector3 cubeScale)
     {
-        _placePrefab.transform.localScale = new(cubeScale.x, 0.01f, cubeScale.z);
+        _placePrefab.transform.localScale = new(cubeScale.x * _scaleMultiplier, 0.01f, cubeScale.z * _scaleMultiplier);
         Vector3 cameraCenter = new(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 0f);
 
         Ray ray = _camera.ScreenPointToRay(cameraCenter);

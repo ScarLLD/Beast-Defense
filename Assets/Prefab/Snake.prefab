@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5815151755546300302}
   - component: {fileID: 1056603179970402766}
+  - component: {fileID: 2639506017976366610}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -44,8 +45,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907cf244996f1db4bb8a8f31a51b5325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 1
+  _moveSpeed: 2
   _segmentDistance: 1.2
   _segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
   _headPrefab: {fileID: 7123472319561932084, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
   _recoilDuration: 0.3
+--- !u!114 &2639506017976366610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249471562046286913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1feb830783b6df84baa5d282f845ff7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transitionDuration: 2
+  _slowedMultiplier: 0.5
+  _deepSlowedMultiplier: 0.25
+  _finalSlowdownMultiplier: 0.05
+  _slowedDistance: 0.5
+  _deepSlowedDistance: 0.75
+  _finalSlowdownDistance: 0.95
+  _stopDistance: 0.99
