@@ -466,7 +466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f32133697296013498a095693c554571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadWidth: 2.7
+  roadWidth: 2.85
   textureTiling: 0
   roadMaterial: {fileID: 2100000, guid: 076e769133efbf544bae83ea5c6182d7, type: 2}
   endPlatformMaterial: {fileID: 2100000, guid: d819ba9e5e0f624459723d3d55227d8e, type: 2}
