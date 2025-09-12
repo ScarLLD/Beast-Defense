@@ -74,7 +74,7 @@ public class SnakeSegment : MonoBehaviour
             foreach (var cube in _cubes)
             {
                 if (cube.IsDestroyed == false)
-                {                    
+                {
                     return;
                 }
             }

@@ -812,8 +812,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boundaryMaker: {fileID: 1370593100}
-  _segmentLength: 7
-  _minPathSegments: 5
+  _segmentLength: 5
+  _minPathSegments: 7
   _maxPathSegments: 15
 --- !u!114 &979470876
 MonoBehaviour:
@@ -829,7 +829,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boundaryMargin: 1
   _radiusBetweenSegments: 1.5
-  _endPointMargin: 2
+  _endPointMargin: 1.5
 --- !u!1 &1295288258
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,7 +928,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lineMeterial: {fileID: 2100000, guid: 3d96b70da33c5a24cb58812461d00eed, type: 2}
-  _borderReduction: 0.8
+  _borderReduction: 0.85
 --- !u!4 &1370593101
 Transform:
   m_ObjectHideFlags: 0
@@ -1073,7 +1073,7 @@ MonoBehaviour:
   _cubeCreator: {fileID: 529893070}
   _cubeStorage: {fileID: 529893071}
   _snakeSpawner: {fileID: 437241863}
-  _bastSpawner: {fileID: 1441411479}
+  _beastSpawner: {fileID: 1441411479}
   _availabilityManagement: {fileID: 529893072}
 --- !u!1 &1716784348
 GameObject:

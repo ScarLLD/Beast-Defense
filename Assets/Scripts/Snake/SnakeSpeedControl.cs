@@ -14,9 +14,9 @@ public class SnakeSpeedControl : MonoBehaviour
     [SerializeField] private float _transitionDuration = 1f;
 
     [Header("Speed Multipliers")]
-    [SerializeField] private float _slowedMultiplier = 0.5f;       // скорость в Slowed
-    [SerializeField] private float _deepSlowedMultiplier = 0.25f;  // скорость в DeepSlowed
-    [SerializeField] private float _finalSlowdownMultiplier = 0.05f; // финальное замедление
+    [SerializeField] private float _slowedMultiplier = 0.5f;       
+    [SerializeField] private float _deepSlowedMultiplier = 0.25f;  
+    [SerializeField] private float _finalSlowdownMultiplier = 0.05f; 
 
     [Header("Distance Thresholds (0..1)")]
     [SerializeField] private float _slowedDistance = 0.5f;
@@ -124,7 +124,7 @@ public class SnakeSpeedControl : MonoBehaviour
             _currentState = SpeedState.DeepSlowed;
             StartSpeedTransition(_initialSpeed * _deepSlowedMultiplier);
         }
-        else if (distance < _slowedDistance) // возврат в Normal
+        else if (distance < _slowedDistance) 
         {
             Debug.Log("Slowed -> Normal");
             _currentState = SpeedState.Normal;
