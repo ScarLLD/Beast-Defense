@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -469,8 +469,8 @@ MonoBehaviour:
   roadWidth: 2.85
   textureTiling: 0
   roadMaterial: {fileID: 2100000, guid: 076e769133efbf544bae83ea5c6182d7, type: 2}
-  endPlatformMaterial: {fileID: 2100000, guid: d819ba9e5e0f624459723d3d55227d8e, type: 2}
-  endPlatformRadius: 2
+  endPlatformMaterial: {fileID: 2100000, guid: 076e769133efbf544bae83ea5c6182d7, type: 2}
+  endPlatformRadius: 1.43
   _platformSegments: 36
   resolution: 350
   endRoundness: 1.8
@@ -486,7 +486,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84e5315938d3f5c438184b9b360788e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tangentLength: 0.8
+  _tangentLength: 0.01
+  _smoothness: 1
+  _subdivisions: 60
+  _useBezierSmoothing: 1
+  _isBezier: 0
 --- !u!4 &561811628
 Transform:
   m_ObjectHideFlags: 0
@@ -812,9 +816,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boundaryMaker: {fileID: 1370593100}
-  _segmentLength: 7
+  _segmentLength: 5
   _minPathSegments: 5
-  _maxPathSegments: 15
+  _maxPathSegments: 20
 --- !u!114 &979470876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -829,7 +833,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boundaryMargin: 1
   _radiusBetweenSegments: 1.5
-  _endPointMargin: 2
+  _endPointMargin: 1
 --- !u!1 &1295288258
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,7 +932,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lineMeterial: {fileID: 2100000, guid: 3d96b70da33c5a24cb58812461d00eed, type: 2}
-  _borderReduction: 0.8
+  _borderReduction: 0.9
 --- !u!4 &1370593101
 Transform:
   m_ObjectHideFlags: 0

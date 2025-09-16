@@ -76,10 +76,10 @@ public class SplineRoad : MonoBehaviour
             Vector3 right = Vector3.Cross(tangentNormalized, upNormalized).normalized;
                         
             float widthMultiplier = 1f;
-            if (t > 0.88f)
-            {
-                widthMultiplier = Mathf.SmoothStep(1f, 0f, (t - 0.88f) / 0.1f) * endRoundness;
-            }
+            //if (t > 0.88f)
+            //{
+            //    widthMultiplier = Mathf.SmoothStep(1f, 0f, (t - 0.88f) / 0.1f) * endRoundness;
+            //}
 
             Vector3 leftEdge = (Vector3)position - 0.5f * roadWidth * widthMultiplier * right;
             Vector3 rightEdge = (Vector3)position + 0.5f * roadWidth * widthMultiplier * right;
@@ -111,7 +111,7 @@ public class SplineRoad : MonoBehaviour
             triangles.Add(nextLeft);
         }
 
-        AddEndCap(vertices, uv, normals, triangles);
+        //AddEndCap(vertices, uv, normals, triangles);
         AddEndPlatform();
 
         _roadMesh.vertices = vertices.ToArray();

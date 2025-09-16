@@ -10,6 +10,7 @@ public class Snake : MonoBehaviour
     [Header("Snake Settings")]
     [SerializeField] private float _moveSpeed = 2f;
     [SerializeField] private float _segmentDistance = 2f;
+    [SerializeField] private float _segmentRollback = 3;
 
     [Header("Prefabs")]
     [SerializeField] private SnakeSegment _segmentPrefab;
@@ -22,7 +23,7 @@ public class Snake : MonoBehaviour
     private readonly Queue<RecoilRequest> _recoilQueue = new();
     private SplineContainer _splineContainer;
     private SnakeSpeedControl _speedControl;
-    private float _currentDistance = 0f;
+    private float _currentDistance = -1f;
     private bool _isRecoiling = false;
     private Transform _head;
 
@@ -39,7 +40,6 @@ public class Snake : MonoBehaviour
         MoveSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _segments.Clear();
-        _currentDistance = 0f;
 
         if (_head != null) Destroy(_head.gameObject);
         _head = Instantiate(_headPrefab, transform).transform;
@@ -121,7 +121,7 @@ public class Snake : MonoBehaviour
     {
         for (int i = 0; i < _segments.Count; i++)
         {
-            float dist = _currentDistance - _segmentDistance * (i + 1);
+            float dist = _currentDistance - _segmentDistance * (i + 1) - _segmentRollback;
 
             if (dist > 0f)
             {
@@ -139,9 +139,16 @@ public class Snake : MonoBehaviour
         {
             RecoilRequest request = _recoilQueue.Dequeue();
 
+            // Проверяем, что сегмент еще существует и не был удален другим рекоилом
+            if (request.Segment == null || !_segments.Contains(request.Segment))
+                continue;
+
             List<SnakeSegment> segmentsToRecoil = new();
             for (int i = 0; i < request.Index; i++)
-                segmentsToRecoil.Add(_segments[i]);
+            {
+                if (i < _segments.Count && _segments[i] != null)
+                    segmentsToRecoil.Add(_segments[i]);
+            }
 
             float startHead = _currentDistance;
             float targetHead = _currentDistance - _segmentDistance;
@@ -151,7 +158,8 @@ public class Snake : MonoBehaviour
 
             for (int i = 0; i < segmentsToRecoil.Count; i++)
             {
-                startDistances[i] = _currentDistance - _segmentDistance * (i + 1);
+                // Учитываем _segmentRollback при расчете позиций
+                startDistances[i] = _currentDistance - _segmentDistance * (i + 1) - _segmentRollback;
                 targetDistances[i] = startDistances[i] - _segmentDistance;
             }
 
@@ -167,9 +175,12 @@ public class Snake : MonoBehaviour
 
                 for (int i = 0; i < segmentsToRecoil.Count; i++)
                 {
-                    segmentsToRecoil[i].SetActiveSegment(true);
-                    float dist = Mathf.Lerp(startDistances[i], targetDistances[i], smooth);
-                    PlaceOnSpline(segmentsToRecoil[i].transform, dist);
+                    if (segmentsToRecoil[i] != null)
+                    {
+                        segmentsToRecoil[i].SetActiveSegment(true);
+                        float dist = Mathf.Lerp(startDistances[i], targetDistances[i], smooth);
+                        PlaceOnSpline(segmentsToRecoil[i].transform, dist);
+                    }
                 }
 
                 yield return null;
@@ -178,10 +189,21 @@ public class Snake : MonoBehaviour
             _currentDistance = targetHead;
             PlaceOnSpline(_head, _currentDistance);
             for (int i = 0; i < segmentsToRecoil.Count; i++)
-                PlaceOnSpline(segmentsToRecoil[i].transform, targetDistances[i]);
+            {
+                if (segmentsToRecoil[i] != null)
+                    PlaceOnSpline(segmentsToRecoil[i].transform, targetDistances[i]);
+            }
 
-            _segments.Remove(request.Segment);
-            Destroy(request.Segment.gameObject);
+            // Удаляем сегмент только если он еще существует
+            if (_segments.Contains(request.Segment))
+            {
+                _segments.Remove(request.Segment);
+                if (request.Segment != null)
+                    Destroy(request.Segment.gameObject);
+            }
+
+            // Обновляем позиции всех оставшихся сегментов после удаления
+            UpdateAllSegments();
         }
 
         _isRecoiling = false;
