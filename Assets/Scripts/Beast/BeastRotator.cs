@@ -4,11 +4,11 @@ using UnityEngine;
 [RequireComponent(typeof(BeastMover))]
 public class BeastRotator : MonoBehaviour
 {
-    private readonly float _rotationSpeed;
+    private readonly float _rotationSpeed = 5f;
     private Coroutine _coroutine;
     private BeastMover _beastMover;
-    private Vector3 _direction;
-    private Snake _snake;
+    private Vector3 _lookDirection;
+    private Vector3? _finalRotation;
 
     private void Awake()
     {
@@ -20,14 +20,20 @@ public class BeastRotator : MonoBehaviour
         StopRotateRoutine();
     }
 
-    public void Init(Snake snake)
-    {
-        _snake = snake;
-    }
-
     public void StartRotateRoutine()
     {
         _coroutine ??= StartCoroutine(RotateToTarget());
+    }
+
+    public void SetLookDirection(Vector3 direction)
+    {
+        _lookDirection = direction;
+        _finalRotation = null; // —брасываем финальный поворот при установке нового направлени€
+    }
+
+    public void SetFinalRotation(Vector3 direction)
+    {
+        _finalRotation = direction;
     }
 
     private IEnumerator RotateToTarget()
@@ -36,14 +42,27 @@ public class BeastRotator : MonoBehaviour
 
         while (isWork == true)
         {
-            if (_beastMover.TargetPoint != Vector3.zero && _beastMover.IsMoving)
-                _direction = _beastMover.TargetPoint - transform.position;
-            else
-                _direction = Vector3.back;
+            Vector3 targetDirection;
 
-            if (_direction != Vector3.zero)
+            if (_finalRotation.HasValue)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(_direction);
+                // ‘инальный поворот (вниз после завершени€ движени€)
+                targetDirection = _finalRotation.Value;
+            }
+            else if (_beastMover.TargetPoint != Vector3.zero && _beastMover.IsMoving)
+            {
+                // ƒвижемс€ - смотрим по направлению сплайна
+                targetDirection = _lookDirection;
+            }
+            else
+            {
+                // ѕо умолчанию смотрим вперед
+                targetDirection = Vector3.forward;
+            }
+
+            if (targetDirection != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
                 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
             }
 

@@ -60,20 +60,20 @@ public class SplineCreator : MonoBehaviour
                 float angle = Vector3.Angle(inDirection, outDirection);
                 float tangentMultiplier = Mathf.Lerp(0.3f, 1.5f, angle / 180f);
 
-                knot.TangentIn = new float3(-bisector * _tangentLength * tangentMultiplier * _smoothness);
-                knot.TangentOut = new float3(bisector * _tangentLength * tangentMultiplier * _smoothness);
+                knot.TangentIn = new float3(_smoothness * _tangentLength * tangentMultiplier * -bisector);
+                knot.TangentOut = new float3(_smoothness * _tangentLength * tangentMultiplier * bisector);
             }
             else if (i == 0 && processedPoints.Count > 1)
             {
                 // Первая точка - только исходящий тангенс
                 Vector3 direction = (processedPoints[i + 1] - processedPoints[i]).normalized;
-                knot.TangentOut = new float3(direction * _tangentLength * _smoothness);
+                knot.TangentOut = new float3(_smoothness * _tangentLength * direction);
             }
             else if (i == processedPoints.Count - 1 && processedPoints.Count > 1)
             {
                 // Последняя точка - только входящий тангенс
                 Vector3 direction = (processedPoints[i] - processedPoints[i - 1]).normalized;
-                knot.TangentIn = new float3(-direction * _tangentLength * _smoothness);
+                knot.TangentIn = new float3(_smoothness * _tangentLength * -direction);
             }
 
             spline.Add(knot);
@@ -88,10 +88,11 @@ public class SplineCreator : MonoBehaviour
         if (originalPoints.Count < 3)
             return originalPoints;
 
-        List<Vector3> smoothedPoints = new List<Vector3>();
-
-        // Добавляем первую точку
-        smoothedPoints.Add(originalPoints[0]);
+        List<Vector3> smoothedPoints = new()
+        {
+            // Добавляем первую точку
+            originalPoints[0]
+        };
 
         // Обрабатываем промежуточные точки с помощью кривых Безье
         for (int i = 0; i < originalPoints.Count - 1; i++)
@@ -106,15 +107,15 @@ public class SplineCreator : MonoBehaviour
             {
                 // Первый сегмент
                 Vector3 direction = (p3 - p0).normalized;
-                p1 = p0 + direction * _tangentLength * _smoothness;
-                p2 = p3 - direction * _tangentLength * _smoothness;
+                p1 = p0 + _smoothness * _tangentLength * direction;
+                p2 = p3 - _smoothness * _tangentLength * direction;
             }
             else if (i == originalPoints.Count - 2)
             {
                 // Последний сегмент
                 Vector3 direction = (p3 - p0).normalized;
-                p1 = p0 + direction * _tangentLength * _smoothness;
-                p2 = p3 - direction * _tangentLength * _smoothness;
+                p1 = p0 + _smoothness * _tangentLength * direction;
+                p2 = p3 - _smoothness * _tangentLength * direction;
             }
             else
             {
@@ -126,8 +127,8 @@ public class SplineCreator : MonoBehaviour
                 Vector3 inDirection = (p0 - prevPoint).normalized;
                 Vector3 outDirection = (nextPoint - p3).normalized;
 
-                p1 = p0 + inDirection * _tangentLength * _smoothness;
-                p2 = p3 - outDirection * _tangentLength * _smoothness;
+                p1 = p0 + _smoothness * _tangentLength * inDirection;
+                p2 = p3 - _smoothness * _tangentLength * outDirection;
             }
 
             // Добавляем промежуточные точки кривой Безье
@@ -146,7 +147,7 @@ public class SplineCreator : MonoBehaviour
         }
 
         // Добавляем последнюю точку
-        smoothedPoints.Add(originalPoints[originalPoints.Count - 1]);
+        smoothedPoints.Add(originalPoints[^1]);
 
         return smoothedPoints;
     }
@@ -173,8 +174,10 @@ public class SplineCreator : MonoBehaviour
         if (points.Count < 4)
             return points;
 
-        List<Vector3> smoothed = new List<Vector3>();
-        smoothed.Add(points[0]);
+        List<Vector3> smoothed = new()
+        {
+            points[0]
+        };
 
         for (int i = 0; i < points.Count - 1; i++)
         {

@@ -1077,7 +1077,7 @@ MonoBehaviour:
   _cubeCreator: {fileID: 529893070}
   _cubeStorage: {fileID: 529893071}
   _snakeSpawner: {fileID: 437241863}
-  _bastSpawner: {fileID: 1441411479}
+  _beastSpawner: {fileID: 1441411479}
   _availabilityManagement: {fileID: 529893072}
 --- !u!1 &1716784348
 GameObject:
