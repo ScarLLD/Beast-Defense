@@ -64,7 +64,7 @@ public class SplineRoad : MonoBehaviour
         List<Vector3> normals = new();
 
         Spline spline = _splineContainer.Spline;
-               
+
         for (int i = 0; i <= resolution; i++)
         {
             float t = i / (float)resolution;
@@ -74,12 +74,8 @@ public class SplineRoad : MonoBehaviour
             Vector3 tangentNormalized = ((Vector3)tangent).normalized;
             Vector3 upNormalized = ((Vector3)upVector).normalized;
             Vector3 right = Vector3.Cross(tangentNormalized, upNormalized).normalized;
-                        
+
             float widthMultiplier = 1f;
-            //if (t > 0.88f)
-            //{
-            //    widthMultiplier = Mathf.SmoothStep(1f, 0f, (t - 0.88f) / 0.1f) * endRoundness;
-            //}
 
             Vector3 leftEdge = (Vector3)position - 0.5f * roadWidth * widthMultiplier * right;
             Vector3 rightEdge = (Vector3)position + 0.5f * roadWidth * widthMultiplier * right;
@@ -111,7 +107,6 @@ public class SplineRoad : MonoBehaviour
             triangles.Add(nextLeft);
         }
 
-        //AddEndCap(vertices, uv, normals, triangles);
         AddEndPlatform();
 
         _roadMesh.vertices = vertices.ToArray();
@@ -195,53 +190,6 @@ public class SplineRoad : MonoBehaviour
 
         meshFilter.mesh = platformMesh;
         meshRenderer.material = endPlatformMaterial != null ? endPlatformMaterial : new Material(Shader.Find("Standard"));
-    }
-
-    private void AddEndCap(List<Vector3> vertices, List<Vector2> uv, List<Vector3> normals, List<int> triangles)
-    {
-        _splineContainer.Evaluate(1f, out float3 endPosition, out float3 endTangent, out float3 endUp);
-
-        Vector3 tangentNormalized = ((Vector3)endTangent).normalized;
-        Vector3 upNormalized = ((Vector3)endUp).normalized;
-        Vector3 right = Vector3.Cross(tangentNormalized, upNormalized).normalized;
-
-        int centerIndex = vertices.Count;
-        Vector3 center = (Vector3)endPosition;
-
-        vertices.Add(center);
-        uv.Add(new Vector2(0.5f, 1f));
-        normals.Add(upNormalized);
-
-        int segments = 8;
-        for (int i = 0; i <= segments; i++)
-        {
-            float angle = i / (float)segments * Mathf.PI;
-            float x = Mathf.Cos(angle) * roadWidth * 0.5f * endRoundness;
-            float z = Mathf.Sin(angle) * roadWidth * 0.5f * endRoundness;
-
-            Vector3 offset = right * x + tangentNormalized * z;
-            Vector3 capVertex = center + offset;
-
-            vertices.Add(capVertex);
-            uv.Add(new Vector2(i / (float)segments, 1f));
-            normals.Add(upNormalized);
-        }
-
-        int lastRoadLeft = (resolution) * 2;
-
-        for (int i = 0; i < segments; i++)
-        {
-            triangles.Add(lastRoadLeft);
-            triangles.Add(centerIndex + i + 2);
-            triangles.Add(centerIndex + i + 1);
-        }
-
-        for (int i = 0; i < segments; i++)
-        {
-            triangles.Add(centerIndex);
-            triangles.Add(centerIndex + i + 2);
-            triangles.Add(centerIndex + i + 1);
-        }
     }
 
     public void ClearRoad()

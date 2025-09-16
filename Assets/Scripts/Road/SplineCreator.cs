@@ -12,7 +12,7 @@ public class SplineCreator : MonoBehaviour
     [SerializeField] private bool _useBezierSmoothing = true;
     [SerializeField] private bool _isBezier = true;
 
-    public bool TryCreateSplineWithBezierCorners(List<Vector3> roadPoints, out SplineContainer splineContainer)
+    public bool TryCreateSpline(List<Vector3> roadPoints, out SplineContainer splineContainer)
     {
         splineContainer = null;
 
@@ -26,7 +26,6 @@ public class SplineCreator : MonoBehaviour
         Spline spline = splineContainer.Spline;
         spline.Clear();
 
-        // Если включено сглаживание Безье, обрабатываем точки
         List<Vector3> processedPoints = null;
 
         if (_useBezierSmoothing)
@@ -37,26 +36,21 @@ public class SplineCreator : MonoBehaviour
                 processedPoints = SmoothPointsWithCatmullRom(roadPoints);
         }
 
-        // Добавляем обработанные точки в сплайн
         for (int i = 0; i < processedPoints.Count; i++)
         {
             BezierKnot knot = new(processedPoints[i]);
 
-            // Настраиваем тангенсы для плавных изгибов
             if (i > 0 && i < processedPoints.Count - 1)
             {
                 Vector3 prevPoint = processedPoints[i - 1];
                 Vector3 currentPoint = processedPoints[i];
                 Vector3 nextPoint = processedPoints[i + 1];
 
-                // Вычисляем направление входящего и исходящего сегментов
                 Vector3 inDirection = (currentPoint - prevPoint).normalized;
                 Vector3 outDirection = (nextPoint - currentPoint).normalized;
 
-                // Вычисляем биссектрису угла для плавного перехода
                 Vector3 bisector = (inDirection + outDirection).normalized;
 
-                // Корректируем длину тангенсов в зависимости от угла поворота
                 float angle = Vector3.Angle(inDirection, outDirection);
                 float tangentMultiplier = Mathf.Lerp(0.3f, 1.5f, angle / 180f);
 
@@ -65,13 +59,11 @@ public class SplineCreator : MonoBehaviour
             }
             else if (i == 0 && processedPoints.Count > 1)
             {
-                // Первая точка - только исходящий тангенс
                 Vector3 direction = (processedPoints[i + 1] - processedPoints[i]).normalized;
                 knot.TangentOut = new float3(_smoothness * _tangentLength * direction);
             }
             else if (i == processedPoints.Count - 1 && processedPoints.Count > 1)
             {
-                // Последняя точка - только входящий тангенс
                 Vector3 direction = (processedPoints[i] - processedPoints[i - 1]).normalized;
                 knot.TangentIn = new float3(_smoothness * _tangentLength * -direction);
             }
@@ -90,40 +82,33 @@ public class SplineCreator : MonoBehaviour
 
         List<Vector3> smoothedPoints = new()
         {
-            // Добавляем первую точку
             originalPoints[0]
         };
 
-        // Обрабатываем промежуточные точки с помощью кривых Безье
         for (int i = 0; i < originalPoints.Count - 1; i++)
         {
             Vector3 p0 = originalPoints[i];
             Vector3 p3 = originalPoints[i + 1];
 
-            // Вычисляем контрольные точки для кривой Безье
             Vector3 p1, p2;
 
             if (i == 0)
             {
-                // Первый сегмент
                 Vector3 direction = (p3 - p0).normalized;
                 p1 = p0 + _smoothness * _tangentLength * direction;
                 p2 = p3 - _smoothness * _tangentLength * direction;
             }
             else if (i == originalPoints.Count - 2)
             {
-                // Последний сегмент
                 Vector3 direction = (p3 - p0).normalized;
                 p1 = p0 + _smoothness * _tangentLength * direction;
                 p2 = p3 - _smoothness * _tangentLength * direction;
             }
             else
             {
-                // Промежуточные сегменты
                 Vector3 prevPoint = originalPoints[i - 1];
                 Vector3 nextPoint = originalPoints[i + 2];
 
-                // Вычисляем направления
                 Vector3 inDirection = (p0 - prevPoint).normalized;
                 Vector3 outDirection = (nextPoint - p3).normalized;
 
@@ -131,7 +116,6 @@ public class SplineCreator : MonoBehaviour
                 p2 = p3 - _smoothness * _tangentLength * outDirection;
             }
 
-            // Добавляем промежуточные точки кривой Безье
             for (int j = 1; j <= _subdivisions; j++)
             {
                 float t = j / (float)(_subdivisions + 1);
@@ -139,14 +123,12 @@ public class SplineCreator : MonoBehaviour
                 smoothedPoints.Add(bezierPoint);
             }
 
-            // Добавляем конечную точку сегмента
             if (i < originalPoints.Count - 2)
             {
                 smoothedPoints.Add(p3);
             }
         }
 
-        // Добавляем последнюю точку
         smoothedPoints.Add(originalPoints[^1]);
 
         return smoothedPoints;
@@ -160,15 +142,14 @@ public class SplineCreator : MonoBehaviour
         float uuu = uu * u;
         float ttt = tt * t;
 
-        Vector3 point = uuu * p0; // (1-t)^3 * P0
-        point += 3 * uu * t * p1; // 3*(1-t)^2 * t * P1
-        point += 3 * u * tt * p2; // 3*(1-t) * t^2 * P2
-        point += ttt * p3; // t^3 * P3
+        Vector3 point = uuu * p0;
+        point += 3 * uu * t * p1;
+        point += 3 * u * tt * p2;
+        point += ttt * p3;
 
         return point;
     }
 
-    // Альтернативный метод: Catmull-Rom сглаживание
     private List<Vector3> SmoothPointsWithCatmullRom(List<Vector3> points)
     {
         if (points.Count < 4)
@@ -208,11 +189,5 @@ public class SplineCreator : MonoBehaviour
                       (-p0 + p2) * t +
                       (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
                       (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
-    }
-
-    // Метод для обратной совместимости
-    public bool TryCreateSplineWith90DegreeCorners(List<Vector3> roadPoints, out SplineContainer splineContainer)
-    {
-        return TryCreateSplineWithBezierCorners(roadPoints, out splineContainer);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -8,16 +7,17 @@ using UnityEngine.Splines;
 public class Snake : MonoBehaviour
 {
     [Header("Snake Settings")]
-    [SerializeField] private float _moveSpeed = 2f;
-    [SerializeField] private float _segmentDistance = 2f;
-    [SerializeField] private float _segmentRollback = 3;
+    public float moveSpeed = 2f;
+    public float segmentDistance = 1.15f;
+    public float segmentRollback = 1.5f;
 
     [Header("Prefabs")]
-    [SerializeField] private SnakeSegment _segmentPrefab;
-    [SerializeField] private GameObject _headPrefab;
+    public SnakeSegment segmentPrefab;
+    public GameObject headPrefab;
 
     [Header("Recoil Settings")]
-    [SerializeField] private float _recoilDuration = 0.3f;
+    public float recoilDuration = 0.3f;
+    public AnimationCurve recoilCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
     private readonly List<SnakeSegment> _segments = new();
     private readonly Queue<RecoilRequest> _recoilQueue = new();
@@ -37,12 +37,12 @@ public class Snake : MonoBehaviour
 
     public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer)
     {
-        MoveSpeed = _moveSpeed;
+        MoveSpeed = moveSpeed;
         _splineContainer = splineContainer;
         _segments.Clear();
 
         if (_head != null) Destroy(_head.gameObject);
-        _head = Instantiate(_headPrefab, transform).transform;
+        _head = Instantiate(headPrefab, transform).transform;
         PlaceOnSpline(_head, 0f);
 
         if (stacks != null)
@@ -53,7 +53,7 @@ public class Snake : MonoBehaviour
                 int count = Mathf.Max(1, stack.Count / 4);
                 for (int i = 0; i < count; i++)
                 {
-                    var seg = Instantiate(_segmentPrefab, transform);
+                    var seg = Instantiate(segmentPrefab, transform);
                     seg.Init(stack.Material, this);
                     seg.SetActiveSegment(false);
                     _segments.Add(seg);
@@ -68,16 +68,24 @@ public class Snake : MonoBehaviour
 
     public void DestroySegment(SnakeSegment segmentToDestroy)
     {
-        int destroyedIndex = _segments.IndexOf(segmentToDestroy);
-        if (destroyedIndex == -1) return;
-
-        _recoilQueue.Enqueue(new RecoilRequest { Segment = segmentToDestroy, Index = destroyedIndex });
+        if (segmentToDestroy == null) return;
+        _recoilQueue.Enqueue(new RecoilRequest { Segment = segmentToDestroy });
 
         if (!_isRecoiling)
             StartCoroutine(ProcessRecoilQueue());
     }
 
-    public void ChangeSpeed(float moveSpeed)
+    public void ChangeSpeed(float newSpeed)
+    {
+        MoveSpeed = newSpeed;
+    }
+
+    public void Stop()
+    {
+        MoveSpeed = 0f;
+    }
+
+    public void Resume()
     {
         MoveSpeed = moveSpeed;
     }
@@ -119,15 +127,17 @@ public class Snake : MonoBehaviour
 
     private void UpdateAllSegments()
     {
-        for (int i = 0; i < _segments.Count; i++)
-        {
-            float dist = _currentDistance - _segmentDistance * (i + 1) - _segmentRollback;
+        float currentDist = _currentDistance - segmentDistance - segmentRollback;
 
-            if (dist > 0f)
+        foreach (var seg in _segments)
+        {
+            if (currentDist > 0f)
             {
-                _segments[i].SetActiveSegment(true);
-                PlaceOnSpline(_segments[i].transform, dist);
+                seg.SetActiveSegment(true);
+                PlaceOnSpline(seg.transform, currentDist);
             }
+
+            currentDist -= segmentDistance;
         }
     }
 
@@ -138,37 +148,33 @@ public class Snake : MonoBehaviour
         while (_recoilQueue.Count > 0)
         {
             RecoilRequest request = _recoilQueue.Dequeue();
+            if (request.Segment == null || !_segments.Contains(request.Segment)) continue;
 
-            // Проверяем, что сегмент еще существует и не был удален другим рекоилом
-            if (request.Segment == null || !_segments.Contains(request.Segment))
-                continue;
-
-            List<SnakeSegment> segmentsToRecoil = new();
-            for (int i = 0; i < request.Index; i++)
+            List<SnakeSegment> segmentsToRecoil = new List<SnakeSegment>();
+            foreach (var seg in _segments)
             {
-                if (i < _segments.Count && _segments[i] != null)
-                    segmentsToRecoil.Add(_segments[i]);
+                if (seg == request.Segment) break;
+                segmentsToRecoil.Add(seg);
             }
 
             float startHead = _currentDistance;
-            float targetHead = _currentDistance - _segmentDistance;
+            float targetHead = _currentDistance - segmentDistance;
 
             float[] startDistances = new float[segmentsToRecoil.Count];
             float[] targetDistances = new float[segmentsToRecoil.Count];
 
             for (int i = 0; i < segmentsToRecoil.Count; i++)
             {
-                // Учитываем _segmentRollback при расчете позиций
-                startDistances[i] = _currentDistance - _segmentDistance * (i + 1) - _segmentRollback;
-                targetDistances[i] = startDistances[i] - _segmentDistance;
+                startDistances[i] = _currentDistance - segmentDistance - segmentRollback - segmentDistance * i;
+                targetDistances[i] = startDistances[i] - segmentDistance;
             }
 
             float timer = 0f;
-            while (timer < _recoilDuration)
+            while (timer < recoilDuration)
             {
                 timer += Time.deltaTime;
-                float t = Mathf.Clamp01(timer / _recoilDuration);
-                float smooth = Mathf.Pow(t, 0.5f);
+                float t = Mathf.Clamp01(timer / recoilDuration);
+                float smooth = recoilCurve.Evaluate(t);
 
                 _currentDistance = Mathf.Lerp(startHead, targetHead, smooth);
                 PlaceOnSpline(_head, _currentDistance);
@@ -188,21 +194,19 @@ public class Snake : MonoBehaviour
 
             _currentDistance = targetHead;
             PlaceOnSpline(_head, _currentDistance);
-            for (int i = 0; i < segmentsToRecoil.Count; i++)
+
+            foreach (var seg in segmentsToRecoil)
             {
-                if (segmentsToRecoil[i] != null)
-                    PlaceOnSpline(segmentsToRecoil[i].transform, targetDistances[i]);
+                if (seg != null)
+                    PlaceOnSpline(seg.transform, startDistances[segmentsToRecoil.IndexOf(seg)] - segmentDistance);
             }
 
-            // Удаляем сегмент только если он еще существует
             if (_segments.Contains(request.Segment))
             {
                 _segments.Remove(request.Segment);
-                if (request.Segment != null)
-                    Destroy(request.Segment.gameObject);
+                Destroy(request.Segment.gameObject);
             }
 
-            // Обновляем позиции всех оставшихся сегментов после удаления
             UpdateAllSegments();
         }
 
@@ -212,6 +216,5 @@ public class Snake : MonoBehaviour
     private class RecoilRequest
     {
         public SnakeSegment Segment;
-        public int Index;
     }
 }

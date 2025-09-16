@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -471,9 +471,9 @@ MonoBehaviour:
   roadMaterial: {fileID: 2100000, guid: 076e769133efbf544bae83ea5c6182d7, type: 2}
   endPlatformMaterial: {fileID: 2100000, guid: 076e769133efbf544bae83ea5c6182d7, type: 2}
   endPlatformRadius: 1.43
-  _platformSegments: 36
+  _platformSegments: 16
   resolution: 350
-  endRoundness: 1.8
+  endRoundness: 3.41
 --- !u!114 &561811627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -487,7 +487,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tangentLength: 0.01
-  _smoothness: 1
+  _smoothness: 1.5
   _subdivisions: 60
   _useBezierSmoothing: 1
   _isBezier: 0
@@ -1174,8 +1174,8 @@ MonoBehaviour:
   _camera: {fileID: 963194227}
   _placePrefab: {fileID: 775908119623022719, guid: df4c662850db070458a0356e420be51c, type: 3}
   _placesCount: 4
-  _leftBound: -6
-  _rightBound: 6
+  _leftBound: -4.5
+  _rightBound: 4.5
   _movingAwayFromShootingPlace: 10
 --- !u!114 &1842505878
 MonoBehaviour:

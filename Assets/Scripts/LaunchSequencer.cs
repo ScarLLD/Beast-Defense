@@ -38,7 +38,7 @@ public class LaunchSequencer : MonoBehaviour
             _availabilityManagement.UpdateAvailability();
 
             if (_roadSpawner.TrySpawn(out List<Vector3> road)
-                && _splineCreator.TryCreateSplineWith90DegreeCorners(road, out SplineContainer splineContainer)
+                && _splineCreator.TryCreateSpline(road, out SplineContainer splineContainer)
                 && _splineRoad.TryGenerateRoadFromSpline(splineContainer))
             {
                 _snakeSpawner.Spawn(_cubeStorage.GetStacks(), splineContainer, out Snake snake);

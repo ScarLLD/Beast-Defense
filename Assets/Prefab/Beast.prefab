@@ -11,9 +11,7 @@ GameObject:
   - component: {fileID: 1005468393004852159}
   - component: {fileID: 9157626972842326894}
   - component: {fileID: 4734672675973373476}
-  - component: {fileID: 2534717701183408307}
   - component: {fileID: -8336317201343123663}
-  - component: {fileID: 4260233629804292413}
   m_Layer: 0
   m_Name: Beast
   m_TagString: Untagged
@@ -87,18 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2534717701183408307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1598362951978225914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 32522534bf58ece43bf255d696cbb95c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &-8336317201343123663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,18 +98,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dieParticle: {fileID: 4584744087430276256, guid: 57fdc385455126541afa3a019ebc903f, type: 3}
---- !u!114 &4260233629804292413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1598362951978225914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e53f8d8caf8884c47ac235fa8e081d6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  _speedMultiplier: 2
+  _rotationSpeed: 15
+  _rotateDuration: 0.3
 --- !u!1 &7601901751311904337
 GameObject:
   m_ObjectHideFlags: 0

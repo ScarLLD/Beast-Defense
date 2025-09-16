@@ -45,12 +45,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907cf244996f1db4bb8a8f31a51b5325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 3.5
-  _segmentDistance: 1.2
-  _segmentRollback: 0.9
-  _segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
-  _headPrefab: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
-  _recoilDuration: 0.3
+  moveSpeed: 2
+  segmentDistance: 1.15
+  segmentRollback: 0.9
+  segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
+  headPrefab: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
+  recoilDuration: 0.15
+  recoilCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &2639506017976366610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,7 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1feb830783b6df84baa5d282f845ff7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transitionDuration: 2
+  _transitionDuration: 1
   _slowedMultiplier: 0.5
   _deepSlowedMultiplier: 0.25
   _finalSlowdownMultiplier: 0.05
