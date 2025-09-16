@@ -17,7 +17,7 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private CubeCreator _cubeCreator;
     [SerializeField] private CubeStorage _cubeStorage;
     [SerializeField] private SnakeSpawner _snakeSpawner;
-    [SerializeField] private BeastSpawner _bastSpawner;
+    [SerializeField] private BeastSpawner _beastSpawner;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
 
     private void OnEnable()
@@ -42,7 +42,7 @@ public class LaunchSequencer : MonoBehaviour
                 && _splineRoad.TryGenerateRoadFromSpline(splineContainer))
             {
                 _snakeSpawner.Spawn(_cubeStorage.GetStacks(), splineContainer, out Snake snake);
-                _bastSpawner.Spawn(road, snake);
+                _beastSpawner.Spawn(road, snake);
 
                 _detector.transform.position = road[1] + Vector3.up * snake.transform.localScale.y;
                 _detector.gameObject.SetActive(true);
