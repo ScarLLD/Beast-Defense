@@ -26,7 +26,7 @@ public class CubeCreator : MonoBehaviour
                 int count = _counts[Random.Range(0, _counts.Count)];
                 Material material = _ñolors[Random.Range(0, _ñolors.Count)];
 
-                if (_gridStorage.TryGet(i, out GridCell gridCell))
+                if (_gridStorage.TryGet(i, out GridCell gridCell) && gridCell.IsOccupied == false)
                 {
                     _cubeSpawner.Spawn(material, count, gridCell);
                 }

@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907cf244996f1db4bb8a8f31a51b5325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
+  moveSpeed: 4
   segmentDistance: 1.15
   segmentRollback: 0.9
   segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
@@ -90,7 +90,7 @@ MonoBehaviour:
   _transitionDuration: 1
   _slowedMultiplier: 0.5
   _deepSlowedMultiplier: 0.25
-  _finalSlowdownMultiplier: 0.05
+  _finalSlowdownMultiplier: 0.01
   _slowedDistance: 0.5
   _deepSlowedDistance: 0.75
   _finalSlowdownDistance: 0.95

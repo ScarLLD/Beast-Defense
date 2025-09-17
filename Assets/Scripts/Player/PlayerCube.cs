@@ -24,7 +24,6 @@ public class PlayerCube : MonoBehaviour
     private Animator _animator;
     private bool _isScaled = false;
 
-    public bool IsStatic { get; private set; } = true;
     public bool IsAvailable { get; private set; } = false;
     public GridCell GridCell { get; private set; }
     public CubeMover Mover { get; private set; }
@@ -44,6 +43,7 @@ public class PlayerCube : MonoBehaviour
     public void Init(GridCell cell, Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
     {
         GridCell = cell;
+
         _meshRenderer.material = material;
         _shooter.Init(bulletSpawner, count);
         _radar.Init(targetStorage);
@@ -66,12 +66,7 @@ public class PlayerCube : MonoBehaviour
     {
         Mover.Arrived -= OnMoverArrived;
         _shooter.BulletsDecreased -= OnBulletsDecreased;
-    }
-
-    public void ChangeStaticStatus(bool isStatic)
-    {
-        IsStatic = isStatic;
-    }
+    }        
 
     public void ChangeAvailableStatus(bool isAvailable)
     {

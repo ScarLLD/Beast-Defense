@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -486,8 +486,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84e5315938d3f5c438184b9b360788e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tangentLength: 0.01
-  _smoothness: 1.5
+  _tangentLength: 0
+  _smoothness: 1
   _subdivisions: 60
   _useBezierSmoothing: 1
   _isBezier: 0
@@ -817,7 +817,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _boundaryMaker: {fileID: 1370593100}
   _segmentLength: 5
-  _minPathSegments: 5
+  _minPathSegments: 7
   _maxPathSegments: 20
 --- !u!114 &979470876
 MonoBehaviour:
@@ -832,7 +832,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _boundaryMargin: 1
-  _radiusBetweenSegments: 1.5
+  _radiusBetweenSegments: 1.8
   _endPointMargin: 1
 --- !u!1 &1295288258
 GameObject:
@@ -878,15 +878,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubePrefab: {fileID: 6342291433109627324, guid: b7da0541e62b912459a50827f0b8a466, type: 3}
   _cellPrefab: {fileID: 8177197784567442016, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
+  _obstaclePrefab: {fileID: 3191513033575045547, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
+  _stretchedObstaclePrefab: {fileID: 3191513033575045547, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
   _gridStorage: {fileID: 1295288259}
   _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1370593100}
   _rows: 8
   _columns: 7
+  _offsetX: 1
+  _offsetY: 0
   _minX: -8.5
   _maxX: 8.5
   _minZ: -11
   _maxZ: 10
+  _maxObstacles: 10
+  _maxObstacleLength: 3
+  _obstacleChance: 0.1
 --- !u!4 &1295288261
 Transform:
   m_ObjectHideFlags: 0

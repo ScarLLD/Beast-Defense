@@ -22,12 +22,12 @@ public class AvailabilityManagement : MonoBehaviour
                     bool isRightEdge = j == cells.GetLength(1) - 1;
                     bool isBottomEdge = i == 0;
 
-                    bool haveStaticLeft = isLeftEdge == false && cells[i, j - 1].Any(cell => cell.Cube.IsStatic);
-                    bool haveStaticRight = isRightEdge == false && cells[i, j + 1].Any(cell => cell.Cube.IsStatic);
-                    bool haveStaticBottom = isBottomEdge == false && cells[i - 1, j].Any(cell => cell.Cube.IsStatic);
-                    bool haveStaticTop = isTopRow == false &&   cells[i + 1, j].Any(cell => cell.Cube.IsStatic);
+                    bool haveStaticLeft = isLeftEdge == false && cells[i, j - 1].Any(cell => cell.IsStatic);
+                    bool haveStaticRight = isRightEdge == false && cells[i, j + 1].Any(cell => cell.IsStatic);
+                    bool haveStaticBottom = isBottomEdge == false && cells[i - 1, j].Any(cell => cell.IsStatic);
+                    bool haveStaticTop = isTopRow == false && cells[i + 1, j].Any(cell => cell.IsStatic);
 
-                    if (cell.Cube.IsStatic)
+                    if (cell.IsStatic && cell.IsOccupied == false)
                     {
                         bool isAvailable = false;
 
@@ -72,7 +72,7 @@ public class AvailabilityManagement : MonoBehaviour
 
                         cell.Cube.ChangeAvailableStatus(isAvailable);
                     }
-                    else
+                    else if (cell.IsOccupied == false)
                     {
                         if (isTopRow == false && k < cells[i + 1, j].Count)
                         {
