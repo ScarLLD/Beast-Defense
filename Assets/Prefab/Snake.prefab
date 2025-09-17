@@ -90,7 +90,7 @@ MonoBehaviour:
   _transitionDuration: 1
   _slowedMultiplier: 0.5
   _deepSlowedMultiplier: 0.25
-  _finalSlowdownMultiplier: 0.01
+  _finalSlowdownMultiplier: 0.05
   _slowedDistance: 0.5
   _deepSlowedDistance: 0.75
   _finalSlowdownDistance: 0.95
