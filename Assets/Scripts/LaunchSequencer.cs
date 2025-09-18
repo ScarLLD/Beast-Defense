@@ -6,6 +6,7 @@ public class LaunchSequencer : MonoBehaviour
 {
     [SerializeField] private Game _game;
 
+    [Header("Spawners")]
     [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private PlaceSpawner _placeSpawner;
     [SerializeField] private GridCreator _gridCreator;
@@ -22,15 +23,15 @@ public class LaunchSequencer : MonoBehaviour
 
     private void OnEnable()
     {
-        _game.Started += OnGameStarted;
+        _game.Started += Launch;
     }
 
     private void OnDisable()
     {
-        _game.Started -= OnGameStarted;
+        _game.Started -= Launch;
     }
 
-    private void OnGameStarted()
+    public void Launch()
     {
         if (_boundaryMaker.TryGeneratePathMarkers() && _playerCubeSpawner.TryMoveToCenterScreenBottom()
             && _gridCreator.TryCreate(out Vector3 cubeScale) && _placeSpawner.TryGeneratePlaces(cubeScale) && _cubeCreator.TryCreate())

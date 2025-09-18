@@ -25,7 +25,6 @@ public class GridCreator : MonoBehaviour
 
     [SerializeField] private int _maxObstacles = 6;
     [SerializeField] private int _maxObstacleLength = 3;
-    [SerializeField][Range(0f, 1f)] private float _obstacleChance = 0.3f;
 
     private float _objectWidth;
     private float _objectDepth;
