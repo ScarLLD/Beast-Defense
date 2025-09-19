@@ -1,30 +1,38 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.Splines;
 
 [RequireComponent(typeof(SnakeSpeedControl))]
 public class Snake : MonoBehaviour
 {
     [Header("Snake Settings")]
-    public float moveSpeed = 2f;
-    public float segmentDistance = 1.15f;
-    public float segmentRollback = 1.5f;
+    [SerializeField] private float _moveSpeed = 2f;
+    [SerializeField] private float _segmentDistance = 1.15f;
+    [SerializeField] private float _segmentRollback = 1.5f;
 
     [Header("Prefabs")]
-    public SnakeSegment segmentPrefab;
-    public GameObject headPrefab;
+    [SerializeField] private SnakeSegment _segmentPrefab;
+    [SerializeField] private GameObject _headPrefab;
 
     [Header("Recoil Settings")]
-    public float recoilDuration = 0.3f;
-    public AnimationCurve recoilCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    [SerializeField] private float _recoilDuration = 0.3f;
+    [SerializeField] private AnimationCurve _recoilCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    [Header("Death Settings")]
+    [SerializeField] private AnimationCurve _deathAnimationCurve;
+    [SerializeField] private ParticleSystem _cloadParticle;
+    [SerializeField] private float _deathDuration;
 
     private readonly List<SnakeSegment> _segments = new();
     private readonly Queue<RecoilRequest> _recoilQueue = new();
-    private SplineContainer _splineContainer;
-    private SnakeSpeedControl _speedControl;
     private float _currentDistance = -1f;
     private bool _isRecoiling = false;
+    private SplineContainer _splineContainer;
+    private SnakeSpeedControl _speedControl;
     private Transform _head;
 
     public float MoveSpeed { get; private set; }
@@ -35,14 +43,14 @@ public class Snake : MonoBehaviour
         _speedControl = GetComponent<SnakeSpeedControl>();
     }
 
-    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer)
+    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, Game game)
     {
-        MoveSpeed = moveSpeed;
+        MoveSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _segments.Clear();
 
         if (_head != null) Destroy(_head.gameObject);
-        _head = Instantiate(headPrefab, transform).transform;
+        _head = Instantiate(_headPrefab, transform).transform;
         PlaceOnSpline(_head, 0f);
 
         if (stacks != null)
@@ -53,7 +61,7 @@ public class Snake : MonoBehaviour
                 int count = Mathf.Max(1, stack.Count / 4);
                 for (int i = 0; i < count; i++)
                 {
-                    var seg = Instantiate(segmentPrefab, transform);
+                    var seg = Instantiate(_segmentPrefab, transform);
                     seg.Init(stack.Material, this);
                     seg.SetActiveSegment(false);
                     _segments.Add(seg);
@@ -62,7 +70,7 @@ public class Snake : MonoBehaviour
         }
 
         UpdateAllSegments();
-        StartCoroutine(SnakeMovement());
+        StartCoroutine(SnakeMovement(game));
         _speedControl.StartControl();
     }
 
@@ -80,21 +88,9 @@ public class Snake : MonoBehaviour
         MoveSpeed = newSpeed;
     }
 
-    public void Stop()
+    private IEnumerator SnakeMovement(Game game)
     {
-        MoveSpeed = 0f;
-    }
-
-    public void Resume()
-    {
-        MoveSpeed = moveSpeed;
-    }
-
-    private IEnumerator SnakeMovement()
-    {
-        bool isWork = true;
-
-        while (isWork)
+        while (_segments.Count > 0)
         {
             if (_splineContainer != null && !_isRecoiling)
             {
@@ -108,13 +104,31 @@ public class Snake : MonoBehaviour
                 UpdateAllSegments();
             }
 
-            if (_segments.Count == 0)
-            {
-                isWork = false;
-            }
+            yield return null;
+        }
+
+        yield return StartCoroutine(DeathRoutine());
+        game.EndGame();
+    }
+
+    private IEnumerator DeathRoutine()
+    {
+        Vector3 startScale = _head.transform.localScale;
+
+        float timer = 0f;
+
+        while (timer < _deathDuration)
+        {
+            timer += Time.deltaTime;
+            float t = Mathf.Clamp01(timer / _deathDuration);
+            float smooth = _deathAnimationCurve.Evaluate(t);
+            _head.transform.localScale = Vector3.Lerp(startScale, new(0, 0, 0), smooth);
 
             yield return null;
         }
+
+        _cloadParticle.transform.position = _head.transform.position;
+        _cloadParticle.Play();
     }
 
     private void PlaceOnSpline(Transform target, float distance)
@@ -127,7 +141,7 @@ public class Snake : MonoBehaviour
 
     private void UpdateAllSegments()
     {
-        float currentDist = _currentDistance - segmentDistance - segmentRollback;
+        float currentDist = _currentDistance - _segmentDistance - _segmentRollback;
 
         foreach (var seg in _segments)
         {
@@ -137,7 +151,7 @@ public class Snake : MonoBehaviour
                 PlaceOnSpline(seg.transform, currentDist);
             }
 
-            currentDist -= segmentDistance;
+            currentDist -= _segmentDistance;
         }
     }
 
@@ -158,23 +172,23 @@ public class Snake : MonoBehaviour
             }
 
             float startHead = _currentDistance;
-            float targetHead = _currentDistance - segmentDistance;
+            float targetHead = _currentDistance - _segmentDistance;
 
             float[] startDistances = new float[segmentsToRecoil.Count];
             float[] targetDistances = new float[segmentsToRecoil.Count];
 
             for (int i = 0; i < segmentsToRecoil.Count; i++)
             {
-                startDistances[i] = _currentDistance - segmentDistance - segmentRollback - segmentDistance * i;
-                targetDistances[i] = startDistances[i] - segmentDistance;
+                startDistances[i] = _currentDistance - _segmentDistance - _segmentRollback - _segmentDistance * i;
+                targetDistances[i] = startDistances[i] - _segmentDistance;
             }
 
             float timer = 0f;
-            while (timer < recoilDuration)
+            while (timer < _recoilDuration)
             {
                 timer += Time.deltaTime;
-                float t = Mathf.Clamp01(timer / recoilDuration);
-                float smooth = recoilCurve.Evaluate(t);
+                float t = Mathf.Clamp01(timer / _recoilDuration);
+                float smooth = _recoilCurve.Evaluate(t);
 
                 _currentDistance = Mathf.Lerp(startHead, targetHead, smooth);
                 PlaceOnSpline(_head, _currentDistance);
@@ -198,7 +212,7 @@ public class Snake : MonoBehaviour
             foreach (var seg in segmentsToRecoil)
             {
                 if (seg != null)
-                    PlaceOnSpline(seg.transform, startDistances[segmentsToRecoil.IndexOf(seg)] - segmentDistance);
+                    PlaceOnSpline(seg.transform, startDistances[segmentsToRecoil.IndexOf(seg)] - _segmentDistance);
             }
 
             if (_segments.Contains(request.Segment))

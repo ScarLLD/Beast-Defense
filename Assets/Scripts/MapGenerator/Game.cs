@@ -7,6 +7,7 @@ public class Game : MonoBehaviour
     [SerializeField] private Transition _transition;
 
     public event Action Started;
+    public event Action Ended;
     public event Action Restarted;
     public event Action Over;
 
@@ -25,12 +26,24 @@ public class Game : MonoBehaviour
         StartCoroutine(GameRestartRoutine());
     }
 
+    public void EndGame()
+    {
+        StartCoroutine(GameEndRoutine());
+    }
+
     private IEnumerator StartGameRoutine()
     {
         yield return StartCoroutine(_transition.StartTransition());
         Started?.Invoke();
         yield return StartCoroutine(_transition.ContinueTransition());
         Debug.Log("Игра началась!");
+    }
+
+    private IEnumerator GameEndRoutine()
+    {
+        yield return StartCoroutine(_transition.StartBackTransition());
+        Ended?.Invoke();
+        Debug.Log("Игра успешно окончена.");
     }
 
     private IEnumerator GameOverRoutine(string text)

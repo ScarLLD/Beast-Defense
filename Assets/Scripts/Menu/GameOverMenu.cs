@@ -1,14 +1,26 @@
+using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-public class MainMenu : MonoBehaviour
+public class GameOverMenu : MonoBehaviour
 {
     [SerializeField] private Game _game;
-    [SerializeField] private Transition _transition;
     [SerializeField] private List<GameObject> menu = new List<GameObject>();
+
+    private void OnEnable()
+    {
+        _game.Over += OnGameOver;
+    }
+
+    private void OnDisable()
+    {
+        _game.Over -= OnGameOver;
+    }
+
     private void Awake()
     {
-        SwitchVisible(true);
+        SwitchVisible(false);
     }
 
     public void SwitchVisible(bool isActive)
@@ -19,8 +31,8 @@ public class MainMenu : MonoBehaviour
         }
     }
 
-    public void OnGameStartButton()
+    private void OnGameOver()
     {
-        _game.StartGame();
+        SwitchVisible(true);
     }
 }

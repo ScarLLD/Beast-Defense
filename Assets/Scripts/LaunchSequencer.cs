@@ -42,7 +42,7 @@ public class LaunchSequencer : MonoBehaviour
                 && _splineCreator.TryCreateSpline(road, out SplineContainer splineContainer)
                 && _splineRoad.TryGenerateRoadFromSpline(splineContainer))
             {
-                _snakeSpawner.Spawn(_cubeStorage.GetStacks(), splineContainer, out Snake snake);
+                _snakeSpawner.Spawn(_cubeStorage.GetStacks(), splineContainer, _game, out Snake snake);
                 _beastSpawner.Spawn(snake, splineContainer);
 
                 _detector.transform.position = road[1] + Vector3.up * snake.transform.localScale.y;
