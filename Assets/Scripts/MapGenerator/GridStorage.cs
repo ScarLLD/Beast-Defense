@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GridStorage : MonoBehaviour
@@ -48,5 +50,15 @@ public class GridStorage : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void Clear()
+    {
+        foreach (var cell in _grid)
+        {
+            Destroy(cell.gameObject);
+        }
+
+        _grid.Clear();
     }
 }

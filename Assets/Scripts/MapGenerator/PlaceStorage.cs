@@ -13,6 +13,12 @@ public class PlaceStorage : MonoBehaviour
         _escapePlaces = new List<Vector3>();
     }
 
+    public void Clear()
+    {
+        _shootingPlaces.Clear();
+        _escapePlaces.Clear();
+    }
+
     public bool TryGetPlace(PlayerCube cube, out ShootingPlace shootingPlace, out Vector3 escapePlace)
     {
         escapePlace = Vector3.zero;

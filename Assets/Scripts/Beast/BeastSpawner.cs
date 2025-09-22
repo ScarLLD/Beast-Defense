@@ -6,9 +6,19 @@ public class BeastSpawner : MonoBehaviour
 {
     [SerializeField] private Beast _beastPrefab;
 
-    public void Spawn( Snake snake, SplineContainer splineContainer)
+    private Beast _beast;
+    private Transform _transform;
+
+    private void Awake()
     {
-        var beast = Instantiate(_beastPrefab, transform);
-        beast.Init(snake, splineContainer);
+        _transform = transform;
+    }
+
+    public void Spawn(Snake snake, SplineContainer splineContainer)
+    {
+        if (_beast == null)
+            _beast = Instantiate(_beastPrefab, _transform);
+
+        _beast.Init(snake, splineContainer);
     }
 }

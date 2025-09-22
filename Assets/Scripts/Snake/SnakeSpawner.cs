@@ -7,12 +7,18 @@ public class SnakeSpawner : MonoBehaviour
     [SerializeField] private TargetStorage _targetStorage;
     [SerializeField] private Snake _snakePrefab;
 
+    private Snake _snake;
+
     public void Spawn(List<CubeStack> stacks, SplineContainer splineContainer, Game game, out Snake snake)
     {
         AlignSpline(splineContainer);
 
-        snake = Instantiate(_snakePrefab, transform);
-        snake.InitializeSnake(stacks, splineContainer, game);
+        if (_snake == null)
+            _snake = Instantiate(_snakePrefab, transform);
+
+        _snake.InitializeSnake(stacks, splineContainer, game);
+
+        snake = _snake;
     }
 
     private void AlignSpline(SplineContainer splineContainer)

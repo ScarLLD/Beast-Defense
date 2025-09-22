@@ -4,7 +4,11 @@ using UnityEngine;
 public class CubeCreator : MonoBehaviour
 {
     [SerializeField] private GridStorage _gridStorage;
-    [SerializeField] private PlayerCubeSpawner _cubeSpawner;
+    [SerializeField] private PlayerCube _cubePrefab;
+    [SerializeField] private CubeStorage _cubeStorage;
+    [SerializeField] private BoundaryMaker _boundaryMaker;
+    [SerializeField] private BulletSpawner _bulletSpawner;
+    [SerializeField] private TargetStorage _targetStorage;
 
     [SerializeField]
     private List<Material> _ñolors = new();
@@ -12,14 +16,27 @@ public class CubeCreator : MonoBehaviour
     [SerializeField]
     private List<int> _counts = new();
 
+    public bool TryMoveToCenterScreenBottom()
+    {
+        if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
+        {
+            transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cubePrefab.transform.localScale.y / 2, bottomScreenCenter.z);
+            return true;
+        }
+
+        return false;
+    }
+
     public bool TryCreate()
     {
-        if (_gridStorage.GridCount > 0)
+        if (_gridStorage.GridCount > 0 && TryMoveToCenterScreenBottom())
         {
             int gridCount = _gridStorage.GridCount;
 
             if (gridCount == 0)
                 return false;
+
+            _cubeStorage.Clear();
 
             for (int i = 0; i < gridCount; i++)
             {
@@ -28,7 +45,12 @@ public class CubeCreator : MonoBehaviour
 
                 if (_gridStorage.TryGet(i, out GridCell gridCell) && gridCell.IsOccupied == false)
                 {
-                    _cubeSpawner.Spawn(material, count, gridCell);
+                    Vector3 spawnPoint = new(gridCell.transform.position.x, gridCell.transform.position.y + _cubePrefab.transform.localScale.y / 2, gridCell.transform.position.z);
+
+                    PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, transform);
+                    playerCube.Init(gridCell, material, count, _bulletSpawner, _targetStorage);
+                    gridCell.InitCube(playerCube);
+                    _cubeStorage.Add(playerCube);
                 }
             }
 

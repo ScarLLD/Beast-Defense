@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(RoadSpawner))]
@@ -27,10 +28,13 @@ public class DirectionAnalyzer : MonoBehaviour
 
     public void InitBounds(List<Vector3> _points)
     {
-        LeftBoundX = _points[0].x;
-        UpperBoundZ = _points[1].z;
-        RightBoundX = _points[2].x;
-        LowerBoundZ = _points[3].z * 0.25f;
+        if (_points == null || _points.Count == 0)
+            return;
+
+        LeftBoundX = _points.Min(p => p.x);
+        RightBoundX = _points.Max(p => p.x);
+        UpperBoundZ = _points.Max(p => p.z);
+        LowerBoundZ = _points.Min(p => p.z) * 0.25f;
     }
 
     public Vector3 GetValidDirection(Vector3 point)

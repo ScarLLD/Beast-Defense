@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -23,9 +24,11 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private float _minZ;
     [SerializeField] private float _maxZ;
 
+    [SerializeField] private bool CreateObstacles;
     [SerializeField] private int _maxObstacles = 6;
     [SerializeField] private int _maxObstacleLength = 3;
 
+    private List<Obstacle> _obstacles;
     private float _objectWidth;
     private float _objectDepth;
     private bool[,] _obstacleMap;
@@ -36,11 +39,16 @@ public class GridCreator : MonoBehaviour
 
     public event Action Created;
 
+    private void Awake()
+    {
+        _obstacles = new();
+    }
+
     private void Start()
     {
         if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
         {
-            transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y, bottomScreenCenter.z);
+            transform.position = bottomScreenCenter;
             _gridCenterOffset = transform.position; // Сохраняем смещение
         }
 
@@ -77,14 +85,17 @@ public class GridCreator : MonoBehaviour
         // Сначала создаем все ячейки
         CreateGridCells(localMinX, localMinZ);
 
-        // Затем создаем все препятствия внутри сетки
-        CreateAllObstacles();
+        if (CreateObstacles)
+        {
+            // Затем создаем все препятствия внутри сетки
+            CreateAllObstacles();
 
-        // Создаем растянутые препятствия между соседями и на краях
-        CreateStretchedObstaclesBetweenNeighbors();
+            // Создаем растянутые препятствия между соседями и на краях
+            CreateStretchedObstaclesBetweenNeighbors();
 
-        // Создаем стенки вокруг сетки
-        CreateBorderWalls(localMinX, localMaxX, localMinZ, localMaxZ);
+            // Создаем стенки вокруг сетки
+            CreateBorderWalls(localMinX, localMaxX, localMinZ, localMaxZ);
+        }
 
         if (_gridStorage.GridCount == 0)
         {
@@ -100,6 +111,8 @@ public class GridCreator : MonoBehaviour
 
     private void CreateGridCells(float localMinX, float localMinZ)
     {
+        _gridStorage.Clear();
+
         for (int row = 0; row < _rows; row++)
         {
             for (int col = 0; col < _columns; col++)
@@ -250,6 +263,8 @@ public class GridCreator : MonoBehaviour
             centerPosition.z
         );
 
+        _obstacles.Add(stretchedObstacle);
+
         float distance = Vector3.Distance(position1, position2);
         Vector3 newScale = stretchedObstacle.transform.localScale;
         newScale.x = distance;
@@ -267,6 +282,8 @@ public class GridCreator : MonoBehaviour
             centerPosition.z
         );
 
+        _obstacles.Add(stretchedObstacle);
+
         float distance = Vector3.Distance(position1, position2);
         Vector3 newScale = stretchedObstacle.transform.localScale;
         newScale.z = distance;
@@ -275,6 +292,16 @@ public class GridCreator : MonoBehaviour
 
     private void CreateAllObstacles()
     {
+        if (_obstacles.Count > 0)
+        {
+            foreach (var obstacle in _obstacles)
+            {
+                Destroy(obstacle.gameObject);
+            }
+
+            _obstacles.Clear();
+        }
+
         for (int row = 0; row < _rows; row++)
         {
             for (int col = 0; col < _columns; col++)
@@ -296,6 +323,7 @@ public class GridCreator : MonoBehaviour
             obstacle.transform.position.y + obstacle.transform.localScale.y / 2,
             gridCell.transform.position.z
         );
+        _obstacles.Add(obstacle);
         gridCell.InitObstacle(obstacle);
     }
 

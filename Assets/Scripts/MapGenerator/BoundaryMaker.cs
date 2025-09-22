@@ -6,8 +6,11 @@ public class BoundaryMaker : MonoBehaviour
 {
     [SerializeField] private Material _lineMeterial;
 
-    [Range(0.1f, 0.9f)]
-    [SerializeField] private float _borderReduction;
+    [Range(0.6f, 0.9f)]
+    [SerializeField] private float _borderZLowerReduction;
+
+    [Range(0.92f, 0.98f)]
+    [SerializeField] private float _borderZUpperReduction;
 
     private List<Vector3> _planePoints;
     private List<LineRenderer> _lines;
@@ -47,14 +50,18 @@ public class BoundaryMaker : MonoBehaviour
 
     public bool TryGeneratePathMarkers()
     {
-        float partHeight = _camera.pixelHeight * _borderReduction;
+        float partHeight = _camera.pixelHeight * _borderZLowerReduction;
 
         List<Vector3> screenPoints = new()
         {
         new(0f, partHeight, 10),
+        new(0f, _camera.pixelHeight * _borderZUpperReduction, 10),
+
+        new(_camera.pixelWidth, partHeight, 10),
+        new(_camera.pixelWidth, _camera.pixelHeight * _borderZUpperReduction, 10),
+
         new(0f, _camera.pixelHeight, 10),
-        new(_camera.pixelWidth, _camera.pixelHeight, 10),
-        new(_camera.pixelWidth, partHeight, 10)
+        new(_camera.pixelWidth, _camera.pixelHeight, 10)
         };
 
         _planePoints.Clear();
@@ -71,7 +78,7 @@ public class BoundaryMaker : MonoBehaviour
         CreateBorderLines();
         PointsInitialized?.Invoke(_planePoints);
 
-        if(_planePoints.Count == 0)
+        if (_planePoints.Count == 0)
             Debug.Log("Не удалось сгенерировать грань карты.");
 
         return _planePoints.Count > 0;
@@ -81,10 +88,11 @@ public class BoundaryMaker : MonoBehaviour
     {
         if (_planePoints.Count < 2) return;
 
-        for (int i = 0; i < _planePoints.Count - 1; i++)
+        _lines.Clear();
+
+        for (int i = 0; i < _planePoints.Count - 1; i += 2)
         {
-            int nextIndex = (i + 1) % _planePoints.Count;
-            CreateLine(_planePoints[i], _planePoints[nextIndex]);
+            CreateLine(_planePoints[i], _planePoints[i + 1]);
         }
     }
 

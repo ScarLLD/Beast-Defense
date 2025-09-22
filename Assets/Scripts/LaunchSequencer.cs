@@ -14,7 +14,6 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private RoadSpawner _roadSpawner;
     [SerializeField] private SplineRoad _splineRoad;
     [SerializeField] private TargetDetector _detector;
-    [SerializeField] private PlayerCubeSpawner _playerCubeSpawner;
     [SerializeField] private CubeCreator _cubeCreator;
     [SerializeField] private CubeStorage _cubeStorage;
     [SerializeField] private SnakeSpawner _snakeSpawner;
@@ -33,8 +32,8 @@ public class LaunchSequencer : MonoBehaviour
 
     public void Launch()
     {
-        if (_boundaryMaker.TryGeneratePathMarkers() && _playerCubeSpawner.TryMoveToCenterScreenBottom()
-            && _gridCreator.TryCreate(out Vector3 cubeScale) && _placeSpawner.TryGeneratePlaces(cubeScale) && _cubeCreator.TryCreate())
+        if (_boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale) 
+            && _placeSpawner.TryGeneratePlaces(cubeScale) && _cubeCreator.TryCreate())
         {
             _availabilityManagement.UpdateAvailability();
 

@@ -29,6 +29,7 @@ public class PlaceSpawner : MonoBehaviour
         {
             transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
 
+            _storage.Clear();
             GenerateShootingPlaces(hit.point);
             GenerateEscapePlaces();
 

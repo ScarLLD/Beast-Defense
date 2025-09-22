@@ -10,6 +10,7 @@ public class TargetDetector : MonoBehaviour
     {
         _targetsStorage = GetComponent<TargetStorage>();
         _collider = GetComponent<Collider>();
+        _collider.isTrigger = false;
     }
 
     public void EnableTrigger()

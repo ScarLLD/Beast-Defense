@@ -25,6 +25,7 @@ public class RoadSpawner : MonoBehaviour
     public bool TrySpawn(out List<Vector3> road)
     {
         road = null;
+        _road.Clear();
 
         if (GenerateValidRoad())
         {

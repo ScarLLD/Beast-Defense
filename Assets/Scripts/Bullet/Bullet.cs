@@ -8,12 +8,14 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float _arrivalThreshold = 0.7f;
 
     private ParticleCreator _particleCreator;
+    private Transform _transform;
     private Rigidbody _rigidbody;
     private BulletTrail _bulletTrail;
     private Coroutine _moveCoroutine;
 
     private void Awake()
     {
+        _transform = transform;
         _rigidbody = GetComponent<Rigidbody>();
         _bulletTrail = GetComponent<BulletTrail>();
     }
@@ -36,10 +38,10 @@ public class Bullet : MonoBehaviour
     {
         while (true)
         {
-            Vector3 direction = (cube.transform.position - transform.position).normalized;
+            Vector3 direction = (cube.transform.position - _transform.position).normalized;
             _rigidbody.velocity = direction * _speed;
 
-            if ((cube.transform.position - transform.position).magnitude < _arrivalThreshold)
+            if ((cube.transform.position - _transform.position).magnitude < _arrivalThreshold)
             {
                 _rigidbody.velocity = Vector3.zero;
                 _particleCreator?.Create(cube);

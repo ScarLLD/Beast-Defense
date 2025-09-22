@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.coffee.ui-effect": {
+      "version": "file:H:/Downloads/UIEffect-main/Packages/src",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      }
+    },
     "com.unity.collab-proxy": {
       "version": "2.8.2",
       "depth": 0,

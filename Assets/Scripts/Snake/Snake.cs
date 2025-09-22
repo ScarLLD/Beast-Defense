@@ -29,7 +29,7 @@ public class Snake : MonoBehaviour
 
     private readonly List<SnakeSegment> _segments = new();
     private readonly Queue<RecoilRequest> _recoilQueue = new();
-    private float _currentDistance = -1f;
+    private float _currentDistance;
     private bool _isRecoiling = false;
     private SplineContainer _splineContainer;
     private SnakeSpeedControl _speedControl;
@@ -48,6 +48,7 @@ public class Snake : MonoBehaviour
         MoveSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _segments.Clear();
+        _currentDistance = -1f;
 
         if (_head != null) Destroy(_head.gameObject);
         _head = Instantiate(_headPrefab, transform).transform;

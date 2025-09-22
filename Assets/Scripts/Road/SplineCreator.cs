@@ -9,8 +9,6 @@ public class SplineCreator : MonoBehaviour
     [SerializeField] private float _tangentLength = 3f;
     [SerializeField] private float _smoothness = 0.5f;
     [SerializeField] private int _subdivisions = 3;
-    [SerializeField] private bool _useBezierSmoothing = true;
-    [SerializeField] private bool _isBezier = true;
 
     public bool TryCreateSpline(List<Vector3> roadPoints, out SplineContainer splineContainer)
     {
@@ -26,15 +24,7 @@ public class SplineCreator : MonoBehaviour
         Spline spline = splineContainer.Spline;
         spline.Clear();
 
-        List<Vector3> processedPoints = null;
-
-        if (_useBezierSmoothing)
-        {
-            if (_isBezier)
-                processedPoints = SmoothPointsWithBezier(roadPoints);
-            else
-                processedPoints = SmoothPointsWithCatmullRom(roadPoints);
-        }
+        List<Vector3> processedPoints = SmoothPointsWithCatmullRom(roadPoints);
 
         for (int i = 0; i < processedPoints.Count; i++)
         {

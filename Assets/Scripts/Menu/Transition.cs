@@ -1,19 +1,22 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Transition : MonoBehaviour
 {
+    [Header("Transition Settings")]
     [SerializeField] private float _transitionDuration;
     [SerializeField] private float _holdTime;
     [SerializeField] private Transform _sprite;
     [SerializeField] private Canvas _canvas;
 
-    private AnimationCurve _animationCurve;
     private Vector3 _spriteLeftPosition;
     private Vector3 _spriteRightPosition;
-    private Coroutine _moveCoroutine;
+    private AnimationCurve _animationCurve;
     private WaitForSeconds _sleep;
+    private Coroutine _moveCoroutine;
+    private Image _spriteImage;
 
     public event Action Transited;
     public event Action BackTransited;
@@ -21,6 +24,7 @@ public class Transition : MonoBehaviour
     private void Awake()
     {
         SetSpriteOptions();
+        _spriteImage = _sprite.GetComponent<Image>();
         _sleep = new WaitForSeconds(_holdTime);
     }
 
@@ -41,16 +45,18 @@ public class Transition : MonoBehaviour
         _sprite.gameObject.SetActive(false);
     }
 
-    public IEnumerator StartTransition()
+    public IEnumerator StartTransition(Color color)
     {
+        _spriteImage.color = color;
         _sprite.gameObject.SetActive(true);
 
         yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteLeftPosition, _canvas.transform.position));
         yield return _sleep;
     }
 
-    public IEnumerator StartBackTransition()
+    public IEnumerator StartBackTransition(Color color)
     {
+        _spriteImage.color = color;
         _sprite.gameObject.SetActive(true);
 
         yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position));
