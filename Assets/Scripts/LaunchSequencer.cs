@@ -18,6 +18,7 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private CubeStorage _cubeStorage;
     [SerializeField] private SnakeSpawner _snakeSpawner;
     [SerializeField] private BeastSpawner _beastSpawner;
+    [SerializeField] private SmoothBarSlider _slider;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
 
     private void OnEnable()
@@ -32,7 +33,7 @@ public class LaunchSequencer : MonoBehaviour
 
     public void Launch()
     {
-        if (_boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale) 
+        if (_boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
             && _placeSpawner.TryGeneratePlaces(cubeScale) && _cubeCreator.TryCreate())
         {
             _availabilityManagement.UpdateAvailability();
@@ -43,6 +44,7 @@ public class LaunchSequencer : MonoBehaviour
             {
                 _snakeSpawner.Spawn(_cubeStorage.GetStacks(), splineContainer, _game, out Snake snake);
                 _beastSpawner.Spawn(snake, splineContainer);
+                _slider.Init(snake);
 
                 _detector.transform.position = road[1] + Vector3.up * snake.transform.localScale.y;
                 _detector.gameObject.SetActive(true);

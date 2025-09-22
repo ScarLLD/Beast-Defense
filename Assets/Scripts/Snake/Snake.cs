@@ -30,6 +30,7 @@ public class Snake : MonoBehaviour
     private readonly List<SnakeSegment> _segments = new();
     private readonly Queue<RecoilRequest> _recoilQueue = new();
     private float _currentDistance;
+    private float _startSegmentsCount;
     private bool _isRecoiling = false;
     private SplineContainer _splineContainer;
     private SnakeSpeedControl _speedControl;
@@ -37,6 +38,8 @@ public class Snake : MonoBehaviour
 
     public float MoveSpeed { get; private set; }
     public float NormalizedDistance { get; private set; }
+
+    public event Action<float, float> SegmentsCountChanged;
 
     private void Awake()
     {
@@ -70,6 +73,7 @@ public class Snake : MonoBehaviour
             }
         }
 
+        _startSegmentsCount = _segments.Count;
         UpdateAllSegments();
         StartCoroutine(SnakeMovement(game));
         _speedControl.StartControl();
@@ -220,6 +224,7 @@ public class Snake : MonoBehaviour
             {
                 _segments.Remove(request.Segment);
                 Destroy(request.Segment.gameObject);
+                SegmentsCountChanged?.Invoke(_segments.Count, _startSegmentsCount);
             }
 
             UpdateAllSegments();
