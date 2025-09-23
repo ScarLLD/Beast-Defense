@@ -1,11 +1,14 @@
+using UnityEngine;
+
 public class PauseMenu : Window
 {
-    bool _isActive = false;
-
-    public void SwitchVisible()
+    private void OnEnable()
     {
-        _isActive = !_isActive;
+        _game.Paused += OnGamePaused;
+    }
 
-        SwitchVisible(_isActive);
+    private void OnGamePaused()
+    {
+        SwitchVisible(true);
     }
 }

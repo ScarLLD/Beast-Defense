@@ -66,18 +66,24 @@ public class Transition : MonoBehaviour
 
     public IEnumerator ContinueBackTransition()
     {
-        yield return _sleep;
-        yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteLeftPosition));
+        if (_sprite.gameObject.activeInHierarchy == true)
+        {
+            yield return _sleep;
+            yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteLeftPosition));
 
-        _sprite.gameObject.SetActive(false);
+            _sprite.gameObject.SetActive(false);
+        }
     }
 
     public IEnumerator ContinueTransition()
     {
-        yield return _sleep;
-        yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteRightPosition));
+        if (_sprite.gameObject.activeInHierarchy == true)
+        {
+            yield return _sleep;
+            yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteRightPosition));
 
-        _sprite.gameObject.SetActive(false);
+            _sprite.gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator StartMove(AnimationCurve animationCurve, Vector3 startPosition, Vector3 targetPosition)

@@ -11,6 +11,7 @@ public class Game : MonoBehaviour
     [SerializeField] private Material _badMaterial;
 
     public event Action Started;
+    public event Action Paused;
     public event Action Continued;
     public event Action Ended;
     public event Action Restarted;
@@ -39,6 +40,16 @@ public class Game : MonoBehaviour
     public void EndGame()
     {
         StartCoroutine(GameEndRoutine());
+    }
+
+    public void StopGameTime()
+    {
+        Time.timeScale = 0f;
+    }
+
+    public void ContinueGameTime()
+    {
+        Time.timeScale = 1f;
     }
 
     private IEnumerator StartGameRoutine()

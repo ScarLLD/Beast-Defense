@@ -28,6 +28,7 @@ public class SmoothBarSlider : MonoBehaviour
         }
 
         _slider.gameObject.SetActive(true);
+        _fillImage.SetActive(false);
         SetDefaultValue();
     }
 
