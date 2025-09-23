@@ -15,18 +15,19 @@ public class GridCreator : MonoBehaviour
 
     [SerializeField] private int _rows;
     [SerializeField] private int _columns;
-    [SerializeField] private float _offsetX;
-    [SerializeField] private float _offsetY;
-    [SerializeField] private int _additionalCellsCount;
 
+    [Header("grid edge")]
     [SerializeField] private float _minX;
     [SerializeField] private float _maxX;
     [SerializeField] private float _minZ;
     [SerializeField] private float _maxZ;
 
+    [Header("Obstacles settings")]
     [SerializeField] private bool CreateObstacles;
     [SerializeField] private int _maxObstacles = 6;
     [SerializeField] private int _maxObstacleLength = 3;
+    [SerializeField] private float _offsetX;
+    [SerializeField] private float _offsetY;
 
     private List<Obstacle> _obstacles;
     private float _objectWidth;
@@ -181,7 +182,7 @@ public class GridCreator : MonoBehaviour
     {
         float leftBorderX = localMinX - _objectWidth - _spacingX + _offsetX;
 
-        for (int row = 0; row < _rows + _additionalCellsCount; row++)
+        for (int row = 0; row < _rows; row++)
         {
             float localZ = localMinZ + (_objectDepth / 2) + row * (_objectDepth + _spacingZ);
             Vector3 position = new Vector3(leftBorderX, 0f, localZ);
@@ -193,7 +194,7 @@ public class GridCreator : MonoBehaviour
                 position.z
             );
 
-            if (row < _rows - 1 + _additionalCellsCount)
+            if (row < _rows - 1)
             {
                 float nextLocalZ = localMinZ + (_objectDepth / 2) + (row + 1) * (_objectDepth + _spacingZ);
                 Vector3 nextPosition = new Vector3(leftBorderX, 0f, nextLocalZ);
@@ -206,7 +207,7 @@ public class GridCreator : MonoBehaviour
     {
         float rightBorderX = localMaxX + _objectWidth + _spacingX - _offsetX;
 
-        for (int row = 0; row < _rows + _additionalCellsCount; row++)
+        for (int row = 0; row < _rows; row++)
         {
             float localZ = localMinZ + (_objectDepth / 2) + row * (_objectDepth + _spacingZ);
             Vector3 position = new Vector3(rightBorderX, 0f, localZ);
@@ -218,7 +219,7 @@ public class GridCreator : MonoBehaviour
                 position.z
             );
 
-            if (row < _rows - 1 + _additionalCellsCount)
+            if (row < _rows - 1)
             {
                 float nextLocalZ = localMinZ + (_objectDepth / 2) + (row + 1) * (_objectDepth + _spacingZ);
                 Vector3 nextPosition = new Vector3(rightBorderX, 0f, nextLocalZ);
@@ -231,7 +232,7 @@ public class GridCreator : MonoBehaviour
     {
         float bottomBorderZ = localMinZ - _objectDepth - _spacingZ + _offsetY;
 
-        for (int col = 0; col < _columns + _additionalCellsCount; col++)
+        for (int col = 0; col < _columns; col++)
         {
             float localX = localMinX + (_objectWidth / 2) + col * (_objectWidth + _spacingX);
             Vector3 position = new Vector3(localX, 0f, bottomBorderZ);

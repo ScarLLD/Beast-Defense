@@ -10,7 +10,7 @@ public class PlaceSpawner : MonoBehaviour
     [SerializeField] private float _rightBound;
     [SerializeField] private float _movingAwayFromShootingPlace;
 
-    private float _scaleMultiplier = 0.9f;
+    [SerializeField] private float _scaleMultiplier = 0.9f;
     private PlaceStorage _storage;
 
     private void Awake()

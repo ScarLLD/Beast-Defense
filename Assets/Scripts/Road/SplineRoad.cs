@@ -6,22 +6,27 @@ using UnityEngine.Splines;
 public class SplineRoad : MonoBehaviour
 {
     [Header("Road Settings")]
-    public float roadWidth = 6f;
-    public float textureTiling = 4f;
-    public Material roadMaterial;
+    [SerializeField] private float _roadWidth = 3.3f;
+    [SerializeField] private float _textureTiling = 4f;
+    [SerializeField] private Material _roadMaterial;
 
     [Header("End Platform Settings")]
-    public float endPlatformRadius = 4f;
-    public int _platformSegments = 16;
+    [SerializeField] private int _platformSegments = 16;
 
     [Header("Quality Settings")]
-    [Range(50, 500)] public int resolution = 200;
-    public float endRoundness = 0.5f;
+    [Range(50, 500)] public int _resolution = 200;
+    [SerializeField] private float _endRoundness = 0.5f;
 
+    private float _endPlatformRadius;
     private SplineContainer _splineContainer;
     private MeshFilter _meshFilter;
     private MeshRenderer _meshRenderer;
     private Mesh _roadMesh;
+
+    private void Awake()
+    {
+        _endPlatformRadius = _roadWidth / 2;
+    }
 
     public bool TryGenerateRoadFromSpline(SplineContainer splineContainer)
     {
@@ -44,10 +49,10 @@ public class SplineRoad : MonoBehaviour
 
     private void SetupRoadMaterial()
     {
-        if (roadMaterial != null)
+        if (_roadMaterial != null)
         {
-            _meshRenderer.material = roadMaterial;
-            _meshRenderer.material.mainTextureScale = new Vector2(1f, textureTiling);
+            _meshRenderer.material = _roadMaterial;
+            _meshRenderer.material.mainTextureScale = new Vector2(1f, _textureTiling);
         }
     }
 
@@ -67,11 +72,11 @@ public class SplineRoad : MonoBehaviour
 
         // Генерация дороги
         Spline spline = _splineContainer.Spline;
-        int roadVertexCount = (resolution + 1) * 2;
+        int roadVertexCount = (_resolution + 1) * 2;
 
-        for (int i = 0; i <= resolution; i++)
+        for (int i = 0; i <= _resolution; i++)
         {
-            float t = i / (float)resolution;
+            float t = i / (float)_resolution;
 
             spline.Evaluate(t, out float3 position, out float3 tangent, out float3 upVector);
 
@@ -81,13 +86,13 @@ public class SplineRoad : MonoBehaviour
 
             float widthMultiplier = 1f;
 
-            Vector3 leftEdge = new Vector3(position.x, position.y, position.z) - 0.5f * roadWidth * widthMultiplier * right;
-            Vector3 rightEdge = new Vector3(position.x, position.y, position.z) + 0.5f * roadWidth * widthMultiplier * right;
+            Vector3 leftEdge = new Vector3(position.x, position.y, position.z) - 0.5f * _roadWidth * widthMultiplier * right;
+            Vector3 rightEdge = new Vector3(position.x, position.y, position.z) + 0.5f * _roadWidth * widthMultiplier * right;
 
             vertices.Add(leftEdge);
             vertices.Add(rightEdge);
 
-            float uvY = t * textureTiling;
+            float uvY = t * _textureTiling;
             uv.Add(new Vector2(0f, uvY));
             uv.Add(new Vector2(1f, uvY));
 
@@ -95,7 +100,7 @@ public class SplineRoad : MonoBehaviour
             normals.Add(roadUpNormalized);
         }
 
-        for (int i = 0; i < resolution; i++)
+        for (int i = 0; i < _resolution; i++)
         {
             int currentLeft = i * 2;
             int currentRight = i * 2 + 1;
@@ -130,7 +135,7 @@ public class SplineRoad : MonoBehaviour
         {
             float angle = startAngle + i / (float)_platformSegments * Mathf.PI * 2f;
             Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
-            Vector3 platformEdge = center + direction * endPlatformRadius;
+            Vector3 platformEdge = center + direction * _endPlatformRadius;
 
             vertices.Add(platformEdge);
 
@@ -153,8 +158,8 @@ public class SplineRoad : MonoBehaviour
         triangles.Add(centerIndex + _platformSegments);
 
         // Присоединение платформы к дороге
-        int lastRoadLeft = (resolution) * 2;
-        int lastRoadRight = (resolution) * 2 + 1;
+        int lastRoadLeft = (_resolution) * 2;
+        int lastRoadRight = (_resolution) * 2 + 1;
 
         // Создаем переход от дороги к платформе
         for (int i = 0; i < _platformSegments; i++)

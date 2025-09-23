@@ -13,7 +13,7 @@ public class Beast : MonoBehaviour
     [SerializeField] private float _rotateDuration = 0.3f;
 
     private readonly float _arrivalThreshold = 0.005f;
-    private readonly float _escapeThreshold = 0.15f;
+    private readonly float _escapeThreshold = 0.3f;
     private float _currentSplinePosition = 0.5f;
     private bool _isMovementCompleted = false;
     private bool _isRotating = false;

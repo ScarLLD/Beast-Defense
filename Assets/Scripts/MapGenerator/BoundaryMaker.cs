@@ -6,10 +6,10 @@ public class BoundaryMaker : MonoBehaviour
 {
     [SerializeField] private Material _lineMeterial;
 
-    [Range(0.6f, 0.9f)]
+    [Range(0.6f, 0.84f)]
     [SerializeField] private float _borderZLowerReduction;
 
-    [Range(0.92f, 0.98f)]
+    [Range(0.85f, 0.98f)]
     [SerializeField] private float _borderZUpperReduction;
 
     private List<Vector3> _planePoints;
