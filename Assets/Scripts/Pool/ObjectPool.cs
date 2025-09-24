@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class ObjectPool<T> where T : MonoBehaviour
 {
-    private T _prefab;
-    private Transform _container;
-    private List<T> _pool;
+    private readonly T _prefab;
+    private readonly Transform _container;
+    private readonly List<T> _pool;
 
     public ObjectPool(T prefab, Transform container)
     {

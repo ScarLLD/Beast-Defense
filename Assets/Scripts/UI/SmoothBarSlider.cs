@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +8,6 @@ public class SmoothBarSlider : MonoBehaviour
     [SerializeField] private GameObject _fillImage;
 
     private readonly float _maxSliderValue = 1;
-    private float _currentBarPercentage;
-    private Coroutine _changeSliderCoroutine;
     private Snake _snake;
 
     private void Awake()
@@ -46,36 +43,17 @@ public class SmoothBarSlider : MonoBehaviour
 
     private void OnCountChanged(float currentCount, float maxCount)
     {
-        if (_changeSliderCoroutine != null)
-        {
-            StopCoroutine(_changeSliderCoroutine);
-        }
+        if (_slider.value == 0)
+            _fillImage.SetActive(true);
 
-        _changeSliderCoroutine = StartCoroutine(ChangeSlider
-            (currentCount, maxCount));
+        _slider.value = 1 - (currentCount / maxCount);
     }
+
     private void SetDefaultValue()
     {
         _slider.maxValue = _maxSliderValue;
         _slider.minValue = 0;
 
         _slider.value = _slider.minValue;
-    }
-
-    private IEnumerator ChangeSlider(float currentCount, float maxCount)
-    {
-        _currentBarPercentage = 1 - (currentCount / maxCount);
-
-        if (_slider.value == _slider.minValue)
-            _fillImage.SetActive(true);
-
-        while (_slider.value != _currentBarPercentage)
-        {
-            _slider.value = Mathf.MoveTowards(_slider.value,
-                _currentBarPercentage, _speed *
-                Time.deltaTime);
-
-            yield return null;
-        }
     }
 }

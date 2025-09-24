@@ -29,6 +29,7 @@ public class Beast : MonoBehaviour
     private void Awake()
     {
         _transform = transform;
+        _targetPercentages = new Queue<float>();
     }
 
     public void Init(float snakeSpeed, SplineContainer splineContainer)
@@ -53,8 +54,7 @@ public class Beast : MonoBehaviour
     {
         _splineContainer = splineContainer;
         _cachedSplineLength = _splineContainer.Spline.GetLength();
-
-        _targetPercentages = new Queue<float>();
+        
         _targetPercentages.Enqueue(0.75f);
         _targetPercentages.Enqueue(1.0f);
 
@@ -63,7 +63,7 @@ public class Beast : MonoBehaviour
 
     public void ApproachNotify(float normalizedDistance)
     {
-        if (IsMoving == false && _currentSplinePosition - normalizedDistance < _escapeThreshold)
+        if (IsMoving == false && _targetPercentages.Count > 0 && _currentSplinePosition - normalizedDistance < _escapeThreshold)
         {
             IsMoving = true;
 
