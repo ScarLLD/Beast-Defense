@@ -14,11 +14,11 @@ public class BeastSpawner : MonoBehaviour
         _transform = transform;
     }
 
-    public void Spawn(Snake snake, SplineContainer splineContainer)
+    public Beast Spawn()
     {
         if (_beast == null)
             _beast = Instantiate(_beastPrefab, _transform);
 
-        _beast.Init(snake, splineContainer);
+        return _beast;
     }
 }

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Unity.Mathematics;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -63,81 +62,6 @@ public class SplineCreator : MonoBehaviour
 
         spline.Closed = false;
         return true;
-    }
-
-    private List<Vector3> SmoothPointsWithBezier(List<Vector3> originalPoints)
-    {
-        if (originalPoints.Count < 3)
-            return originalPoints;
-
-        List<Vector3> smoothedPoints = new()
-        {
-            originalPoints[0]
-        };
-
-        for (int i = 0; i < originalPoints.Count - 1; i++)
-        {
-            Vector3 p0 = originalPoints[i];
-            Vector3 p3 = originalPoints[i + 1];
-
-            Vector3 p1, p2;
-
-            if (i == 0)
-            {
-                Vector3 direction = (p3 - p0).normalized;
-                p1 = p0 + _smoothness * _tangentLength * direction;
-                p2 = p3 - _smoothness * _tangentLength * direction;
-            }
-            else if (i == originalPoints.Count - 2)
-            {
-                Vector3 direction = (p3 - p0).normalized;
-                p1 = p0 + _smoothness * _tangentLength * direction;
-                p2 = p3 - _smoothness * _tangentLength * direction;
-            }
-            else
-            {
-                Vector3 prevPoint = originalPoints[i - 1];
-                Vector3 nextPoint = originalPoints[i + 2];
-
-                Vector3 inDirection = (p0 - prevPoint).normalized;
-                Vector3 outDirection = (nextPoint - p3).normalized;
-
-                p1 = p0 + _smoothness * _tangentLength * inDirection;
-                p2 = p3 - _smoothness * _tangentLength * outDirection;
-            }
-
-            for (int j = 1; j <= _subdivisions; j++)
-            {
-                float t = j / (float)(_subdivisions + 1);
-                Vector3 bezierPoint = CalculateBezierPoint(t, p0, p1, p2, p3);
-                smoothedPoints.Add(bezierPoint);
-            }
-
-            if (i < originalPoints.Count - 2)
-            {
-                smoothedPoints.Add(p3);
-            }
-        }
-
-        smoothedPoints.Add(originalPoints[^1]);
-
-        return smoothedPoints;
-    }
-
-    private Vector3 CalculateBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
-    {
-        float u = 1 - t;
-        float tt = t * t;
-        float uu = u * u;
-        float uuu = uu * u;
-        float ttt = tt * t;
-
-        Vector3 point = uuu * p0;
-        point += 3 * uu * t * p1;
-        point += 3 * u * tt * p2;
-        point += ttt * p3;
-
-        return point;
     }
 
     private List<Vector3> SmoothPointsWithCatmullRom(List<Vector3> points)

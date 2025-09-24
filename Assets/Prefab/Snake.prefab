@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 2
-  _segmentDistance: 1.5
+  _segmentDistance: 1.6
   _segmentRollback: 1.2
   _segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
   _headPrefab: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}

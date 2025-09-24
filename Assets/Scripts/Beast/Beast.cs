@@ -15,19 +15,14 @@ public class Beast : MonoBehaviour
     private readonly float _arrivalThreshold = 0.005f;
     private readonly float _escapeThreshold = 0.3f;
     private float _currentSplinePosition = 0.5f;
-    private bool _isMovementCompleted = false;
-    private bool _isRotating = false;
     private float _yOffset;
     private SplineContainer _splineContainer;
     private Queue<float> _targetPercentages;
     private Coroutine _coroutine;
     private Transform _transform;
-    private Snake _snake;
+    private float _snakeSpeed;
 
     private float _cachedSplineLength;
-    private bool _cachedSnakeClose;
-    private float _lastSnakeCheckTime;
-    private const float SNAKE_CHECK_INTERVAL = 0.1f;
 
     public bool IsMoving { get; private set; } = false;
 
@@ -36,22 +31,22 @@ public class Beast : MonoBehaviour
         _transform = transform;
     }
 
-    public void Init(Snake snake, SplineContainer splineContainer)
+    public void Init(float snakeSpeed, SplineContainer splineContainer)
     {
-        if (snake == null)
-            throw new ArgumentException("Snake не может быть null.", nameof(snake));
+        if (snakeSpeed < 0)
+            throw new ArgumentException("SnakeSpeed не может быть меньше 0.", nameof(snakeSpeed));
 
         if (splineContainer == null)
             throw new ArgumentNullException("splineContainer не может быть null.", nameof(splineContainer));
 
-        _snake = snake;
+        _snakeSpeed = snakeSpeed;
         _splineContainer = splineContainer;
         _yOffset = _transform.localScale.y / 2;
 
         _cachedSplineLength = _splineContainer.Spline.GetLength();
 
         SetRoadTarget(splineContainer);
-        StartMoveRoutine();
+        StartCoroutine(RotateToFace());
     }
 
     public void SetRoadTarget(SplineContainer splineContainer)
@@ -66,84 +61,55 @@ public class Beast : MonoBehaviour
         ApplyOffsetPosition();
     }
 
-    public void StartMoveRoutine()
+    public void ApproachNotify(float normalizedDistance)
     {
-        if (_coroutine != null)
+        if (IsMoving == false && _currentSplinePosition - normalizedDistance < _escapeThreshold)
         {
-            StopCoroutine(_coroutine);
+            IsMoving = true;
+
+            if (_coroutine != null)
+            {
+                StopCoroutine(_coroutine);
+                _coroutine = null;
+            }
+
+            _coroutine = StartCoroutine(MoveRoutine());
         }
-        _coroutine = StartCoroutine(MoveRoutineOptimized());
     }
 
-    private IEnumerator MoveRoutineOptimized()
+    private IEnumerator MoveRoutine()
     {
-        float currentTargetPercentage = 0f;
-        bool hasTarget = false;
+        float currentTargetPercentage = _targetPercentages.Dequeue();
+        bool isWork = true;
 
-        while (!_isMovementCompleted)
+        while (isWork)
         {
-            UpdateSnakeCloseCache();
+            float moveDistance = _snakeSpeed * _speedMultiplier * Time.deltaTime / _cachedSplineLength;
+            _currentSplinePosition = Mathf.MoveTowards(_currentSplinePosition, currentTargetPercentage, moveDistance);
 
-            if ((_cachedSnakeClose || IsMoving) && !_isMovementCompleted)
+            ApplyOffsetPosition();
+
+            if (Mathf.Abs(_currentSplinePosition - currentTargetPercentage) < _arrivalThreshold)
             {
-                if (!hasTarget && _targetPercentages.Count > 0)
-                {
-                    currentTargetPercentage = _targetPercentages.Dequeue();
-                    hasTarget = true;
-                    IsMoving = true;
-                }
-
-                if (hasTarget)
-                {
-                    float moveDistance = _snake.MoveSpeed * _speedMultiplier * Time.deltaTime / _cachedSplineLength;
-                    _currentSplinePosition = Mathf.MoveTowards(_currentSplinePosition, currentTargetPercentage, moveDistance);
-
-                    ApplyOffsetPosition();
-
-                    if (Mathf.Abs(_currentSplinePosition - currentTargetPercentage) < _arrivalThreshold)
-                    {
-                        _currentSplinePosition = currentTargetPercentage;
-                        ApplyOffsetPosition();
-
-                        IsMoving = false;
-                        hasTarget = false;
-
-                        if (!_isRotating)
-                        {
-                            yield return StartCoroutine(RotateToFace());
-                        }
-
-                        if (_targetPercentages.Count == 0)
-                        {
-                            _isMovementCompleted = true;
-                            break;
-                        }
-                    }
-                }
+                _currentSplinePosition = currentTargetPercentage;
+                ApplyOffsetPosition();
+                isWork = false;
             }
 
             yield return null;
         }
 
+        yield return StartCoroutine(RotateToFace());
         IsMoving = false;
-    }
-
-    private void UpdateSnakeCloseCache()
-    {
-        if (Time.time - _lastSnakeCheckTime > SNAKE_CHECK_INTERVAL)
-        {
-            _cachedSnakeClose = IsSnakeClose();
-            _lastSnakeCheckTime = Time.time;
-        }
     }
 
     private void ApplyOffsetPosition()
     {
         if (_splineContainer != null)
-        { 
+        {
             _splineContainer.Spline.Evaluate(_currentSplinePosition, out float3 position, out float3 tangent, out float3 up);
 
-            Vector3 offsetPosition = new Vector3(position.x, position.y + _yOffset, position.z);
+            Vector3 offsetPosition = new(position.x, position.y + _yOffset, position.z);
 
             if (Vector3.Distance(_transform.position, offsetPosition) > 0.001f)
             {
@@ -164,8 +130,6 @@ public class Beast : MonoBehaviour
 
     private IEnumerator RotateToFace()
     {
-        _isRotating = true;
-
         Quaternion targetRotation = Quaternion.LookRotation(Vector3.back);
         Quaternion startRotation = _transform.rotation;
 
@@ -181,12 +145,6 @@ public class Beast : MonoBehaviour
         }
 
         _transform.rotation = targetRotation;
-        _isRotating = false;
-    }
-
-    private bool IsSnakeClose()
-    {
-        return _currentSplinePosition - _snake.NormalizedDistance < _escapeThreshold;
     }
 
     private void OnDestroy()

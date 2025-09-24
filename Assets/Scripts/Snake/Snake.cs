@@ -35,6 +35,7 @@ public class Snake : MonoBehaviour
     private SplineContainer _splineContainer;
     private SnakeSpeedControl _speedControl;
     private Transform _head;
+    private Beast _beast;
 
     public float MoveSpeed { get; private set; }
     public float NormalizedDistance { get; private set; }
@@ -42,16 +43,17 @@ public class Snake : MonoBehaviour
     public event Action<float, float> SegmentsCountChanged;
 
     private void Awake()
-    {        
+    {
         _speedControl = GetComponent<SnakeSpeedControl>();
     }
 
-    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, Game game)
+    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, Beast beast, Game game)
     {
+        _beast = beast;
         MoveSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _segments.Clear();
-        _currentDistance = -1f;
+        _currentDistance = -2f;
 
         if (_head != null) Destroy(_head.gameObject);
         _head = Instantiate(_headPrefab, transform).transform;
@@ -95,9 +97,9 @@ public class Snake : MonoBehaviour
 
     private IEnumerator SnakeMovement(Game game)
     {
-        while (_segments.Count > 0)
+        while (_segments.Count > 0 && NormalizedDistance != 1)
         {
-            if (_splineContainer != null && !_isRecoiling)
+            if (_splineContainer != null && _isRecoiling == false)
             {
                 _currentDistance += MoveSpeed * Time.deltaTime;
                 PlaceOnSpline(_head, _currentDistance);
@@ -107,12 +109,15 @@ public class Snake : MonoBehaviour
                     : 0f;
 
                 UpdateAllSegments();
+                _beast.ApproachNotify(NormalizedDistance);
             }
 
             yield return null;
         }
 
-        yield return StartCoroutine(DeathRoutine());
+        if (_segments.Count == 0)
+            yield return StartCoroutine(DeathRoutine());
+
         game.EndGame();
     }
 

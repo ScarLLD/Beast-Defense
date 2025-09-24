@@ -16,11 +16,18 @@ public class CubeCreator : MonoBehaviour
     [SerializeField]
     private List<int> _counts = new();
 
+    private Transform _transform;
+
+    private void Awake()
+    {
+        _transform = transform;
+    }
+
     public bool TryMoveToCenterScreenBottom()
     {
         if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
         {
-            transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cubePrefab.transform.localScale.y / 2, bottomScreenCenter.z);
+            _transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cubePrefab.transform.localScale.y / 2, bottomScreenCenter.z);
             return true;
         }
 
@@ -47,7 +54,7 @@ public class CubeCreator : MonoBehaviour
                 {
                     Vector3 spawnPoint = new(gridCell.transform.position.x, gridCell.transform.position.y + _cubePrefab.transform.localScale.y / 2, gridCell.transform.position.z);
 
-                    PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, transform);
+                    PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, _transform);
                     playerCube.Init(gridCell, material, count, _bulletSpawner, _targetStorage);
                     gridCell.InitCube(playerCube);
                     _cubeStorage.Add(playerCube);

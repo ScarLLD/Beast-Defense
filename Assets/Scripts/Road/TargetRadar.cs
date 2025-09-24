@@ -6,7 +6,7 @@ public class TargetRadar : MonoBehaviour
 {
     private Shooter _shooter;
     private TargetStorage _targetStorage;
-    private Coroutine _moveCoroutine;
+    private Coroutine _scanCoroutine;
 
     private void Awake()
     {
@@ -20,18 +20,8 @@ public class TargetRadar : MonoBehaviour
 
     public void StartScanning(Color color)
     {
-        _moveCoroutine ??= StartCoroutine(ScanRoutine(color));
+        _scanCoroutine ??= StartCoroutine(ScanRoutine(color));
     }
-
-    private void EndScan()
-    {
-        if (_moveCoroutine != null)
-        {
-            StopCoroutine(_moveCoroutine);
-            _moveCoroutine = null;
-        }
-    }
-
     private IEnumerator ScanRoutine(Color color)
     {
         int bulletsPerSegment = _shooter.BulletCount / 4;
@@ -49,6 +39,6 @@ public class TargetRadar : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        EndScan();
+        _scanCoroutine = null;
     }
 }

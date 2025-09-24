@@ -62,7 +62,7 @@ public class SplineRoad : MonoBehaviour
 
         _roadMesh = new Mesh
         {
-            name = "RoadMeshWithPlatform"
+            name = "RoadMesh"
         };
 
         List<Vector3> vertices = new();
@@ -70,9 +70,7 @@ public class SplineRoad : MonoBehaviour
         List<Vector2> uv = new();
         List<Vector3> normals = new();
 
-        // Генерация дороги
         Spline spline = _splineContainer.Spline;
-        int roadVertexCount = (_resolution + 1) * 2;
 
         for (int i = 0; i <= _resolution; i++)
         {
@@ -116,7 +114,6 @@ public class SplineRoad : MonoBehaviour
             triangles.Add(nextLeft);
         }
 
-        // Генерация конечной платформы
         float platformYOffset = -0.001f;
 
         _splineContainer.Evaluate(1f, out float3 endPosition, out float3 endTangent, out float3 endUp);
@@ -134,7 +131,7 @@ public class SplineRoad : MonoBehaviour
         for (int i = 0; i <= _platformSegments; i++)
         {
             float angle = startAngle + i / (float)_platformSegments * Mathf.PI * 2f;
-            Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
+            Vector3 direction = new(Mathf.Cos(angle), 0, Mathf.Sin(angle));
             Vector3 platformEdge = center + direction * _endPlatformRadius;
 
             vertices.Add(platformEdge);
@@ -145,7 +142,6 @@ public class SplineRoad : MonoBehaviour
             normals.Add(platformUpNormalized);
         }
 
-        // Треугольники для платформы
         int platformTrianglesStartIndex = triangles.Count;
         for (int i = 1; i < _platformSegments; i++)
         {
@@ -157,11 +153,9 @@ public class SplineRoad : MonoBehaviour
         triangles.Add(centerIndex + 1);
         triangles.Add(centerIndex + _platformSegments);
 
-        // Присоединение платформы к дороге
         int lastRoadLeft = (_resolution) * 2;
         int lastRoadRight = (_resolution) * 2 + 1;
 
-        // Создаем переход от дороги к платформе
         for (int i = 0; i < _platformSegments; i++)
         {
             int platformVertex1 = centerIndex + i + 1;
@@ -169,7 +163,6 @@ public class SplineRoad : MonoBehaviour
 
             if (i < _platformSegments / 2)
             {
-                // Левая сторона дороги соединяется с левой половиной платформы
                 triangles.Add(lastRoadLeft);
                 triangles.Add(platformVertex1);
                 triangles.Add(platformVertex2);
@@ -180,7 +173,6 @@ public class SplineRoad : MonoBehaviour
             }
             else
             {
-                // Правая сторона дороги соединяется с правой половиной платформы
                 triangles.Add(lastRoadRight);
                 triangles.Add(platformVertex2);
                 triangles.Add(platformVertex1);
@@ -191,7 +183,6 @@ public class SplineRoad : MonoBehaviour
             }
         }
 
-        // Установка данных меша
         _roadMesh.vertices = vertices.ToArray();
         _roadMesh.triangles = triangles.ToArray();
         _roadMesh.uv = uv.ToArray();
@@ -208,12 +199,6 @@ public class SplineRoad : MonoBehaviour
         if (_meshFilter != null && _meshFilter.mesh != null)
         {
             DestroyImmediate(_meshFilter.mesh);
-        }
-
-        Transform platformTransform = transform.Find("EndPlatform");
-        if (platformTransform != null)
-        {
-            DestroyImmediate(platformTransform.gameObject);
         }
     }
 

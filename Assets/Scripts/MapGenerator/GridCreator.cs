@@ -50,7 +50,7 @@ public class GridCreator : MonoBehaviour
         if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
         {
             transform.position = bottomScreenCenter;
-            _gridCenterOffset = transform.position; // Сохраняем смещение
+            _gridCenterOffset = transform.position;
         }
 
         _objectWidth = _cubePrefab.transform.localScale.x;
@@ -61,7 +61,6 @@ public class GridCreator : MonoBehaviour
     {
         cubeScale = _cubePrefab.transform.localScale;
 
-        // Используем локальные координаты относительно позиции GridCreator
         float localMinX = _minX + _gridCenterOffset.x;
         float localMaxX = _maxX + _gridCenterOffset.x;
         float localMinZ = _minZ + _gridCenterOffset.z;
@@ -79,22 +78,15 @@ public class GridCreator : MonoBehaviour
         _spacingX = availableSpaceX / (_columns - 1);
         _spacingZ = availableSpaceZ / (_rows - 1);
 
-        // Создаем карту препятствий
         _obstacleMap = GenerateComplexObstacleMap();
         _cellGrid = new GridCell[_rows, _columns];
 
-        // Сначала создаем все ячейки
         CreateGridCells(localMinX, localMinZ);
 
         if (CreateObstacles)
         {
-            // Затем создаем все препятствия внутри сетки
             CreateAllObstacles();
-
-            // Создаем растянутые препятствия между соседями и на краях
             CreateStretchedObstaclesBetweenNeighbors();
-
-            // Создаем стенки вокруг сетки
             CreateBorderWalls(localMinX, localMaxX, localMinZ, localMaxZ);
         }
 
@@ -143,7 +135,6 @@ public class GridCreator : MonoBehaviour
     {
         float bottomBorderZ = localMinZ - _objectDepth - _spacingZ + _offsetY;
 
-        // --- Левый нижний угол ---
         Vector3 leftCornerPos = new Vector3(localMinX - _objectWidth - _spacingX + _offsetX, 0f, bottomBorderZ);
         Obstacle leftCorner = Instantiate(_obstaclePrefab, transform);
         leftCorner.transform.position = new Vector3(
@@ -152,15 +143,12 @@ public class GridCreator : MonoBehaviour
             leftCornerPos.z
         );
 
-        // Вертикальная стенка вверх до нижнего ряда сетки
         Vector3 leftVerticalEnd = new Vector3(leftCornerPos.x, 0f, _cellGrid[0, 0].transform.position.z);
         CreateVerticalStretchedObstacle(leftCornerPos, leftVerticalEnd);
 
-        // Горизонтальная стенка вправо до левой границы сетки
         Vector3 leftHorizontalEnd = new Vector3(_cellGrid[0, 0].transform.position.x, 0f, leftCornerPos.z);
         CreateHorizontalStretchedObstacle(leftCornerPos, leftHorizontalEnd);
 
-        // --- Правый нижний угол ---
         Vector3 rightCornerPos = new Vector3(localMaxX + _objectWidth + _spacingX - _offsetX, 0f, bottomBorderZ);
         Obstacle rightCorner = Instantiate(_obstaclePrefab, transform);
         rightCorner.transform.position = new Vector3(
@@ -169,11 +157,9 @@ public class GridCreator : MonoBehaviour
             rightCornerPos.z
         );
 
-        // Вертикальная стенка вверх до нижнего ряда сетки
         Vector3 rightVerticalEnd = new Vector3(rightCornerPos.x, 0f, _cellGrid[0, _columns - 1].transform.position.z);
         CreateVerticalStretchedObstacle(rightCornerPos, rightVerticalEnd);
 
-        // Горизонтальная стенка влево до правой границы сетки
         Vector3 rightHorizontalEnd = new Vector3(_cellGrid[0, _columns - 1].transform.position.x, 0f, rightCornerPos.z);
         CreateHorizontalStretchedObstacle(rightCornerPos, rightHorizontalEnd);
     }
@@ -341,26 +327,25 @@ public class GridCreator : MonoBehaviour
                     if (row < _rows - 1)
                         CheckVerticalNeighbors(row, col);
 
-                    if (col == 0) // крайний левый
+                    if (col == 0)
                     {
                         Vector3 currentPos = _cellGrid[row, col].transform.position;
                         Vector3 outsidePos = currentPos + Vector3.left * (_objectWidth + _spacingX);
                         CreateHorizontalStretchedObstacle(currentPos, outsidePos);
                     }
-                    else if (col == _columns - 1) // крайний правый
+                    else if (col == _columns - 1)
                     {
                         Vector3 currentPos = _cellGrid[row, col].transform.position;
                         Vector3 outsidePos = currentPos + Vector3.right * (_objectWidth + _spacingX);
                         CreateHorizontalStretchedObstacle(currentPos, outsidePos);
                     }
 
-                    if (row == 0) // нижний ряд
+                    if (row == 0)
                     {
                         Vector3 currentPos = _cellGrid[row, col].transform.position;
                         Vector3 outsidePos = currentPos + Vector3.back * (_objectDepth + _spacingZ);
                         CreateVerticalStretchedObstacle(currentPos, outsidePos);
                     }
-                    // верхний ряд игнорируем
                 }
             }
         }
@@ -400,8 +385,7 @@ public class GridCreator : MonoBehaviour
             if (totalObstacles >= _maxObstacles)
                 break;
 
-            // Не берем нижний ряд
-            int row = Random.Range(1, _rows); // row = 1.._rows-1 (0-й ряд исключаем)
+            int row = Random.Range(1, _rows);
 
             int startCol = Random.Range(0, _columns / 2 - 1);
             int obstacleLength = Random.Range(1, Mathf.Min(_maxObstacleLength + 1, _columns / 2 - startCol + 1));
@@ -419,5 +403,4 @@ public class GridCreator : MonoBehaviour
 
         return obstacleMap;
     }
-
 }

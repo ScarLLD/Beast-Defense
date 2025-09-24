@@ -4,6 +4,7 @@ using UnityEngine;
 public class SnakeSegment : MonoBehaviour
 {
     [SerializeField] private List<Cube> _cubes;
+    
     private int _currentCubeIndex = 0;
     private bool _isDestroyed = false;
     private Snake _snake;
@@ -87,7 +88,6 @@ public class SnakeSegment : MonoBehaviour
 
     public void SetActiveSegment(bool active)
     {
-
         if (_isDestroyed == false)
         {
             gameObject.SetActive(active);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(RoadFinder))]
 public class CubeMover : MonoBehaviour
@@ -16,6 +17,7 @@ public class CubeMover : MonoBehaviour
     private RoadFinder _roadfinder;
     private GridCell _cell;
 
+    private Transform _transform;
     private Vector3 _cachedCellTarget;
     private Vector3 _cachedShootingTarget;
 
@@ -24,7 +26,8 @@ public class CubeMover : MonoBehaviour
     private void Awake()
     {
         _roadfinder = GetComponent<RoadFinder>();
-        _initialPosition = transform.position;
+        _transform = transform;
+        _initialPosition = _transform.position;
     }
 
     public void Init(float speed)
@@ -75,13 +78,13 @@ public class CubeMover : MonoBehaviour
 
         while (isWork)
         {
-            Vector3 direction = _target - transform.position;
-            transform.position += _speed * Time.deltaTime * direction.normalized;
-            transform.LookAt(_target);
+            Vector3 direction = _target - _transform.position;
+            _transform.position += _speed * Time.deltaTime * direction.normalized;
+            _transform.LookAt(_target);
 
-            if (Vector3.Distance(_target, transform.position) < _arrivalThreshold)
+            if (Vector3.Distance(_target, _transform.position) < _arrivalThreshold)
             {
-                transform.position = _target;
+                _transform.position = _target;
 
                 if (_target == _cachedShootingTarget)
                     Arrived?.Invoke();
