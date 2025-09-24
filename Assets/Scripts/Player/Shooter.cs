@@ -13,6 +13,7 @@ public class Shooter : MonoBehaviour
     private Animator _animator;
     private Queue<SnakeSegment> _targets;
     private WaitForSeconds _sleepTime;
+    private WaitForSeconds _coroutineSleep;
 
     private int _bulletCount;
     private Quaternion _initialRotation;
@@ -26,6 +27,7 @@ public class Shooter : MonoBehaviour
         _animator = GetComponent<Animator>();
         _targets = new Queue<SnakeSegment>();
         _sleepTime = new WaitForSeconds(_timeBetweenShoot);
+        _coroutineSleep = new WaitForSeconds(0.1f);
     }
 
     public void Init(BulletSpawner bulletSpawner, int bulletCount)
@@ -79,7 +81,7 @@ public class Shooter : MonoBehaviour
                     SetInitialRotation();
             }
 
-            yield return null;
+            yield return _coroutineSleep;
         }
     }
 }

@@ -20,7 +20,9 @@ public class TargetDetector : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent(out SnakeSegment segment))
+        var segment = other.gameObject.GetComponent<SnakeSegment>();
+
+        if (segment)
         {
             _targetsStorage.AddTarget(segment);
         }

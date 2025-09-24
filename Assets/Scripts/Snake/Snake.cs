@@ -42,7 +42,7 @@ public class Snake : MonoBehaviour
     public event Action<float, float> SegmentsCountChanged;
 
     private void Awake()
-    {
+    {        
         _speedControl = GetComponent<SnakeSpeedControl>();
     }
 

@@ -17,6 +17,8 @@ public class Game : MonoBehaviour
     public event Action Restarted;
     public event Action Over;
 
+    public bool IsPause = false;
+
     public void StartGame()
     {
         StartCoroutine(StartGameRoutine());
@@ -45,11 +47,13 @@ public class Game : MonoBehaviour
     public void StopGameTime()
     {
         Time.timeScale = 0f;
+        IsPause = true;
     }
 
     public void ContinueGameTime()
     {
         Time.timeScale = 1f;
+        IsPause = false;
     }
 
     private IEnumerator StartGameRoutine()
