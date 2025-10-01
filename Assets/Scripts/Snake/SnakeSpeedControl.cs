@@ -64,7 +64,7 @@ public class SnakeSpeedControl : MonoBehaviour
 
         while (_currentState != SpeedState.Stopped)
         {
-            float distance = _snake.NormalizedDistance;
+            float distance = _snake.NormalizedPosition;
 
             switch (_currentState)
             {
@@ -182,7 +182,7 @@ public class SnakeSpeedControl : MonoBehaviour
         if (_transitionCoroutine != null)
             StopCoroutine(_transitionCoroutine);
 
-        float remainingDistance = 1f - _snake.NormalizedDistance;
+        float remainingDistance = 1f - _snake.NormalizedPosition;
         float duration = Mathf.Max(2f, remainingDistance * 3f);
 
         _transitionCoroutine = StartCoroutine(FinalSlowdownCoroutine(duration));

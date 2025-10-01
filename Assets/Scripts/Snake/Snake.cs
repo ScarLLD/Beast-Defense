@@ -9,8 +9,10 @@ public class Snake : MonoBehaviour
 {
     [Header("Snake Settings")]
     [SerializeField] private float _moveSpeed = 2f;
+    [SerializeField] private float _moveBackSpeed = 20f;
     [SerializeField] private float _segmentDistance = 1.15f;
     [SerializeField] private float _segmentRollback = 1.5f;
+    [SerializeField] private float _startSplinePosition = 0;
 
     [Header("Prefabs")]
     [SerializeField] private SnakeSegment _segmentPrefab;
@@ -27,7 +29,7 @@ public class Snake : MonoBehaviour
 
     private readonly List<SnakeSegment> _segments = new();
     private readonly Queue<SnakeSegment> _recoilQueue = new();
-    private float _currentDistance;
+    private float _splinePosition;
     private int _startSegmentsCount;
     private bool _isRecoiling = false;
     private SplineContainer _splineContainer;
@@ -36,9 +38,10 @@ public class Snake : MonoBehaviour
     private Beast _beast;
     private float _splineLength;
     private Coroutine _movementCoroutine;
+    private Game _game;
 
     public float MoveSpeed { get; private set; }
-    public float NormalizedDistance { get; private set; }
+    public float NormalizedPosition { get; private set; }
 
     public event Action<float, float> SegmentsCountChanged;
 
@@ -49,17 +52,59 @@ public class Snake : MonoBehaviour
 
     public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, Beast beast, Game game)
     {
+        _game = game;
         _beast = beast;
         MoveSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _splineLength = _splineContainer.Spline.GetLength();
 
-        Cleanup();
+        SetDefaultSetting();
 
         CreateHead();
         CreateSegmentsFromStacks(stacks);
+        StartMove();
+    }
 
-        _movementCoroutine = StartCoroutine(SnakeMovement(game));
+    public void StartMove()
+    {
+        _movementCoroutine = StartCoroutine(SnakeMovement());
+    }
+
+    public void DestroySegment(SnakeSegment segmentToDestroy)
+    {
+        if (segmentToDestroy == null || !_segments.Contains(segmentToDestroy)) return;
+
+        _recoilQueue.Enqueue(segmentToDestroy);
+
+        if (!_isRecoiling)
+            StartCoroutine(ProcessRecoilQueue());
+    }
+
+    public void ChangeSpeed(float newSpeed)
+    {
+        MoveSpeed = newSpeed;
+    }
+
+    public IEnumerator GetBackToStart()
+    {
+        bool isWork = true;
+
+        while (isWork && _splinePosition > 0)
+        {
+            _splinePosition -= _moveBackSpeed * Time.deltaTime;
+            UpdateHeadPosition();
+            UpdateSegmentsPosition();
+
+            yield return null;
+        }
+    }
+
+    public void SetDefaultSetting()
+    {
+        Cleanup();
+
+        _splinePosition = _startSplinePosition;
+        MoveSpeed = _moveSpeed;
         _speedControl.StartControl();
     }
 
@@ -71,22 +116,13 @@ public class Snake : MonoBehaviour
             _movementCoroutine = null;
         }
 
-        foreach (var segment in _segments)
-        {
-            if (segment != null)
-                Destroy(segment.gameObject);
-        }
-        _segments.Clear();
         _recoilQueue.Clear();
-
-        if (_head != null)
-            Destroy(_head.gameObject);
     }
 
     private void CreateHead()
     {
         _head = Instantiate(_headPrefab, transform).transform;
-        _currentDistance = -2f;
+        _splinePosition = _startSplinePosition;
         PlaceOnSpline(_head, 0f);
     }
 
@@ -114,51 +150,40 @@ public class Snake : MonoBehaviour
         SegmentsCountChanged?.Invoke(_segments.Count, _startSegmentsCount);
     }
 
-    public void DestroySegment(SnakeSegment segmentToDestroy)
+    private IEnumerator SnakeMovement()
     {
-        if (segmentToDestroy == null || !_segments.Contains(segmentToDestroy)) return;
-
-        _recoilQueue.Enqueue(segmentToDestroy);
-
-        if (!_isRecoiling)
-            StartCoroutine(ProcessRecoilQueue());
-    }
-
-    public void ChangeSpeed(float newSpeed)
-    {
-        MoveSpeed = newSpeed;
-    }
-
-    private IEnumerator SnakeMovement(Game game)
-    {
-        while (_segments.Count > 0 && NormalizedDistance < 0.999f)
+        while (_segments.Count > 0 && MoveSpeed != 0)
         {
-            if (!_isRecoiling)
+            if (_isRecoiling == false)
             {
-                _currentDistance += MoveSpeed * Time.deltaTime;
+                _splinePosition += MoveSpeed * Time.deltaTime;
                 UpdateHeadPosition();
                 UpdateSegmentsPosition();
-                _beast.ApproachNotify(NormalizedDistance);
+                _beast.ApproachNotify(NormalizedPosition);
             }
+
             yield return null;
         }
 
         if (_segments.Count == 0)
             yield return StartCoroutine(DeathRoutine());
 
-        game.EndGame();
+        _game.EndGame();
     }
 
     private void UpdateHeadPosition()
     {
-        PlaceOnSpline(_head, _currentDistance);
-        NormalizedDistance = _splineLength > 0 ?
-            Mathf.Clamp01(_currentDistance / _splineLength) : 0f;
+        PlaceOnSpline(_head, _splinePosition);
+        NormalizedPosition = _splineLength > 0 ?
+            Mathf.Clamp01(_splinePosition / _splineLength) : 0f;
+
+        bool shouldBeActive = _splinePosition > 0f;
+        _head.gameObject.SetActive(shouldBeActive);
     }
 
     private void UpdateSegmentsPosition()
     {
-        float currentDist = _currentDistance - _segmentDistance - _segmentRollback;
+        float splinePosition = _splinePosition - _segmentDistance - _segmentRollback;
         int activeSegments = 0;
 
         for (int i = 0; i < _segments.Count; i++)
@@ -166,16 +191,16 @@ public class Snake : MonoBehaviour
             var segment = _segments[i];
             if (segment == null) continue;
 
-            bool shouldBeActive = currentDist > 0f;
+            bool shouldBeActive = splinePosition > 0f;
             segment.SetActiveSegment(shouldBeActive);
 
             if (shouldBeActive)
             {
-                PlaceOnSpline(segment.transform, currentDist);
+                PlaceOnSpline(segment.transform, splinePosition);
                 activeSegments++;
             }
 
-            currentDist -= _segmentDistance;
+            splinePosition -= _segmentDistance;
         }
     }
 
@@ -231,16 +256,16 @@ public class Snake : MonoBehaviour
             segmentsToRecoil[i] = _segments[i];
         }
 
-        float startHeadDistance = _currentDistance;
-        float targetHeadDistance = _currentDistance - _segmentDistance;
+        float startHeadPosition = _splinePosition;
+        float targetHeadPosition = _splinePosition - _segmentDistance;
 
-        var startDistances = new float[segmentsToRecoil.Length];
-        var targetDistances = new float[segmentsToRecoil.Length];
+        var startPosition = new float[segmentsToRecoil.Length];
+        var targetPosition = new float[segmentsToRecoil.Length];
 
         for (int i = 0; i < segmentsToRecoil.Length; i++)
         {
-            startDistances[i] = _currentDistance - _segmentDistance - _segmentRollback - (_segmentDistance * i);
-            targetDistances[i] = startDistances[i] - _segmentDistance;
+            startPosition[i] = _splinePosition - _segmentDistance - _segmentRollback - (_segmentDistance * i);
+            targetPosition[i] = startPosition[i] - _segmentDistance;
         }
 
         float timer = 0f;
@@ -250,21 +275,21 @@ public class Snake : MonoBehaviour
             float t = timer / _recoilDuration;
             float smoothT = _recoilCurve.Evaluate(t);
 
-            _currentDistance = Mathf.Lerp(startHeadDistance, targetHeadDistance, smoothT);
+            _splinePosition = Mathf.Lerp(startHeadPosition, targetHeadPosition, smoothT);
             UpdateHeadPosition();
 
             for (int i = 0; i < segmentsToRecoil.Length; i++)
             {
                 if (segmentsToRecoil[i] != null)
                 {
-                    float dist = Mathf.Lerp(startDistances[i], targetDistances[i], smoothT);
+                    float dist = Mathf.Lerp(startPosition[i], targetPosition[i], smoothT);
                     PlaceOnSpline(segmentsToRecoil[i].transform, dist);
                 }
             }
             yield return null;
         }
 
-        _currentDistance = targetHeadDistance;
+        _splinePosition = targetHeadPosition;
         UpdateHeadPosition();
 
         _segments.Remove(segmentToDestroy);

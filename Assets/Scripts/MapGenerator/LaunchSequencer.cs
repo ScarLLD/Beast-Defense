@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -21,17 +22,23 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private SmoothBarSlider _slider;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
 
+    private Snake _snake;
+    private Beast _beast;
+    private SplineContainer _spline;
+
     private void OnEnable()
     {
         _game.Started += Launch;
+        _game.Restarted += Relaunch;
     }
 
     private void OnDisable()
     {
         _game.Started -= Launch;
+        _game.Restarted -= Relaunch;
     }
 
-    public void Launch()
+    private void Launch()
     {
         if (_boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
             && _placeSpawner.TryGeneratePlaces(cubeScale) && _cubeCreator.TryCreate())
@@ -39,24 +46,35 @@ public class LaunchSequencer : MonoBehaviour
             _availabilityManagement.UpdateAvailability();
 
             if (_roadSpawner.TrySpawn(out List<Vector3> road)
-                && _splineCreator.TryCreateSpline(road, out SplineContainer splineContainer)
-                && _splineRoad.TryGenerateRoadFromSpline(splineContainer))
+                && _splineCreator.TryCreateSpline(road, out _spline)
+                && _splineRoad.TryGenerateRoadFromSpline(_spline))
             {
-                Beast beast = _beastSpawner.Spawn();
-                Snake snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), splineContainer, beast, _game);
-                _slider.Init(snake);
+                _beast = _beastSpawner.Spawn();
+                _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _spline, _beast, _game);
+                _slider.Init(_snake);
 
-                beast.Init(snake.MoveSpeed, splineContainer);
+                _beast.Init(_snake.MoveSpeed, _spline);
 
-                _detector.transform.position = road[1] + Vector3.up * snake.transform.localScale.y;
+                _detector.transform.position = road[1] + Vector3.up * _snake.transform.localScale.y;
                 _detector.gameObject.SetActive(true);
                 _detector.EnableTrigger();
             }
         }
     }
 
-    public void Restart()
+    private void Relaunch()
     {
-        //
+        if (_snake != null && _beast != null)
+        {
+            StartCoroutine(RelaunchRoutine());
+        }
+    }
+
+    private IEnumerator RelaunchRoutine()
+    {
+        yield return StartCoroutine(_snake.GetBackToStart());
+        _snake.SetDefaultSetting();
+        _beast.SetDefaultSettings(_spline);
+        _snake.StartMove();
     }
 }

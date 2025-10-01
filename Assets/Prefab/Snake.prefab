@@ -50,7 +50,7 @@ MonoBehaviour:
   _segmentDistance: 1.6
   _segmentRollback: 1.2
   _segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
-  _headPrefab: {fileID: 3165658343251708072, guid: ad81cb26b73023942ad8c592deee592a, type: 3}
+  _headPrefab: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
   _recoilDuration: 0.3
   _recoilCurve:
     serializedVersion: 2

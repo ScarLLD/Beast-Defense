@@ -14,11 +14,13 @@ public class Beast : MonoBehaviour
 
     private readonly float _arrivalThreshold = 0.005f;
     private readonly float _escapeThreshold = 0.3f;
-    private float _currentSplinePosition = 0.5f;
+    private float _startSplinePosition = 0.5f;
+    private float _currentSplinePosition;
     private float _yOffset;
     private SplineContainer _splineContainer;
     private Queue<float> _targetPercentages;
-    private Coroutine _coroutine;
+    private Coroutine _rotateCoroutine;
+    private Coroutine _moveCoroutine;
     private Transform _transform;
     private float _snakeSpeed;
 
@@ -46,19 +48,23 @@ public class Beast : MonoBehaviour
 
         _cachedSplineLength = _splineContainer.Spline.GetLength();
 
-        SetRoadTarget(splineContainer);
-        StartCoroutine(RotateToFace());
+        SetDefaultSettings(splineContainer);
     }
 
-    public void SetRoadTarget(SplineContainer splineContainer)
+    public void SetDefaultSettings(SplineContainer splineContainer)
     {
+        Cleanup();
+
         _splineContainer = splineContainer;
         _cachedSplineLength = _splineContainer.Spline.GetLength();
-        
+
+        _currentSplinePosition = _startSplinePosition;
+
         _targetPercentages.Enqueue(0.75f);
         _targetPercentages.Enqueue(1.0f);
 
         ApplyOffsetPosition();
+        _rotateCoroutine = StartCoroutine(RotateToFace());
     }
 
     public void ApproachNotify(float normalizedDistance)
@@ -67,13 +73,28 @@ public class Beast : MonoBehaviour
         {
             IsMoving = true;
 
-            if (_coroutine != null)
+            if (_moveCoroutine != null)
             {
-                StopCoroutine(_coroutine);
-                _coroutine = null;
+                StopCoroutine(_moveCoroutine);
+                _moveCoroutine = null;
             }
 
-            _coroutine = StartCoroutine(MoveRoutine());
+            _moveCoroutine = StartCoroutine(MoveRoutine());
+        }
+    }
+
+    private void Cleanup()
+    {
+        if (_moveCoroutine != null)
+        {
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
+        }
+
+        if (_rotateCoroutine != null)
+        {
+            StopCoroutine(_rotateCoroutine);
+            _rotateCoroutine = null;
         }
     }
 
@@ -99,7 +120,7 @@ public class Beast : MonoBehaviour
             yield return null;
         }
 
-        yield return StartCoroutine(RotateToFace());
+        yield return _rotateCoroutine = StartCoroutine(RotateToFace());
         IsMoving = false;
     }
 
@@ -149,9 +170,9 @@ public class Beast : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (_coroutine != null)
+        if (_moveCoroutine != null)
         {
-            StopCoroutine(_coroutine);
+            StopCoroutine(_moveCoroutine);
         }
     }
 }
