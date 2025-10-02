@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(Animator))]
 public class Shooter : MonoBehaviour
@@ -9,18 +10,19 @@ public class Shooter : MonoBehaviour
     [SerializeField] private float _timeBetweenShoot;
 
     private BulletSpawner _bulletSpawner;
-    private Coroutine _coroutine;
+    private Coroutine _shootCoroutine;
     private Animator _animator;
     private Queue<SnakeSegment> _targets;
     private WaitForSeconds _sleepTime;
     private WaitForSeconds _coroutineSleep;
 
+    private int _initialBulletCount;
     private int _bulletCount;
     private Quaternion _initialRotation;
 
     public int BulletCount => _bulletCount;
 
-    public event Action BulletsDecreased;
+    public event Action BulletsCountChanged;
 
     private void Awake()
     {
@@ -33,7 +35,8 @@ public class Shooter : MonoBehaviour
     public void Init(BulletSpawner bulletSpawner, int bulletCount)
     {
         _bulletSpawner = bulletSpawner;
-        _bulletCount = bulletCount;
+        _initialBulletCount = bulletCount;
+        _bulletCount = _initialBulletCount;
         _initialRotation = transform.rotation;
     }
 
@@ -42,12 +45,26 @@ public class Shooter : MonoBehaviour
         if (_targets.Contains(snakeSegment) == false)
             _targets.Enqueue(snakeSegment);
 
-        _coroutine ??= StartCoroutine(Shoot());
+        _shootCoroutine ??= StartCoroutine(Shoot());
     }
 
     public void SetInitialRotation()
     {
         transform.rotation = _initialRotation;
+    }
+
+    public void SetDafaultSettings()
+    {
+        if (_shootCoroutine != null)
+        {
+            StopCoroutine(_shootCoroutine);
+            _shootCoroutine = null;
+        }
+
+        _targets.Clear();
+        _bulletCount = _initialBulletCount;
+        BulletsCountChanged?.Invoke();
+        SetInitialRotation();
     }
 
     private IEnumerator Shoot()
@@ -68,7 +85,7 @@ public class Shooter : MonoBehaviour
                     _bulletSpawner.SpawnBullet(transform.position, cube);
                     _bulletCount--;
 
-                    BulletsDecreased?.Invoke();
+                    BulletsCountChanged?.Invoke();
 
                     _animator.ResetTrigger("Shoot");
                     _animator.SetTrigger("Shoot");

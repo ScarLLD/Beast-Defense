@@ -73,4 +73,15 @@ public class PlaceStorage : MonoBehaviour
     {
         _escapePlaces.Add(escapePlace);
     }
+
+    public void SetDefaultSettings()
+    {
+        if (_shootingPlaces.Count > 0)
+        {
+            foreach (ShootingPlace place in _shootingPlaces)
+            {
+                place.ChangeEmptyStatus(true);
+            }
+        }
+    }
 }

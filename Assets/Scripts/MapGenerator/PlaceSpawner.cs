@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(PlaceStorage))]
 public class PlaceSpawner : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
@@ -11,14 +10,8 @@ public class PlaceSpawner : MonoBehaviour
     [SerializeField] private float _movingAwayFromShootingPlace;
 
     [SerializeField] private float _scaleMultiplier = 0.9f;
-    private PlaceStorage _storage;
 
-    private void Awake()
-    {
-        _storage = GetComponent<PlaceStorage>();
-    }
-
-    public bool TryGeneratePlaces(Vector3 cubeScale)
+    public bool TryGeneratePlaces(Vector3 cubeScale, PlaceStorage storage)
     {
         _placePrefab.transform.localScale = new(cubeScale.x * _scaleMultiplier, 0.01f, cubeScale.z * _scaleMultiplier);
         Vector3 cameraCenter = new(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 0f);
@@ -29,9 +22,9 @@ public class PlaceSpawner : MonoBehaviour
         {
             transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
 
-            _storage.Clear();
-            GenerateShootingPlaces(hit.point);
-            GenerateEscapePlaces();
+            storage.Clear();
+            GenerateShootingPlaces(hit.point, storage);
+            GenerateEscapePlaces(storage);
 
             return true;
         }
@@ -40,7 +33,7 @@ public class PlaceSpawner : MonoBehaviour
         return false;
     }
 
-    private void GenerateShootingPlaces(Vector3 hit)
+    private void GenerateShootingPlaces(Vector3 hit, PlaceStorage storage)
     {
         float placeWeight = _placePrefab.transform.localScale.x;
         float availableSpace = _rightBound - _leftBound - (_placesCount * placeWeight);
@@ -55,28 +48,28 @@ public class PlaceSpawner : MonoBehaviour
             ShootingPlace place = Instantiate(_placePrefab, transform);
             place.transform.localPosition = spawnPosition;
 
-            _storage.PutPlace(place);
+            storage.PutPlace(place);
         }
     }
 
-    private void GenerateEscapePlaces()
+    private void GenerateEscapePlaces(PlaceStorage storage)
     {
         Vector3 escapePlace;
 
-        if (_storage.TryGetFirstPlace(out ShootingPlace firstPlace))
+        if (storage.TryGetFirstPlace(out ShootingPlace firstPlace))
         {
             escapePlace = new Vector3(firstPlace.transform.position.x - _movingAwayFromShootingPlace,
                 firstPlace.transform.position.y, firstPlace.transform.position.z + _movingAwayFromShootingPlace);
 
-            _storage.PutEscapePlace(escapePlace);
+            storage.PutEscapePlace(escapePlace);
         }
 
-        if (_storage.TryGetLastPlace(out ShootingPlace lastPlace))
+        if (storage.TryGetLastPlace(out ShootingPlace lastPlace))
         {
             escapePlace = new Vector3(lastPlace.transform.position.x + _movingAwayFromShootingPlace,
                 lastPlace.transform.position.y, lastPlace.transform.position.z + _movingAwayFromShootingPlace);
 
-            _storage.PutEscapePlace(escapePlace);
+            storage.PutEscapePlace(escapePlace);
         }
     }
 }

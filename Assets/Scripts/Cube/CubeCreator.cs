@@ -5,10 +5,8 @@ public class CubeCreator : MonoBehaviour
 {
     [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private PlayerCube _cubePrefab;
-    [SerializeField] private CubeStorage _cubeStorage;
-    [SerializeField] private BoundaryMaker _boundaryMaker;
-    [SerializeField] private BulletSpawner _bulletSpawner;
-    [SerializeField] private TargetStorage _targetStorage;
+
+    private Transform _transform;
 
     [SerializeField]
     private List<Material> _сolors = new();
@@ -16,16 +14,17 @@ public class CubeCreator : MonoBehaviour
     [SerializeField]
     private List<int> _counts = new();
 
-    private Transform _transform;
+    private List<PlayerCube> _cubes = new();
+    private List<GridCell> _cells = new();
 
     private void Awake()
     {
         _transform = transform;
     }
 
-    public bool TryMoveToCenterScreenBottom()
+    public bool TryMoveToCenterScreenBottom(BoundaryMaker boundaryMaker)
     {
-        if (_boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
+        if (boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
         {
             _transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cubePrefab.transform.localScale.y / 2, bottomScreenCenter.z);
             return true;
@@ -34,16 +33,16 @@ public class CubeCreator : MonoBehaviour
         return false;
     }
 
-    public bool TryCreate()
+    public bool TryCreate(BoundaryMaker boundaryMaker, CubeStorage cubeStorage, BulletSpawner bulletSpawner, TargetStorage targetStorage)
     {
-        if (_gridStorage.GridCount > 0 && TryMoveToCenterScreenBottom())
+        if (_gridStorage.GridCount > 0 && TryMoveToCenterScreenBottom(boundaryMaker))
         {
             int gridCount = _gridStorage.GridCount;
 
             if (gridCount == 0)
                 return false;
 
-            _cubeStorage.Clear();
+            cubeStorage.Clear();
 
             for (int i = 0; i < gridCount; i++)
             {
@@ -55,9 +54,11 @@ public class CubeCreator : MonoBehaviour
                     Vector3 spawnPoint = new(gridCell.transform.position.x, gridCell.transform.position.y + _cubePrefab.transform.localScale.y / 2, gridCell.transform.position.z);
 
                     PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, _transform);
-                    playerCube.Init(gridCell, material, count, _bulletSpawner, _targetStorage);
+                    playerCube.Init(gridCell, material, count, bulletSpawner, targetStorage);
                     gridCell.InitCube(playerCube);
-                    _cubeStorage.Add(playerCube);
+                    cubeStorage.Add(playerCube);
+                    _cubes.Add(playerCube);
+                    _cells.Add(gridCell);
                 }
             }
 
@@ -66,5 +67,21 @@ public class CubeCreator : MonoBehaviour
 
         Debug.Log("Не удалось сгенерировать кубы.");
         return false;
+    }
+
+    public void Respawn()
+    {
+        foreach (PlayerCube playerCube in _cubes)
+        {
+            playerCube.SetDefaultSettings();
+
+            if (playerCube.isActiveAndEnabled == false)
+                playerCube.gameObject.SetActive(true);
+        }
+
+        foreach (GridCell cell in _cells)
+        {
+            cell.SetDefaultSettings();
+        }
     }
 }

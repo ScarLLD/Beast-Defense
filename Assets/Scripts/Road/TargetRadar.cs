@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -22,6 +23,16 @@ public class TargetRadar : MonoBehaviour
     {
         _scanCoroutine ??= StartCoroutine(ScanRoutine(color));
     }
+
+    public void TurnOff()
+    {
+        if (_scanCoroutine != null)
+        {
+            StopCoroutine( _scanCoroutine );
+            _scanCoroutine = null;
+        }
+    }
+
     private IEnumerator ScanRoutine(Color color)
     {
         int bulletsPerSegment = _shooter.BulletCount / 4;

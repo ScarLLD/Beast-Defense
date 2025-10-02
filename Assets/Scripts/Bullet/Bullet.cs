@@ -12,12 +12,18 @@ public class Bullet : MonoBehaviour
     private Rigidbody _rigidbody;
     private BulletTrail _bulletTrail;
     private Coroutine _moveCoroutine;
+    private bool _isMove;
 
     private void Awake()
     {
         _transform = transform;
         _rigidbody = GetComponent<Rigidbody>();
         _bulletTrail = GetComponent<BulletTrail>();
+    }
+
+    public void StopMove()
+    {
+        _isMove = false;
     }
 
     public void Init(ParticleCreator creator)
@@ -36,7 +42,9 @@ public class Bullet : MonoBehaviour
 
     private IEnumerator MoveToTarget(Cube cube)
     {
-        while (true)
+        _isMove = true;
+
+        while (_isMove)
         {
             Vector3 direction = (cube.transform.position - _transform.position).normalized;
             _rigidbody.velocity = direction * _speed;

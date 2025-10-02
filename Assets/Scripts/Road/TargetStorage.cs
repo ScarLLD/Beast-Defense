@@ -30,4 +30,14 @@ public class TargetStorage : MonoBehaviour
 
         return false;
     }
+
+    public void Cleanup()
+    {
+        foreach (var segment in _segments)
+        {
+            segment.SetIsTarget(false);
+        }
+
+        _segments.Clear();
+    }
 }

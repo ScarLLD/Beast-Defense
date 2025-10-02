@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5815151755546300302}
   - component: {fileID: 1056603179970402766}
   - component: {fileID: 2639506017976366610}
+  - component: {fileID: 4612347822177695689}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -47,8 +48,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 2
+  _moveBackSpeed: 30
   _segmentDistance: 1.6
   _segmentRollback: 1.2
+  _startSplinePosition: 0
   _segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
   _headPrefab: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
   _recoilDuration: 0.3
@@ -122,6 +125,27 @@ MonoBehaviour:
   _deepSlowedDistance: 0.75
   _finalSlowdownDistance: 0.95
   _stopDistance: 0.99
+--- !u!95 &4612347822177695689
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7249471562046286913}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ba8f5a1dcab57d1479c37e154431e5b9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &4690289148378000921
 PrefabInstance:
   m_ObjectHideFlags: 0

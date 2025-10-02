@@ -10,6 +10,7 @@ public class LaunchSequencer : MonoBehaviour
     [Header("Spawners")]
     [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private PlaceSpawner _placeSpawner;
+    [SerializeField] private PlaceStorage _placeStorage;
     [SerializeField] private GridCreator _gridCreator;
     [SerializeField] private SplineCreator _splineCreator;
     [SerializeField] private RoadSpawner _roadSpawner;
@@ -20,6 +21,8 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private SnakeSpawner _snakeSpawner;
     [SerializeField] private BeastSpawner _beastSpawner;
     [SerializeField] private SmoothBarSlider _slider;
+    [SerializeField] private BulletSpawner _bulletSpawner;
+    [SerializeField] private TargetStorage _targetStorage;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
 
     private Snake _snake;
@@ -41,7 +44,8 @@ public class LaunchSequencer : MonoBehaviour
     private void Launch()
     {
         if (_boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
-            && _placeSpawner.TryGeneratePlaces(cubeScale) && _cubeCreator.TryCreate())
+            && _placeSpawner.TryGeneratePlaces(cubeScale, _placeStorage)
+            && _cubeCreator.TryCreate(_boundaryMaker, _cubeStorage, _bulletSpawner, _targetStorage))
         {
             _availabilityManagement.UpdateAvailability();
 
@@ -73,8 +77,14 @@ public class LaunchSequencer : MonoBehaviour
     private IEnumerator RelaunchRoutine()
     {
         yield return StartCoroutine(_snake.GetBackToStart());
+        _bulletSpawner.Cleanup();
+        _targetStorage.Cleanup();
         _snake.SetDefaultSetting();
         _beast.SetDefaultSettings(_spline);
+        _cubeCreator.Respawn();
+        _placeStorage.SetDefaultSettings();
+        _availabilityManagement.UpdateAvailability();
+        _snake.CreateSegmentsFromStacks(_cubeStorage.GetStacks());
         _snake.StartMove();
     }
 }

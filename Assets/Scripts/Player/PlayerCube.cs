@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -30,6 +31,8 @@ public class PlayerCube : MonoBehaviour
     public CubeStack GetStack => _stack;
     public Material Material => _meshRenderer.material;
 
+    public bool HasClicked { get; private set; }
+
     private void Awake()
     {
         Mover = GetComponent<CubeMover>();
@@ -59,14 +62,25 @@ public class PlayerCube : MonoBehaviour
     private void OnEnable()
     {
         Mover.Arrived += OnMoverArrived;
-        _shooter.BulletsDecreased += OnBulletsDecreased;
+        _shooter.BulletsCountChanged += OnBulletsDecreased;
     }
 
     private void OnDisable()
     {
         Mover.Arrived -= OnMoverArrived;
-        _shooter.BulletsDecreased -= OnBulletsDecreased;
-    }        
+        _shooter.BulletsCountChanged -= OnBulletsDecreased;
+    }
+
+    public void SetDefaultSettings()
+    {
+        HasClicked = false;
+        transform.position = _originalPosition;
+
+        _radar.TurnOff();
+        _shooter.SetDafaultSettings();
+        Mover.SetDefaultSetting();
+        SetHalfSizeTransform();
+    }
 
     public void ChangeAvailableStatus(bool isAvailable)
     {
@@ -76,6 +90,11 @@ public class PlayerCube : MonoBehaviour
             ActivateAvailability();
         else
             DeactivateAvailability();
+    }
+
+    public void SetIsClicked()
+    {
+        HasClicked = true;
     }
 
     private void ActivateAvailability()
@@ -90,12 +109,20 @@ public class PlayerCube : MonoBehaviour
     {
         if (_isScaled == false)
         {
-            transform.localScale = new(_originalScale.x, _originalScale.y / 2, _originalScale.z);
-            transform.position = new(_originalPosition.x, _originalPosition.y - transform.localScale.y / 2, _originalPosition.z);
+            SetHalfSizeTransform();
         }
 
         _outline.OutlineWidth = _outlineDisable;
         _animator.SetBool("isAvailable", false);
+
+        if (GridCell.IsStatic)
+            _view.SetEmpty();
+    }
+
+    private void SetHalfSizeTransform()
+    {
+        transform.localScale = new(_originalScale.x, _originalScale.y / 2, _originalScale.z);
+        transform.position = new(_originalPosition.x, _originalPosition.y - transform.localScale.y / 2, _originalPosition.z);
     }
 
     private IEnumerator ScaleRoutine()
@@ -122,7 +149,6 @@ public class PlayerCube : MonoBehaviour
     private void OnMoverArrived()
     {
         _radar.StartScanning(Material.color);
-        Mover.StopMoving();
     }
 
     private void OnBulletsDecreased()

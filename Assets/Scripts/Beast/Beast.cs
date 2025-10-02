@@ -67,20 +67,25 @@ public class Beast : MonoBehaviour
         _rotateCoroutine = StartCoroutine(RotateToFace());
     }
 
-    public void ApproachNotify(float normalizedDistance)
+    public bool TryApproachNotify(float normalizedDistance)
     {
-        if (IsMoving == false && _targetPercentages.Count > 0 && _currentSplinePosition - normalizedDistance < _escapeThreshold)
+        if (_currentSplinePosition - normalizedDistance < _escapeThreshold)
         {
-            IsMoving = true;
-
-            if (_moveCoroutine != null)
+            if (IsMoving == false && _targetPercentages.Count > 0 && _currentSplinePosition - normalizedDistance < _escapeThreshold)
             {
-                StopCoroutine(_moveCoroutine);
-                _moveCoroutine = null;
+                if (_moveCoroutine != null)
+                {
+                    StopCoroutine(_moveCoroutine);
+                    _moveCoroutine = null;
+                }
+
+                _moveCoroutine = StartCoroutine(MoveRoutine());
             }
 
-            _moveCoroutine = StartCoroutine(MoveRoutine());
+            return true;
         }
+
+        return false;
     }
 
     private void Cleanup()
@@ -89,6 +94,8 @@ public class Beast : MonoBehaviour
         {
             StopCoroutine(_moveCoroutine);
             _moveCoroutine = null;
+
+            IsMoving = false;
         }
 
         if (_rotateCoroutine != null)
@@ -102,6 +109,8 @@ public class Beast : MonoBehaviour
     {
         float currentTargetPercentage = _targetPercentages.Dequeue();
         bool isWork = true;
+
+        IsMoving = true;
 
         while (isWork)
         {

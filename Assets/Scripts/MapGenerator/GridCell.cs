@@ -8,14 +8,24 @@ public class GridCell : MonoBehaviour
     public PlayerCube Cube { get; private set; }
     public Obstacle Obstacle { get; private set; }
 
-    public bool IsStatic { get; private set; } = true;
-    public bool IsTopRow { get; private set; } = false;
+    public bool IsStatic { get; private set; }
+    public bool IsTopRow { get; private set; }
     public bool IsOccupied => Obstacle != null;
     public IReadOnlyList<GridCell> AvailableCells => _availableCells;
 
     private void Awake()
     {
         _availableCells = new List<GridCell>();
+
+        SetDefaultSettings();
+    }
+
+    public void SetDefaultSettings()
+    {
+        IsStatic = true;
+        IsTopRow = false;
+
+        _availableCells.Clear();
     }
 
     public void ChangeStaticStatus(bool isStatic)

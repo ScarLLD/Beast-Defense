@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(RoadFinder))]
 public class CubeMover : MonoBehaviour
@@ -20,6 +19,8 @@ public class CubeMover : MonoBehaviour
     private Transform _transform;
     private Vector3 _cachedCellTarget;
     private Vector3 _cachedShootingTarget;
+
+    public bool IsMoving { get; private set; }
 
     public event Action Arrived;
 
@@ -56,6 +57,12 @@ public class CubeMover : MonoBehaviour
         _escapePlace = GetCurrentTarget(escapePlace);
     }
 
+    public void SetDefaultSetting()
+    {
+        StopMoving();
+        _isNewMove = true;
+    }
+
     public void GoEscape()
     {
         _shootingPlace.ChangeEmptyStatus(true);
@@ -74,9 +81,9 @@ public class CubeMover : MonoBehaviour
 
     private IEnumerator MoveRoutine()
     {
-        bool isWork = true;
+        IsMoving = true;
 
-        while (isWork)
+        while (IsMoving)
         {
             Vector3 direction = _target - _transform.position;
             _transform.position += _speed * Time.deltaTime * direction.normalized;
@@ -87,7 +94,10 @@ public class CubeMover : MonoBehaviour
                 _transform.position = _target;
 
                 if (_target == _cachedShootingTarget)
+                {
                     Arrived?.Invoke();
+                    IsMoving = false;
+                }
 
                 SelectTarget();
             }
@@ -115,7 +125,6 @@ public class CubeMover : MonoBehaviour
         }
         else if (_target == _escapePlace)
         {
-            StopMoving();
             gameObject.SetActive(false);
         }
     }

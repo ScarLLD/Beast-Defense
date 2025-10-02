@@ -24,6 +24,7 @@ public class CubesInteractor : MonoBehaviour
             cube.ChangeAvailableStatus(false);
             cube.Mover.SetPlaces(shootingPlace, escapePlace, cube.GridCell);
             cube.Mover.StartMoving();
+            cube.SetIsClicked();
 
             _availabilityManagement.UpdateAvailability();
         }
