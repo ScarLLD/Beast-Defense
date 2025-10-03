@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f93d11656c20924096e2bbb43ed9222, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeBetweenShoot: 0.05
+  _timeBetweenShoot: 0.075
 --- !u!114 &1561004769194766595
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -13,8 +13,8 @@ public class Beast : MonoBehaviour
     [SerializeField] private float _rotateDuration = 0.3f;
 
     private readonly float _arrivalThreshold = 0.005f;
-    private readonly float _escapeThreshold = 0.3f;
-    private float _startSplinePosition = 0.5f;
+    private readonly float _escapeThreshold = 0.15f;
+    private readonly float _startSplinePosition = 0.5f;
     private float _currentSplinePosition;
     private float _yOffset;
     private SplineContainer _splineContainer;
@@ -67,11 +67,11 @@ public class Beast : MonoBehaviour
         _rotateCoroutine = StartCoroutine(RotateToFace());
     }
 
-    public bool TryApproachNotify(float normalizedDistance)
+    public bool TryApproachNotify(float snakeSplinePosition)
     {
-        if (_currentSplinePosition - normalizedDistance < _escapeThreshold)
+        if (_currentSplinePosition - snakeSplinePosition < _escapeThreshold)
         {
-            if (IsMoving == false && _targetPercentages.Count > 0 && _currentSplinePosition - normalizedDistance < _escapeThreshold)
+            if (IsMoving == false && _targetPercentages.Count > 0)
             {
                 if (_moveCoroutine != null)
                 {
@@ -103,6 +103,8 @@ public class Beast : MonoBehaviour
             StopCoroutine(_rotateCoroutine);
             _rotateCoroutine = null;
         }
+
+        _targetPercentages.Clear();
     }
 
     private IEnumerator MoveRoutine()

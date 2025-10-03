@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 
-[RequireComponent(typeof(SnakeSpeedControl), typeof(Animator))]
+[RequireComponent(typeof(SnakeSpeedControl))]
 public class Snake : MonoBehaviour
 {
     [Header("Snake Settings")]
@@ -24,7 +24,7 @@ public class Snake : MonoBehaviour
 
     [Header("Death Settings")]
     [SerializeField] private AnimationCurve _deathAnimationCurve;
-    [SerializeField] private ParticleSystem _cloadParticle;
+    [SerializeField] private ParticleSystem _cloudParticle;
     [SerializeField] private float _deathDuration;
 
     private readonly List<SnakeSegment> _savedSegments = new();
@@ -39,6 +39,7 @@ public class Snake : MonoBehaviour
     private Beast _beast;
     private float _splineLength;
     private Coroutine _movementCoroutine;
+    private Coroutine _recoilCoroutine;
     private Game _game;
     private Animator _animator;
 
@@ -50,7 +51,6 @@ public class Snake : MonoBehaviour
     private void Awake()
     {
         _speedControl = GetComponent<SnakeSpeedControl>();
-        _animator = _head.GetComponent<Animator>();
     }
 
     public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, Beast beast, Game game)
@@ -94,9 +94,12 @@ public class Snake : MonoBehaviour
 
         while (isWork && _splinePosition > 0)
         {
-            _splinePosition -= _moveBackSpeed * (NormalizedPosition + 1) * Time.deltaTime;
-            UpdateHeadPosition();
-            UpdateSegmentsPosition();
+            if (_recoilCoroutine == null)
+            {
+                _splinePosition -= _moveBackSpeed * (NormalizedPosition + 1) * Time.deltaTime;
+                UpdateHeadPosition();
+                UpdateSegmentsPosition();
+            }
 
             yield return null;
         }
@@ -125,8 +128,9 @@ public class Snake : MonoBehaviour
     private void CreateHead()
     {
         _head = Instantiate(_headPrefab, transform).transform;
-        _splinePosition = _startSplinePosition;
-        PlaceOnSpline(_head, 0f);
+        _animator = _head.GetComponent<Animator>();
+        _animator.SetBool("BeastClose", false);
+        PlaceOnSpline(_head, _splinePosition);
     }
 
     public void CreateSegmentsFromStacks(List<CubeStack> stacks)
@@ -203,14 +207,30 @@ public class Snake : MonoBehaviour
                 UpdateSegmentsPosition();
 
                 if (_beast.TryApproachNotify(NormalizedPosition))
-                    _animator.SetTrigger("OpenMouth");
+                    _animator.SetBool("BeastClose", true);
+                else
+                    _animator.SetBool("BeastClose", false);
+
             }
 
             yield return null;
         }
 
+        _animator.SetBool("BeastClose", false);
+
         if (_playableSegments.Count == 0)
+        {
             yield return StartCoroutine(DeathRoutine());
+        }
+
+        if (MoveSpeed == 0)
+        {
+            _animator.SetTrigger("AteBeast");
+            _cloudParticle.transform.position = _head.position;
+            ParticleSystem.MainModule mainModule = _cloudParticle.main;
+            mainModule.startColor = Color.red;
+            _cloudParticle.Play();
+        }
 
         _game.EndGame();
     }
@@ -261,8 +281,8 @@ public class Snake : MonoBehaviour
             yield return null;
         }
 
-        _cloadParticle.transform.position = _head.position;
-        _cloadParticle.Play();
+        _cloudParticle.transform.position = _head.position;
+        _cloudParticle.Play();
     }
 
     private void PlaceOnSpline(Transform target, float distance)
@@ -283,7 +303,7 @@ public class Snake : MonoBehaviour
             var segmentToDestroy = _recoilQueue.Dequeue();
             if (segmentToDestroy == null || !_playableSegments.Contains(segmentToDestroy)) continue;
 
-            yield return StartCoroutine(PerformRecoil(segmentToDestroy));
+            yield return _recoilCoroutine = StartCoroutine(PerformRecoil(segmentToDestroy));
         }
 
         _isRecoiling = false;
@@ -336,10 +356,15 @@ public class Snake : MonoBehaviour
         _splinePosition = targetHeadPosition;
         UpdateHeadPosition();
 
-        _playableSegments.Remove(segmentToDestroy);
-        segmentToDestroy.gameObject.SetActive(false);
+        if (segmentToDestroy.gameObject != null)
+        {
+            _playableSegments.Remove(segmentToDestroy);
+            segmentToDestroy.gameObject.SetActive(false);
+        }
 
         SegmentsCountChanged?.Invoke(_playableSegments.Count, _startSegmentsCount);
         UpdateSegmentsPosition();
+
+        _recoilCoroutine = null;
     }
 }
