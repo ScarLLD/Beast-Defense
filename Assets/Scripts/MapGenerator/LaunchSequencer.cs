@@ -6,6 +6,7 @@ using UnityEngine.Splines;
 public class LaunchSequencer : MonoBehaviour
 {
     [SerializeField] private Game _game;
+    [SerializeField] private GameObject _objectsParent;
 
     [Header("Spawners")]
     [SerializeField] private BoundaryMaker _boundaryMaker;
@@ -33,17 +34,22 @@ public class LaunchSequencer : MonoBehaviour
     {
         _game.Started += Launch;
         _game.Restarted += Relaunch;
+        _game.Leaved += LeaveGame;
     }
 
     private void OnDisable()
     {
         _game.Started -= Launch;
         _game.Restarted -= Relaunch;
+        _game.Leaved -= LeaveGame;
     }
 
     private void Launch()
     {
-        if (_boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
+        _objectsParent.SetActive(true);
+
+        if (_snake == null && _beast == null
+            && _boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
             && _placeSpawner.TryGeneratePlaces(cubeScale, _placeStorage)
             && _cubeCreator.TryCreate(_boundaryMaker, _cubeStorage, _bulletSpawner, _targetStorage))
         {
@@ -64,6 +70,15 @@ public class LaunchSequencer : MonoBehaviour
                 _detector.EnableTrigger();
             }
         }
+        else
+        {
+            Relaunch();
+        }
+    }
+
+    public void LeaveGame()
+    {
+        _objectsParent.SetActive(false);
     }
 
     private void Relaunch()

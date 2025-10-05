@@ -4,11 +4,16 @@ public class PauseMenu : Window
 {
     private void OnEnable()
     {
-        _game.Paused += OnGamePaused;
+        _game.Leaved += OffMenu;
     }
 
-    private void OnGamePaused()
+    private void OnDisable()
     {
-        SwitchVisible(true);
+        _game.Leaved -= OffMenu;
+    }
+
+    private void Awake()
+    {
+        OffMenu();
     }
 }

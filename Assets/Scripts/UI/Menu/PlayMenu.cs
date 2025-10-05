@@ -3,20 +3,17 @@ public class PlayMenu : Window
     private void OnEnable()
     {
         _game.Started += OnMenu;
+        _game.Leaved += OffMenu;
     }
 
     private void OnDisable()
     {
         _game.Started -= OnMenu;
+        _game.Leaved += OffMenu;
     }
 
     private void Awake()
     {
-        SwitchVisible(false);
-    }
-
-    private void OnMenu()
-    {
-        SwitchVisible(true);
+        OffMenu();
     }
 }
