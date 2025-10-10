@@ -16,7 +16,7 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private int _rows;
     [SerializeField] private int _columns;
 
-    [Header("grid edge")]
+    [Header("Grid position settings")]
     [SerializeField] private float _minX;
     [SerializeField] private float _maxX;
     [SerializeField] private float _minZ;
@@ -37,6 +37,8 @@ public class GridCreator : MonoBehaviour
     private float _spacingX;
     private float _spacingZ;
     private Vector3 _gridCenterOffset;
+    private Vector3 _leftCornerPos;
+    private Vector3 _rightCornerPos;
 
     public event Action Created;
 
@@ -125,117 +127,118 @@ public class GridCreator : MonoBehaviour
 
     private void CreateBorderWalls(float localMinX, float localMaxX, float localMinZ, float localMaxZ)
     {
-        CreateLeftBorderWalls(localMinX, localMinZ);
-        CreateRightBorderWalls(localMaxX, localMinZ);
-        CreateBottomBorderWalls(localMinX, localMinZ);
+        // Сначала создаем угловые препятствия и запоминаем их позиции
         CreateCornerWalls(localMinX, localMaxX, localMinZ);
+
+        // Затем создаем стены, которые будут соединяться с угловыми препятствиями
+        CreateLeftBorderWalls(localMinX, localMinZ, localMaxZ);
+        CreateRightBorderWalls(localMaxX, localMinZ, localMaxZ);
+        CreateBottomBorderWalls(localMinX, localMaxX, localMinZ);
     }
 
     private void CreateCornerWalls(float localMinX, float localMaxX, float localMinZ)
     {
         float bottomBorderZ = localMinZ - _objectDepth - _spacingZ + _offsetY;
 
-        Vector3 leftCornerPos = new Vector3(localMinX - _objectWidth - _spacingX + _offsetX, 0f, bottomBorderZ);
+        // Левый нижний угол
+        _leftCornerPos = new Vector3(localMinX - _objectWidth - _spacingX + _offsetX, 0f, bottomBorderZ);
         Obstacle leftCorner = Instantiate(_obstaclePrefab, transform);
         leftCorner.transform.position = new Vector3(
-            leftCornerPos.x,
+            _leftCornerPos.x,
             leftCorner.transform.position.y + leftCorner.transform.localScale.y / 2,
-            leftCornerPos.z
+            _leftCornerPos.z
         );
+        _obstacles.Add(leftCorner);
 
-        Vector3 leftVerticalEnd = new Vector3(leftCornerPos.x, 0f, _cellGrid[0, 0].transform.position.z);
-        CreateVerticalStretchedObstacle(leftCornerPos, leftVerticalEnd);
-
-        Vector3 leftHorizontalEnd = new Vector3(_cellGrid[0, 0].transform.position.x, 0f, leftCornerPos.z);
-        CreateHorizontalStretchedObstacle(leftCornerPos, leftHorizontalEnd);
-
-        Vector3 rightCornerPos = new Vector3(localMaxX + _objectWidth + _spacingX - _offsetX, 0f, bottomBorderZ);
+        // Правый нижний угол
+        _rightCornerPos = new Vector3(localMaxX + _objectWidth + _spacingX - _offsetX, 0f, bottomBorderZ);
         Obstacle rightCorner = Instantiate(_obstaclePrefab, transform);
         rightCorner.transform.position = new Vector3(
-            rightCornerPos.x,
+            _rightCornerPos.x,
             rightCorner.transform.position.y + rightCorner.transform.localScale.y / 2,
-            rightCornerPos.z
+            _rightCornerPos.z
         );
-
-        Vector3 rightVerticalEnd = new Vector3(rightCornerPos.x, 0f, _cellGrid[0, _columns - 1].transform.position.z);
-        CreateVerticalStretchedObstacle(rightCornerPos, rightVerticalEnd);
-
-        Vector3 rightHorizontalEnd = new Vector3(_cellGrid[0, _columns - 1].transform.position.x, 0f, rightCornerPos.z);
-        CreateHorizontalStretchedObstacle(rightCornerPos, rightHorizontalEnd);
+        _obstacles.Add(rightCorner);
     }
 
-    private void CreateLeftBorderWalls(float localMinX, float localMinZ)
+    private void CreateLeftBorderWalls(float localMinX, float localMinZ, float localMaxZ)
     {
         float leftBorderX = localMinX - _objectWidth - _spacingX + _offsetX;
 
-        for (int row = 0; row < _rows; row++)
-        {
-            float localZ = localMinZ + (_objectDepth / 2) + row * (_objectDepth + _spacingZ);
-            Vector3 position = new Vector3(leftBorderX, 0f, localZ);
+        // Верхний угол левой стены
+        Vector3 topPos = new Vector3(leftBorderX, 0f, localMinZ + (_objectDepth / 2) + (_rows - 1) * (_objectDepth + _spacingZ));
+        Obstacle topObstacle = Instantiate(_obstaclePrefab, transform);
+        topObstacle.transform.position = new Vector3(
+            topPos.x,
+            topObstacle.transform.position.y + topObstacle.transform.localScale.y / 2,
+            topPos.z
+        );
+        _obstacles.Add(topObstacle);
 
-            Obstacle obstacle = Instantiate(_obstaclePrefab, transform);
-            obstacle.transform.position = new Vector3(
-                position.x,
-                obstacle.transform.position.y + obstacle.transform.localScale.y / 2,
-                position.z
-            );
-
-            if (row < _rows - 1)
-            {
-                float nextLocalZ = localMinZ + (_objectDepth / 2) + (row + 1) * (_objectDepth + _spacingZ);
-                Vector3 nextPosition = new Vector3(leftBorderX, 0f, nextLocalZ);
-                CreateVerticalStretchedObstacle(position, nextPosition);
-            }
-        }
+        // Создаем растянутое препятствие от нижнего углового препятствия до верхнего
+        CreateVerticalStretchedObstacle(_leftCornerPos, topPos);
     }
 
-    private void CreateRightBorderWalls(float localMaxX, float localMinZ)
+    private void CreateRightBorderWalls(float localMaxX, float localMinZ, float localMaxZ)
     {
         float rightBorderX = localMaxX + _objectWidth + _spacingX - _offsetX;
 
-        for (int row = 0; row < _rows; row++)
-        {
-            float localZ = localMinZ + (_objectDepth / 2) + row * (_objectDepth + _spacingZ);
-            Vector3 position = new Vector3(rightBorderX, 0f, localZ);
+        // Верхний угол правой стены
+        Vector3 topPos = new Vector3(rightBorderX, 0f, localMinZ + (_objectDepth / 2) + (_rows - 1) * (_objectDepth + _spacingZ));
+        Obstacle topObstacle = Instantiate(_obstaclePrefab, transform);
+        topObstacle.transform.position = new Vector3(
+            topPos.x,
+            topObstacle.transform.position.y + topObstacle.transform.localScale.y / 2,
+            topPos.z
+        );
+        _obstacles.Add(topObstacle);
 
-            Obstacle obstacle = Instantiate(_obstaclePrefab, transform);
-            obstacle.transform.position = new Vector3(
-                position.x,
-                obstacle.transform.position.y + obstacle.transform.localScale.y / 2,
-                position.z
-            );
-
-            if (row < _rows - 1)
-            {
-                float nextLocalZ = localMinZ + (_objectDepth / 2) + (row + 1) * (_objectDepth + _spacingZ);
-                Vector3 nextPosition = new Vector3(rightBorderX, 0f, nextLocalZ);
-                CreateVerticalStretchedObstacle(position, nextPosition);
-            }
-        }
+        // Создаем растянутое препятствие от нижнего углового препятствия до верхнего
+        CreateVerticalStretchedObstacle(_rightCornerPos, topPos);
     }
 
-    private void CreateBottomBorderWalls(float localMinX, float localMinZ)
+    private void CreateBottomBorderWalls(float localMinX, float localMaxX, float localMinZ)
     {
         float bottomBorderZ = localMinZ - _objectDepth - _spacingZ + _offsetY;
 
+        // Находим крайние препятствия в нижнем ряду сетки
+        int leftmostCol = -1;
+        int rightmostCol = -1;
+
         for (int col = 0; col < _columns; col++)
         {
-            float localX = localMinX + (_objectWidth / 2) + col * (_objectWidth + _spacingX);
-            Vector3 position = new Vector3(localX, 0f, bottomBorderZ);
-
-            Obstacle obstacle = Instantiate(_obstaclePrefab, transform);
-            obstacle.transform.position = new Vector3(
-                position.x,
-                obstacle.transform.position.y + obstacle.transform.localScale.y / 2,
-                position.z
-            );
-
-            if (col < _columns - 1)
+            if (_obstacleMap[0, col])
             {
-                float nextLocalX = localMinX + (_objectWidth / 2) + (col + 1) * (_objectWidth + _spacingX);
-                Vector3 nextPosition = new Vector3(nextLocalX, 0f, bottomBorderZ);
-                CreateHorizontalStretchedObstacle(position, nextPosition);
+                if (leftmostCol == -1) leftmostCol = col;
+                rightmostCol = col;
             }
+        }
+
+        if (leftmostCol != -1)
+        {
+            // Есть препятствия в нижнем ряду - соединяем углы с ними
+            Vector3 leftObstaclePos = _cellGrid[0, leftmostCol].transform.position;
+            leftObstaclePos.y = 0f;
+
+            Vector3 rightObstaclePos = _cellGrid[0, rightmostCol].transform.position;
+            rightObstaclePos.y = 0f;
+
+            // От левого угла до левого препятствия
+            CreateHorizontalStretchedObstacle(_leftCornerPos, leftObstaclePos);
+
+            // От правого препятствия до правого угла
+            CreateHorizontalStretchedObstacle(rightObstaclePos, _rightCornerPos);
+
+            // Между препятствиями (если они не соседние)
+            if (rightmostCol - leftmostCol > 0)
+            {
+                CreateHorizontalStretchedObstacle(leftObstaclePos, rightObstaclePos);
+            }
+        }
+        else
+        {
+            // Нет препятствий в нижнем ряду - просто соединяем углы
+            CreateHorizontalStretchedObstacle(_leftCornerPos, _rightCornerPos);
         }
     }
 
@@ -261,19 +264,18 @@ public class GridCreator : MonoBehaviour
     private void CreateVerticalStretchedObstacle(Vector3 position1, Vector3 position2)
     {
         Vector3 centerPosition = Vector3.Lerp(position1, position2, 0.5f);
+        centerPosition.y += _stretchedObstaclePrefab.transform.localScale.y / 2;
 
-        Obstacle stretchedObstacle = Instantiate(_stretchedObstaclePrefab, transform);
-        stretchedObstacle.transform.position = new Vector3(
-            centerPosition.x,
-            stretchedObstacle.transform.position.y + stretchedObstacle.transform.localScale.y / 2,
-            centerPosition.z
-        );
+        Obstacle stretchedObstacle = Instantiate(_stretchedObstaclePrefab, centerPosition, Quaternion.identity);
+
+        Quaternion newRotation = Quaternion.Euler(0f, 90f, 0f);
+        stretchedObstacle.transform.rotation = newRotation;
 
         _obstacles.Add(stretchedObstacle);
 
         float distance = Vector3.Distance(position1, position2);
         Vector3 newScale = stretchedObstacle.transform.localScale;
-        newScale.z = distance;
+        newScale.x = distance;
         stretchedObstacle.transform.localScale = newScale;
     }
 
@@ -283,7 +285,8 @@ public class GridCreator : MonoBehaviour
         {
             foreach (var obstacle in _obstacles)
             {
-                Destroy(obstacle.gameObject);
+                if (obstacle != null)
+                    Destroy(obstacle.gameObject);
             }
 
             _obstacles.Clear();
@@ -293,6 +296,9 @@ public class GridCreator : MonoBehaviour
         {
             for (int col = 0; col < _columns; col++)
             {
+                if (row == _rows - 1)
+                    continue;
+
                 if (_obstacleMap[row, col])
                 {
                     CreateSingleObstacle(row, col);
@@ -311,7 +317,13 @@ public class GridCreator : MonoBehaviour
             gridCell.transform.position.z
         );
         _obstacles.Add(obstacle);
-        gridCell.InitObstacle(obstacle);
+
+        // Если в GridCell есть метод InitObstacle, вызываем его
+        var initMethod = gridCell.GetType().GetMethod("InitObstacle");
+        if (initMethod != null)
+        {
+            initMethod.Invoke(gridCell, new object[] { obstacle });
+        }
     }
 
     private void CreateStretchedObstaclesBetweenNeighbors()
@@ -320,11 +332,14 @@ public class GridCreator : MonoBehaviour
         {
             for (int col = 0; col < _columns; col++)
             {
+                if (row == _rows - 1)
+                    continue;
+
                 if (_obstacleMap[row, col])
                 {
                     CheckHorizontalNeighbors(row, col);
 
-                    if (row < _rows - 1)
+                    if (row < _rows - 2)
                         CheckVerticalNeighbors(row, col);
 
                     if (col == 0)
@@ -364,7 +379,7 @@ public class GridCreator : MonoBehaviour
 
     private void CheckVerticalNeighbors(int row, int col)
     {
-        if (row < _rows - 1 && _obstacleMap[row + 1, col])
+        if (row < _rows - 2 && _obstacleMap[row + 1, col])
         {
             CreateVerticalStretchedObstacle(
                 _cellGrid[row, col].transform.position,
@@ -385,7 +400,7 @@ public class GridCreator : MonoBehaviour
             if (totalObstacles >= _maxObstacles)
                 break;
 
-            int row = Random.Range(1, _rows);
+            int row = Random.Range(1, _rows - 1);
 
             int startCol = Random.Range(0, _columns / 2 - 1);
             int obstacleLength = Random.Range(1, Mathf.Min(_maxObstacleLength + 1, _columns / 2 - startCol + 1));

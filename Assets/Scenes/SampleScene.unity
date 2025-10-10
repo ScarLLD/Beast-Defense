@@ -2813,7 +2813,7 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.65
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -4293,16 +4293,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cubePrefab: {fileID: 6342291433109627324, guid: b7da0541e62b912459a50827f0b8a466, type: 3}
   _cellPrefab: {fileID: 8177197784567442016, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
-  _obstaclePrefab: {fileID: 3191513033575045547, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
-  _stretchedObstaclePrefab: {fileID: 3191513033575045547, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
+  _obstaclePrefab: {fileID: 4161744107708799639, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
+  _stretchedObstaclePrefab: {fileID: 1295060935370253680, guid: ca6719bd2b335f349944975a0282fdc9, type: 3}
   _gridStorage: {fileID: 1295288259}
   _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1370593100}
   _rows: 8
   _columns: 7
-  _minX: -9
-  _maxX: 9
-  _minZ: -13
+  _minX: -10
+  _maxX: 10
+  _minZ: -12
   _maxZ: 10
   CreateObstacles: 1
   _maxObstacles: 10
@@ -6364,7 +6364,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2081478662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6849,7 +6849,7 @@ Transform:
   m_GameObject: {fileID: 9171917265129906605}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.3064, z: 0}
+  m_LocalPosition: {x: 5.95, y: 1.3064, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []

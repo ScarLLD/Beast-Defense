@@ -37,7 +37,7 @@ public class BoundaryMaker : MonoBehaviour
     {
         bottomScreenCenter = Vector3.zero;
 
-        Vector3 screenPoint = new(_camera.pixelWidth * 0.5f, _camera.pixelHeight * 0.5f * 0.5f, 0f);
+        Vector3 screenPoint = new(_camera.pixelWidth * 0.5f, _camera.pixelHeight * 0.25f, 0f);
 
         Ray ray = _camera.ScreenPointToRay(screenPoint);
         if (Physics.Raycast(ray, out RaycastHit hit))
