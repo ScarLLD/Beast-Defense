@@ -18,7 +18,6 @@ public class Transition : MonoBehaviour
     private Coroutine _moveCoroutine;
     private Image _spriteImage;
 
-    public event Action Transited;
     public event Action BackTransited;
 
     private void Awake()

@@ -15,7 +15,6 @@ public class SplineRoad : MonoBehaviour
 
     [Header("Quality Settings")]
     [Range(50, 500)] public int _resolution = 200;
-    [SerializeField] private float _endRoundness = 0.5f;
 
     private float _endPlatformRadius;
     private SplineContainer _splineContainer;
@@ -142,13 +141,13 @@ public class SplineRoad : MonoBehaviour
             normals.Add(platformUpNormalized);
         }
 
-        int platformTrianglesStartIndex = triangles.Count;
         for (int i = 1; i < _platformSegments; i++)
         {
             triangles.Add(centerIndex);
             triangles.Add(centerIndex + i + 1);
             triangles.Add(centerIndex + i);
         }
+
         triangles.Add(centerIndex);
         triangles.Add(centerIndex + 1);
         triangles.Add(centerIndex + _platformSegments);

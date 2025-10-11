@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 
 [RequireComponent(typeof(CubeMover))]
 [RequireComponent(typeof(TargetRadar))]
@@ -15,6 +17,7 @@ public class PlayerCube : MonoBehaviour
     [SerializeField] private float _outlineDisable = 0f;
     [SerializeField] private MeshRenderer _meshRenderer;
     [SerializeField] private Outline _outline;
+    [SerializeField] private List<MeshRenderer> _legs;
 
     private CubeStack _stack;
     private TargetRadar _radar;
@@ -23,19 +26,18 @@ public class PlayerCube : MonoBehaviour
     private Vector3 _originalScale;
     private Vector3 _originalPosition;
     private Animator _animator;
+    private GridCell _gridCell;
+    private CubeMover _mover;
     private bool _isScaled = false;
 
     public bool IsAvailable { get; private set; } = false;
-    public GridCell GridCell { get; private set; }
-    public CubeMover Mover { get; private set; }
-    public CubeStack GetStack => _stack;
-    public Material Material => _meshRenderer.material;
-
     public bool HasClicked { get; private set; }
+    public CubeStack GetStack => _stack;
+
 
     private void Awake()
     {
-        Mover = GetComponent<CubeMover>();
+        _mover = GetComponent<CubeMover>();
         _shooter = GetComponent<Shooter>();
         _radar = GetComponent<TargetRadar>();
         _view = GetComponent<View>();
@@ -45,41 +47,65 @@ public class PlayerCube : MonoBehaviour
 
     public void Init(GridCell cell, Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
     {
-        GridCell = cell;
+        _gridCell = cell;
 
         _meshRenderer.material = material;
         _shooter.Init(bulletSpawner, count);
         _radar.Init(targetStorage);
-        Mover.Init(_moveSpeed);
+        _mover.Init(_moveSpeed);
         _stack.Init(material, count);
 
         _originalScale = transform.localScale;
         _originalPosition = transform.position;
+
+        foreach (var leg in _legs)
+            leg.material = material;
 
         DeactivateAvailability();
     }
 
     private void OnEnable()
     {
-        Mover.Arrived += OnMoverArrived;
+        _mover.Arrived += OnMoverArrived;
         _shooter.BulletsCountChanged += OnBulletsDecreased;
     }
 
     private void OnDisable()
     {
-        Mover.Arrived -= OnMoverArrived;
+        _mover.Arrived -= OnMoverArrived;
         _shooter.BulletsCountChanged -= OnBulletsDecreased;
+
+        _animator.SetBool("isWalk", false);
+    }
+
+    public void Interect(ShootingPlace shootingPlace, Vector3 escapePlace)
+    {
+        HasClicked = true;
+        _mover.SetPlaces(shootingPlace, escapePlace, _gridCell);
+        _gridCell.ChangeStaticStatus(false);
+        ChangeAvailableStatus(false);
+        TurnOnLegs();
+        StartMoving();
     }
 
     public void SetDefaultSettings()
     {
         HasClicked = false;
+        _isScaled = false;
         transform.position = _originalPosition;
+        _meshRenderer.transform.position = _originalPosition;
 
+        _animator.SetTrigger("isLaunch");
         _radar.TurnOff();
         _shooter.SetDafaultSettings();
-        Mover.SetDefaultSetting();
-        SetHalfSizeTransform();
+        _mover.SetDefaultSetting();
+        TurnOffLegs();
+    }
+
+    public void StartMoving()
+    {
+        _animator.SetBool("isWalk", true);
+        _mover.StartMoving();
     }
 
     public void ChangeAvailableStatus(bool isAvailable)
@@ -92,11 +118,6 @@ public class PlayerCube : MonoBehaviour
             DeactivateAvailability();
     }
 
-    public void SetIsClicked()
-    {
-        HasClicked = true;
-    }
-
     private void ActivateAvailability()
     {
         _outline.OutlineWidth = _outlineActive;
@@ -107,16 +128,20 @@ public class PlayerCube : MonoBehaviour
 
     private void DeactivateAvailability()
     {
-        if (_isScaled == false)
-        {
-            SetHalfSizeTransform();
-        }
 
         _outline.OutlineWidth = _outlineDisable;
         _animator.SetBool("isAvailable", false);
 
-        if (GridCell.IsStatic)
+        if (_gridCell.IsStatic)
             _view.SetEmpty();
+
+        foreach (var leg in _legs)
+            leg.gameObject.SetActive(false);
+
+        if (_isScaled == false)
+        {
+            SetHalfSizeTransform();
+        }
     }
 
     private void SetHalfSizeTransform()
@@ -148,12 +173,30 @@ public class PlayerCube : MonoBehaviour
 
     private void OnMoverArrived()
     {
-        _radar.StartScanning(Material.color);
+        _animator.SetBool("isWalk", false);
+        TurnOffLegs();
+        _radar.StartScanning(_meshRenderer.material.color);
     }
 
     private void OnBulletsDecreased()
     {
         if (_shooter.BulletCount == 0)
-            Mover.GoEscape();
+        {
+            TurnOnLegs();
+            _animator.SetBool("isWalk", true);
+            _mover.GoEscape();
+        }
+    }
+
+    private void TurnOffLegs()
+    {
+        foreach (var leg in _legs)
+            leg.gameObject.SetActive(false);
+    }
+
+    private void TurnOnLegs()
+    {
+        foreach (var leg in _legs)
+            leg.gameObject.SetActive(true);
     }
 }

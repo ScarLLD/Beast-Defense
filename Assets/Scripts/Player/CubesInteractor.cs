@@ -20,12 +20,7 @@ public class CubesInteractor : MonoBehaviour
     {
         if (_placesHolder.TryGetPlace(cube, out ShootingPlace shootingPlace, out Vector3 escapePlace))
         {
-            cube.GridCell.ChangeStaticStatus(false);
-            cube.ChangeAvailableStatus(false);
-            cube.Mover.SetPlaces(shootingPlace, escapePlace, cube.GridCell);
-            cube.Mover.StartMoving();
-            cube.SetIsClicked();
-
+            cube.Interect(shootingPlace, escapePlace);
             _availabilityManagement.UpdateAvailability();
         }
         else
