@@ -21,9 +21,9 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private float _maxZ;
 
     [Header("Width & Offsets")]
-    [SerializeField] private float _gridExtraWidth = 0f; // Дополнительно расширяет сетку
-    [SerializeField] private float _wallOffsetX = 1f;    // Отступ стен от сетки
-    [SerializeField] private float _offsetY = 0f;        // Смещение по Z вниз
+    [SerializeField] private float _gridExtraWidth = 0f;
+    [SerializeField] private float _wallOffsetX = 1f;
+    [SerializeField] private float _offsetY = 0f;
 
     [Header("Obstacles settings")]
     [SerializeField] private bool CreateObstacles;
@@ -67,11 +67,11 @@ public class GridCreator : MonoBehaviour
 
     private void SetGridWidthByScreen()
     {
-        Vector3 leftScreen = Camera.main.ViewportToWorldPoint(new Vector3(0, 0.5f, Camera.main.nearClipPlane));
-        Vector3 rightScreen = Camera.main.ViewportToWorldPoint(new Vector3(1, 0.5f, Camera.main.nearClipPlane));
-
-        _minX = leftScreen.x - _gridExtraWidth / 2f;
-        _maxX = rightScreen.x + _gridExtraWidth / 2f;
+        if (_boundaryMaker.TryGetScreenWidthBounds(out float minX, out float maxX, _gridExtraWidth))
+        {
+            _minX = minX;
+            _maxX = maxX;
+        }
     }
 
     public bool TryCreate(out Vector3 cubeScale)
@@ -260,7 +260,6 @@ public class GridCreator : MonoBehaviour
                     CheckHorizontalNeighbors(row, col);
                     if (row < _rows - 2) CheckVerticalNeighbors(row, col);
 
-                    // Нижние и боковые «выходы»
                     if (col == 0)
                         CreateHorizontalStretchedObstacle(_cellGrid[row, col].transform.position,
                                                           _cellGrid[row, col].transform.position + Vector3.left * (_objectWidth + _spacingX));
@@ -294,12 +293,10 @@ public class GridCreator : MonoBehaviour
 
         Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, transform);
 
-        // Растягиваем по длине (ось X)
         Vector3 obstacleScale = obstacle.transform.localScale;
         obstacleScale.x = Vector3.Distance(startPos, endPos);
         obstacle.transform.localScale = obstacleScale;
 
-        // Центрируем по Y после масштабирования
         centerPos.y = obstacle.transform.localScale.y / 2f;
         obstacle.transform.position = centerPos;
 
@@ -312,15 +309,12 @@ public class GridCreator : MonoBehaviour
 
         Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, transform);
 
-        // Поворот для вертикальной стены
         obstacle.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
 
-        // Растягиваем по длине (ось X после поворота)
         Vector3 obstacleScale = obstacle.transform.localScale;
         obstacleScale.x = Vector3.Distance(startPos, endPos);
         obstacle.transform.localScale = obstacleScale;
 
-        // Центрируем по Y после масштабирования
         centerPos.y = obstacle.transform.localScale.y / 2f;
         obstacle.transform.position = centerPos;
 

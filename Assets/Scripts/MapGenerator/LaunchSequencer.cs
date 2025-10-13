@@ -24,6 +24,7 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private SmoothBarSlider _slider;
     [SerializeField] private BulletSpawner _bulletSpawner;
     [SerializeField] private TargetStorage _targetStorage;
+    [SerializeField] private DeathModule _deathModule;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
 
     private Snake _snake;
@@ -60,7 +61,7 @@ public class LaunchSequencer : MonoBehaviour
                 && _splineRoad.TryGenerateRoadFromSpline(_spline))
             {
                 _beast = _beastSpawner.Spawn();
-                _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _spline, _beast, _game);
+                _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _spline, _deathModule, _beast);
                 _slider.Init(_snake);
 
                 _beast.Init(_snake.MoveSpeed, _spline);

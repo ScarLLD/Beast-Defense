@@ -9,14 +9,14 @@ public class SnakeSpawner : MonoBehaviour
 
     private Snake _snake;
 
-    public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, Beast beast, Game game)
+    public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
     {
         AlignSpline(splineContainer);
 
         if (_snake == null)
             _snake = Instantiate(_snakePrefab, transform);
 
-        _snake.InitializeSnake(stacks, splineContainer, beast, game);
+        _snake.InitializeSnake(stacks, splineContainer, deathModule, beast);
 
         return _snake;
     }

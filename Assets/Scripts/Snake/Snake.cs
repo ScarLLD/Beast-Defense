@@ -22,11 +22,6 @@ public class Snake : MonoBehaviour
     [SerializeField] private float _recoilDuration = 0.3f;
     [SerializeField] private AnimationCurve _recoilCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
-    [Header("Death Settings")]
-    [SerializeField] private AnimationCurve _deathAnimationCurve;
-    [SerializeField] private ParticleSystem _cloudParticle;
-    [SerializeField] private float _deathDuration;
-
     private readonly List<SnakeSegment> _savedSegments = new();
     private readonly List<SnakeSegment> _playableSegments = new();
     private readonly Queue<SnakeSegment> _recoilQueue = new();
@@ -36,11 +31,11 @@ public class Snake : MonoBehaviour
     private SplineContainer _splineContainer;
     private SnakeSpeedControl _speedControl;
     private Transform _head;
+    private DeathModule _deathModule;
     private Beast _beast;
     private float _splineLength;
     private Coroutine _movementCoroutine;
     private Coroutine _recoilCoroutine;
-    private Game _game;
     private Animator _animator;
 
     public float MoveSpeed { get; private set; }
@@ -53,10 +48,10 @@ public class Snake : MonoBehaviour
         _speedControl = GetComponent<SnakeSpeedControl>();
     }
 
-    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, Beast beast, Game game)
+    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
     {
-        _game = game;
         _beast = beast;
+        _deathModule = deathModule;
         MoveSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _splineLength = _splineContainer.Spline.GetLength();
@@ -220,19 +215,15 @@ public class Snake : MonoBehaviour
 
         if (_playableSegments.Count == 0)
         {
-            yield return StartCoroutine(DeathRoutine());
+            _deathModule.KillSnake(transform);
+
         }
 
         if (MoveSpeed == 0)
         {
             _animator.SetTrigger("AteBeast");
-            _cloudParticle.transform.position = _head.position;
-            ParticleSystem.MainModule mainModule = _cloudParticle.main;
-            mainModule.startColor = Color.red;
-            _cloudParticle.Play();
+            _deathModule.KillBeast(_beast.transform);
         }
-
-        _game.EndGame();
     }
 
     private void UpdateHeadPosition()
@@ -266,23 +257,6 @@ public class Snake : MonoBehaviour
 
             splinePosition -= _segmentDistance;
         }
-    }
-
-    private IEnumerator DeathRoutine()
-    {
-        Vector3 startScale = _head.localScale;
-        float timer = 0f;
-
-        while (timer < _deathDuration)
-        {
-            timer += Time.deltaTime;
-            float t = timer / _deathDuration;
-            _head.localScale = Vector3.Lerp(startScale, Vector3.zero, _deathAnimationCurve.Evaluate(t));
-            yield return null;
-        }
-
-        _cloudParticle.transform.position = _head.position;
-        _cloudParticle.Play();
     }
 
     private void PlaceOnSpline(Transform target, float distance)
