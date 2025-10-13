@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
-  _transformSpeed: 10
+  _scaleChangerSpeed: 2
   _outlineActive: 6
   _outlineDisable: 0
   _meshRenderer: {fileID: 1687784726737484669}
@@ -146,7 +146,7 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1323750627727788684}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 733c30f248079644d905be093b1b073d, type: 2}
   m_CullingMode: 0

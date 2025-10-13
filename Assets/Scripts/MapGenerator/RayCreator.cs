@@ -57,7 +57,7 @@ public class RayCreator : MonoBehaviour
 
                 if (hasInput && Physics.Raycast(ray, out RaycastHit hit, _rayDirection))
                 {
-                    if (hit.transform.TryGetComponent(out PlayerCube cube) && cube.IsAvailable)
+                    if (hit.transform.TryGetComponent(out PlayerCube cube) && cube.IsAvailable && cube.IsScaling == false)
                     {
                         Clicked?.Invoke(cube);
                     }

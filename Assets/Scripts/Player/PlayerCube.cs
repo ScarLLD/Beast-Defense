@@ -12,7 +12,7 @@ using UnityEngine.ProBuilder.Shapes;
 public class PlayerCube : MonoBehaviour
 {
     [SerializeField] private float _moveSpeed = 10f;
-    [SerializeField] private float _transformSpeed = 10f;
+    [SerializeField] private float _scaleChangerSpeed = 3f;
     [SerializeField] private float _outlineActive = 4.4f;
     [SerializeField] private float _outlineDisable = 0f;
     [SerializeField] private MeshRenderer _meshRenderer;
@@ -31,7 +31,8 @@ public class PlayerCube : MonoBehaviour
     private bool _isScaled = false;
 
     public bool IsAvailable { get; private set; } = false;
-    public bool HasClicked { get; private set; }
+    public bool HasClicked { get; private set; } = false;
+    public bool IsScaling { get; private set; } = false;
     public CubeStack GetStack => _stack;
 
 
@@ -57,6 +58,8 @@ public class PlayerCube : MonoBehaviour
 
         _originalScale = transform.localScale;
         _originalPosition = transform.position;
+
+        _animator.enabled = false;
 
         foreach (var leg in _legs)
             leg.material = material;
@@ -92,10 +95,12 @@ public class PlayerCube : MonoBehaviour
     {
         HasClicked = false;
         _isScaled = false;
+
         transform.position = _originalPosition;
         _meshRenderer.transform.position = _originalPosition;
 
-        _animator.SetTrigger("isLaunch");
+        _animator.enabled = false;
+
         _radar.TurnOff();
         _shooter.SetDafaultSettings();
         _mover.SetDefaultSetting();
@@ -120,17 +125,18 @@ public class PlayerCube : MonoBehaviour
 
     private void ActivateAvailability()
     {
-        _outline.OutlineWidth = _outlineActive;
-        StartCoroutine(ScaleRoutine());
-        _view.DisplayBullets();
-        _animator.SetBool("isAvailable", true);
+        if (_isScaled == false)
+        {
+            _outline.OutlineWidth = _outlineActive;
+            StartCoroutine(ScaleRoutine());
+            _view.DisplayBullets();
+        }
     }
 
     private void DeactivateAvailability()
     {
 
         _outline.OutlineWidth = _outlineDisable;
-        _animator.SetBool("isAvailable", false);
 
         if (_gridCell.IsStatic)
             _view.SetEmpty();
@@ -152,6 +158,8 @@ public class PlayerCube : MonoBehaviour
 
     private IEnumerator ScaleRoutine()
     {
+        IsScaling = true;
+
         Vector3 startScale = transform.localScale;
         Vector3 startPosition = transform.position;
 
@@ -159,7 +167,7 @@ public class PlayerCube : MonoBehaviour
 
         while (progress < 1f)
         {
-            progress += Time.deltaTime * _transformSpeed;
+            progress += Time.deltaTime * _scaleChangerSpeed;
             transform.localScale = Vector3.Lerp(startScale, _originalScale, progress);
             transform.position = Vector3.Lerp(startPosition, _originalPosition, progress);
             yield return null;
@@ -168,7 +176,12 @@ public class PlayerCube : MonoBehaviour
         transform.localScale = _originalScale;
         transform.position = _originalPosition;
 
+        _animator.enabled = true;
+        _animator.SetTrigger("isAvailable");
+
         _isScaled = true;
+        IsScaling = false;
+        yield return null;
     }
 
     private void OnMoverArrived()
