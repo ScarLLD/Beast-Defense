@@ -16,7 +16,7 @@ public class Snake : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private SnakeSegment _segmentPrefab;
-    [SerializeField] private GameObject _headPrefab;
+    [SerializeField] private SnakeHead _headPrefab;
 
     [Header("Recoil Settings")]
     [SerializeField] private float _recoilDuration = 0.3f;
@@ -30,7 +30,7 @@ public class Snake : MonoBehaviour
     private bool _isRecoiling = false;
     private SplineContainer _splineContainer;
     private SnakeSpeedControl _speedControl;
-    private Transform _head;
+    private SnakeHead _head;
     private DeathModule _deathModule;
     private Beast _beast;
     private float _splineLength;
@@ -56,10 +56,12 @@ public class Snake : MonoBehaviour
         _splineContainer = splineContainer;
         _splineLength = _splineContainer.Spline.GetLength();
 
-        SetDefaultSetting();
 
         CreateHead();
         CreateSegmentsFromStacks(stacks);
+
+        SetDefaultSetting();
+
         StartMove();
     }
 
@@ -104,6 +106,7 @@ public class Snake : MonoBehaviour
     {
         Cleanup();
 
+        _head.DragonFire.Stop();
         _splinePosition = _startSplinePosition;
         MoveSpeed = _moveSpeed;
         _speedControl.StartControl();
@@ -122,10 +125,11 @@ public class Snake : MonoBehaviour
 
     private void CreateHead()
     {
-        _head = Instantiate(_headPrefab, transform).transform;
+        _head = Instantiate(_headPrefab, transform);
+
         _animator = _head.GetComponent<Animator>();
         _animator.SetBool("BeastClose", false);
-        PlaceOnSpline(_head, _splinePosition);
+        PlaceOnSpline(_head.transform, _splinePosition);
     }
 
     public void CreateSegmentsFromStacks(List<CubeStack> stacks)
@@ -193,6 +197,9 @@ public class Snake : MonoBehaviour
 
     private IEnumerator SnakeMovement()
     {
+        ParticleSystem.MainModule main = _head.DragonFire.main;
+        float originalSpeed = main.startSpeed.constant;
+
         while (_playableSegments.Count > 0 && MoveSpeed != 0)
         {
             if (_isRecoiling == false)
@@ -202,9 +209,22 @@ public class Snake : MonoBehaviour
                 UpdateSegmentsPosition();
 
                 if (_beast.TryApproachNotify(NormalizedPosition))
+                {
                     _animator.SetBool("BeastClose", true);
+
+                    var speedModule = main.startSpeed;
+                    speedModule.constant = originalSpeed * MoveSpeed;
+                    main.startSpeed = speedModule;
+
+                    if (_head.DragonFire.isPlaying == false)
+                    {
+                        _head.DragonFire.Play();
+                    }
+                }
                 else
+                {
                     _animator.SetBool("BeastClose", false);
+                }
 
             }
 
@@ -228,7 +248,7 @@ public class Snake : MonoBehaviour
 
     private void UpdateHeadPosition()
     {
-        PlaceOnSpline(_head, _splinePosition);
+        PlaceOnSpline(_head.transform, _splinePosition);
         NormalizedPosition = _splineLength > 0 ?
             Mathf.Clamp01(_splinePosition / _splineLength) : 0f;
 
