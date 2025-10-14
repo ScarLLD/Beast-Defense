@@ -4,6 +4,7 @@ public class PlaceSpawner : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
     [SerializeField] private ShootingPlace _placePrefab;
+    [SerializeField] private float _distanceBetweenPlaces = 15f;
     [SerializeField] private int _placesCount;
     [SerializeField] private float _leftBound;
     [SerializeField] private float _rightBound;
@@ -20,7 +21,7 @@ public class PlaceSpawner : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, 100f))
         {
-            transform.position = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+            transform.position = new Vector3(hit.point.x, transform.position.y, 0);
 
             storage.Clear();
             GenerateShootingPlaces(hit.point, storage);
@@ -35,19 +36,20 @@ public class PlaceSpawner : MonoBehaviour
 
     private void GenerateShootingPlaces(Vector3 hit, PlaceStorage storage)
     {
-        float placeWeight = _placePrefab.transform.localScale.x;
-        float availableSpace = _rightBound - _leftBound - (_placesCount * placeWeight);
+        float placeWidth = _placePrefab.transform.localScale.x;
+        float totalWidth = (_placesCount - 1) * (placeWidth + _distanceBetweenPlaces);
 
-        float spacing = availableSpace / (_placesCount - 1);
+        Vector3 startPoint = hit;
+        startPoint.x = hit.x - totalWidth / 2;
+        startPoint.y = hit.y + 0.01f;
 
         for (int i = 0; i < _placesCount; i++)
         {
-            float x = _leftBound + (placeWeight / 2) + i * (placeWeight + spacing);
-            Vector3 spawnPosition = new(x, hit.y + 0.01f, 0);
+            Vector3 spawnPosition = startPoint;
+            spawnPosition.x = startPoint.x + i * (placeWidth + _distanceBetweenPlaces);
 
             ShootingPlace place = Instantiate(_placePrefab, transform);
             place.transform.localPosition = spawnPosition;
-
             storage.PutPlace(place);
         }
     }

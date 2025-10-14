@@ -79,6 +79,7 @@ public class PlayerCube : MonoBehaviour
         _shooter.BulletsCountChanged -= OnBulletsDecreased;
 
         _animator.SetBool("isWalk", false);
+        _animator.enabled = false;
     }
 
     public void Interect(ShootingPlace shootingPlace, Vector3 escapePlace)
@@ -131,6 +132,7 @@ public class PlayerCube : MonoBehaviour
             StartCoroutine(ScaleRoutine());
             _view.DisplayBullets();
         }
+        
     }
 
     private void DeactivateAvailability()
