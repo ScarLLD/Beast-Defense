@@ -67,6 +67,7 @@ public class Snake : MonoBehaviour
 
     public void StartMove()
     {
+        _animator.enabled = true;
         _movementCoroutine = StartCoroutine(SnakeMovement());
     }
 
@@ -87,7 +88,7 @@ public class Snake : MonoBehaviour
 
     public IEnumerator GetBackToStart()
     {
-        bool isWork = true;
+        bool isWork = true;               
 
         while (isWork && _splinePosition > 0)
         {
@@ -106,10 +107,11 @@ public class Snake : MonoBehaviour
     {
         Cleanup();
 
-        _head.DragonFire.Stop();
-        _splinePosition = _startSplinePosition;
+        _animator.StopPlayback();
+        _head.DisableComponent();
         MoveSpeed = _moveSpeed;
         _speedControl.StartControl();
+        _splinePosition = _startSplinePosition;
     }
 
     private void Cleanup()
@@ -128,7 +130,6 @@ public class Snake : MonoBehaviour
         _head = Instantiate(_headPrefab, transform);
 
         _animator = _head.GetComponent<Animator>();
-        _animator.SetBool("BeastClose", false);
         PlaceOnSpline(_head.transform, _splinePosition);
     }
 
@@ -197,9 +198,6 @@ public class Snake : MonoBehaviour
 
     private IEnumerator SnakeMovement()
     {
-        ParticleSystem.MainModule main = _head.DragonFire.main;
-        float originalSpeed = main.startSpeed.constant;
-
         while (_playableSegments.Count > 0 && MoveSpeed != 0)
         {
             if (_isRecoiling == false)
@@ -208,30 +206,14 @@ public class Snake : MonoBehaviour
                 UpdateHeadPosition();
                 UpdateSegmentsPosition();
 
-                if (_beast.TryApproachNotify(NormalizedPosition))
+                if (_head.IsPlaying == false && _beast.TryApproachNotify(NormalizedPosition))
                 {
-                    _animator.SetBool("BeastClose", true);
-
-                    var speedModule = main.startSpeed;
-                    speedModule.constant = originalSpeed * MoveSpeed;
-                    main.startSpeed = speedModule;
-
-                    if (_head.DragonFire.isPlaying == false)
-                    {
-                        _head.DragonFire.Play();
-                    }
+                    OpenMouth();
                 }
-                else
-                {
-                    _animator.SetBool("BeastClose", false);
-                }
-
             }
 
             yield return null;
         }
-
-        _animator.SetBool("BeastClose", false);
 
         if (_playableSegments.Count == 0)
         {
@@ -241,9 +223,14 @@ public class Snake : MonoBehaviour
 
         if (MoveSpeed == 0)
         {
-            _animator.SetTrigger("AteBeast");
             _deathModule.KillBeast(_beast.transform);
         }
+    }
+
+    private void OpenMouth()
+    {
+        _head.ChangeParticleSpeed(MoveSpeed);
+        _animator.SetTrigger("isMouthOpen");
     }
 
     private void UpdateHeadPosition()
