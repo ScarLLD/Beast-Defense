@@ -2855,7 +2855,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57c7314544b9c148904a42cfd4501a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transitionDuration: 1.5
+  _transitionDuration: 0.5
   _holdTime: 0.5
   _sprite: {fileID: 844318617}
   _canvas: {fileID: 122644704}
@@ -3060,7 +3060,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 0.5
   _slider: {fileID: 750858110}
-  _fillImage: {fileID: 1541884271}
 --- !u!1 &788773701
 GameObject:
   m_ObjectHideFlags: 0
@@ -5322,7 +5321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1c0cd8185390b84bba1241c53a39dfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _beastPrefab: {fileID: -8336317201343123663, guid: 79cfff96645791d4593426d1b5466aba, type: 3}
+  _beastPrefab: {fileID: 3173509213892588503, guid: 9b63809dfbe588845b39ac70f783e288, type: 3}
 --- !u!4 &1441411480
 Transform:
   m_ObjectHideFlags: 0

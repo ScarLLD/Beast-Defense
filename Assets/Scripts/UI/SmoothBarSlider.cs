@@ -5,7 +5,6 @@ public class SmoothBarSlider : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private Slider _slider;
-    [SerializeField] private GameObject _fillImage;
 
     private readonly float _maxSliderValue = 1;
     private Snake _snake;
@@ -13,7 +12,6 @@ public class SmoothBarSlider : MonoBehaviour
     private void Awake()
     {
         _slider.gameObject.SetActive(false);
-        _fillImage.SetActive(false);
     }
 
     public void Init(Snake snake)
@@ -25,7 +23,6 @@ public class SmoothBarSlider : MonoBehaviour
         }
 
         _slider.gameObject.SetActive(true);
-        _fillImage.SetActive(false);
         SetDefaultValue();
     }
 
@@ -43,9 +40,6 @@ public class SmoothBarSlider : MonoBehaviour
 
     private void OnCountChanged(float currentCount, float maxCount)
     {
-        if (_slider.value == 0)
-            _fillImage.SetActive(true);
-
         _slider.value = 1 - (currentCount / maxCount);
     }
 

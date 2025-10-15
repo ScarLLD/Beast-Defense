@@ -7,9 +7,8 @@ using UnityEngine.Splines;
 
 public class Beast : MonoBehaviour
 {
-    [SerializeField] private ParticleSystem _dieParticle;
     [SerializeField] private float _speedMultiplier = 4f;
-    [SerializeField] private float _rotationSpeed;
+    [SerializeField] private float _rotationSpeed = 15f;
     [SerializeField] private float _rotateDuration = 0.3f;
 
     private readonly float _arrivalThreshold = 0.005f;
