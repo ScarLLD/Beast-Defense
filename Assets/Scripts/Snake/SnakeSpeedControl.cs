@@ -10,7 +10,6 @@ public class SnakeSpeedControl : MonoBehaviour
     private float _initialSpeed;
     private SpeedState _currentState = SpeedState.Normal;
 
-    [Header("Transition Durations")]
     [SerializeField] private float _transitionDuration = 1f;
 
     [Header("Speed Multipliers")]

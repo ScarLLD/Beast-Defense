@@ -29,7 +29,7 @@ public class LaunchSequencer : MonoBehaviour
 
     private Snake _snake;
     private Beast _beast;
-    private SplineContainer _spline;
+    private SplineContainer _splineContainer;
 
     private void OnEnable()
     {
@@ -57,14 +57,14 @@ public class LaunchSequencer : MonoBehaviour
             _availabilityManagement.UpdateAvailability();
 
             if (_roadSpawner.TrySpawn(out List<Vector3> road)
-                && _splineCreator.TryCreateSpline(road, out _spline)
-                && _splineRoad.TryGenerateRoadFromSpline(_spline))
+                && _splineCreator.TryCreateSpline(road, out _splineContainer)
+                && _splineRoad.TryGenerateRoadFromSpline(_splineContainer))
             {
                 _beast = _beastSpawner.Spawn();
-                _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _spline, _deathModule, _beast);
+                _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _splineContainer, _deathModule, _beast);
                 _slider.Init(_snake);
 
-                _beast.Init(_snake.MoveSpeed, _spline);
+                _beast.Init(_snake.MoveSpeed, _splineContainer);
 
                 _detector.transform.position = road[1] + Vector3.up * _snake.transform.localScale.y;
                 _detector.gameObject.SetActive(true);
@@ -96,7 +96,7 @@ public class LaunchSequencer : MonoBehaviour
         _bulletSpawner.Cleanup();
         _targetStorage.Cleanup();
         _snake.SetDefaultSetting();
-        _beast.SetDefaultSettings(_spline);
+        _beast.SetDefaultSettings();
         _cubeCreator.Respawn();
         _placeStorage.SetDefaultSettings();
         _availabilityManagement.UpdateAvailability();

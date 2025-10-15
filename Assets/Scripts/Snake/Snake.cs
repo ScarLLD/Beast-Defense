@@ -88,7 +88,7 @@ public class Snake : MonoBehaviour
 
     public IEnumerator GetBackToStart()
     {
-        bool isWork = true;               
+        bool isWork = true;
 
         while (isWork && _splinePosition > 0)
         {
@@ -217,7 +217,7 @@ public class Snake : MonoBehaviour
 
         if (_playableSegments.Count == 0)
         {
-            _deathModule.KillSnake(transform);
+            _deathModule.KillSnake(_head.transform);
 
         }
 
@@ -272,6 +272,7 @@ public class Snake : MonoBehaviour
 
         float t = Mathf.Clamp01(distance / _splineLength);
         _splineContainer.Evaluate(t, out var position, out var tangent, out var up);
+        position.y += transform.localScale.y;
         target.SetPositionAndRotation(position, Quaternion.LookRotation(tangent, up));
     }
 

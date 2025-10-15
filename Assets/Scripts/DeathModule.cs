@@ -9,6 +9,7 @@ public class DeathModule : MonoBehaviour
     [SerializeField] private AnimationCurve _deathAnimationCurve;
     [SerializeField] private ParticleSystem _cloudParticle;
     [SerializeField] private float _deathDuration;
+    [SerializeField] private float _deathDelay;
 
     private MainModule _particleModule;
 
@@ -58,6 +59,6 @@ public class DeathModule : MonoBehaviour
         _cloudParticle.transform.position = gameObject.position;
         _cloudParticle.Play();
 
-        yield return new WaitForSeconds(particleTime);
+        yield return new WaitForSeconds(particleTime + _deathDelay);
     }
 }

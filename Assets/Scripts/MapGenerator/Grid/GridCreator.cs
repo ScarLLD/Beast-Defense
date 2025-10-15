@@ -10,25 +10,27 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private GridCell _cellPrefab;
     [SerializeField] private Obstacle _obstaclePrefab;
     [SerializeField] private Obstacle _stretchedObstaclePrefab;
+        
+    [Header("Grid settings")]
+    [SerializeField] private int _rows = 7;
+    [SerializeField] private int _columns = 8;
+    [SerializeField] private float _minZ = -12;
+    [SerializeField] private float _maxZ = 10;
+
+    [Header("Width & Offsets")]
+    [SerializeField] private float _gridExtraWidth = -4f;
+    [SerializeField] private float _wallOffsetX = 1f;
+    [SerializeField] private float _offsetY = 1.5f;
+
+    [Header("Obstacles settings")]
+    [SerializeField] private bool _isCreateObstacles;
+    [SerializeField] private int _maxObstacles = 6;
+    [SerializeField] private int _maxObstacleLength = 3;
+
+    [Header("Other settings")]
     [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private CubeCreator _cubeCreator;
     [SerializeField] private BoundaryMaker _boundaryMaker;
-
-    [Header("Grid settings")]
-    [SerializeField] private int _rows;
-    [SerializeField] private int _columns;
-    [SerializeField] private float _minZ;
-    [SerializeField] private float _maxZ;
-
-    [Header("Width & Offsets")]
-    [SerializeField] private float _gridExtraWidth = 0f;
-    [SerializeField] private float _wallOffsetX = 1f;
-    [SerializeField] private float _offsetY = 0f;
-
-    [Header("Obstacles settings")]
-    [SerializeField] private bool CreateObstacles;
-    [SerializeField] private int _maxObstacles = 6;
-    [SerializeField] private int _maxObstacleLength = 3;
 
     private List<Obstacle> _obstacles;
     private GridCell[,] _cellGrid;
@@ -41,8 +43,8 @@ public class GridCreator : MonoBehaviour
     private Vector3 _gridCenterOffset;
     private Vector3 _leftCornerPos;
     private Vector3 _rightCornerPos;
-    private float _minX;
-    private float _maxX;
+    private float _minXScreen;
+    private float _maxXScreen;
 
     public event Action Created;
 
@@ -69,8 +71,8 @@ public class GridCreator : MonoBehaviour
     {
         if (_boundaryMaker.TryGetScreenWidthBounds(out float minX, out float maxX, _gridExtraWidth))
         {
-            _minX = minX;
-            _maxX = maxX;
+            _minXScreen = minX;
+            _maxXScreen = maxX;
         }
     }
 
@@ -78,8 +80,8 @@ public class GridCreator : MonoBehaviour
     {
         cubeScale = _cubePrefab.transform.localScale;
 
-        float localMinX = _minX + _gridCenterOffset.x;
-        float localMaxX = _maxX + _gridCenterOffset.x;
+        float localMinX = _minXScreen + _gridCenterOffset.x;
+        float localMaxX = _maxXScreen + _gridCenterOffset.x;
         float localMinZ = _minZ + _gridCenterOffset.z;
         float localMaxZ = _maxZ + _gridCenterOffset.z;
 
@@ -100,7 +102,7 @@ public class GridCreator : MonoBehaviour
 
         CreateGridCells(localMinX, localMinZ);
 
-        if (CreateObstacles)
+        if (_isCreateObstacles)
         {
             CreateAllObstacles();
             CreateStretchedObstaclesBetweenNeighbors();
@@ -139,7 +141,6 @@ public class GridCreator : MonoBehaviour
         }
     }
 
-    #region Border Walls
     private void CreateBorderWalls(float localMinX, float localMaxX, float localMinZ)
     {
         CreateCornerWalls(localMinX, localMaxX, localMinZ);
@@ -215,9 +216,7 @@ public class GridCreator : MonoBehaviour
             CreateHorizontalStretchedObstacle(_leftCornerPos, _rightCornerPos);
         }
     }
-    #endregion
 
-    #region Obstacles
     private void CreateAllObstacles()
     {
         foreach (var obs in _obstacles)
@@ -349,5 +348,3 @@ public class GridCreator : MonoBehaviour
         return map;
     }
 }
-
-#endregion

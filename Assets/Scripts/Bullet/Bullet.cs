@@ -1,16 +1,16 @@
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody), typeof(BulletTrail))]
+[RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private float _speed = 30f;
     [SerializeField] private float _arrivalThreshold = 0.7f;
+    [SerializeField] private BulletTrail _bulletTrail;
 
     private ParticleCreator _particleCreator;
     private Transform _transform;
     private Rigidbody _rigidbody;
-    private BulletTrail _bulletTrail;
     private Coroutine _moveCoroutine;
     private bool _isMove;
 
@@ -18,7 +18,6 @@ public class Bullet : MonoBehaviour
     {
         _transform = transform;
         _rigidbody = GetComponent<Rigidbody>();
-        _bulletTrail = GetComponent<BulletTrail>();
     }
 
     public void StopMove()

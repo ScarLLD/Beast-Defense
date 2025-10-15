@@ -47,14 +47,13 @@ public class Beast : MonoBehaviour
 
         _cachedSplineLength = _splineContainer.Spline.GetLength();
 
-        SetDefaultSettings(splineContainer);
+        SetDefaultSettings();
     }
 
-    public void SetDefaultSettings(SplineContainer splineContainer)
+    public void SetDefaultSettings()
     {
         Cleanup();
 
-        _splineContainer = splineContainer;
         _cachedSplineLength = _splineContainer.Spline.GetLength();
 
         _currentSplinePosition = _startSplinePosition;
@@ -140,12 +139,9 @@ public class Beast : MonoBehaviour
         {
             _splineContainer.Spline.Evaluate(_currentSplinePosition, out float3 position, out float3 tangent, out float3 up);
 
-            Vector3 offsetPosition = new(position.x, position.y + _yOffset, position.z);
+            position.y += transform.localScale.y;
 
-            if (Vector3.Distance(_transform.position, offsetPosition) > 0.001f)
-            {
-                _transform.position = offsetPosition;
-            }
+            _transform.position = position;
 
             if (IsMoving)
             {
