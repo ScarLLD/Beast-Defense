@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1678,7 +1678,7 @@ MeshCollider:
   m_Enabled: 1
   serializedVersion: 5
   m_Convex: 0
-  m_CookingOptions: 30
+  m_CookingOptions: 0
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &442903043
 MeshRenderer:
@@ -1688,13 +1688,13 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 442903041}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
@@ -2423,6 +2423,8 @@ GameObject:
   - component: {fileID: 561811628}
   - component: {fileID: 561811627}
   - component: {fileID: 561811626}
+  - component: {fileID: 561811630}
+  - component: {fileID: 561811629}
   m_Layer: 0
   m_Name: Spline
   m_TagString: Untagged
@@ -2445,6 +2447,8 @@ MonoBehaviour:
   _roadWidth: 3.5
   _textureTiling: 0
   _roadMaterial: {fileID: 2100000, guid: 076e769133efbf544bae83ea5c6182d7, type: 2}
+  _meshFilter: {fileID: 561811630}
+  _meshRenderer: {fileID: 561811629}
   _platformSegments: 32
   _resolution: 250
 --- !u!114 &561811627
@@ -2477,6 +2481,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1614255500}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!23 &561811629
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561811625}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 0
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 0
+  m_ReflectionProbeUsage: 0
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 076e769133efbf544bae83ea5c6182d7, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &561811630
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 561811625}
+  m_Mesh: {fileID: 0}
 --- !u!1 &570575966
 GameObject:
   m_ObjectHideFlags: 0
@@ -2928,7 +2982,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 1
+  m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -4091,7 +4145,7 @@ Camera:
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!4 &963194228
@@ -5509,7 +5563,6 @@ MonoBehaviour:
   _transition: {fileID: 610906405}
   _goodMaterial: {fileID: 2100000, guid: de64b38f1381a154bb7bbfc4c3a9d25c, type: 2}
   _badMaterial: {fileID: 2100000, guid: 9d3516045c2737b41971afc6e0696933, type: 2}
-  IsPause: 0
 --- !u!4 &1469608302
 Transform:
   m_ObjectHideFlags: 0
@@ -5555,21 +5608,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _game: {fileID: 1469608301}
   _objectsParent: {fileID: 1614255499}
-  _boundaryMaker: {fileID: 1295288266}
   _placeSpawner: {fileID: 1842505877}
-  _placeStorage: {fileID: 1842505878}
-  _gridCreator: {fileID: 1295288265}
-  _splineCreator: {fileID: 561811627}
   _roadSpawner: {fileID: 979470875}
-  _splineRoad: {fileID: 561811626}
-  _detector: {fileID: 2645583919960169801}
-  _cubeCreator: {fileID: 529893070}
-  _cubeStorage: {fileID: 529893071}
   _snakeSpawner: {fileID: 437241863}
   _beastSpawner: {fileID: 1441411479}
-  _slider: {fileID: 750858111}
   _bulletSpawner: {fileID: 117216348}
+  _gridCreator: {fileID: 1295288265}
+  _splineCreator: {fileID: 561811627}
+  _cubeCreator: {fileID: 529893070}
+  _placeStorage: {fileID: 1842505878}
+  _cubeStorage: {fileID: 529893071}
   _targetStorage: {fileID: 9171917265129906606}
+  _boundaryMaker: {fileID: 1295288266}
+  _splineRoad: {fileID: 561811626}
+  _detector: {fileID: 2645583919960169801}
+  _slider: {fileID: 750858111}
   _deathModule: {fileID: 26740340}
   _availabilityManagement: {fileID: 529893072}
 --- !u!114 &1469608305

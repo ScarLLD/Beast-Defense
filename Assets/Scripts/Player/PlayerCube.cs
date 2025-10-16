@@ -100,6 +100,7 @@ public class PlayerCube : MonoBehaviour
         transform.position = _originalPosition;
         _meshRenderer.transform.position = _originalPosition;
 
+        _animator.SetBool("isWalk", false);
         _animator.enabled = false;
 
         _radar.TurnOff();
@@ -132,12 +133,10 @@ public class PlayerCube : MonoBehaviour
             StartCoroutine(ScaleRoutine());
             _view.DisplayBullets();
         }
-        
     }
 
     private void DeactivateAvailability()
     {
-
         _outline.OutlineWidth = _outlineDisable;
 
         if (_gridCell.IsStatic)

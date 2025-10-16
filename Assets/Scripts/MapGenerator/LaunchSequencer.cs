@@ -9,21 +9,25 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private GameObject _objectsParent;
 
     [Header("Spawners")]
-    [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private PlaceSpawner _placeSpawner;
-    [SerializeField] private PlaceStorage _placeStorage;
-    [SerializeField] private GridCreator _gridCreator;
-    [SerializeField] private SplineCreator _splineCreator;
     [SerializeField] private RoadSpawner _roadSpawner;
-    [SerializeField] private SplineRoad _splineRoad;
-    [SerializeField] private TargetDetector _detector;
-    [SerializeField] private CubeCreator _cubeCreator;
-    [SerializeField] private CubeStorage _cubeStorage;
     [SerializeField] private SnakeSpawner _snakeSpawner;
     [SerializeField] private BeastSpawner _beastSpawner;
-    [SerializeField] private SmoothBarSlider _slider;
     [SerializeField] private BulletSpawner _bulletSpawner;
+    [SerializeField] private GridCreator _gridCreator;
+    [SerializeField] private SplineCreator _splineCreator;
+    [SerializeField] private CubeCreator _cubeCreator;
+
+    [Header("Storages")]
+    [SerializeField] private PlaceStorage _placeStorage;
+    [SerializeField] private CubeStorage _cubeStorage;
     [SerializeField] private TargetStorage _targetStorage;
+
+    [Header("Other dependencies")]
+    [SerializeField] private BoundaryMaker _boundaryMaker;
+    [SerializeField] private SplineRoad _splineRoad;
+    [SerializeField] private TargetDetector _detector;
+    [SerializeField] private SmoothBarSlider _slider;
     [SerializeField] private DeathModule _deathModule;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
 
@@ -94,11 +98,11 @@ public class LaunchSequencer : MonoBehaviour
     {
         yield return StartCoroutine(_snake.GetBackToStart());
         _bulletSpawner.Cleanup();
+        _placeStorage.SetDefaultSettings();
         _targetStorage.Cleanup();
         _snake.SetDefaultSetting();
         _beast.SetDefaultSettings();
         _cubeCreator.Respawn();
-        _placeStorage.SetDefaultSettings();
         _availabilityManagement.UpdateAvailability();
         _snake.CreateSegmentsFromStacks(_cubeStorage.GetStacks());
         _snake.StartMove();

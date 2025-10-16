@@ -19,7 +19,8 @@ public class Game : MonoBehaviour
     public event Action Over;
     public event Action Leaved;
 
-    public bool IsPause = false;
+    public bool IsPause { get; private set; } = false;
+    public bool IsPlaying { get; private set; } = false;
 
     public void StartGame()
     {
@@ -68,7 +69,8 @@ public class Game : MonoBehaviour
         yield return StartCoroutine(_transition.StartTransition(_goodMaterial.color));
         Started?.Invoke();
         yield return StartCoroutine(_transition.ContinueTransition());
-        Debug.Log("Игра началась!"); 
+        IsPlaying = true;
+        Debug.Log("Игра началась!");
         ClearRoutine();
     }
 
@@ -84,12 +86,14 @@ public class Game : MonoBehaviour
     {
         yield return StartCoroutine(_transition.StartBackTransition(_goodMaterial.color));
         Ended?.Invoke();
+        IsPlaying = false;
         Debug.Log("Игра успешно окончена.");
         ClearRoutine();
     }
 
     private IEnumerator GameLeaveRoutine()
     {
+        IsPlaying = false;
         yield return StartCoroutine(_transition.StartBackTransition(_badMaterial.color));
         Leaved?.Invoke();
         yield return StartCoroutine(_transition.ContinueBackTransition());
@@ -99,6 +103,7 @@ public class Game : MonoBehaviour
 
     private IEnumerator GameOverRoutine(string text)
     {
+        IsPlaying = false;
         yield return StartCoroutine(_transition.StartBackTransition(_badMaterial.color));
         Over?.Invoke();
         Debug.Log($"Игра окончена! {text}");
@@ -109,6 +114,7 @@ public class Game : MonoBehaviour
     {
         yield return StartCoroutine(_transition.ContinueBackTransition());
         Restarted.Invoke();
+        IsPlaying = true;
         Debug.Log("Игра перезапущена!");
         ClearRoutine();
     }

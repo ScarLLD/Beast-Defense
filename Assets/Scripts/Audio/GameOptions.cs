@@ -23,7 +23,7 @@ public class GameOptions : MonoBehaviour
         isMusic = !isMusic;
         _musicNegativeIcon.SetActive(!isMusic);
 
-        int volume = isMusic ? 1 : 0;
+        //int volume = isMusic ? 1 : 0;
 
 
     }

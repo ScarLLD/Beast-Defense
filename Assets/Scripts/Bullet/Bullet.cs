@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private float _speed = 30f;
+    [SerializeField] private float _speed = 45f;
     [SerializeField] private float _arrivalThreshold = 0.7f;
     [SerializeField] private BulletTrail _bulletTrail;
 
@@ -43,22 +43,24 @@ public class Bullet : MonoBehaviour
     {
         _isMove = true;
 
-        while (_isMove)
+        while (_isMove && cube != null && cube.isActiveAndEnabled == true)
         {
             Vector3 direction = (cube.transform.position - _transform.position).normalized;
             _rigidbody.velocity = direction * _speed;
 
             if ((cube.transform.position - _transform.position).magnitude < _arrivalThreshold)
             {
-                _rigidbody.velocity = Vector3.zero;
-                _particleCreator?.Create(cube);
+                if (_particleCreator != null)
+                    _particleCreator.Create(cube);
+
+                _isMove = false;
                 cube.Hit();
-                break;
             }
 
             yield return null;
         }
 
+        _rigidbody.velocity = Vector3.zero;
         _moveCoroutine = null;
         gameObject.SetActive(false);
     }

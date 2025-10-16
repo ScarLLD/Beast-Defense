@@ -14,8 +14,8 @@ public class CubeCreator : MonoBehaviour
     [SerializeField]
     private List<int> _counts = new();
 
-    private List<PlayerCube> _cubes = new();
-    private List<GridCell> _cells = new();
+    private readonly List<PlayerCube> _cubes = new();
+    private readonly List<GridCell> _cells = new();
 
     private void Awake()
     {

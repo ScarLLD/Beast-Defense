@@ -39,7 +39,7 @@ public class RayCreator : MonoBehaviour
 
         while (isWork)
         {
-            if (_game.IsPause == false)
+            if (_game.IsPause == false && _game.IsPlaying == true)
             {
                 Ray ray = new();
                 bool hasInput = false;

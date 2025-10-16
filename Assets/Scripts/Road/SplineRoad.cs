@@ -9,6 +9,8 @@ public class SplineRoad : MonoBehaviour
     [SerializeField] private float _roadWidth = 3.3f;
     [SerializeField] private float _textureTiling = 4f;
     [SerializeField] private Material _roadMaterial;
+    [SerializeField] private MeshFilter _meshFilter;
+    [SerializeField] private MeshRenderer _meshRenderer;
 
     [Header("End Platform Settings")]
     [SerializeField] private int _platformSegments = 16;
@@ -18,8 +20,6 @@ public class SplineRoad : MonoBehaviour
 
     private float _endPlatformRadius;
     private SplineContainer _splineContainer;
-    private MeshFilter _meshFilter;
-    private MeshRenderer _meshRenderer;
     private Mesh _roadMesh;
 
     private void Awake()
@@ -35,24 +35,11 @@ public class SplineRoad : MonoBehaviour
         _splineContainer = splineContainer;
 
         if (_splineContainer == null)
-            return false;
+            return false;        
 
-        if (_meshFilter == null) _meshFilter = gameObject.AddComponent<MeshFilter>();
-        if (_meshRenderer == null) _meshRenderer = gameObject.AddComponent<MeshRenderer>();
-
-        SetupRoadMaterial();
         GenerateSmoothRoadMesh();
 
         return true;
-    }
-
-    private void SetupRoadMaterial()
-    {
-        if (_roadMaterial != null)
-        {
-            _meshRenderer.material = _roadMaterial;
-            _meshRenderer.material.mainTextureScale = new Vector2(1f, _textureTiling);
-        }
     }
 
     private void GenerateSmoothRoadMesh()
