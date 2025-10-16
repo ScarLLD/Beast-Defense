@@ -25,7 +25,7 @@ public class LaunchSequencer : MonoBehaviour
 
     [Header("Other dependencies")]
     [SerializeField] private BoundaryMaker _boundaryMaker;
-    [SerializeField] private SplineRoad _splineRoad;
+    [SerializeField] private SplineVisualizer _splineVisualizer;
     [SerializeField] private TargetDetector _detector;
     [SerializeField] private SmoothBarSlider _slider;
     [SerializeField] private DeathModule _deathModule;
@@ -38,15 +38,17 @@ public class LaunchSequencer : MonoBehaviour
     private void OnEnable()
     {
         _game.Started += Launch;
+        _game.Continued += Launch;
         _game.Restarted += Relaunch;
-        _game.Leaved += LeaveGame;
+        _game.Leaved += DisableObjects;
     }
 
     private void OnDisable()
     {
         _game.Started -= Launch;
+        _game.Continued -= Launch;
         _game.Restarted -= Relaunch;
-        _game.Leaved -= LeaveGame;
+        _game.Leaved -= DisableObjects;
     }
 
     private void Launch()
@@ -62,7 +64,7 @@ public class LaunchSequencer : MonoBehaviour
 
             if (_roadSpawner.TrySpawn(out List<Vector3> road)
                 && _splineCreator.TryCreateSpline(road, out _splineContainer)
-                && _splineRoad.TryGenerateRoadFromSpline(_splineContainer))
+                && _splineVisualizer.TryGenerateRoadFromSpline(_splineContainer))
             {
                 _beast = _beastSpawner.Spawn();
                 _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _splineContainer, _deathModule, _beast);
@@ -81,7 +83,7 @@ public class LaunchSequencer : MonoBehaviour
         }
     }
 
-    public void LeaveGame()
+    public void DisableObjects()
     {
         _objectsParent.SetActive(false);
     }

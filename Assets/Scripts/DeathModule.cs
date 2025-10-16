@@ -32,7 +32,7 @@ public class DeathModule : MonoBehaviour
     {
         _particleModule.startColor = Color.red;
         yield return StartCoroutine(DeathRoutine(gameObject));
-        _game.EndGame();
+        _game.CompleteGame();
     }
 
     private IEnumerator KillBeastRoutine(Transform gameObject)

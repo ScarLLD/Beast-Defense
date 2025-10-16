@@ -9,6 +9,7 @@ public class Transition : MonoBehaviour
     [SerializeField] private float _transitionDuration;
     [SerializeField] private float _holdTime;
     [SerializeField] private Transform _sprite;
+    [SerializeField] private Image _spriteImage;
     [SerializeField] private Canvas _canvas;
 
     private Vector3 _spriteLeftPosition;
@@ -16,14 +17,12 @@ public class Transition : MonoBehaviour
     private AnimationCurve _animationCurve;
     private WaitForSeconds _sleep;
     private Coroutine _moveCoroutine;
-    private Image _spriteImage;
 
     public event Action BackTransited;
 
     private void Awake()
     {
         SetSpriteOptions();
-        _spriteImage = _sprite.GetComponent<Image>();
         _sleep = new WaitForSeconds(_holdTime);
     }
 
@@ -41,13 +40,13 @@ public class Transition : MonoBehaviour
 
         _sprite.transform.position = _spriteLeftPosition;
 
-        _sprite.gameObject.SetActive(false);
+        _spriteImage.enabled = false;
     }
 
     public IEnumerator StartTransition(Color color)
     {
         _spriteImage.color = color;
-        _sprite.gameObject.SetActive(true);
+        _spriteImage.enabled = true;
 
         yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteLeftPosition, _canvas.transform.position));
         yield return _sleep;
@@ -56,7 +55,7 @@ public class Transition : MonoBehaviour
     public IEnumerator StartBackTransition(Color color)
     {
         _spriteImage.color = color;
-        _sprite.gameObject.SetActive(true);
+        _spriteImage.enabled = true;
 
         yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position));
         yield return _sleep;
@@ -65,23 +64,23 @@ public class Transition : MonoBehaviour
 
     public IEnumerator ContinueBackTransition()
     {
-        if (_sprite.gameObject.activeInHierarchy == true)
+        if (_spriteImage.enabled == true)
         {
             yield return _sleep;
             yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteLeftPosition));
 
-            _sprite.gameObject.SetActive(false);
+            _spriteImage.enabled = false;
         }
     }
 
     public IEnumerator ContinueTransition()
     {
-        if (_sprite.gameObject.activeInHierarchy == true)
+        if (_spriteImage.enabled == true)
         {
             yield return _sleep;
             yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteRightPosition));
 
-            _sprite.gameObject.SetActive(false);
+            _spriteImage.enabled = false;
         }
     }
 

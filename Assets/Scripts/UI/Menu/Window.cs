@@ -14,12 +14,12 @@ public abstract class Window : MonoBehaviour
         }
     }
 
-    protected void OnMenu()
+    protected void EnableMenu()
     {
         SwitchVisible(true);
     }
 
-    protected void OffMenu()
+    protected void DisableMenu()
     {
         SwitchVisible(false);
     }

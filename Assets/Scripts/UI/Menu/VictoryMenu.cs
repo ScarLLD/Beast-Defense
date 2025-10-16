@@ -2,21 +2,15 @@ public class VictoryMenu : Window
 {
     private void OnEnable()
     {
-        _game.Ended += OnGameEnded;
+        _game.Completed += EnableMenu;
+        _game.Continued += DisableMenu;
+        _game.Leaved += DisableMenu;
     }
 
     private void OnDisable()
     {
-        _game.Ended -= OnGameEnded;
-    }
-
-    private void Awake()
-    {
-        SwitchVisible(false);
-    }
-
-    private void OnGameEnded()
-    {
-        SwitchVisible(true);
+        _game.Completed -= EnableMenu;
+        _game.Continued -= DisableMenu;
+        _game.Leaved -= DisableMenu;
     }
 }

@@ -15,7 +15,7 @@ public class Beast : MonoBehaviour
     private readonly float _escapeThreshold = 0.15f;
     private readonly float _startSplinePosition = 0.5f;
     private float _currentSplinePosition;
-    private float _yOffset;
+    private Vector3 _originalScale;
     private SplineContainer _splineContainer;
     private Queue<float> _targetPercentages;
     private Coroutine _rotateCoroutine;
@@ -30,6 +30,7 @@ public class Beast : MonoBehaviour
     private void Awake()
     {
         _transform = transform;
+        _originalScale = _transform.localScale;
         _targetPercentages = new Queue<float>();
     }
 
@@ -43,7 +44,6 @@ public class Beast : MonoBehaviour
 
         _snakeSpeed = snakeSpeed;
         _splineContainer = splineContainer;
-        _yOffset = _transform.localScale.y / 2;
 
         _cachedSplineLength = _splineContainer.Spline.GetLength();
 
@@ -53,6 +53,9 @@ public class Beast : MonoBehaviour
     public void SetDefaultSettings()
     {
         Cleanup();
+
+        gameObject.SetActive(true);
+        _transform.localScale = _originalScale;
 
         _cachedSplineLength = _splineContainer.Spline.GetLength();
 

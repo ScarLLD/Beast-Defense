@@ -2,18 +2,18 @@ public class MainMenu : Window
 {
     private void OnEnable()
     {
-        _game.Started += OffMenu;
-        _game.Leaved += OnMenu;
+        _game.Started += DisableMenu;
+        _game.Leaved += EnableMenu;
     }
 
     private void OnDisable()
     {
-        _game.Started -= OffMenu;
-        _game.Leaved -= OnMenu;
+        _game.Started -= DisableMenu;
+        _game.Leaved -= EnableMenu;
     }
 
     private void Awake()
     {
-        OnMenu();
+        EnableMenu();
     }
 }

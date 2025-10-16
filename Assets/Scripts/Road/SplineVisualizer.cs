@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
-public class SplineRoad : MonoBehaviour
+public class SplineVisualizer : MonoBehaviour
 {
     [Header("Road Settings")]
     [SerializeField] private float _roadWidth = 3.3f;

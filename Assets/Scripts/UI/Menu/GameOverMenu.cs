@@ -2,21 +2,15 @@ public class GameOverMenu : Window
 {
     private void OnEnable()
     {
-        _game.Over += OnGameOver;
+        _game.Over += EnableMenu;
+        _game.Restarted += DisableMenu;
+        _game.Leaved += DisableMenu;
     }
 
     private void OnDisable()
     {
-        _game.Over -= OnGameOver;
-    }
-
-    private void Awake()
-    {
-        SwitchVisible(false);
-    }
-
-    private void OnGameOver()
-    {
-        SwitchVisible(true);
+        _game.Over -= EnableMenu;
+        _game.Restarted -= DisableMenu;
+        _game.Leaved -= DisableMenu;
     }
 }
