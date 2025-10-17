@@ -6,7 +6,7 @@ using UnityEngine.Splines;
 public class LaunchSequencer : MonoBehaviour
 {
     [SerializeField] private Game _game;
-    [SerializeField] private GameObject _objectsParent;
+    [SerializeField] private GameObjectsDisabler _disabler;
 
     [Header("Spawners")]
     [SerializeField] private PlaceSpawner _placeSpawner;
@@ -40,7 +40,6 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started += Launch;
         _game.Continued += Launch;
         _game.Restarted += Relaunch;
-        _game.Leaved += DisableObjects;
     }
 
     private void OnDisable()
@@ -48,12 +47,11 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started -= Launch;
         _game.Continued -= Launch;
         _game.Restarted -= Relaunch;
-        _game.Leaved -= DisableObjects;
     }
 
     private void Launch()
     {
-        _objectsParent.SetActive(true);
+        _disabler.EnableObjects();
 
         if (_snake == null && _beast == null
             && _boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
@@ -83,13 +81,10 @@ public class LaunchSequencer : MonoBehaviour
         }
     }
 
-    public void DisableObjects()
-    {
-        _objectsParent.SetActive(false);
-    }
-
     private void Relaunch()
     {
+        _disabler.EnableObjects();
+
         if (_snake != null && _beast != null)
         {
             StartCoroutine(RelaunchRoutine());

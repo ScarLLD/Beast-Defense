@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ProBuilder.Shapes;
 
 [RequireComponent(typeof(CubeMover))]
 [RequireComponent(typeof(TargetRadar))]
@@ -19,31 +17,35 @@ public class PlayerCube : MonoBehaviour
     [SerializeField] private Outline _outline;
     [SerializeField] private List<MeshRenderer> _legs;
 
+    private Vector3 _defaultScale;
+    private Vector3 _defaultPosition;
+
+    private PlayerCubeAnimator _cubeAnimator;
+    private Transform _transform;
     private CubeStack _stack;
     private TargetRadar _radar;
     private Shooter _shooter;
     private View _view;
-    private Vector3 _originalScale;
-    private Vector3 _originalPosition;
-    private Animator _animator;
     private GridCell _gridCell;
     private CubeMover _mover;
-    private bool _isScaled = false;
+    private bool _isScaled;
 
-    public bool IsAvailable { get; private set; } = false;
-    public bool HasClicked { get; private set; } = false;
-    public bool IsScaling { get; private set; } = false;
+    public bool IsAvailable { get; private set; }
+    public bool HasClicked { get; private set; }
+    public bool IsScaling { get; private set; }
     public CubeStack GetStack => _stack;
 
 
     private void Awake()
     {
+        _transform = transform;
+
+        _cubeAnimator = GetComponent<PlayerCubeAnimator>();
         _mover = GetComponent<CubeMover>();
         _shooter = GetComponent<Shooter>();
         _radar = GetComponent<TargetRadar>();
         _view = GetComponent<View>();
         _stack = GetComponent<CubeStack>();
-        _animator = GetComponent<Animator>();
     }
 
     public void Init(GridCell cell, Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
@@ -56,62 +58,68 @@ public class PlayerCube : MonoBehaviour
         _mover.Init(_moveSpeed);
         _stack.Init(material, count);
 
-        _originalScale = transform.localScale;
-        _originalPosition = transform.position;
-
-        _animator.enabled = false;
-
         foreach (var leg in _legs)
             leg.material = material;
 
-        DeactivateAvailability();
+        InitialDefaultTransform();
     }
 
     private void OnEnable()
     {
         _mover.Arrived += OnMoverArrived;
+        _mover.Escaped += OnMoverEscaped;
         _shooter.BulletsCountChanged += OnBulletsDecreased;
     }
 
     private void OnDisable()
     {
         _mover.Arrived -= OnMoverArrived;
+        _mover.Escaped -= OnMoverEscaped;
         _shooter.BulletsCountChanged -= OnBulletsDecreased;
-
-        _animator.SetBool("isWalk", false);
-        _animator.enabled = false;
     }
 
     public void Interect(ShootingPlace shootingPlace, Vector3 escapePlace)
     {
         HasClicked = true;
-        _mover.SetPlaces(shootingPlace, escapePlace, _gridCell);
+        IsAvailable = false;
+
+        _outline.OutlineWidth = _outlineDisable;
         _gridCell.ChangeStaticStatus(false);
-        ChangeAvailableStatus(false);
-        TurnOnLegs();
+        _view.DisplayBullets();
+        _mover.SetPlaces(shootingPlace, escapePlace, _gridCell);
         StartMoving();
     }
 
     public void SetDefaultSettings()
     {
+        IsAvailable = false;
         HasClicked = false;
+        IsScaling = false;
         _isScaled = false;
 
-        transform.position = _originalPosition;
-        _meshRenderer.transform.position = _originalPosition;
-
-        _animator.SetBool("isWalk", false);
-        _animator.enabled = false;
+        _cubeAnimator.ResetSettings();
+        _cubeAnimator.EnableAnimator(false);
 
         _radar.TurnOff();
         _shooter.SetDafaultSettings();
         _mover.SetDefaultSetting();
+        _view.SetEmpty();
+
         TurnOffLegs();
+
+        SetHalfSizeTransform();
+    }
+
+    private void InitialDefaultTransform()
+    {
+        _defaultScale = _transform.localScale;
+        _defaultPosition = _transform.position;
     }
 
     public void StartMoving()
     {
-        _animator.SetBool("isWalk", true);
+        TurnOnLegs();
+        _cubeAnimator.SetWalkBool(true);
         _mover.StartMoving();
     }
 
@@ -130,8 +138,8 @@ public class PlayerCube : MonoBehaviour
         if (_isScaled == false)
         {
             _outline.OutlineWidth = _outlineActive;
-            StartCoroutine(ScaleRoutine());
             _view.DisplayBullets();
+            StartCoroutine(ScaleRoutine());
         }
     }
 
@@ -141,44 +149,46 @@ public class PlayerCube : MonoBehaviour
 
         if (_gridCell.IsStatic)
             _view.SetEmpty();
+    }
 
-        foreach (var leg in _legs)
-            leg.gameObject.SetActive(false);
 
-        if (_isScaled == false)
-        {
-            SetHalfSizeTransform();
-        }
+    private void SetDefaultTransform()
+    {
+        _transform.localScale = _defaultScale;
+        _transform.position = _defaultPosition;
+
+        _meshRenderer.transform.localPosition = Vector3.zero;
     }
 
     private void SetHalfSizeTransform()
     {
-        transform.localScale = new(_originalScale.x, _originalScale.y / 2, _originalScale.z);
-        transform.position = new(_originalPosition.x, _originalPosition.y - transform.localScale.y / 2, _originalPosition.z);
+        _transform.localScale = new(_defaultScale.x, _defaultScale.y / 2, _defaultScale.z);
+        _transform.position = new(_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4, _defaultPosition.z);
+
+        _meshRenderer.transform.localPosition = Vector3.zero;
     }
 
     private IEnumerator ScaleRoutine()
     {
         IsScaling = true;
 
-        Vector3 startScale = transform.localScale;
-        Vector3 startPosition = transform.position;
+        Vector3 startScale = _transform.localScale;
+        Vector3 startPosition = _transform.position;
 
         float progress = 0f;
 
         while (progress < 1f)
         {
             progress += Time.deltaTime * _scaleChangerSpeed;
-            transform.localScale = Vector3.Lerp(startScale, _originalScale, progress);
-            transform.position = Vector3.Lerp(startPosition, _originalPosition, progress);
+            _transform.localScale = Vector3.Lerp(startScale, _defaultScale, progress);
+            _transform.position = Vector3.Lerp(startPosition, _defaultPosition, progress);
             yield return null;
         }
 
-        transform.localScale = _originalScale;
-        transform.position = _originalPosition;
+        SetDefaultTransform();
 
-        _animator.enabled = true;
-        _animator.SetTrigger("isAvailable");
+        _cubeAnimator.EnableAnimator(true);
+        _cubeAnimator.SetAvailableTrigger();
 
         _isScaled = true;
         IsScaling = false;
@@ -187,7 +197,7 @@ public class PlayerCube : MonoBehaviour
 
     private void OnMoverArrived()
     {
-        _animator.SetBool("isWalk", false);
+        _cubeAnimator.SetWalkBool(false);
         TurnOffLegs();
         _radar.StartScanning(_meshRenderer.material.color);
     }
@@ -197,9 +207,16 @@ public class PlayerCube : MonoBehaviour
         if (_shooter.BulletCount == 0)
         {
             TurnOnLegs();
-            _animator.SetBool("isWalk", true);
+            _cubeAnimator.SetWalkBool(true);
             _mover.GoEscape();
         }
+    }
+
+    private void OnMoverEscaped()
+    {
+        _cubeAnimator.ResetSettings();
+        _cubeAnimator.EnableAnimator(false);
+        gameObject.SetActive(false);
     }
 
     private void TurnOffLegs()

@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907cf244996f1db4bb8a8f31a51b5325, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 10
+  _moveSpeed: 3
   _moveBackSpeed: 30
   _segmentDistance: 1.6
   _segmentRollback: 1.2

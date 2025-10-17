@@ -206,7 +206,8 @@ public class Snake : MonoBehaviour
                 UpdateHeadPosition();
                 UpdateSegmentsPosition();
 
-                if (_head.IsPlaying == false && _beast.TryApproachNotify(NormalizedPosition))
+                if ((_head.IsPlaying == false || _beast.IsMoving == false)
+                    && _beast.TryApproachNotify(NormalizedPosition))
                 {
                     OpenMouth();
                 }
@@ -273,7 +274,14 @@ public class Snake : MonoBehaviour
         float t = Mathf.Clamp01(distance / _splineLength);
         _splineContainer.Evaluate(t, out var position, out var tangent, out var up);
         position.y += transform.localScale.y;
-        target.SetPositionAndRotation(position, Quaternion.LookRotation(tangent, up));
+
+        Vector3 safeTangent = (Vector3)tangent;
+        Vector3 safeUp = (Vector3)up;
+
+        if (safeTangent == Vector3.zero) safeTangent = Vector3.forward;
+        if (safeUp == Vector3.zero) safeUp = Vector3.up;
+
+        target.SetPositionAndRotation(position, Quaternion.LookRotation(safeTangent, safeUp));
     }
 
     private IEnumerator ProcessRecoilQueue()

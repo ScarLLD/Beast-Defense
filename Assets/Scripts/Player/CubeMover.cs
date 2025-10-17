@@ -23,6 +23,7 @@ public class CubeMover : MonoBehaviour
     public bool IsMoving { get; private set; }
 
     public event Action Arrived;
+    public event Action Escaped;
 
     private void Awake()
     {
@@ -60,6 +61,7 @@ public class CubeMover : MonoBehaviour
     public void SetDefaultSetting()
     {
         StopMoving();
+        IsMoving = false;
         _isNewMove = true;
     }
 
@@ -125,7 +127,8 @@ public class CubeMover : MonoBehaviour
         }
         else if (_target == _escapePlace)
         {
-            gameObject.SetActive(false);
+            IsMoving = false;
+            Escaped?.Invoke();
         }
     }
 

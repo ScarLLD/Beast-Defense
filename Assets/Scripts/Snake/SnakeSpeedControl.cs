@@ -59,7 +59,6 @@ public class SnakeSpeedControl : MonoBehaviour
     private IEnumerator ControlSpeed()
     {
         _initialSpeed = _snake.MoveSpeed;
-        Debug.Log("Speed control started. Initial speed: " + _initialSpeed);
 
         while (_currentState != SpeedState.Stopped)
         {
@@ -92,19 +91,16 @@ public class SnakeSpeedControl : MonoBehaviour
     {
         if (distance >= _finalSlowdownDistance)
         {
-            Debug.Log("Normal -> FinalSlowdown");
             _currentState = SpeedState.FinalSlowdown;
             StartFinalSlowdown();
         }
         else if (distance >= _deepSlowedDistance)
         {
-            Debug.Log("Normal -> DeepSlowed");
             _currentState = SpeedState.DeepSlowed;
             StartSpeedTransition(_initialSpeed * _deepSlowedMultiplier);
         }
         else if (distance >= _slowedDistance)
         {
-            Debug.Log("Normal -> Slowed");
             _currentState = SpeedState.Slowed;
             StartSpeedTransition(_initialSpeed * _slowedMultiplier);
         }
@@ -114,19 +110,16 @@ public class SnakeSpeedControl : MonoBehaviour
     {
         if (distance >= _finalSlowdownDistance)
         {
-            Debug.Log("Slowed -> FinalSlowdown");
             _currentState = SpeedState.FinalSlowdown;
             StartFinalSlowdown();
         }
         else if (distance >= _deepSlowedDistance)
         {
-            Debug.Log("Slowed -> DeepSlowed");
             _currentState = SpeedState.DeepSlowed;
             StartSpeedTransition(_initialSpeed * _deepSlowedMultiplier);
         }
         else if (distance < _slowedDistance)
         {
-            Debug.Log("Slowed -> Normal");
             _currentState = SpeedState.Normal;
             StartSpeedTransition(_initialSpeed);
         }
@@ -136,19 +129,16 @@ public class SnakeSpeedControl : MonoBehaviour
     {
         if (distance >= _finalSlowdownDistance)
         {
-            Debug.Log("DeepSlowed -> FinalSlowdown");
             _currentState = SpeedState.FinalSlowdown;
             StartFinalSlowdown();
         }
         else if (distance < _deepSlowedDistance && distance >= _slowedDistance)
         {
-            Debug.Log("DeepSlowed -> Slowed");
             _currentState = SpeedState.Slowed;
             StartSpeedTransition(_initialSpeed * _slowedMultiplier);
         }
         else if (distance < _slowedDistance)
         {
-            Debug.Log("DeepSlowed -> Normal");
             _currentState = SpeedState.Normal;
             StartSpeedTransition(_initialSpeed);
         }
@@ -157,20 +147,17 @@ public class SnakeSpeedControl : MonoBehaviour
     private void HandleFinalSlowdownState(float distance)
     {
         if (distance >= _stopDistance)
-        {
-            Debug.Log("FinalSlowdown -> Stopped");
+        {            
             _currentState = SpeedState.Stopped;
             _snake.ChangeSpeed(0f);
         }
         else if (distance < _finalSlowdownDistance && distance >= _deepSlowedDistance)
         {
-            Debug.Log("FinalSlowdown -> DeepSlowed");
             _currentState = SpeedState.DeepSlowed;
             StartSpeedTransition(_initialSpeed * _deepSlowedMultiplier);
         }
         else if (distance < _slowedDistance)
         {
-            Debug.Log("FinalSlowdown -> Normal");
             _currentState = SpeedState.Normal;
             StartSpeedTransition(_initialSpeed);
         }
@@ -201,8 +188,6 @@ public class SnakeSpeedControl : MonoBehaviour
         float elapsed = 0f;
         float targetSpeed = _initialSpeed * _finalSlowdownMultiplier;
 
-        Debug.Log($"Final slowdown: {startSpeed} -> {targetSpeed} over {duration}s");
-
         while (elapsed < duration && _currentState == SpeedState.FinalSlowdown)
         {
             elapsed += Time.deltaTime;
@@ -222,8 +207,6 @@ public class SnakeSpeedControl : MonoBehaviour
     {
         float startSpeed = _snake.MoveSpeed;
         float elapsed = 0f;
-
-        Debug.Log($"Speed transition: {startSpeed} -> {targetSpeed}");
 
         while (elapsed < duration)
         {

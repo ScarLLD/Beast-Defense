@@ -25,7 +25,7 @@ public class Beast : MonoBehaviour
 
     private float _cachedSplineLength;
 
-    public bool IsMoving { get; private set; } = false;
+    public bool IsMoving { get; private set; }
 
     private void Awake()
     {
@@ -54,6 +54,8 @@ public class Beast : MonoBehaviour
     {
         Cleanup();
 
+        IsMoving = false;
+
         gameObject.SetActive(true);
         _transform.localScale = _originalScale;
 
@@ -64,7 +66,7 @@ public class Beast : MonoBehaviour
         _targetPercentages.Enqueue(0.75f);
         _targetPercentages.Enqueue(1.0f);
 
-        ApplyOffsetPosition();
+        PlaceOnSpline();
         _rotateCoroutine = StartCoroutine(RotateToFace());
     }
 
@@ -72,6 +74,8 @@ public class Beast : MonoBehaviour
     {
         if (_currentSplinePosition - snakeSplinePosition < _escapeThreshold)
         {
+            Debug.Log("entity close!");
+
             if (IsMoving == false && _targetPercentages.Count > 0)
             {
                 if (_moveCoroutine != null)
@@ -111,6 +115,7 @@ public class Beast : MonoBehaviour
     private IEnumerator MoveRoutine()
     {
         float currentTargetPercentage = _targetPercentages.Dequeue();
+
         bool isWork = true;
 
         IsMoving = true;
@@ -120,12 +125,12 @@ public class Beast : MonoBehaviour
             float moveDistance = _snakeSpeed * _speedMultiplier * Time.deltaTime / _cachedSplineLength;
             _currentSplinePosition = Mathf.MoveTowards(_currentSplinePosition, currentTargetPercentage, moveDistance);
 
-            ApplyOffsetPosition();
+            PlaceOnSpline();
 
             if (Mathf.Abs(_currentSplinePosition - currentTargetPercentage) < _arrivalThreshold)
             {
                 _currentSplinePosition = currentTargetPercentage;
-                ApplyOffsetPosition();
+                PlaceOnSpline();
                 isWork = false;
             }
 
@@ -136,7 +141,7 @@ public class Beast : MonoBehaviour
         IsMoving = false;
     }
 
-    private void ApplyOffsetPosition()
+    private void PlaceOnSpline()
     {
         if (_splineContainer != null)
         {
@@ -148,7 +153,13 @@ public class Beast : MonoBehaviour
 
             if (IsMoving)
             {
-                Quaternion targetRotation = Quaternion.LookRotation(tangent, up);
+                Vector3 safeTangent = (Vector3)tangent;
+                Vector3 safeUp = (Vector3)up;
+
+                if (safeTangent == Vector3.zero) safeTangent = Vector3.forward;
+                if (safeUp == Vector3.zero) safeUp = Vector3.up;
+
+                Quaternion targetRotation = Quaternion.LookRotation(safeTangent, safeUp);
                 if (Quaternion.Angle(_transform.rotation, targetRotation) > 0.1f)
                 {
                     _transform.rotation = Quaternion.Lerp(_transform.rotation, targetRotation,

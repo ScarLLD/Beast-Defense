@@ -55,9 +55,11 @@ public class CubeCreator : MonoBehaviour
 
                     PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, _transform);
                     playerCube.Init(gridCell, material, count, bulletSpawner, targetStorage);
-                    gridCell.InitCube(playerCube);
-                    cubeStorage.Add(playerCube);
+                    playerCube.SetDefaultSettings();
                     _cubes.Add(playerCube);
+                    cubeStorage.Add(playerCube);
+
+                    gridCell.InitCube(playerCube);
                     _cells.Add(gridCell);
                 }
             }
@@ -73,10 +75,10 @@ public class CubeCreator : MonoBehaviour
     {
         foreach (PlayerCube playerCube in _cubes)
         {
-            playerCube.SetDefaultSettings();
-
             if (playerCube.isActiveAndEnabled == false)
                 playerCube.gameObject.SetActive(true);
+
+            playerCube.SetDefaultSettings();
         }
 
         foreach (GridCell cell in _cells)
