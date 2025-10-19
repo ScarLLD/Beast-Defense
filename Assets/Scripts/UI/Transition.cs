@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,6 +11,7 @@ public class Transition : MonoBehaviour
     [SerializeField] private float _holdTime;
     [SerializeField] private Transform _sprite;
     [SerializeField] private Image _spriteImage;
+    [SerializeField] private TMP_Text _text;
     [SerializeField] private Canvas _canvas;
 
     private Vector3 _spriteLeftPosition;
@@ -26,27 +28,16 @@ public class Transition : MonoBehaviour
         _sleep = new WaitForSeconds(_holdTime);
     }
 
-    private void SetSpriteOptions()
+    public void SetText(string text)
     {
-        _spriteLeftPosition =
-            new(_canvas.transform.position.x - Camera.main.pixelWidth * 2,
-            _canvas.transform.position.y,
-            _canvas.transform.position.z);
-
-        _spriteRightPosition =
-            new(_canvas.transform.position.x + Camera.main.pixelWidth * 2,
-            _canvas.transform.position.y,
-            _canvas.transform.position.z);
-
-        _sprite.transform.position = _spriteLeftPosition;
-
-        _spriteImage.enabled = false;
+        _text.text = text;
     }
 
     public IEnumerator StartTransition(Color color)
     {
         _spriteImage.color = color;
         _spriteImage.enabled = true;
+        _text.enabled = true;
 
         yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteLeftPosition, _canvas.transform.position));
         yield return _sleep;
@@ -56,6 +47,7 @@ public class Transition : MonoBehaviour
     {
         _spriteImage.color = color;
         _spriteImage.enabled = true;
+        _text.enabled = true;
 
         yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position));
         yield return _sleep;
@@ -71,6 +63,10 @@ public class Transition : MonoBehaviour
 
             _spriteImage.enabled = false;
         }
+        else
+        {
+            _text.enabled = false;
+        }
     }
 
     public IEnumerator ContinueTransition()
@@ -81,6 +77,10 @@ public class Transition : MonoBehaviour
             yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteRightPosition));
 
             _spriteImage.enabled = false;
+        }
+        else
+        {
+            _text.enabled = false;
         }
     }
 
@@ -101,5 +101,22 @@ public class Transition : MonoBehaviour
         }
 
         _moveCoroutine = null;
+    }
+
+    private void SetSpriteOptions()
+    {
+        _spriteLeftPosition =
+            new(_canvas.transform.position.x - Camera.main.pixelWidth * 2,
+            _canvas.transform.position.y,
+            _canvas.transform.position.z);
+
+        _spriteRightPosition =
+            new(_canvas.transform.position.x + Camera.main.pixelWidth * 2,
+            _canvas.transform.position.y,
+            _canvas.transform.position.z);
+
+        _sprite.transform.position = _spriteLeftPosition;
+
+        _spriteImage.enabled = false;
     }
 }

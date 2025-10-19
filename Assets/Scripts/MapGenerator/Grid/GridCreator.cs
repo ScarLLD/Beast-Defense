@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 using Random = UnityEngine.Random;
 
 public class GridCreator : MonoBehaviour
@@ -10,7 +11,7 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private GridCell _cellPrefab;
     [SerializeField] private Obstacle _obstaclePrefab;
     [SerializeField] private Obstacle _stretchedObstaclePrefab;
-        
+
     [Header("Grid settings")]
     [SerializeField] private int _rows = 7;
     [SerializeField] private int _columns = 8;
@@ -119,6 +120,16 @@ public class GridCreator : MonoBehaviour
 
         Created?.Invoke();
         return true;
+    }
+
+    public void Terminate()
+    {
+        foreach (var obstacle in _obstacles)
+        {
+            Destroy(obstacle.gameObject);
+        }
+
+        _obstacles.Clear();
     }
 
     private void CreateGridCells(float localMinX, float localMinZ)

@@ -7,7 +7,7 @@ public class PlayMenu : Window
     }
 
     private void OnDisable()
-    {
+    {        
         _game.Started -= EnableMenu;
         _game.Leaved += DisableMenu;
     }
@@ -16,4 +16,5 @@ public class PlayMenu : Window
     {
         DisableMenu();
     }
+
 }

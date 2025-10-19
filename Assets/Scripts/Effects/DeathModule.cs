@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
@@ -12,6 +13,9 @@ public class DeathModule : MonoBehaviour
     [SerializeField] private float _deathDelay;
 
     private MainModule _particleModule;
+
+    public event Action BeastDie;
+    public event Action SnakeDie;
 
     private void Awake()
     {
@@ -32,14 +36,16 @@ public class DeathModule : MonoBehaviour
     {
         _particleModule.startColor = Color.red;
         yield return StartCoroutine(DeathRoutine(gameObject));
-        _game.CompleteGame();
+        SnakeDie?.Invoke();
+        //_game.CompleteGame();
     }
 
     private IEnumerator KillBeastRoutine(Transform gameObject)
     {
         _particleModule.startColor = Color.white;
         yield return StartCoroutine(DeathRoutine(gameObject));
-        _game.GameOver("Зверь погиб.");
+        BeastDie?.Invoke();        
+        //_game.GameOver("Зверь погиб.");
     }
 
     public IEnumerator DeathRoutine(Transform gameObject)

@@ -86,4 +86,14 @@ public class CubeCreator : MonoBehaviour
             cell.SetDefaultSettings();
         }
     }
+
+    public void Terminate()
+    {
+        foreach (var cube in _cubes)
+        {
+            Destroy(cube.gameObject);
+        }
+
+        _cubes.Clear();
+    }
 }

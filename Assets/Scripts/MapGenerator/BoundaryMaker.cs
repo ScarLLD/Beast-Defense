@@ -39,7 +39,7 @@ public class BoundaryMaker : MonoBehaviour
     {
         bottomScreenCenter = Vector3.zero;
 
-        Vector3 screenPoint = new Vector3(_camera.pixelWidth * 0.5f, _camera.pixelHeight * 0.25f, 0f);
+        Vector3 screenPoint = new(_camera.pixelWidth * 0.5f, _camera.pixelHeight * 0.25f, 0f);
 
         Ray ray = _camera.ScreenPointToRay(screenPoint);
         if (Physics.Raycast(ray, out RaycastHit hit))
@@ -92,7 +92,7 @@ public class BoundaryMaker : MonoBehaviour
 
         float partHeight = _camera.pixelHeight * _borderZLowerReduction;
 
-        List<Vector3> screenPoints = new List<Vector3>()
+        List<Vector3> screenPoints = new()
         {
             new Vector3(0f, partHeight, 10),
             new Vector3(0f, _camera.pixelHeight * _borderZUpperReduction, 10),
@@ -137,7 +137,7 @@ public class BoundaryMaker : MonoBehaviour
 
     private void CreateLine(Vector3 start, Vector3 end)
     {
-        GameObject line = new GameObject("Line");
+        GameObject line = new("Line");
         line.transform.SetParent(transform);
 
         LineRenderer lineRenderer = line.AddComponent<LineRenderer>();

@@ -17,8 +17,10 @@ public class SplineCreator : MonoBehaviour
             return false;
 
         GameObject splineObject = new("DynamicSpline");
-        splineContainer = splineObject.AddComponent<SplineContainer>();
         splineObject.transform.position = Vector3.zero;
+        splineObject.transform.parent = transform;
+
+        splineContainer = splineObject.AddComponent<SplineContainer>();
 
         Spline spline = splineContainer.Spline;
         spline.Clear();

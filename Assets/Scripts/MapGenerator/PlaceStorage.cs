@@ -15,6 +15,11 @@ public class PlaceStorage : MonoBehaviour
 
     public void Clear()
     {
+        foreach (var place in _shootingPlaces)
+        {
+            Destroy(place.gameObject);
+        }
+
         _shootingPlaces.Clear();
         _escapePlaces.Clear();
     }

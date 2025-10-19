@@ -59,6 +59,7 @@ public class SnakeSpeedControl : MonoBehaviour
     private IEnumerator ControlSpeed()
     {
         _initialSpeed = _snake.MoveSpeed;
+        _currentState = SpeedState.Normal;
 
         while (_currentState != SpeedState.Stopped)
         {
@@ -147,7 +148,7 @@ public class SnakeSpeedControl : MonoBehaviour
     private void HandleFinalSlowdownState(float distance)
     {
         if (distance >= _stopDistance)
-        {            
+        {
             _currentState = SpeedState.Stopped;
             _snake.ChangeSpeed(0f);
         }

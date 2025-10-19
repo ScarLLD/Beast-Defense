@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,26 +38,47 @@ public class LaunchSequencer : MonoBehaviour
 
     private void OnEnable()
     {
-        _game.Started += Launch;
-        _game.Continued += Launch;
+        _game.Started += FirstLaunch;
+        _game.Continued += ContinueLaunch;
         _game.Restarted += Relaunch;
+        _game.Completed += TerminateGameObjects;
     }
 
     private void OnDisable()
     {
-        _game.Started -= Launch;
-        _game.Continued -= Launch;
+        _game.Started -= FirstLaunch;
+        _game.Continued -= ContinueLaunch;
         _game.Restarted -= Relaunch;
+        _game.Completed -= TerminateGameObjects;
     }
 
-    private void Launch()
+    private void FirstLaunch()
     {
         _disabler.EnableObjects();
 
-        if (_snake == null && _beast == null
-            && _boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
-            && _placeSpawner.TryGeneratePlaces(cubeScale, _placeStorage)
-            && _cubeCreator.TryCreate(_boundaryMaker, _cubeStorage, _bulletSpawner, _targetStorage))
+        if (_game.HasStarted == false)
+            Launch();
+        else
+            ContinueLaunch();
+    }
+
+    private void ContinueLaunch()
+    {
+        _disabler.EnableObjects();
+
+        Debug.Log("Continue Launch");
+
+        if (_game.HasCompleted)
+            Launch();
+        else
+            Relaunch();
+    }
+
+    private void TryGenerateGame()
+    {
+        if (_boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
+                    && _placeSpawner.TryGeneratePlaces(cubeScale)
+                    && _cubeCreator.TryCreate(_boundaryMaker, _cubeStorage, _bulletSpawner, _targetStorage))
         {
             _availabilityManagement.UpdateAvailability();
 
@@ -75,10 +97,6 @@ public class LaunchSequencer : MonoBehaviour
                 _detector.EnableTrigger();
             }
         }
-        else
-        {
-            Relaunch();
-        }
     }
 
     private void Relaunch()
@@ -91,17 +109,51 @@ public class LaunchSequencer : MonoBehaviour
         }
     }
 
-    private IEnumerator RelaunchRoutine()
+    private void Launch()
     {
-        yield return StartCoroutine(_snake.GetBackToStart());
+        _disabler.EnableObjects();
+
+        StartCoroutine(LaunchRoutine());
+    }
+
+    private IEnumerator ClearRoutine()
+    {
+        if (_snake != null && _beast != null)
+        {
+            yield return StartCoroutine(_snake.GetBackToStart());
+            _snake.SetDefaultSetting();
+            _beast.SetDefaultSettings();
+        }
+
         _bulletSpawner.Cleanup();
         _placeStorage.SetDefaultSettings();
         _targetStorage.Cleanup();
-        _snake.SetDefaultSetting();
-        _beast.SetDefaultSettings();
+    }
+
+    private IEnumerator LaunchRoutine()
+    {
+        yield return StartCoroutine(ClearRoutine());
+        TryGenerateGame();
+    }
+
+    private IEnumerator RelaunchRoutine()
+    {
+        yield return StartCoroutine(ClearRoutine());
         _cubeCreator.Respawn();
         _availabilityManagement.UpdateAvailability();
         _snake.CreateSegmentsFromStacks(_cubeStorage.GetStacks());
         _snake.StartMove();
+    }
+
+    private void TerminateGameObjects()
+    {
+        Destroy(_snake.gameObject);
+        _snake = null;
+
+        Destroy(_beast.gameObject);
+        _beast = null;
+
+        _gridCreator.Terminate();
+        _cubeCreator.Terminate();
     }
 }

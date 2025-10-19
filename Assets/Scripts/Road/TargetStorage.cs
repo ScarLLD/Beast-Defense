@@ -11,8 +11,6 @@ public class TargetStorage : MonoBehaviour
         _segments = new List<SnakeSegment>();
     }
 
-    public int Count => _segments.Count;
-
     public void AddTarget(SnakeSegment segment)
     {
         _segments.Add(segment);
@@ -33,11 +31,14 @@ public class TargetStorage : MonoBehaviour
 
     public void Cleanup()
     {
-        foreach (var segment in _segments)
+        if (_segments != null && _segments.Count > 0)
         {
-            segment.SetIsTarget(false);
-        }
+            foreach (var segment in _segments)
+            {
+                segment.SetIsTarget(false);
+            }
 
-        _segments.Clear();
+            _segments.Clear();
+        }
     }
 }
