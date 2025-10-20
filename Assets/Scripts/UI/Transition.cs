@@ -118,5 +118,6 @@ public class Transition : MonoBehaviour
         _sprite.transform.position = _spriteLeftPosition;
 
         _spriteImage.enabled = false;
+        _text.enabled = false;
     }
 }
