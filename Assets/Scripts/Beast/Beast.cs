@@ -5,9 +5,10 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
+[RequireComponent(typeof(BeastAnimator))]
 public class Beast : MonoBehaviour
 {
-    [SerializeField] private float _speedMultiplier = 4f;
+    [SerializeField] private float _speedMultiplier = 3f;
     [SerializeField] private float _rotationSpeed = 15f;
     [SerializeField] private float _rotateDuration = 0.3f;
 
@@ -17,6 +18,7 @@ public class Beast : MonoBehaviour
     private float _currentSplinePosition;
     private Vector3 _originalScale;
     private SplineContainer _splineContainer;
+    private BeastAnimator _animator;
     private Queue<float> _targetPercentages;
     private Coroutine _rotateCoroutine;
     private Coroutine _moveCoroutine;
@@ -32,6 +34,7 @@ public class Beast : MonoBehaviour
         _transform = transform;
         _originalScale = _transform.localScale;
         _targetPercentages = new Queue<float>();
+        _animator = GetComponent<BeastAnimator>();
     }
 
     public void Init(float snakeSpeed, SplineContainer splineContainer)
@@ -53,6 +56,8 @@ public class Beast : MonoBehaviour
     public void SetDefaultSettings()
     {
         Cleanup();
+        _animator.ResetSettings();
+        _animator.EnableAnimator(false);
 
         IsMoving = false;
 
@@ -114,6 +119,9 @@ public class Beast : MonoBehaviour
 
     private IEnumerator MoveRoutine()
     {
+        _animator.EnableAnimator(true);
+        _animator.SetWalkBool(true);
+
         float currentTargetPercentage = _targetPercentages.Dequeue();
 
         bool isWork = true;
@@ -137,7 +145,10 @@ public class Beast : MonoBehaviour
             yield return null;
         }
 
+        _animator.SetWalkBool(false);
+
         yield return _rotateCoroutine = StartCoroutine(RotateToFace());
+        _animator.EnableAnimator(false);
         IsMoving = false;
     }
 

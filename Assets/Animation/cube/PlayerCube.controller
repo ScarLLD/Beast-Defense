@@ -84,7 +84,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CubeFullIdle
+  m_Name: CubeStatic
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -112,7 +112,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ActiveCubeIdle
+  m_Name: CubeActive
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -158,7 +158,7 @@ AnimatorStateMachine:
     m_Position: {x: -100, y: 470, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -3069215563467046698}
-    m_Position: {x: 180, y: 420, z: 0}
+    m_Position: {x: 180, y: 400, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: -7927839278094374962}
@@ -202,7 +202,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: cubeUp
+  m_Name: CubeUp
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -316,7 +316,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: shoot
+  m_Name: CubeShoot
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -394,7 +394,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: cubeDown
+  m_Name: CubeDown
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
