@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class BoundaryMaker : MonoBehaviour
 {
     [SerializeField] private Material _lineMaterial;
+    [SerializeField] private Transform _container;
 
     [Range(0.6f, 0.84f)]
     [SerializeField] private float _borderZLowerReduction;
@@ -138,7 +139,7 @@ public class BoundaryMaker : MonoBehaviour
     private void CreateLine(Vector3 start, Vector3 end)
     {
         GameObject line = new("Line");
-        line.transform.SetParent(transform);
+        line.transform.SetParent(_container);
 
         LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
         lineRenderer.SetPosition(0, start);

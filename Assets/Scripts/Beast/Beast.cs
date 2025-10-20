@@ -77,20 +77,15 @@ public class Beast : MonoBehaviour
 
     public bool TryApproachNotify(float snakeSplinePosition)
     {
-        if (_currentSplinePosition - snakeSplinePosition < _escapeThreshold)
+        if (_targetPercentages.Count > 0 && _currentSplinePosition - snakeSplinePosition < _escapeThreshold)
         {
-            Debug.Log("entity close!");
-
-            if (IsMoving == false && _targetPercentages.Count > 0)
+            if (_moveCoroutine != null)
             {
-                if (_moveCoroutine != null)
-                {
-                    StopCoroutine(_moveCoroutine);
-                    _moveCoroutine = null;
-                }
-
-                _moveCoroutine = StartCoroutine(MoveRoutine());
+                StopCoroutine(_moveCoroutine);
+                _moveCoroutine = null;
             }
+
+            _moveCoroutine = StartCoroutine(MoveRoutine());
 
             return true;
         }
@@ -148,7 +143,7 @@ public class Beast : MonoBehaviour
         _animator.SetWalkBool(false);
 
         yield return _rotateCoroutine = StartCoroutine(RotateToFace());
-        _animator.EnableAnimator(false);
+
         IsMoving = false;
     }
 

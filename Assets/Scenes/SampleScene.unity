@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1521,7 +1521,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 57.8
+  m_fontSize: 39.15
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4779,6 +4779,37 @@ ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 3973365076749633672, guid: 0ac92261bcb812642bc718ed1f1e9397, type: 3}
   m_PrefabInstance: {fileID: 1794089532}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1111248025
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1111248026}
+  m_Layer: 0
+  m_Name: Lines
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &1111248026
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111248025}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2100491923}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1128722669
 GameObject:
   m_ObjectHideFlags: 0
@@ -5678,8 +5709,8 @@ MonoBehaviour:
   _cellPrefab: {fileID: 8177197784567442016, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
   _obstaclePrefab: {fileID: 4161744107708799639, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
   _stretchedObstaclePrefab: {fileID: 1295060935370253680, guid: ca6719bd2b335f349944975a0282fdc9, type: 3}
-  _rows: 3
-  _columns: 3
+  _rows: 8
+  _columns: 7
   _minZ: -12
   _maxZ: 10
   _gridExtraWidth: -4
@@ -5688,6 +5719,7 @@ MonoBehaviour:
   _isCreateObstacles: 1
   _maxObstacles: 10
   _maxObstacleLength: 3
+  _container: {fileID: 1727559507}
   _gridStorage: {fileID: 1295288259}
   _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1295288266}
@@ -5704,6 +5736,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lineMaterial: {fileID: 2100000, guid: 3d96b70da33c5a24cb58812461d00eed, type: 2}
+  _container: {fileID: 1111248026}
   _borderZLowerReduction: 0.8
   _borderZUpperReduction: 0.89
 --- !u!1 &1329447869
@@ -7387,6 +7420,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1678993978}
   m_CullTransparentMesh: 1
+--- !u!1 &1727559506
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1727559507}
+  m_Layer: 0
+  m_Name: Obstracles
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &1727559507
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1727559506}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2100491923}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1778622038
 GameObject:
   m_ObjectHideFlags: 0
@@ -7556,7 +7620,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1842505876
 Transform:
@@ -8035,7 +8099,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54.3
+  m_fontSize: 65.95
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -8333,12 +8397,14 @@ Transform:
   - {fileID: 4874195528728397673}
   - {fileID: 529893068}
   - {fileID: 1295288261}
+  - {fileID: 1727559507}
   - {fileID: 437241862}
   - {fileID: 979470872}
   - {fileID: 561811628}
   - {fileID: 1441411480}
   - {fileID: 117216349}
   - {fileID: 1842505876}
+  - {fileID: 1111248026}
   - {fileID: 26740339}
   m_Father: {fileID: 1614255500}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

@@ -94,11 +94,11 @@ public class Shooter : MonoBehaviour
 
                 if (BulletCount == 0)
                     isWork = false;
-                else
+                else if (_targets.Count == 0)
                     SetInitialRotation();
             }
 
-            yield return _coroutineSleep;
+            yield return null;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.ProBuilder.Shapes;
 using Random = UnityEngine.Random;
 
 public class GridCreator : MonoBehaviour
@@ -27,6 +26,7 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private bool _isCreateObstacles;
     [SerializeField] private int _maxObstacles = 6;
     [SerializeField] private int _maxObstacleLength = 3;
+    [SerializeField] private Transform _container;
 
     [Header("Other settings")]
     [SerializeField] private GridStorage _gridStorage;
@@ -42,8 +42,8 @@ public class GridCreator : MonoBehaviour
     private float _spacingX;
     private float _spacingZ;
     private Vector3 _gridCenterOffset;
-    private Vector3 _leftCornerPos;
-    private Vector3 _rightCornerPos;
+    private Vector3 _leftCornerPosition;
+    private Vector3 _rightCornerPosition;
     private float _minXScreen;
     private float _maxXScreen;
 
@@ -164,37 +164,47 @@ public class GridCreator : MonoBehaviour
     {
         float bottomZ = localMinZ - _objectDepth / 2f - _spacingZ - _offsetY;
 
-        _leftCornerPos = new Vector3(localMinX - _objectWidth / 2f - _wallOffsetX, 0f, bottomZ);
-        Obstacle leftCorner = Instantiate(_obstaclePrefab, transform);
-        leftCorner.transform.position = new Vector3(_leftCornerPos.x, leftCorner.transform.position.y + leftCorner.transform.localScale.y / 2f, _leftCornerPos.z);
+        _leftCornerPosition = new Vector3(localMinX - _objectWidth / 2f - _wallOffsetX, 0f, bottomZ);
+        Obstacle leftCorner = Instantiate(_obstaclePrefab, _container);
+
+        Vector3 leftCornerPosition = _leftCornerPosition;
+        leftCornerPosition.y = leftCorner.transform.localScale.y / 2;
+        leftCorner.transform.position = leftCornerPosition;
         _obstacles.Add(leftCorner);
 
-        _rightCornerPos = new Vector3(localMaxX + _objectWidth / 2f + _wallOffsetX, 0f, bottomZ);
-        Obstacle rightCorner = Instantiate(_obstaclePrefab, transform);
-        rightCorner.transform.position = new Vector3(_rightCornerPos.x, rightCorner.transform.position.y + rightCorner.transform.localScale.y / 2f, _rightCornerPos.z);
+        _rightCornerPosition = new Vector3(localMaxX + _objectWidth / 2f + _wallOffsetX, 0f, bottomZ);
+        Obstacle rightCorner = Instantiate(_obstaclePrefab, _container);
+
+        Vector3 rightCornerPosition = _rightCornerPosition;
+        rightCornerPosition.y = rightCorner.transform.localScale.y / 2;
+        rightCorner.transform.position = rightCornerPosition;
         _obstacles.Add(rightCorner);
     }
 
     private void CreateLeftBorderWalls(float localMinX, float localMinZ)
     {
         float leftX = localMinX - _objectWidth / 2f - _wallOffsetX;
-        Vector3 topPos = new(leftX, 0f, localMinZ + (_objectDepth / 2f) + (_rows - 1) * (_objectDepth + _spacingZ));
-        Obstacle topObstacle = Instantiate(_obstaclePrefab, transform);
-        topObstacle.transform.position = new Vector3(topPos.x, topObstacle.transform.position.y + topObstacle.transform.localScale.y / 2f, topPos.z);
+        Vector3 topPosition = new(leftX, 0f, localMinZ + (_objectDepth / 2f) + (_rows - 1) * (_objectDepth + _spacingZ));
+        Obstacle topObstacle = Instantiate(_obstaclePrefab, _container);
+
+        topPosition.y = topObstacle.transform.localScale.y / 2;
+        topObstacle.transform.position = topPosition;
         _obstacles.Add(topObstacle);
 
-        CreateVerticalStretchedObstacle(_leftCornerPos, topPos);
+        CreateVerticalStretchedObstacle(_leftCornerPosition, topPosition);
     }
 
     private void CreateRightBorderWalls(float localMaxX, float localMinZ)
     {
         float rightX = localMaxX + _objectWidth / 2f + _wallOffsetX;
-        Vector3 topPos = new(rightX, 0f, localMinZ + (_objectDepth / 2f) + (_rows - 1) * (_objectDepth + _spacingZ));
-        Obstacle topObstacle = Instantiate(_obstaclePrefab, transform);
-        topObstacle.transform.position = new Vector3(topPos.x, topObstacle.transform.position.y + topObstacle.transform.localScale.y / 2f, topPos.z);
+        Vector3 topPosition = new(rightX, 0f, localMinZ + (_objectDepth / 2f) + (_rows - 1) * (_objectDepth + _spacingZ));
+        Obstacle topObstacle = Instantiate(_obstaclePrefab, _container);
+                
+        topPosition.y = topObstacle.transform.localScale.y / 2;
+        topObstacle.transform.position = topPosition;
         _obstacles.Add(topObstacle);
 
-        CreateVerticalStretchedObstacle(_rightCornerPos, topPos);
+        CreateVerticalStretchedObstacle(_rightCornerPosition, topPosition);
     }
 
     private void CreateBottomBorderWalls()
@@ -216,15 +226,15 @@ public class GridCreator : MonoBehaviour
             Vector3 leftPos = _cellGrid[0, leftmostCol].transform.position; leftPos.y = 0f;
             Vector3 rightPos = _cellGrid[0, rightmostCol].transform.position; rightPos.y = 0f;
 
-            CreateHorizontalStretchedObstacle(_leftCornerPos, leftPos);
-            CreateHorizontalStretchedObstacle(rightPos, _rightCornerPos);
+            CreateHorizontalStretchedObstacle(_leftCornerPosition, leftPos);
+            CreateHorizontalStretchedObstacle(rightPos, _rightCornerPosition);
 
             if (rightmostCol - leftmostCol > 0)
                 CreateHorizontalStretchedObstacle(leftPos, rightPos);
         }
         else
         {
-            CreateHorizontalStretchedObstacle(_leftCornerPos, _rightCornerPos);
+            CreateHorizontalStretchedObstacle(_leftCornerPosition, _rightCornerPosition);
         }
     }
 
@@ -250,12 +260,16 @@ public class GridCreator : MonoBehaviour
     private void CreateSingleObstacle(int row, int col)
     {
         GridCell cell = _cellGrid[row, col];
-        Obstacle obs = Instantiate(_obstaclePrefab, transform);
-        obs.transform.position = new Vector3(cell.transform.position.x, obs.transform.position.y + obs.transform.localScale.y / 2f, cell.transform.position.z);
-        _obstacles.Add(obs);
+        Obstacle obstacle = Instantiate(_obstaclePrefab, _container);
+
+        Vector3 spawnPoint = cell.transform.position;
+        spawnPoint.y = obstacle.transform.localScale.y / 2;
+        obstacle.transform.position = spawnPoint;
+
+        _obstacles.Add(obstacle);
 
         var initMethod = cell.GetType().GetMethod("InitObstacle");
-        initMethod?.Invoke(cell, new object[] { obs });
+        initMethod?.Invoke(cell, new object[] { obstacle });
     }
 
     private void CreateStretchedObstaclesBetweenNeighbors()
@@ -299,25 +313,25 @@ public class GridCreator : MonoBehaviour
 
     private void CreateHorizontalStretchedObstacle(Vector3 startPos, Vector3 endPos)
     {
-        Vector3 centerPos = Vector3.Lerp(startPos, endPos, 0.5f);
+        Vector3 centerPosition = Vector3.Lerp(startPos, endPos, 0.5f);
 
-        Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, transform);
+        Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, _container);
 
         Vector3 obstacleScale = obstacle.transform.localScale;
         obstacleScale.x = Vector3.Distance(startPos, endPos);
         obstacle.transform.localScale = obstacleScale;
 
-        centerPos.y = obstacle.transform.localScale.y / 2f;
-        obstacle.transform.position = centerPos;
+        centerPosition.y = obstacle.transform.localScale.y / 2f;
+        obstacle.transform.position = centerPosition;
 
         _obstacles.Add(obstacle);
     }
 
     private void CreateVerticalStretchedObstacle(Vector3 startPos, Vector3 endPos)
     {
-        Vector3 centerPos = Vector3.Lerp(startPos, endPos, 0.5f);
+        Vector3 centerPosition = Vector3.Lerp(startPos, endPos, 0.5f);
 
-        Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, transform);
+        Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, _container);
 
         obstacle.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
 
@@ -325,8 +339,8 @@ public class GridCreator : MonoBehaviour
         obstacleScale.x = Vector3.Distance(startPos, endPos);
         obstacle.transform.localScale = obstacleScale;
 
-        centerPos.y = obstacle.transform.localScale.y / 2f;
-        obstacle.transform.position = centerPos;
+        centerPosition.y = obstacle.transform.localScale.y / 2f;
+        obstacle.transform.position = centerPosition;
 
         _obstacles.Add(obstacle);
     }
