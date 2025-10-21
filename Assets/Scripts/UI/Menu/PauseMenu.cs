@@ -14,7 +14,6 @@ public class PauseMenu : Window
     [SerializeField] private Button _soundButton;
     [SerializeField] private Button _vibroButton;
 
-
     private void OnEnable()
     {
         _pauseButton.onClick.AddListener(OnPauseButtonClick);

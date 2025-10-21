@@ -4,6 +4,7 @@ using System.Collections.Generic;
 [RequireComponent(typeof(DirectionAnalyzer))]
 public class RoadSpawner : MonoBehaviour
 {
+    [SerializeField] private GameObject _stumpPrefab;
     [SerializeField] private BoundaryMaker _boundaryMaker;
     [SerializeField] private float _segmentLength = 2f;
     [SerializeField] private int _minPathSegments = 5;
@@ -30,6 +31,10 @@ public class RoadSpawner : MonoBehaviour
         if (GenerateValidRoad())
         {
             road = _road;
+
+            var stump = Instantiate(_stumpPrefab, road[0], Quaternion.identity, transform);
+            stump.transform.LookAt(road[1]);
+
             return true;
         }
         else

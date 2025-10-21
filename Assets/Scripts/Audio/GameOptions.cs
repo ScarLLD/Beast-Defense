@@ -2,35 +2,43 @@ using UnityEngine;
 
 public class GameOptions : MonoBehaviour
 {
+    [SerializeField] private AudioSource _soundAudio;
+    [SerializeField] private AudioSource _musicAudio;
+
+    [Header("Icons")]
     [SerializeField] private GameObject _musicNegativeIcon;
     [SerializeField] private GameObject _soundNegativeIcon;
     [SerializeField] private GameObject _vibrationNegativeIcon;
 
-    private bool isSound = true;
-    private bool isMusic = true;
-    private bool isVibration = true;
+    private bool isSoundMuted = false;
+    private bool isMusicMuted = false;
+    private bool isVibrationDisabled = false;
+
+    private void Awake()
+    {
+        _soundAudio.mute = isSoundMuted;
+        _musicAudio.mute = isMusicMuted;
+    }
 
     public void ToggleSound()
     {
-        isSound = !isSound;
-        _soundNegativeIcon.SetActive(!isSound);
-        AudioListener.volume = isSound ? 1 : 0;
+        isSoundMuted = !isSoundMuted;
+        _soundNegativeIcon.SetActive(isSoundMuted);
 
+        _soundAudio.mute = isSoundMuted;
     }
 
     public void ToggleMusic()
     {
-        isMusic = !isMusic;
-        _musicNegativeIcon.SetActive(!isMusic);
+        isMusicMuted = !isMusicMuted;
+        _musicNegativeIcon.SetActive(isMusicMuted);
 
-        //int volume = isMusic ? 1 : 0;
-
-
+        _musicAudio.mute = isMusicMuted;
     }
 
     public void ToggleVibration()
     {
-        isVibration = !isVibration;
-        _vibrationNegativeIcon.SetActive(!isVibration);
+        isVibrationDisabled = !isVibrationDisabled;
+        _vibrationNegativeIcon.SetActive(isVibrationDisabled);
     }
 }
