@@ -77,15 +77,18 @@ public class Beast : MonoBehaviour
 
     public bool TryApproachNotify(float snakeSplinePosition)
     {
-        if (_targetPercentages.Count > 0 && _currentSplinePosition - snakeSplinePosition < _escapeThreshold)
+        if (_currentSplinePosition - snakeSplinePosition < _escapeThreshold)
         {
-            if (_moveCoroutine != null)
+            if (_targetPercentages.Count > 0)
             {
-                StopCoroutine(_moveCoroutine);
-                _moveCoroutine = null;
-            }
+                if (_moveCoroutine != null)
+                {
+                    StopCoroutine(_moveCoroutine);
+                    _moveCoroutine = null;
+                }
 
-            _moveCoroutine = StartCoroutine(MoveRoutine());
+                _moveCoroutine = StartCoroutine(MoveRoutine());
+            }
 
             return true;
         }

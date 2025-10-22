@@ -3,11 +3,25 @@ using UnityEngine;
 
 public class Wallet : MonoBehaviour
 {
+    [SerializeField] private Game _game;
+    [SerializeField] private int _victoryRewardCount = 5;
+
     private int _money;
 
     public int Money => _money;
 
     public event Action CountChanged;
+
+    private void OnEnable()
+    {
+        _game.Completed += OnGameCompleted;
+    }
+
+    private void OnDisable()
+    {
+        _game.Completed -= OnGameCompleted;
+    }
+
 
     private void Start()
     {
@@ -31,5 +45,10 @@ public class Wallet : MonoBehaviour
             _money = 0;
 
         CountChanged?.Invoke();
+    }
+
+    private void OnGameCompleted()
+    {
+        IncreaseMoney(_victoryRewardCount);
     }
 }
