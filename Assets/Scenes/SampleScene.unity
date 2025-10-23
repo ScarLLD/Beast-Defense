@@ -3125,7 +3125,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 45
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.65
@@ -6059,8 +6059,8 @@ MonoBehaviour:
   _cellPrefab: {fileID: 8177197784567442016, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
   _obstaclePrefab: {fileID: 4161744107708799639, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
   _stretchedObstaclePrefab: {fileID: 1295060935370253680, guid: ca6719bd2b335f349944975a0282fdc9, type: 3}
-  _rows: 8
-  _columns: 7
+  _rows: 3
+  _columns: 3
   _minZ: -12
   _maxZ: 10
   _gridExtraWidth: -4

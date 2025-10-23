@@ -41,7 +41,6 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started += FirstLaunch;
         _game.Continued += ContinueLaunch;
         _game.Restarted += Relaunch;
-        _game.Completed += TerminateGameObjects;
     }
 
     private void OnDisable()
@@ -49,7 +48,6 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started -= FirstLaunch;
         _game.Continued -= ContinueLaunch;
         _game.Restarted -= Relaunch;
-        _game.Completed -= TerminateGameObjects;
     }
 
     private void FirstLaunch()
@@ -66,12 +64,15 @@ public class LaunchSequencer : MonoBehaviour
     {
         _disabler.EnableObjects();
 
-        Debug.Log("Continue Launch");
-
         if (_game.HasCompleted)
+        {
+            TerminateGameObjects();
             Launch();
+        }
         else
+        {
             Relaunch();
+        }
     }
 
     private void TryGenerateGame()

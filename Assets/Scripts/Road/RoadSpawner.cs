@@ -13,6 +13,7 @@ public class RoadSpawner : MonoBehaviour
     private DirectionAnalyzer _directionAnalyzer;
     private RoadLimiter _limiter;
 
+    private GameObject _stump;
     private Vector3 _spawnPoint;
     private Vector3 _initialDirection;
     private readonly List<Vector3> _road = new();
@@ -32,8 +33,12 @@ public class RoadSpawner : MonoBehaviour
         {
             road = _road;
 
-            var stump = Instantiate(_stumpPrefab, road[0], Quaternion.identity, transform);
-            stump.transform.LookAt(road[1]);
+            if (_stump == null)
+                _stump = Instantiate(_stumpPrefab, road[0], Quaternion.identity, transform);
+            else
+                _stump.transform.position = road[0];
+
+            _stump.transform.LookAt(road[1]);
 
             return true;
         }
