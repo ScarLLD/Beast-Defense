@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class GameOverMenu : Window
 {
+    [SerializeField] private Game _game;
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _exitButton;
 

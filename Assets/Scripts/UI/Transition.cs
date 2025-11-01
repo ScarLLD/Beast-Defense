@@ -18,12 +18,17 @@ public class Transition : MonoBehaviour
     private Vector3 _spriteRightPosition;
     private AnimationCurve _animationCurve;
     private WaitForSeconds _sleep;
+
+    private Coroutine _transitionCoroutine;
     private Coroutine _moveCoroutine;
+
+    public bool IsTransiting { get; private set; }
 
     public event Action BackTransited;
 
     private void Awake()
     {
+        IsTransiting = false;
         SetSpriteOptions();
         _sleep = new WaitForSeconds(_holdTime);
     }
@@ -33,33 +38,65 @@ public class Transition : MonoBehaviour
         _text.text = text;
     }
 
-    public IEnumerator StartTransition(Color color)
+    public IEnumerator StartTransitionRoutine(Color color)
     {
-        _spriteImage.color = color;
-        _spriteImage.enabled = true;
-        _text.enabled = true;
-
-        yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteLeftPosition, _canvas.transform.position));
-        yield return _sleep;
+        yield return _transitionCoroutine ??= StartCoroutine(LeftToCenterTransitionRoutine(color));
     }
 
-    public IEnumerator StartBackTransition(Color color)
+    public IEnumerator StartBackTransitionRoutine(Color color)
     {
+        yield return _transitionCoroutine ??= StartCoroutine(RightToCenterTransitionRoutine(color));
+    }
+
+    public IEnumerator ContinueTransitionRoutine()
+    {
+        yield return _transitionCoroutine ??= StartCoroutine(CenterToRightTransitionRoutine());
+    }
+
+    public IEnumerator ContinueBackTransitionRoutine()
+    {
+        yield return _transitionCoroutine ??= StartCoroutine(CenterToLeftTransitionRoutine());
+    }
+
+    private IEnumerator LeftToCenterTransitionRoutine(Color color)
+    {
+        IsTransiting = true;
+
         _spriteImage.color = color;
         _spriteImage.enabled = true;
         _text.enabled = true;
 
-        yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position));
+        yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteLeftPosition, _canvas.transform.position));
         yield return _sleep;
+
+        _transitionCoroutine = null;
+        IsTransiting = false;
+    }
+
+    private IEnumerator RightToCenterTransitionRoutine(Color color)
+    {
+        IsTransiting = true;
+
+        _spriteImage.color = color;
+        _spriteImage.enabled = true;
+        _text.enabled = true;
+
+        yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position));
+        yield return _sleep;
+
+        _transitionCoroutine = null;
         BackTransited?.Invoke();
+        IsTransiting = false;
     }
 
-    public IEnumerator ContinueBackTransition()
+    private IEnumerator CenterToLeftTransitionRoutine()
     {
+        IsTransiting = true;
+
         if (_spriteImage.enabled == true)
         {
             yield return _sleep;
-            yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteLeftPosition));
+            yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteLeftPosition));
 
             _spriteImage.enabled = false;
         }
@@ -67,14 +104,19 @@ public class Transition : MonoBehaviour
         {
             _text.enabled = false;
         }
+
+        _transitionCoroutine = null;
+        IsTransiting = false;
     }
 
-    public IEnumerator ContinueTransition()
+    private IEnumerator CenterToRightTransitionRoutine()
     {
+        IsTransiting = true;
+
         if (_spriteImage.enabled == true)
         {
             yield return _sleep;
-            yield return _moveCoroutine ??= StartCoroutine(StartMove(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteRightPosition));
+            yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteRightPosition));
 
             _spriteImage.enabled = false;
         }
@@ -82,9 +124,12 @@ public class Transition : MonoBehaviour
         {
             _text.enabled = false;
         }
+
+        _transitionCoroutine = null;
+        IsTransiting = false;
     }
 
-    private IEnumerator StartMove(AnimationCurve animationCurve, Vector3 startPosition, Vector3 targetPosition)
+    private IEnumerator TransitionRoutine(AnimationCurve animationCurve, Vector3 startPosition, Vector3 targetPosition)
     {
         float timer = 0;
         _animationCurve = animationCurve;

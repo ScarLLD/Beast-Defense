@@ -38,86 +38,88 @@ public class LaunchSequencer : MonoBehaviour
 
     private void OnEnable()
     {
-        _game.Started += FirstLaunch;
-        _game.Continued += ContinueLaunch;
-        _game.Restarted += Relaunch;
+        _game.Started += OnGameStarted;
+        _game.Continued += OnGameContinued;
+        _game.Restarted += OnGameRestarted;
     }
 
     private void OnDisable()
     {
-        _game.Started -= FirstLaunch;
-        _game.Continued -= ContinueLaunch;
-        _game.Restarted -= Relaunch;
+        _game.Started -= OnGameStarted;
+        _game.Continued -= OnGameContinued;
+        _game.Restarted -= OnGameRestarted;
     }
 
-    private void FirstLaunch()
-    {
-        _disabler.EnableObjects();
-
-        if (_game.HasStarted == false)
-            Launch();
-        else
-            ContinueLaunch();
-    }
-
-    private void ContinueLaunch()
+    private void OnGameStarted()
     {
         _disabler.EnableObjects();
 
         if (_game.HasCompleted)
-        {
-            TerminateGameObjects();
-            Launch();
-        }
+            StartNewLevel();
+        else if (_game.HasStarted)
+            ContinueCurrentLevel();
         else
-        {
-            Relaunch();
-        }
+            StartNewLevel();
     }
 
-    private void TryGenerateGame()
-    {
-        if (_boundaryMaker.TryGeneratePathMarkers() && _gridCreator.TryCreate(out Vector3 cubeScale)
-                    && _placeSpawner.TryGeneratePlaces(cubeScale)
-                    && _cubeCreator.TryCreate(_boundaryMaker, _cubeStorage, _bulletSpawner, _targetStorage))
-        {
-            _availabilityManagement.UpdateAvailability();
-
-            if (_roadSpawner.TrySpawn(out List<Vector3> road)
-                && _splineCreator.TryCreateSpline(road, out _splineContainer)
-                && _splineVisualizer.TryGenerateRoadFromSpline(_splineContainer))
-            {
-                _beast = _beastSpawner.Spawn();
-                _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _splineContainer, _deathModule, _beast);
-                _slider.Init(_snake);
-
-                _beast.Init(_snake.MoveSpeed, _splineContainer);
-
-                _detector.transform.position = road[1] + Vector3.up * _snake.transform.localScale.y;
-                _detector.gameObject.SetActive(true);
-                _detector.EnableTrigger();
-            }
-        }
-    }
-
-    private void Relaunch()
+    private void OnGameContinued()
     {
         _disabler.EnableObjects();
 
-        if (_snake != null && _beast != null)
+        if (_game.HasCompleted)
+            StartNewLevel();
+        else
+            RestartCurrentLevel();
+    }
+
+    private void OnGameRestarted()
+    {
+        _disabler.EnableObjects();
+        RestartCurrentLevel();
+    }
+
+    private void StartNewLevel()
+    {
+        StartCoroutine(StartNewLevelRoutine());
+    }
+
+    private void ContinueCurrentLevel()
+    {
+        StartCoroutine(ContinueCurrentLevelRoutine());
+    }
+
+    private void RestartCurrentLevel()
+    {
+        StartCoroutine(RestartCurrentLevelRoutine());
+    }
+
+    private IEnumerator StartNewLevelRoutine()
+    {
+        yield return StartCoroutine(CleanupRoutine());
+
+        _gridCreator.Terminate();
+        _cubeCreator.Terminate();
+
+        if (TryGenerateLevel())
         {
-            StartCoroutine(RelaunchRoutine());
+            InitializeGameplay();
         }
     }
 
-    private void Launch()
+    private IEnumerator ContinueCurrentLevelRoutine()
     {
-        _disabler.EnableObjects();
-
-        StartCoroutine(LaunchRoutine());
+        yield return StartCoroutine(RestartCurrentLevelRoutine());
     }
 
-    private IEnumerator ClearRoutine()
+    private IEnumerator RestartCurrentLevelRoutine()
+    {
+        yield return StartCoroutine(CleanupRoutine());
+        _cubeCreator.Respawn();
+        _availabilityManagement.UpdateAvailability();
+        ResumeGameplay();
+    }
+
+    private IEnumerator CleanupRoutine()
     {
         if (_snake != null && _beast != null)
         {
@@ -129,32 +131,58 @@ public class LaunchSequencer : MonoBehaviour
         _bulletSpawner.Cleanup();
         _placeStorage.SetDefaultSettings();
         _targetStorage.Cleanup();
+        
     }
 
-    private IEnumerator LaunchRoutine()
+    private bool TryGenerateLevel()
     {
-        yield return StartCoroutine(ClearRoutine());
-        TryGenerateGame();
+        bool success = _boundaryMaker.TryGeneratePathMarkers()
+            && _gridCreator.TryCreate(out Vector3 cubeScale)
+            && _placeSpawner.TryGeneratePlaces(cubeScale)
+            && _cubeCreator.TryCreate(_boundaryMaker, _cubeStorage, _bulletSpawner, _targetStorage)
+            && _roadSpawner.TrySpawn(out List<Vector3> road)
+            && _splineCreator.TryCreateSpline(road, out _splineContainer)
+            && _splineVisualizer.TryGenerateRoadFromSpline(_splineContainer);
+
+        if (success)
+            _availabilityManagement.UpdateAvailability();
+
+        return success;
     }
 
-    private IEnumerator RelaunchRoutine()
+    private void InitializeGameplay()
     {
-        yield return StartCoroutine(ClearRoutine());
-        _cubeCreator.Respawn();
-        _availabilityManagement.UpdateAvailability();
+        SpawnCharacters();
+        SetupDetector();
+        StartGameplay();
+    }
+
+    private void ResumeGameplay()
+    {
         _snake.CreateSegmentsFromStacks(_cubeStorage.GetStacks());
-        _snake.StartMove();
+        StartGameplay();
     }
 
-    private void TerminateGameObjects()
+    private void SpawnCharacters()
     {
-        Destroy(_snake.gameObject);
-        _snake = null;
+        _beast = _beastSpawner.Spawn();
+        _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _splineContainer, _deathModule, _beast);
+        _slider.Init(_snake);
+        _beast.Init(_snake.MoveSpeed, _splineContainer);
+    }
 
-        Destroy(_beast.gameObject);
-        _beast = null;
+    private void SetupDetector()
+    {
+        if (_roadSpawner.LastSpawnedRoad != null && _roadSpawner.LastSpawnedRoad.Count > 1)
+        {
+            _detector.transform.position = _roadSpawner.LastSpawnedRoad[1] + Vector3.up * _snake.transform.localScale.y;
+            _detector.gameObject.SetActive(true);
+            _detector.EnableTrigger();
+        }
+    }
 
-        _gridCreator.Terminate();
-        _cubeCreator.Terminate();
+    private void StartGameplay()
+    {
+        _snake.StartMove();
     }
 }

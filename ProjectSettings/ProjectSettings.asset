@@ -77,7 +77,7 @@ PlayerSettings:
   androidFullscreenMode: 1
   defaultIsNativeResolution: 1
   macRetinaSupport: 1
-  runInBackground: 1
+  runInBackground: 0
   captureSingleScreen: 0
   muteOtherAudioSources: 0
   Prepare IOS For Recording: 0
@@ -379,7 +379,7 @@ PlayerSettings:
     m_DynamicBatching: 0
   - m_BuildTarget: Android
     m_StaticBatching: 1
-    m_DynamicBatching: 0
+    m_DynamicBatching: 1
   - m_BuildTarget: iPhone
     m_StaticBatching: 1
     m_DynamicBatching: 0
@@ -710,17 +710,17 @@ PlayerSettings:
   blurSplashScreenBackground: 1
   spritePackerPolicy: 
   webGLMemorySize: 16
-  webGLExceptionSupport: 1
+  webGLExceptionSupport: 2
   webGLNameFilesAsHashes: 0
   webGLShowDiagnostics: 0
   webGLDataCaching: 1
   webGLDebugSymbols: 0
   webGLEmscriptenArgs: 
   webGLModulesDirectory: 
-  webGLTemplate: APPLICATION:Default
+  webGLTemplate: PROJECT:YandexGames
   webGLAnalyzeBuildSize: 0
   webGLUseEmbeddedResources: 0
-  webGLCompressionFormat: 1
+  webGLCompressionFormat: 0
   webGLWasmArithmeticExceptions: 0
   webGLLinkerTarget: 1
   webGLThreadsSupport: 0
@@ -733,7 +733,17 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Standalone: DREAMTECK_SPLINES
+    Android: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    LinuxHeadlessSimulation: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    Nintendo Switch: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    PS4: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    PS5: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    Standalone: DREAMTECK_SPLINES;PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    WebGL: PLUGIN_YG_2;TMP_YG2;YandexGamesPlatform_yg;RU_YG2;Authorization_yg;Leaderboards_yg
+    Windows Store Apps: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    XboxOne: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    iPhone: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
+    tvOS: PLUGIN_YG_2;YandexGamesPlatform_yg;TMP_YG2;Authorization_yg;Leaderboards_yg
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
@@ -749,7 +759,7 @@ PlayerSettings:
     QNX: 1
     Stadia: 1
     VisionOS: 1
-    WebGL: 1
+    WebGL: 4
     Windows Store Apps: 1
     XboxOne: 1
     iPhone: 1

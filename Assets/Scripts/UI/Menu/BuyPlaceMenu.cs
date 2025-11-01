@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class BuyPlaceMenu : Window
 {
+    [SerializeField] private Game _game;
     [SerializeField] private Wallet _wallet;
     [SerializeField] private DeathModule _deathModule;
     [SerializeField] private PlaceSpawner _placeSpawner;

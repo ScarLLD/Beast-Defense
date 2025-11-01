@@ -9,6 +9,7 @@ public class Wallet : MonoBehaviour
     private int _money;
 
     public int Money => _money;
+    public int RewardMoneyCount => _victoryRewardCount;
 
     public event Action CountChanged;
 

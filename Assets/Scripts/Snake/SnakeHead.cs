@@ -40,9 +40,4 @@ public class SnakeHead : MonoBehaviour
     {
         _main.startSpeed = Mathf.Clamp(_originalSpeed * snakeSpeed, _minParticleSpeed, _maxParticleSpeed);
     }
-
-    public void DisableComponent()
-    {
-        this.enabled = false;
-    }
 }

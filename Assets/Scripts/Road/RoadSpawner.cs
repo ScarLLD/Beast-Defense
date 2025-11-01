@@ -18,6 +18,8 @@ public class RoadSpawner : MonoBehaviour
     private Vector3 _initialDirection;
     private readonly List<Vector3> _road = new();
 
+    public List<Vector3> LastSpawnedRoad => _road;
+
     private void Awake()
     {
         _directionAnalyzer = GetComponent<DirectionAnalyzer>();

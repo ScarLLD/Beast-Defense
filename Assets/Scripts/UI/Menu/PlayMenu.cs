@@ -1,5 +1,9 @@
+using UnityEngine;
+
 public class PlayMenu : Window
 {
+    [SerializeField] private Game _game;
+
     private void OnEnable()
     {
         _game.Started += EnableMenu;

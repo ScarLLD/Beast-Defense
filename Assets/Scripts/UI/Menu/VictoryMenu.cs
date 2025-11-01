@@ -1,14 +1,19 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class VictoryMenu : Window
 {
+    [SerializeField] private Wallet _wallet;
+    [SerializeField] private Game _game;
+    [SerializeField] private TMP_Text _text;
+
     [SerializeField] private Button _continueButton;
     [SerializeField] private Button _exitButton;
 
     private void OnEnable()
     {
-        _game.Completed += EnableMenu;
+        _game.Completed += OnGameCompleted;
         _game.Transited += DisableMenu;
 
         _continueButton.onClick.AddListener(OnContinuedButtonClick);
@@ -17,11 +22,18 @@ public class VictoryMenu : Window
 
     private void OnDisable()
     {
-        _game.Completed -= EnableMenu;
+        _game.Completed -= OnGameCompleted;
         _game.Transited -= DisableMenu;
 
         _continueButton.onClick.RemoveListener(OnContinuedButtonClick);
         _exitButton.onClick.RemoveListener(OnExitButtonClick);
+    }
+
+    private void OnGameCompleted()
+    {
+        EnableMenu();
+        _text.color = Color.green;
+        _text.text = $"{_wallet.Money} + {_wallet.RewardMoneyCount}";
     }
 
     private void OnContinuedButtonClick()

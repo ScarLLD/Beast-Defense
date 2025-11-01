@@ -25,18 +25,19 @@ public class Snake : MonoBehaviour
     private readonly List<SnakeSegment> _savedSegments = new();
     private readonly List<SnakeSegment> _playableSegments = new();
     private readonly Queue<SnakeSegment> _recoilQueue = new();
-    private float _splinePosition;
     private int _startSegmentsCount;
-    private bool _isRecoiling = false;
+    private float _splinePosition;
+    private float _splineLength;
     private SplineContainer _splineContainer;
     private SnakeSpeedControl _speedControl;
     private SnakeHead _head;
     private DeathModule _deathModule;
+    private Animator _animator;
+    private Vector3 _initialHeadSize;
     private Beast _beast;
-    private float _splineLength;
     private Coroutine _movementCoroutine;
     private Coroutine _recoilCoroutine;
-    private Animator _animator;
+    private bool _isRecoiling = false;
 
     public float MoveSpeed { get; private set; }
     public float NormalizedPosition { get; private set; }
@@ -45,6 +46,7 @@ public class Snake : MonoBehaviour
 
     private void Awake()
     {
+        _initialHeadSize = _headPrefab.transform.localScale;
         _speedControl = GetComponent<SnakeSpeedControl>();
     }
 
@@ -56,8 +58,9 @@ public class Snake : MonoBehaviour
         _splineContainer = splineContainer;
         _splineLength = _splineContainer.Spline.GetLength();
 
+        if (_head == null)
+            CreateHead();
 
-        CreateHead();
         CreateSegmentsFromStacks(stacks);
 
         SetDefaultSetting();
@@ -68,6 +71,7 @@ public class Snake : MonoBehaviour
     public void StartMove()
     {
         _animator.enabled = true;
+        _speedControl.StartControl();
         _movementCoroutine = StartCoroutine(SnakeMovement());
     }
 
@@ -107,10 +111,12 @@ public class Snake : MonoBehaviour
     {
         Cleanup();
 
-        _animator.StopPlayback();
-        _head.DisableComponent();
         MoveSpeed = _moveSpeed;
-        _speedControl.StartControl();
+        _animator.StopPlayback();
+        _head.enabled = false;
+        _head.transform.localScale = _initialHeadSize;
+        PlaceOnSpline(_head.transform, _splinePosition);
+
         _splinePosition = _startSplinePosition;
     }
 
@@ -128,9 +134,7 @@ public class Snake : MonoBehaviour
     private void CreateHead()
     {
         _head = Instantiate(_headPrefab, transform);
-
         _animator = _head.GetComponent<Animator>();
-        PlaceOnSpline(_head.transform, _splinePosition);
     }
 
     public void CreateSegmentsFromStacks(List<CubeStack> stacks)
@@ -218,6 +222,7 @@ public class Snake : MonoBehaviour
 
         if (_playableSegments.Count == 0)
         {
+            _head.enabled = false;
             _deathModule.KillSnake(_head.transform);
 
         }

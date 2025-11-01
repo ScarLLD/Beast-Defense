@@ -3,7 +3,6 @@ using UnityEngine;
 
 public abstract class Window : MonoBehaviour
 {
-    [SerializeField] protected Game _game;
     [SerializeField] protected List<GameObject> menu = new();
 
     protected void SwitchVisible(bool isActive)

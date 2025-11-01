@@ -41,7 +41,8 @@ public class Game : MonoBehaviour
 
     public void StartGame()
     {
-        StartRoutine(StartGameRoutine());
+        if (_transition.IsTransiting == false)
+            StartRoutine(StartGameRoutine());
     }
 
     public void ContinueGame()
@@ -89,9 +90,9 @@ public class Game : MonoBehaviour
     private IEnumerator StartGameRoutine()
     {
         _transition.SetText("Запуск");
-        yield return StartCoroutine(_transition.StartTransition(_goodMaterial.color));
+        yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color));
         Started?.Invoke();
-        yield return StartCoroutine(_transition.ContinueTransition());
+        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
         HasStarted = true;
         HasCompleted = false;
         IsPlaying = true;
@@ -102,7 +103,7 @@ public class Game : MonoBehaviour
     private IEnumerator ContinueGameRoutine()
     {
         Continued?.Invoke();
-        yield return StartCoroutine(_transition.ContinueTransition());
+        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
         Transited?.Invoke();
         HasCompleted = false;
         IsPlaying = true;
@@ -112,11 +113,11 @@ public class Game : MonoBehaviour
 
     private IEnumerator GameCompleteRoutine()
     {
+        IsPlaying = false;
+        HasCompleted = true;
         Completed?.Invoke();
         _transition.SetText(string.Empty);
-        yield return StartCoroutine(_transition.StartBackTransition(_goodMaterial.color));
-        HasCompleted = true;
-        IsPlaying = false;
+        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color));
         Debug.Log("Игра успешно окончена.");
         ClearRoutine();
     }
@@ -125,7 +126,7 @@ public class Game : MonoBehaviour
     {
         IsPlaying = false;
         Leaved?.Invoke();
-        yield return StartCoroutine(_transition.ContinueBackTransition());
+        yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
         Transited?.Invoke();
         Debug.Log("Игра покинута!");
         ClearRoutine();
@@ -134,11 +135,11 @@ public class Game : MonoBehaviour
     private IEnumerator FastGameLeaveRoutine()
     {
         _transition.SetText("Выход");
-        yield return StartCoroutine(_transition.StartBackTransition(_badMaterial.color));
+        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color));
         IsPlaying = false;
         HasCompleted = false;
         Leaved?.Invoke();
-        yield return StartCoroutine(_transition.ContinueBackTransition());
+        yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
         Debug.Log("Игра покинута!");
         ClearRoutine();
     }
@@ -149,7 +150,7 @@ public class Game : MonoBehaviour
         HasCompleted = false;
         Over?.Invoke();
         _transition.SetText(string.Empty);
-        yield return StartCoroutine(_transition.StartBackTransition(_badMaterial.color));
+        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color));
         Debug.Log($"Игра проиграна!");
         ClearRoutine();
     }
@@ -157,7 +158,7 @@ public class Game : MonoBehaviour
     private IEnumerator GameRestartRoutine()
     {
         Restarted.Invoke();
-        yield return StartCoroutine(_transition.ContinueTransition());
+        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
         Transited?.Invoke();
         IsPlaying = true;
         Debug.Log("Игра перезапущена!");

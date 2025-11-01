@@ -37,7 +37,6 @@ public class DeathModule : MonoBehaviour
         _particleModule.startColor = Color.red;
         yield return StartCoroutine(DeathRoutine(gameObject));
         SnakeDie?.Invoke();
-        //_game.CompleteGame();
     }
 
     private IEnumerator KillBeastRoutine(Transform gameObject)
@@ -45,7 +44,6 @@ public class DeathModule : MonoBehaviour
         _particleModule.startColor = Color.white;
         yield return StartCoroutine(DeathRoutine(gameObject));
         BeastDie?.Invoke();        
-        //_game.GameOver("Зверь погиб.");
     }
 
     public IEnumerator DeathRoutine(Transform gameObject)

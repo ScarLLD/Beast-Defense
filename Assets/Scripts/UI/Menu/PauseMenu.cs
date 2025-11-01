@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 public class PauseMenu : Window
 {
+    [SerializeField] private Game _game;
     [SerializeField] private GameOptions _gameOptions;
 
     [Header("Buttons")]
@@ -46,26 +48,26 @@ public class PauseMenu : Window
     private void OnPauseButtonClick()
     {
         EnableMenu();
-        _game.StopGameTime();
+        YG2.PauseGame(true, true, true, false, false);        
     }
 
     private void OnRestartButtonClick()
     {
         DisableMenu();
-        _game.ContinueGameTime();
+        YG2.PauseGame(false);
         _game.RestartGame();
     }
 
     private void OnExitButtonClick()
     {
         DisableMenu();
-        _game.ContinueGameTime();
+        YG2.PauseGame(false);
         _game.FastLeaveGame();
     }
 
     private void OnClosePauseButtonClick()
     {
         DisableMenu();
-        _game.ContinueGameTime();
+        YG2.PauseGame(false);
     }
 }
