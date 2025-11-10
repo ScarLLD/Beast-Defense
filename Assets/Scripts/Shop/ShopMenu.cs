@@ -3,10 +3,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LeaderBoardMenu : Window
+public class ShopMenu : Window
 {
     [SerializeField] private Transition _transition;
-    [SerializeField] private Material _leaderBoardMaterial;
+    [SerializeField] private Material _shopMaterial;
 
     [SerializeField] private Button _exitButton;
 
@@ -31,13 +31,13 @@ public class LeaderBoardMenu : Window
     public void Open()
     {
         if (_transition.IsTransiting == false)
-            StartCoroutine(OpenLeaderBoardRoutine());
+            StartCoroutine(OpenShop());
     }
 
-    private IEnumerator OpenLeaderBoardRoutine()
+    private IEnumerator OpenShop()
     {
         _transition.SetText("Загрузка");
-        yield return StartCoroutine(_transition.StartTransitionRoutine(_leaderBoardMaterial.color));
+        yield return StartCoroutine(_transition.StartTransitionRoutine(_shopMaterial.color));
         EnableMenu();
         Opened?.Invoke();
         yield return StartCoroutine(_transition.ContinueTransitionRoutine());
@@ -46,15 +46,15 @@ public class LeaderBoardMenu : Window
     private void OnExitButtonClick()
     {
         if (_transition.IsTransiting == false)
-            StartCoroutine(CloseLeaderBoardRoutine());
+            StartCoroutine(CloseShopRoutine());
     }
 
-    private IEnumerator CloseLeaderBoardRoutine()
+    private IEnumerator CloseShopRoutine()
     {
         if (_transition.IsTransiting == false)
         {
             _transition.SetText("Выход");
-            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_leaderBoardMaterial.color));
+            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_shopMaterial.color));
             Closed?.Invoke();
             DisableMenu();
             yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
