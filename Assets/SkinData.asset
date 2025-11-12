@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skins:
   - skinId: 1
-    skinName: Dog
+    skinName: "\u0421\u043E\u0431\u0430\u043A\u0430"
     price: 0
     icon: {fileID: 21300000, guid: 933481544243e0c408378db981bafa16, type: 3}
     model: {fileID: 5810283892473039631, guid: 0114a2b6fd1eb0943907f18cdcd87d58, type: 3}
     isDefault: 1
   - skinId: 2
-    skinName: Cat
+    skinName: "\u041A\u043E\u0448\u043A\u0430"
     price: 5
     icon: {fileID: 21300000, guid: 4bbae13532a358840b2f24009c3397da, type: 3}
     model: {fileID: 2758947536068452241, guid: 9b63809dfbe588845b39ac70f783e288, type: 3}
