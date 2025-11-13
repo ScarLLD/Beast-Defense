@@ -8,6 +8,7 @@ public class SkinShop : MonoBehaviour
 {
     [Header("Data")]
     [SerializeField] private SkinData _skinData;
+    [SerializeField] private Wallet _wallet;
 
     [Header("UI References")]
     [SerializeField] private Transform _skinsContainer;
@@ -21,9 +22,11 @@ public class SkinShop : MonoBehaviour
     [SerializeField] private TMP_Text _selectedSkinPrice;
     [SerializeField] private Button _buyButton;
     [SerializeField] private Button _selectButton;
+    [SerializeField] private TMP_Text _buyButtonText;
+    [SerializeField] private TMP_Text _selectButtonText;
     [SerializeField] private TMP_Text _actionButtonText;
 
-    private List<SkinItemUI> _skinItems = new List<SkinItemUI>();
+    private readonly List<SkinItemUI> _skinItems = new();
     private string _selectedSkinId;
     private string _equippedSkinId;
 
@@ -34,6 +37,7 @@ public class SkinShop : MonoBehaviour
     private void OnEnable()
     {
         InitializeShop();
+        SelectFirstSkin();
 
         _buyButton.onClick.AddListener(OnBuyButtonClick);
         _selectButton.onClick.AddListener(OnSelectButtonClick);
@@ -44,31 +48,32 @@ public class SkinShop : MonoBehaviour
     {
         _buyButton.onClick.RemoveListener(OnBuyButtonClick);
         _selectButton.onClick.RemoveListener(OnSelectButtonClick);
-        _closePreviewButton.onClick.RemoveListener(OnSelectButtonClick);
+        _closePreviewButton.onClick.RemoveListener(OnClosePreviewButtonClick);
     }
 
     private void InitializeShop()
     {
-        // Очищаем контейнер
         foreach (Transform child in _skinsContainer)
         {
             Destroy(child.gameObject);
         }
         _skinItems.Clear();
 
-        // Создаем элементы скинов
-        foreach (var skin in _skinData.skins)
-        {
-            SkinItemUI skinItem = Instantiate(_skinItemPrefab, _skinsContainer);
-            skinItem.Initialize(skin, this);
-            _skinItems.Add(skinItem);
-        }
-
-        // Загружаем сохраненные данные
         _equippedSkinId = PlayerPrefs.GetString(EQUIPPED_SKIN_KEY, GetDefaultSkinId());
         LoadPurchasedSkins();
 
-        // Выбираем первый скин по умолчанию
+        foreach (var skin in _skinData.skins)
+        {
+            SkinItemUI skinItem = Instantiate(_skinItemPrefab, _skinsContainer);
+            skinItem.Initialize(skin, this, _wallet);
+            _skinItems.Add(skinItem);
+
+            skinItem.UpdateEquippedState(_equippedSkinId);
+        }
+    }
+
+    private void SelectFirstSkin()
+    {
         if (_skinData.skins.Count > 0)
         {
             SelectSkin(_skinData.skins[0].skinId);
@@ -87,33 +92,32 @@ public class SkinShop : MonoBehaviour
 
         if (skin != null)
         {
-            // Обновляем превью
             _selectedSkinImage.sprite = skin.icon;
             _selectedSkinName.text = skin.skinName;
             _selectedSkinPrice.text = skin.isDefault ? "Бесплатно" : $"{skin.price} Монет";
 
-            // Проверяем статус скина
             bool isPurchased = IsSkinPurchased(skinId) || skin.isDefault;
             bool isEquipped = skinId == _equippedSkinId;
 
-            // Обновляем кнопки
             _buyButton.gameObject.SetActive(!isPurchased);
             _selectButton.gameObject.SetActive(isPurchased && !isEquipped);
 
             if (isEquipped)
             {
-                _actionButtonText.text = "Выбрано";
+                _selectButtonText.text = "ВЫБРАНО";
+                _selectButton.interactable = false;
             }
             else if (isPurchased)
             {
-                _actionButtonText.text = "Выбрать";
+                _selectButtonText.text = "ВЫБРАТЬ";
+                _selectButton.interactable = true;
             }
             else
             {
-                _actionButtonText.text = "Купить";
+                _buyButtonText.text = $"КУПИТЬ ЗА {skin.price}";
+                _buyButton.interactable = true;
             }
 
-            // Подсвечиваем выбранный скин
             foreach (var item in _skinItems)
             {
                 item.SetSelected(item.SkinId == skinId);
@@ -124,15 +128,18 @@ public class SkinShop : MonoBehaviour
     private void OnBuyButtonClick()
     {
         var skin = GetSkinById(_selectedSkinId);
+
         if (skin != null && !skin.isDefault)
         {
             BuySkin(_selectedSkinId);
+            UpdateUIAfterPurchase();
         }
     }
 
     private void OnSelectButtonClick()
     {
         EquipSkin(_selectedSkinId);
+        UpdateUIAfterSelection();
     }
 
     private void OnClosePreviewButtonClick()
@@ -143,15 +150,11 @@ public class SkinShop : MonoBehaviour
     private void BuySkin(string skinId)
     {
         var skin = GetSkinById(skinId);
-        if (skin == null || skin.isDefault) return;
 
-        int playerCoins = GetPlayerCoins();
-
-        if (playerCoins >= skin.price)
+        if (_wallet.Money >= skin.price)
         {
             SpendCoins(skin.price);
             SavePurchasedSkin(skinId);
-            SelectSkin(skinId);
 
             Debug.Log($"Купленый скин: {skin.skinName}");
         }
@@ -169,10 +172,28 @@ public class SkinShop : MonoBehaviour
             PlayerPrefs.SetString(EQUIPPED_SKIN_KEY, skinId);
             PlayerPrefs.Save();
 
-            SelectSkin(skinId);
-
             Debug.Log($"Выбраный скин: {GetSkinById(skinId).skinName}");
             ApplySkinToPlayer(skinId);
+        }
+    }
+
+    private void UpdateUIAfterPurchase()
+    {
+        SelectSkin(_selectedSkinId);
+
+        foreach (var item in _skinItems)
+        {
+            item.UpdatePurchaseState(IsSkinPurchased(item.SkinId));
+            item.UpdateEquippedState(_equippedSkinId);
+        }
+    }
+
+    private void UpdateUIAfterSelection()
+    {
+        SelectSkin(_selectedSkinId);
+        foreach (var item in _skinItems)
+        {
+            item.UpdateEquippedState(_equippedSkinId);
         }
     }
 
