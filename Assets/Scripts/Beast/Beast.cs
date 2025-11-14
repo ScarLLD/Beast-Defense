@@ -75,11 +75,6 @@ public class Beast : MonoBehaviour
         _rotateCoroutine = StartCoroutine(RotateToFace());
     }
 
-    public void RebindAimator()
-    {
-        _animator.RebindAimator();
-    }
-
     public bool TryApproachNotify(float snakeSplinePosition)
     {
         if (_currentSplinePosition - snakeSplinePosition < _escapeThreshold)

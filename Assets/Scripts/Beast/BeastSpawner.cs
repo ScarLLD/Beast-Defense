@@ -21,7 +21,7 @@ public class BeastSpawner : MonoBehaviour
         if (_beast == null)
         {
             _beast = Instantiate(_beastPrefab, _transform);
-            ApplyCurrentSkin(); // Применяем скин после спавна
+            ApplyCurrentSkin();
         }
 
         return _beast;

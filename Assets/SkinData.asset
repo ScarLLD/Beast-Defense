@@ -25,3 +25,9 @@ MonoBehaviour:
     Icon: {fileID: 21300000, guid: 4bbae13532a358840b2f24009c3397da, type: 3}
     Model: {fileID: 3178328844964472678, guid: 5babb8053d366e646b43757b5a04b368, type: 3}
     IsDefault: 0
+  - SkinId: 3
+    SkinName: "\u041A\u0440\u043E\u043B\u0438\u043A"
+    Price: 10
+    Icon: {fileID: 21300000, guid: 9e1b8ef3ec9e1174b9cea92a5bf9f16f, type: 3}
+    Model: {fileID: 5755404755753790267, guid: 1b14214240aa1064d91d32dbba69a80c, type: 3}
+    IsDefault: 0
