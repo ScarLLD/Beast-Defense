@@ -54,7 +54,6 @@ public class Wallet : MonoBehaviour
         if (_money >= count)
         {
             _money -= count;
-
             SaveMoney();
             CountChanged?.Invoke();
         }
