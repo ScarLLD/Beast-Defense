@@ -75,6 +75,11 @@ public class Beast : MonoBehaviour
         _rotateCoroutine = StartCoroutine(RotateToFace());
     }
 
+    public void RebindAimator()
+    {
+        _animator.RebindAimator();
+    }
+
     public bool TryApproachNotify(float snakeSplinePosition)
     {
         if (_currentSplinePosition - snakeSplinePosition < _escapeThreshold)
@@ -118,6 +123,7 @@ public class Beast : MonoBehaviour
     private IEnumerator MoveRoutine()
     {
         _animator.EnableAnimator(true);
+        _animator.ResetSettings();
         _animator.SetWalkBool(true);
 
         float currentTargetPercentage = _targetPercentages.Dequeue();

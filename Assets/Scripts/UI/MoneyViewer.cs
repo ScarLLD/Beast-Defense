@@ -22,6 +22,6 @@ public class MoneyViewer : MonoBehaviour
 
     private void DisplayCount()
     {
-        _text.text = _wallet.Money.ToString();
+        _text.text = _wallet.GetMoneyCount().ToString();
     }
 }

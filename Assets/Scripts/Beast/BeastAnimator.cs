@@ -18,6 +18,13 @@ public class BeastAnimator : MonoBehaviour
         _animator.Update(0f);
     }
 
+    public void RebindAimator()
+    {
+        //_animator.enabled = true;
+        _animator.Rebind();
+        _animator.Update(0f);
+    }
+
     public void EnableAnimator(bool value)
     {
         _animator.enabled = value;

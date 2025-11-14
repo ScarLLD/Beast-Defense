@@ -9,6 +9,7 @@ public class SkinShop : MonoBehaviour
     [Header("Data")]
     [SerializeField] private SkinData _skinData;
     [SerializeField] private Wallet _wallet;
+    [SerializeField] private BeastSpawner _beastSpawner;
 
     [Header("UI References")]
     [SerializeField] private Transform _skinsContainer;
@@ -18,6 +19,7 @@ public class SkinShop : MonoBehaviour
     [Header("Preview")]
     [SerializeField] private GameObject _preview;
     [SerializeField] private Image _selectedSkinImage;
+    [SerializeField] private Image _buyButtonImage;
     [SerializeField] private TMP_Text _selectedSkinName;
     [SerializeField] private TMP_Text _selectedSkinPrice;
     [SerializeField] private Button _buyButton;
@@ -30,14 +32,12 @@ public class SkinShop : MonoBehaviour
     private string _selectedSkinId;
     private string _equippedSkinId;
 
-    private const string COINS_KEY = "PlayerCoins";
     private const string EQUIPPED_SKIN_KEY = "EquippedSkin";
     private const string PURCHASED_SKINS_KEY = "PurchasedSkins";
 
     private void OnEnable()
     {
         InitializeShop();
-        SelectFirstSkin();
 
         _buyButton.onClick.AddListener(OnBuyButtonClick);
         _selectButton.onClick.AddListener(OnSelectButtonClick);
@@ -57,12 +57,13 @@ public class SkinShop : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+
         _skinItems.Clear();
 
         _equippedSkinId = PlayerPrefs.GetString(EQUIPPED_SKIN_KEY, GetDefaultSkinId());
         LoadPurchasedSkins();
 
-        foreach (var skin in _skinData.skins)
+        foreach (var skin in _skinData.Skins)
         {
             SkinItemUI skinItem = Instantiate(_skinItemPrefab, _skinsContainer);
             skinItem.Initialize(skin, this, _wallet);
@@ -70,13 +71,18 @@ public class SkinShop : MonoBehaviour
 
             skinItem.UpdateEquippedState(_equippedSkinId);
         }
+
+        var equppiedSkinId = PlayerPrefs.GetInt(EQUIPPED_SKIN_KEY);
+
+        if (equppiedSkinId < 0)
+            SelectFirstSkin();
     }
 
     private void SelectFirstSkin()
     {
-        if (_skinData.skins.Count > 0)
+        if (_skinData.Skins.Count > 0)
         {
-            SelectSkin(_skinData.skins[0].skinId);
+            SelectSkin(_skinData.Skins[0].SkinId);
         }
     }
 
@@ -88,48 +94,66 @@ public class SkinShop : MonoBehaviour
     public void SelectSkin(string skinId)
     {
         _selectedSkinId = skinId;
-        var skin = GetSkinById(skinId);
+        var skin = _skinData.GetSkinById(skinId);
 
         if (skin != null)
         {
-            _selectedSkinImage.sprite = skin.icon;
-            _selectedSkinName.text = skin.skinName;
-            _selectedSkinPrice.text = skin.isDefault ? "Áåñïëàòíî" : $"{skin.price} Ìîíåò";
+            _selectedSkinImage.sprite = skin.Icon;
+            _selectedSkinName.text = skin.SkinName;
 
-            bool isPurchased = IsSkinPurchased(skinId) || skin.isDefault;
+            bool isPurchased = IsSkinPurchased(skinId) || skin.IsDefault;
             bool isEquipped = skinId == _equippedSkinId;
+
+            if (skin.IsDefault)
+                _selectedSkinPrice.text = "Áåñïëàòíî";
+            else if (isPurchased)
+                _selectedSkinPrice.text = "Êóïëåíî";
+            else
+                _selectedSkinPrice.text = $"{skin.Price} Ìîíåò";
 
             _buyButton.gameObject.SetActive(!isPurchased);
             _selectButton.gameObject.SetActive(isPurchased && !isEquipped);
 
-            if (isEquipped)
+            if (isPurchased)
             {
-                _selectButtonText.text = "ÂÛÁÐÀÍÎ";
-                _selectButton.interactable = false;
-            }
-            else if (isPurchased)
-            {
-                _selectButtonText.text = "ÂÛÁÐÀÒÜ";
                 _selectButton.interactable = true;
             }
             else
             {
-                _buyButtonText.text = $"ÊÓÏÈÒÜ ÇÀ {skin.price}";
-                _buyButton.interactable = true;
+                if (_wallet.CanAfford(skin.Price))
+                {
+                    _buyButtonImage.color = Color.white;
+                    _buyButtonText.text = $"ÊÓÏÈÒÜ";
+                    _buyButton.interactable = true;
+                }
+                else
+                {
+                    _buyButtonImage.color = Color.black;
+                    _buyButtonText.text = $"ÍÅ ÕÂÀÒÀÅÒ ÌÎÍÅÒ";
+                    _buyButton.interactable = false;
+                }
             }
 
             foreach (var item in _skinItems)
             {
                 item.SetSelected(item.SkinId == skinId);
             }
+
+            _beastSpawner.UpdateSkin(_selectedSkinId);
         }
+    }
+
+    public bool IsSkinPurchased(string skinId)
+    {
+        string purchasedSkins = PlayerPrefs.GetString(PURCHASED_SKINS_KEY, "");
+        return purchasedSkins.Contains(skinId) || _skinData.GetSkinById(skinId).IsDefault;
     }
 
     private void OnBuyButtonClick()
     {
-        var skin = GetSkinById(_selectedSkinId);
+        var skin = _skinData.GetSkinById(_selectedSkinId);
 
-        if (skin != null && !skin.isDefault)
+        if (skin != null && !skin.IsDefault)
         {
             BuySkin(_selectedSkinId);
             UpdateUIAfterPurchase();
@@ -149,14 +173,14 @@ public class SkinShop : MonoBehaviour
 
     private void BuySkin(string skinId)
     {
-        var skin = GetSkinById(skinId);
+        var skin = _skinData.GetSkinById(skinId);
 
-        if (_wallet.Money >= skin.price)
+        if (_wallet.CanAfford(skin.Price))
         {
-            SpendCoins(skin.price);
+            _wallet.DecreaseMoney(skin.Price);
             SavePurchasedSkin(skinId);
 
-            Debug.Log($"Êóïëåíûé ñêèí: {skin.skinName}");
+            Debug.Log($"Êóïëåíûé ñêèí: {skin.SkinName}");
         }
         else
         {
@@ -166,13 +190,13 @@ public class SkinShop : MonoBehaviour
 
     private void EquipSkin(string skinId)
     {
-        if (IsSkinPurchased(skinId) || GetSkinById(skinId).isDefault)
+        if (IsSkinPurchased(skinId) || _skinData.GetSkinById(skinId).IsDefault)
         {
             _equippedSkinId = skinId;
             PlayerPrefs.SetString(EQUIPPED_SKIN_KEY, skinId);
             PlayerPrefs.Save();
 
-            Debug.Log($"Âûáðàíûé ñêèí: {GetSkinById(skinId).skinName}");
+            Debug.Log($"Âûáðàíûé ñêèí: {_skinData.GetSkinById(skinId).SkinName}");
             ApplySkinToPlayer(skinId);
         }
     }
@@ -199,28 +223,17 @@ public class SkinShop : MonoBehaviour
 
     private void ApplySkinToPlayer(string skinId)
     {
-        var skin = GetSkinById(skinId);
-        if (skin != null && skin.model != null)
+        var skin = _skinData.GetSkinById(skinId);
+        if (skin != null && skin.Model != null)
         {
-            Debug.Log($"Ïðèìåíåí: {skin.skinName}");
+            Debug.Log($"Ïðèìåíåí: {skin.SkinName}");
         }
-    }
-
-    private SkinData.Skin GetSkinById(string skinId)
-    {
-        return _skinData.skins.Find(skin => skin.skinId == skinId);
     }
 
     private string GetDefaultSkinId()
     {
-        var defaultSkin = _skinData.skins.Find(skin => skin.isDefault);
-        return defaultSkin?.skinId ?? _skinData.skins[0].skinId;
-    }
-
-    private bool IsSkinPurchased(string skinId)
-    {
-        string purchasedSkins = PlayerPrefs.GetString(PURCHASED_SKINS_KEY, "");
-        return purchasedSkins.Contains(skinId) || GetSkinById(skinId).isDefault;
+        var defaultSkin = _skinData.Skins.Find(skin => skin.IsDefault);
+        return defaultSkin?.SkinId ?? _skinData.Skins[0].SkinId;
     }
 
     private void SavePurchasedSkin(string skinId)
@@ -236,24 +249,12 @@ public class SkinShop : MonoBehaviour
 
     private void LoadPurchasedSkins()
     {
-        foreach (var skin in _skinData.skins)
+        foreach (var skin in _skinData.Skins)
         {
-            if (skin.isDefault)
+            if (skin.IsDefault)
             {
-                SavePurchasedSkin(skin.skinId);
+                SavePurchasedSkin(skin.SkinId);
             }
         }
-    }
-
-    private int GetPlayerCoins()
-    {
-        return PlayerPrefs.GetInt(COINS_KEY, 1000);
-    }
-
-    private void SpendCoins(int amount)
-    {
-        int currentCoins = GetPlayerCoins();
-        PlayerPrefs.SetInt(COINS_KEY, currentCoins - amount);
-        PlayerPrefs.Save();
     }
 }

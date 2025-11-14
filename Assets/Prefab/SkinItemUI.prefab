@@ -611,6 +611,7 @@ MonoBehaviour:
   _background: {fileID: 6701442327105746617}
   _selectedFrame: {fileID: 7932660829539683511}
   _priceText: {fileID: 8276891917976666958}
+  _priceParent: {fileID: 1798843487448834608}
   _purchasedOverlay: {fileID: 2531452990052219506}
   _equippedBadge: {fileID: 9143927629797518117}
 --- !u!1 &7971576670434009026

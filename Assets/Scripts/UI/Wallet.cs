@@ -6,10 +6,12 @@ public class Wallet : MonoBehaviour
     [SerializeField] private Game _game;
     [SerializeField] private int _victoryRewardCount = 5;
 
+    private const string MONEY_KEY = "PlayerMoney";
+
     private int _money;
 
-    public int Money => _money;
-    public int RewardMoneyCount => _victoryRewardCount;
+    public int GetMoneyCount() => _money;
+    public int GetRewardMoneyCount() => _victoryRewardCount;
 
     public event Action CountChanged;
 
@@ -23,33 +25,54 @@ public class Wallet : MonoBehaviour
         _game.Completed -= OnGameCompleted;
     }
 
-
     private void Start()
     {
-        _money = 2;
+        LoadMoney();
         CountChanged?.Invoke();
+    }
+
+    public bool CanAfford(int amount)
+    {
+        return _money >= amount;
     }
 
     public void IncreaseMoney(int count)
     {
-        _money += count;
+        if (count < 0)
+            return;
 
+        _money += count;
+        SaveMoney();
         CountChanged?.Invoke();
     }
 
     public void DecreaseMoney(int count)
     {
+        if (count < 0)
+            return;
+
         if (_money >= count)
+        {
             _money -= count;
 
-        if (_money < 0)
-            _money = 0;
-
-        CountChanged?.Invoke();
+            SaveMoney();
+            CountChanged?.Invoke();
+        }
     }
 
     private void OnGameCompleted()
     {
         IncreaseMoney(_victoryRewardCount);
+    }
+
+    private void LoadMoney()
+    {
+        _money = PlayerPrefs.GetInt(MONEY_KEY, 5);
+    }
+
+    private void SaveMoney()
+    {
+        PlayerPrefs.SetInt(MONEY_KEY, _money);
+        PlayerPrefs.Save();
     }
 }

@@ -79,7 +79,7 @@ public class BuyPlaceMenu : Window
     {
         _placePriceText.text = _placePrice.ToString();
 
-        if (_wallet.Money >= _placePrice)
+        if (_wallet.CanAfford(_placePrice))
         {
             _placePriceText.color = _enoughMoneyColor;
             _buyButton.interactable = true;

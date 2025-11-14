@@ -33,7 +33,7 @@ public class VictoryMenu : Window
     {
         EnableMenu();
         _text.color = Color.green;
-        _text.text = $"{_wallet.Money} + {_wallet.RewardMoneyCount}";
+        _text.text = $"{_wallet.GetMoneyCount()} + {_wallet.GetMoneyCount()}";
     }
 
     private void OnContinuedButtonClick()

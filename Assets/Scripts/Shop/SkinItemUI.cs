@@ -10,6 +10,7 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Image _background;
     [SerializeField] private Image _selectedFrame;
     [SerializeField] private TextMeshProUGUI _priceText;
+    [SerializeField] private GameObject _priceParent;
     [SerializeField] private GameObject _purchasedOverlay;
     [SerializeField] private GameObject _equippedBadge;
 
@@ -17,7 +18,7 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     private SkinData.Skin _skin;
     private Wallet _wallet;
 
-    public string SkinId => _skin?.skinId;
+    public string SkinId => _skin?.SkinId;
 
     public void Initialize(SkinData.Skin skinData, SkinShop skinShop, Wallet wallet)
     {
@@ -25,20 +26,18 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
         _shop = skinShop;
         _wallet = wallet;
 
-        // Настройка внешнего вида
-        _skinIcon.sprite = _skin.icon;
+        _skinIcon.sprite = _skin.Icon;
 
-        if (_skin.isDefault)
+        if (_skin.IsDefault || _shop.IsSkinPurchased(_skin.SkinId))
         {
-            _priceText.text = "0";
-            _priceText.color = Color.green;
             _purchasedOverlay.SetActive(true);
+            _priceParent.SetActive(false);
         }
         else
         {
-            _priceText.text = $"{_skin.price}";
+            _priceText.text = $"{_skin.Price}";
 
-            if (_wallet.Money >= _skin.price)
+            if (_wallet.CanAfford(_skin.Price))
                 _priceText.color = Color.green;
             else
                 _priceText.color = Color.red;
@@ -46,13 +45,12 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
             _purchasedOverlay.SetActive(false);
         }
 
-        // Первоначальное состояние
         SetSelected(false);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        _shop.SelectSkin(_skin.skinId);
+        _shop.SelectSkin(_skin.SkinId);
         _shop.OpenPreview();
     }
 
@@ -69,7 +67,7 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     {
         if (_equippedBadge != null)
         {
-            _equippedBadge.SetActive(_skin.skinId == equippedSkinId);
+            _equippedBadge.SetActive(_skin.SkinId == equippedSkinId);
         }
     }
 
@@ -77,21 +75,23 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     {
         if (_purchasedOverlay != null)
         {
-            _purchasedOverlay.SetActive(isPurchased || _skin.isDefault);
+            Debug.Log("PurshaseStateUpdated");
+            _purchasedOverlay.SetActive(isPurchased || _skin.IsDefault);
+            _priceParent.SetActive(isPurchased == false && _skin.IsDefault == false);
         }
 
         if (_priceText != null)
         {
-            if (isPurchased || _skin.isDefault)
+            if (isPurchased || _skin.IsDefault)
             {
-                _priceText.text = "КУПЛЕНО";
+                _priceText.text = "Есть";
                 _priceText.color = Color.green;
             }
-            else if (_wallet.Money >= _skin.price)
+            else
             {
-                _priceText.text = $"{_skin.price}";
+                _priceText.text = $"{_skin.Price}";
 
-                if (_wallet.Money >= _skin.price)
+                if (_wallet.CanAfford(_skin.Price))
                     _priceText.color = Color.green;
                 else
                     _priceText.color = Color.red;
