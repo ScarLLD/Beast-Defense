@@ -25,15 +25,16 @@ public class Wallet : MonoBehaviour
         _game.Completed -= OnGameCompleted;
     }
 
-    private void Start()
+    private void Awake()
     {
         LoadMoney();
         CountChanged?.Invoke();
     }
 
-    public bool CanAfford(int amount)
+    public bool CanAfford(int count)
     {
-        return _money >= amount;
+        Debug.Log($"{_money} - {count}");
+        return _money >= count;
     }
 
     public void IncreaseMoney(int count)
@@ -66,7 +67,7 @@ public class Wallet : MonoBehaviour
 
     private void LoadMoney()
     {
-        _money = PlayerPrefs.GetInt(MONEY_KEY, 5);
+        _money = PlayerPrefs.GetInt(MONEY_KEY, 10);
     }
 
     private void SaveMoney()

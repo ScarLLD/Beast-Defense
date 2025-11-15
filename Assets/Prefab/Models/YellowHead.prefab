@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 3711113444163795780}
   - component: {fileID: 6223724126878729202}
   m_Layer: 0
-  m_Name: Head
+  m_Name: YellowHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -297,8 +297,8 @@ Transform:
   m_LocalScale: {x: 1.2, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4105512885913596272}
   - {fileID: 5328915514762767645}
+  - {fileID: 4105512885913596272}
   - {fileID: 2275002656676982593}
   - {fileID: 1376043463029193154}
   - {fileID: 4854957739120315978}

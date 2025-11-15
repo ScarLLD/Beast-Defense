@@ -30,7 +30,7 @@ public class LevelHolder : MonoBehaviour
 
     private void LoadLevel()
     {
-        _levelNumber = PlayerPrefs.GetInt(LEVEL_KEY, 1);
+        _levelNumber = PlayerPrefs.GetInt(LEVEL_KEY, 2);
     }
 
     private void SaveLevel()

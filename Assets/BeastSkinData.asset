@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9eba96c2f29f1d439b943179d3695ea, type: 3}
-  m_Name: SkinData
+  m_Name: BeastSkinData
   m_EditorClassIdentifier: 
   Skins:
   - SkinId: 1
@@ -32,6 +32,12 @@ MonoBehaviour:
     Model: {fileID: 4329713117740557349, guid: 9b090ea0cbdd2ac4e899cd3f5d7955cf, type: 3}
     IsDefault: 0
   - SkinId: 4
+    SkinName: "\u041F\u0435\u0442\u0443\u0445"
+    Price: 12
+    Icon: {fileID: 21300000, guid: 8314cd2d96eac824294d50004ee7deb8, type: 3}
+    Model: {fileID: 7083394021449318949, guid: d48e12b57d6e8354db38b2f199f5014c, type: 3}
+    IsDefault: 0
+  - SkinId: 5
     SkinName: "\u041A\u043E\u0448\u043A\u0430"
     Price: 15
     Icon: {fileID: 21300000, guid: 4bbae13532a358840b2f24009c3397da, type: 3}

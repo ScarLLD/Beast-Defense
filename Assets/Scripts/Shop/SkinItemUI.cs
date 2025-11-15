@@ -17,40 +17,41 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     private SkinShop _shop;
     private SkinData.Skin _skin;
     private Wallet _wallet;
+    private SkinShop.SkinType _skinType;
 
     public string SkinId => _skin?.SkinId;
+    public SkinShop.SkinType SkinType => _skinType;
 
-    public void Initialize(SkinData.Skin skinData, SkinShop skinShop, Wallet wallet)
+    public void Initialize(SkinData.Skin skin, SkinShop shop, Wallet wallet, SkinShop.SkinType skinType)
     {
-        _skin = skinData;
-        _shop = skinShop;
         _wallet = wallet;
+        _skin = skin;
+        _shop = shop;
+        _skinType = skinType;
+        _skinIcon.sprite = skin.Icon;
 
-        _skinIcon.sprite = _skin.Icon;
-
-        if (_skin.IsDefault || _shop.IsSkinPurchased(_skin.SkinId))
+        if (skin.IsDefault)
         {
+            _priceText.text = "0";
+            _priceText.color = Color.green;
             _purchasedOverlay.SetActive(true);
             _priceParent.SetActive(false);
         }
         else
         {
-            _priceText.text = $"{_skin.Price}";
-
-            if (_wallet.CanAfford(_skin.Price))
-                _priceText.color = Color.green;
-            else
-                _priceText.color = Color.red;
-
+            _priceText.text = $"{skin.Price}";
             _purchasedOverlay.SetActive(false);
+
+            _priceText.color = Color.white;
         }
 
         SetSelected(false);
+        UpdatePurchaseState(_shop.IsSkinPurchased(skin.SkinId, skinType));
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        _shop.SelectSkin(_skin.SkinId);
+        _shop.SelectSkin(_skin.SkinId, _skinType);
         _shop.OpenPreview();
     }
 
@@ -63,39 +64,28 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
             _background.color = selected ? new Color(0.8f, 0.8f, 1f) : Color.white;
     }
 
-    public void UpdateEquippedState(string equippedSkinId)
+    public void UpdatePurchaseState(bool isPurchased)
     {
-        if (_equippedBadge != null)
+        if (isPurchased || _skin.IsDefault)
         {
-            _equippedBadge.SetActive(_skin.SkinId == equippedSkinId);
+            _priceParent.SetActive(false);
+            _purchasedOverlay.SetActive(true);
+        }
+        else
+        {
+            _priceParent.SetActive(true);
+            _purchasedOverlay.SetActive(false);
+
+            bool canAfford = _wallet.CanAfford(_skin.Price);
+            _priceText.color = canAfford ? Color.green : Color.red;
         }
     }
 
-    public void UpdatePurchaseState(bool isPurchased)
+    public void UpdateEquippedState(string equippedSkinId, SkinShop.SkinType type)
     {
-        if (_purchasedOverlay != null)
+        if (_equippedBadge != null)
         {
-            Debug.Log("PurshaseStateUpdated");
-            _purchasedOverlay.SetActive(isPurchased || _skin.IsDefault);
-            _priceParent.SetActive(isPurchased == false && _skin.IsDefault == false);
-        }
-
-        if (_priceText != null)
-        {
-            if (isPurchased || _skin.IsDefault)
-            {
-                _priceText.text = "Есть";
-                _priceText.color = Color.green;
-            }
-            else
-            {
-                _priceText.text = $"{_skin.Price}";
-
-                if (_wallet.CanAfford(_skin.Price))
-                    _priceText.color = Color.green;
-                else
-                    _priceText.color = Color.red;
-            }
+            _equippedBadge.SetActive(_skin.SkinId == equippedSkinId && _skinType == type);
         }
     }
 }

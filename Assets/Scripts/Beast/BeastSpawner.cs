@@ -56,6 +56,5 @@ public class BeastSpawner : MonoBehaviour
 
         var model = Instantiate(skinModelPrefab, _beast.transform);
         model.name = "beastModel";
-        //_beast.RebindAimator();
     }
 }
