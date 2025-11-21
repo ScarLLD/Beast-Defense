@@ -20,7 +20,10 @@ public class SnakeSpawner : MonoBehaviour
     public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
     {
         if (_snake == null)
+        {
             _snake = Instantiate(_snakePrefab, _transform);
+            ApplyCurrentSkin();
+        }
 
         _snake.InitializeSnake(stacks, splineContainer, deathModule, beast);
 
@@ -49,11 +52,13 @@ public class SnakeSpawner : MonoBehaviour
 
     private void ApplySkinModel(GameObject skinModelPrefab)
     {
-        foreach (Transform child in _snake.transform)
+        Transform modelContainer = _snake.ModelContainer;
+
+        foreach (Transform child in modelContainer)
         {
             Destroy(child.gameObject);
         }
 
-        Instantiate(skinModelPrefab, _snake.transform);
+        Instantiate(skinModelPrefab, modelContainer);
     }
 }

@@ -16,36 +16,36 @@ MonoBehaviour:
   - SkinId: 1
     SkinName: "\u042F\u0440\u043E\u0441\u0442\u044C"
     Price: 0
-    Icon: {fileID: 21300000, guid: 623d6b14a8783e44c9f3bd83a3a4bd40, type: 3}
-    Model: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
+    Icon: {fileID: 21300000, guid: b2a663c44918f08459833d99fd2eb696, type: 3}
+    Model: {fileID: 450394965000000414, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
     IsDefault: 1
   - SkinId: 2
     SkinName: "\u0421\u043A\u043E\u0440\u043E\u0441\u0442\u044C"
     Price: 4
-    Icon: {fileID: 21300000, guid: 383cb72bafaadd343b1ba886d096858e, type: 3}
-    Model: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
+    Icon: {fileID: 21300000, guid: ab82315622585254eb7ba6decf9f94f1, type: 3}
+    Model: {fileID: 450394965000000414, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
     IsDefault: 0
   - SkinId: 3
     SkinName: "\u0421\u043C\u0435\u0440\u0442\u044C"
     Price: 6
-    Icon: {fileID: 21300000, guid: 697f274b8bb83a647bf33666517750bf, type: 3}
-    Model: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
+    Icon: {fileID: 21300000, guid: 123b832672ec41a428fab6b43a4e22e4, type: 3}
+    Model: {fileID: 450394965000000414, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
     IsDefault: 0
   - SkinId: 4
     SkinName: "\u0410\u0434"
     Price: 12
-    Icon: {fileID: 21300000, guid: 4bc8d594806d65a45a22a261d2142dd7, type: 3}
-    Model: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
-    IsDefault: 0
+    Icon: {fileID: 21300000, guid: 9c08761f8251ab945825ccc3440ec113, type: 3}
+    Model: {fileID: 450394965000000414, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
+    IsDefault: 1
   - SkinId: 5
     SkinName: "\u042F\u0440\u043E\u0441\u0442\u044C"
     Price: 16
     Icon: {fileID: 21300000, guid: c87f97d3a0e8b9747b0829c85b59767b, type: 3}
-    Model: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
+    Model: {fileID: 450394965000000414, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
     IsDefault: 0
   - SkinId: 6
     SkinName: "\u041A\u0438\u0441\u043B\u043E\u0442\u0430"
     Price: 20
-    Icon: {fileID: 21300000, guid: e9eddee54280ccf4f8d19c722dff6731, type: 3}
-    Model: {fileID: 8539728604471306619, guid: 25b82ea11c9dede4abc9dbc7496eddf9, type: 3}
+    Icon: {fileID: 21300000, guid: 160b31d944fbebb44a08da3b556b48a5, type: 3}
+    Model: {fileID: 450394965000000414, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
     IsDefault: 0

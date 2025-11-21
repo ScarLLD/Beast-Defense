@@ -8,6 +8,9 @@ using UnityEngine.Splines;
 public class Snake : MonoBehaviour
 {
     [Header("Snake Settings")]
+    [SerializeField] private Animator _animator;
+    [SerializeField] private SnakeHead _head;
+    [SerializeField] private Transform _modelContainer;
     [SerializeField] private float _moveSpeed = 2f;
     [SerializeField] private float _moveBackSpeed = 20f;
     [SerializeField] private float _segmentDistance = 1.15f;
@@ -16,7 +19,6 @@ public class Snake : MonoBehaviour
 
     [Header("Prefabs")]
     [SerializeField] private SnakeSegment _segmentPrefab;
-    [SerializeField] private SnakeHead _headPrefab;
 
     [Header("Recoil Settings")]
     [SerializeField] private float _recoilDuration = 0.3f;
@@ -30,9 +32,7 @@ public class Snake : MonoBehaviour
     private float _splineLength;
     private SplineContainer _splineContainer;
     private SnakeSpeedControl _speedControl;
-    private SnakeHead _head;
     private DeathModule _deathModule;
-    private Animator _animator;
     private Vector3 _initialHeadSize;
     private Beast _beast;
     private Coroutine _movementCoroutine;
@@ -41,12 +41,13 @@ public class Snake : MonoBehaviour
 
     public float MoveSpeed { get; private set; }
     public float NormalizedPosition { get; private set; }
+    public Transform ModelContainer => _modelContainer;
 
     public event Action<float, float> SegmentsCountChanged;
 
     private void Awake()
     {
-        _initialHeadSize = _headPrefab.transform.localScale;
+        _initialHeadSize = _head.transform.localScale;
         _speedControl = GetComponent<SnakeSpeedControl>();
     }
 
@@ -57,9 +58,6 @@ public class Snake : MonoBehaviour
         MoveSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _splineLength = _splineContainer.Spline.GetLength();
-
-        if (_head == null)
-            CreateHead();
 
         CreateSegmentsFromStacks(stacks);
 
@@ -129,12 +127,6 @@ public class Snake : MonoBehaviour
         }
 
         _recoilQueue.Clear();
-    }
-
-    private void CreateHead()
-    {
-        _head = Instantiate(_headPrefab, transform);
-        _animator = _head.GetComponent<Animator>();
     }
 
     public void CreateSegmentsFromStacks(List<CubeStack> stacks)

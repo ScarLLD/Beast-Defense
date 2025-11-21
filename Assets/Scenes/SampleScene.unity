@@ -3110,7 +3110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _snakePrefab: {fileID: 1056603179970402766, guid: d9447595fb08d8241add5f1bf8bfca5a, type: 3}
-  _skinData: {fileID: 0}
+  _skinData: {fileID: 11400000, guid: 2e302c663f92e6e449109fd2a34ac5c4, type: 2}
   _targetStorage: {fileID: 9171917265129906606}
 --- !u!1 &442903041
 GameObject:
@@ -3981,8 +3981,8 @@ RectTransform:
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1005203036}
   - {fileID: 5816739}
+  - {fileID: 1005203036}
   - {fileID: 1837600340}
   - {fileID: 978269870}
   m_Father: {fileID: 379796945}
