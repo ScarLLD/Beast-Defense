@@ -67,7 +67,7 @@ public class Wallet : MonoBehaviour
 
     private void LoadMoney()
     {
-        _money = PlayerPrefs.GetInt(MONEY_KEY, 10);
+        _money = PlayerPrefs.GetInt(MONEY_KEY, 40);
     }
 
     private void SaveMoney()

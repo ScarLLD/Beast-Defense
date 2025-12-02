@@ -7,6 +7,7 @@ using UnityEngine.Splines;
 public class LaunchSequencer : MonoBehaviour
 {
     [SerializeField] private Game _game;
+    [SerializeField] private SliderLevelViewer _levelViewer;
     [SerializeField] private GameObjectsDisabler _disabler;
 
     [Header("Spawners")]
@@ -102,6 +103,7 @@ public class LaunchSequencer : MonoBehaviour
 
         if (TryGenerateLevel())
         {
+            _levelViewer.DisplayText();
             InitializeGameplay();
         }
     }
@@ -131,7 +133,7 @@ public class LaunchSequencer : MonoBehaviour
         _bulletSpawner.Cleanup();
         _placeStorage.SetDefaultSettings();
         _targetStorage.Cleanup();
-        
+
     }
 
     private bool TryGenerateLevel()

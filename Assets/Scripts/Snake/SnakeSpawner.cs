@@ -17,6 +17,34 @@ public class SnakeSpawner : MonoBehaviour
         _transform = transform;
     }
 
+    private void Start()
+    {
+        LoadCurrentSkin();
+    }
+
+    private void LoadCurrentSkin()
+    {
+        string savedSkinId = PlayerPrefs.GetString("EquippedSnakeSkin", "");
+
+        if (string.IsNullOrEmpty(savedSkinId) == false)
+        {
+            var skin = _skinData.GetSkinById(savedSkinId);
+
+            if (skin != null)
+            {
+                _currentSkinId = savedSkinId;
+            }
+            else
+            {
+                _currentSkinId = _skinData.GetDefaultSkinId();
+            }
+        }
+        else
+        {
+            _currentSkinId = _skinData.GetDefaultSkinId();
+        }
+    }
+
     public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
     {
         if (_snake == null)
@@ -32,12 +60,18 @@ public class SnakeSpawner : MonoBehaviour
 
     public void UpdateSkin(string skinId)
     {
+        if (_currentSkinId == skinId)
+            return;
+
         _currentSkinId = skinId;
 
         if (_snake != null)
         {
             ApplyCurrentSkin();
         }
+
+        PlayerPrefs.SetString("EquippedSkin", _currentSkinId);
+        PlayerPrefs.Save();
     }
 
     private void ApplyCurrentSkin()
@@ -54,11 +88,14 @@ public class SnakeSpawner : MonoBehaviour
     {
         Transform modelContainer = _snake.ModelContainer;
 
+        Debug.Log(modelContainer.name);
+
         foreach (Transform child in modelContainer)
         {
             Destroy(child.gameObject);
         }
 
-        Instantiate(skinModelPrefab, modelContainer);
+        var model = Instantiate(skinModelPrefab, modelContainer);
+        model.name = "snakeModel";
     }
 }

@@ -28,17 +28,55 @@ public class SnakeSpeedControl : MonoBehaviour
         _snake = GetComponent<Snake>();
     }
 
+    private void OnEnable()
+    {
+        ResetSnakeSpeed();
+    }
+
     private void OnDisable()
     {
         EndControl();
+        ResetSnakeSpeed();
+    }
+
+    private void ResetSnakeSpeed()
+    {
+        if (_snake != null)
+        {
+            float baseSpeed = GetSnakeBaseSpeed();
+            _snake.ChangeSpeed(baseSpeed);
+        }
+    }
+
+    private float GetSnakeBaseSpeed()
+    {
+        return _snake.BaseSpeed > 0 ? _snake.BaseSpeed : _snake.MoveSpeed;
     }
 
     public void StartControl()
     {
+        // Мгновенно сбрасываем скорость при старте контроля
+        InstantResetSpeed();
+
         if (_controlCoroutine != null)
             StopCoroutine(_controlCoroutine);
 
         _controlCoroutine = StartCoroutine(ControlSpeed());
+    }
+
+    // Новый метод для мгновенного сброса скорости
+    public void InstantResetSpeed()
+    {
+        _initialSpeed = GetSnakeBaseSpeed();
+        _snake.ChangeSpeed(_initialSpeed);
+        _currentState = SpeedState.Normal;
+
+        // Останавливаем все переходы
+        if (_transitionCoroutine != null)
+        {
+            StopCoroutine(_transitionCoroutine);
+            _transitionCoroutine = null;
+        }
     }
 
     private void EndControl()
@@ -58,7 +96,7 @@ public class SnakeSpeedControl : MonoBehaviour
 
     private IEnumerator ControlSpeed()
     {
-        _initialSpeed = _snake.MoveSpeed;
+        _initialSpeed = GetSnakeBaseSpeed();
         _currentState = SpeedState.Normal;
 
         while (_currentState != SpeedState.Stopped)
@@ -84,7 +122,6 @@ public class SnakeSpeedControl : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
-        Debug.Log("Speed control ended - snake stopped");
         _controlCoroutine = null;
     }
 
@@ -206,6 +243,14 @@ public class SnakeSpeedControl : MonoBehaviour
 
     private IEnumerator SpeedTransitionCoroutine(float targetSpeed, float duration)
     {
+        // Если цель - начальная скорость (возврат к нормальной), делаем мгновенный переход
+        if (Mathf.Approximately(targetSpeed, _initialSpeed) && _currentState == SpeedState.Normal)
+        {
+            _snake.ChangeSpeed(targetSpeed);
+            _transitionCoroutine = null;
+            yield break;
+        }
+
         float startSpeed = _snake.MoveSpeed;
         float elapsed = 0f;
 

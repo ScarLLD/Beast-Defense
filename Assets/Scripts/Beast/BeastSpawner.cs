@@ -12,29 +12,60 @@ public class BeastSpawner : MonoBehaviour
     private void Awake()
     {
         _transform = transform;
+    }
 
-        _currentSkinId = PlayerPrefs.GetString("EquippedSkin", _skinData.GetDefaultSkinId());
+    private void Start()
+    {
+        LoadCurrentSkin();
+    }
+
+    private void LoadCurrentSkin()
+    {
+        string savedSkinId = PlayerPrefs.GetString("EquippedBeastSkin", "");
+
+        if (string.IsNullOrEmpty(savedSkinId) == false)
+        {
+            var skin = _skinData.GetSkinById(savedSkinId);
+
+            if (skin != null)
+            {
+                _currentSkinId = savedSkinId;
+            }
+            else
+            {
+                _currentSkinId = _skinData.GetDefaultSkinId();
+            }
+        }
+        else
+        {
+            _currentSkinId = _skinData.GetDefaultSkinId();
+        }
     }
 
     public Beast Spawn()
     {
         if (_beast == null)
-        {
             _beast = Instantiate(_beastPrefab, _transform);
-            ApplyCurrentSkin();
-        }
+
+        ApplyCurrentSkin();
 
         return _beast;
     }
 
     public void UpdateSkin(string skinId)
     {
+        if (_currentSkinId == skinId)
+            return;
+
         _currentSkinId = skinId;
 
         if (_beast != null)
         {
             ApplyCurrentSkin();
         }
+
+        PlayerPrefs.SetString("EquippedSkin", _currentSkinId);
+        PlayerPrefs.Save();
     }
 
     private void ApplyCurrentSkin()

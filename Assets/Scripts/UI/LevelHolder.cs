@@ -11,8 +11,6 @@ public class LevelHolder : MonoBehaviour
 
     public int GetLevelNumber => _levelNumber;
 
-    public event Action LevelChanged;
-
     private void OnEnable()
     {
         _game.Completed += IncreaseLevel;
@@ -30,7 +28,7 @@ public class LevelHolder : MonoBehaviour
 
     private void LoadLevel()
     {
-        _levelNumber = PlayerPrefs.GetInt(LEVEL_KEY, 2);
+        _levelNumber = PlayerPrefs.GetInt(LEVEL_KEY, 1);
     }
 
     private void SaveLevel()
@@ -43,6 +41,5 @@ public class LevelHolder : MonoBehaviour
     {
         _levelNumber++;
         SaveLevel();
-        LevelChanged?.Invoke();
     }
 }

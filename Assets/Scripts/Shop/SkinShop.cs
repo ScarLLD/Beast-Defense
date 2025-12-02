@@ -34,7 +34,9 @@ public class SkinShop : MonoBehaviour
     [SerializeField] private TMP_Text _buyButtonText;
     [SerializeField] private TMP_Text _selectButtonText;
 
-    private readonly List<SkinItemUI> _skinItems = new();
+    private readonly List<SkinItemUI> _beastSkinItems = new();
+    private readonly List<SkinItemUI> _snakeSkinItems = new();
+
     private string _selectedSkinId;
     private SkinType _selectedSkinType;
     private string _equippedBeastSkinId;
@@ -66,7 +68,7 @@ public class SkinShop : MonoBehaviour
 
     private void InitializeShop()
     {
-        ClearContainer();
+        ClearContainers();
 
         _equippedBeastSkinId = PlayerPrefs.GetString(EQUIPPED_BEAST_SKIN_KEY, GetDefaultSkinId(_beastSkinData));
         _equippedSnakeSkinId = PlayerPrefs.GetString(EQUIPPED_SNAKE_SKIN_KEY, GetDefaultSkinId(_snakeSkinData));
@@ -77,7 +79,7 @@ public class SkinShop : MonoBehaviour
         {
             SkinItemUI skinItem = Instantiate(_skinItemPrefab, _beastSkinsContainer);
             skinItem.Initialize(skin, this, _wallet, SkinType.Beast);
-            _skinItems.Add(skinItem);
+            _beastSkinItems.Add(skinItem);
             skinItem.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
         }
 
@@ -85,26 +87,27 @@ public class SkinShop : MonoBehaviour
         {
             SkinItemUI skinItem = Instantiate(_skinItemPrefab, _snakeSkinsContainer);
             skinItem.Initialize(skin, this, _wallet, SkinType.Snake);
-            _skinItems.Add(skinItem);
+            _snakeSkinItems.Add(skinItem);
             skinItem.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
         }
 
         SelectFirstSkin();
     }
 
-    private void ClearContainer()
+    private void ClearContainers()
     {
         foreach (Transform child in _beastSkinsContainer)
         {
             Destroy(child.gameObject);
         }
+        _beastSkinItems.Clear();
 
+        // Очищаем контейнер змеи
         foreach (Transform child in _snakeSkinsContainer)
         {
             Destroy(child.gameObject);
         }
-
-        _skinItems.Clear();
+        _snakeSkinItems.Clear();
     }
 
     private void SelectFirstSkin()
@@ -172,9 +175,29 @@ public class SkinShop : MonoBehaviour
                 }
             }
 
-            foreach (var item in _skinItems)
+            if (skinType == SkinType.Beast)
             {
-                item.SetSelected(item.SkinId == skinId && item.SkinType == skinType);
+                foreach (var item in _beastSkinItems)
+                {
+                    item.SetSelected(item.SkinId == skinId);
+                }
+
+                foreach (var item in _snakeSkinItems)
+                {
+                    item.SetSelected(false);
+                }
+            }
+            else 
+            {
+                foreach (var item in _snakeSkinItems)
+                {
+                    item.SetSelected(item.SkinId == skinId);
+                }
+
+                foreach (var item in _beastSkinItems)
+                {
+                    item.SetSelected(false);
+                }
             }
         }
     }
@@ -246,17 +269,18 @@ public class SkinShop : MonoBehaviour
             {
                 _equippedBeastSkinId = skinId;
                 PlayerPrefs.SetString(EQUIPPED_BEAST_SKIN_KEY, skinId);
+                _beastSpawner.UpdateSkin(skinId);
             }
             else
             {
                 _equippedSnakeSkinId = skinId;
                 PlayerPrefs.SetString(EQUIPPED_SNAKE_SKIN_KEY, skinId);
+                _snakeSpawner.UpdateSkin(skinId);
             }
 
             PlayerPrefs.Save();
 
             Debug.Log($"Выбран скин: {skinData.GetSkinById(skinId).SkinName} для {skinType}");
-            ApplySkinToPlayer(skinId, skinType);
         }
     }
 
@@ -264,44 +288,41 @@ public class SkinShop : MonoBehaviour
     {
         SelectSkin(_selectedSkinId, _selectedSkinType);
 
-        foreach (var item in _skinItems)
+        if (_selectedSkinType == SkinType.Beast)
         {
-            item.UpdatePurchaseState(IsSkinPurchased(item.SkinId, item.SkinType));
-            item.UpdateEquippedState(
-                item.SkinType == SkinType.Beast ? _equippedBeastSkinId : _equippedSnakeSkinId,
-                item.SkinType
-            );
+            foreach (var item in _beastSkinItems)
+            {
+                item.UpdatePurchaseState(IsSkinPurchased(item.SkinId, SkinType.Beast));
+                item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
+            }
+        }
+        else
+        {
+            foreach (var item in _snakeSkinItems)
+            {
+                item.UpdatePurchaseState(IsSkinPurchased(item.SkinId, SkinType.Snake));
+                item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
+            }
         }
     }
 
     private void UpdateUIAfterSelection()
     {
         SelectSkin(_selectedSkinId, _selectedSkinType);
-        foreach (var item in _skinItems)
+
+        if (_selectedSkinType == SkinType.Beast)
         {
-            item.UpdateEquippedState(
-                item.SkinType == SkinType.Beast ? _equippedBeastSkinId : _equippedSnakeSkinId,
-                item.SkinType
-            );
+            foreach (var item in _beastSkinItems)
+            {
+                item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
+            }
         }
-    }
-
-    private void ApplySkinToPlayer(string skinId, SkinType skinType)
-    {
-        var skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
-        var skin = skinData.GetSkinById(skinId);
-
-        if (skin != null && skin.Model != null)
+        else
         {
-            if (skinType == SkinType.Beast)
+            foreach (var item in _snakeSkinItems)
             {
-                _beastSpawner.UpdateSkin(skinId);
+                item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
             }
-            else if (skinType == SkinType.Snake)
-            {
-                //_snakeSpawner.UpdateSkin(skinId);
-            }
-            Debug.Log($"Применен скин: {skin.SkinName} для {skinType}");
         }
     }
 

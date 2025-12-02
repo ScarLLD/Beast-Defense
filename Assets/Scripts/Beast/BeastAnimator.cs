@@ -11,8 +11,7 @@ public class BeastAnimator : MonoBehaviour
     }
 
     public void ResetSettings()
-    {
-        _animator.speed = 1.0f;
+    {        
         SetWalkBool(false);
         _animator.Rebind();
         _animator.Update(0f);

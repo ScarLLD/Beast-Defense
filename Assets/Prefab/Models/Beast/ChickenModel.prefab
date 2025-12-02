@@ -923,7 +923,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2517269691285154781}
   m_Layer: 0
-  m_Name: BeastChicken
+  m_Name: ChickenModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

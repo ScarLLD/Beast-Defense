@@ -10087,6 +10087,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 1614255502}
+  _levelViewer: {fileID: 750858112}
   _disabler: {fileID: 1614255501}
   _placeSpawner: {fileID: 1842505877}
   _roadSpawner: {fileID: 979470875}

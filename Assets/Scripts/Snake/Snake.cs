@@ -40,6 +40,7 @@ public class Snake : MonoBehaviour
     private bool _isRecoiling = false;
 
     public float MoveSpeed { get; private set; }
+    public float BaseSpeed { get; private set; }
     public float NormalizedPosition { get; private set; }
     public Transform ModelContainer => _modelContainer;
 
@@ -56,14 +57,13 @@ public class Snake : MonoBehaviour
         _beast = beast;
         _deathModule = deathModule;
         MoveSpeed = _moveSpeed;
+        BaseSpeed = _moveSpeed;
         _splineContainer = splineContainer;
         _splineLength = _splineContainer.Spline.GetLength();
 
         CreateSegmentsFromStacks(stacks);
 
         SetDefaultSetting();
-
-        StartMove();
     }
 
     public void StartMove()
@@ -110,7 +110,9 @@ public class Snake : MonoBehaviour
         Cleanup();
 
         MoveSpeed = _moveSpeed;
+        _animator.Rebind();
         _animator.StopPlayback();
+
         _head.enabled = false;
         _head.transform.localScale = _initialHeadSize;
         PlaceOnSpline(_head.transform, _splinePosition);
@@ -222,6 +224,7 @@ public class Snake : MonoBehaviour
         if (MoveSpeed == 0)
         {
             _deathModule.KillBeast(_beast.transform);
+            _animator.SetTrigger("isMouthClose");
         }
     }
 
