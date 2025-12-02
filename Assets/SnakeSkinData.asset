@@ -16,8 +16,8 @@ MonoBehaviour:
   - SkinId: 1
     SkinName: "\u0423\u0436"
     Price: 4
-    Icon: {fileID: 21300000, guid: b2a663c44918f08459833d99fd2eb696, type: 3}
-    Model: {fileID: 6303500079049020472, guid: db886d5e53a23c64ba4e5c7aaa860c4a, type: 3}
+    Icon: {fileID: 21300000, guid: e67e1d042a2c86940b726dc74aedbee6, type: 3}
+    Model: {fileID: 1296140454803845365, guid: db886d5e53a23c64ba4e5c7aaa860c4a, type: 3}
     IsDefault: 1
   - SkinId: 2
     SkinName: "\u041C\u0435\u0434\u044F\u043D\u043A\u0430"
@@ -34,8 +34,8 @@ MonoBehaviour:
   - SkinId: 4
     SkinName: "\u041C\u0430\u043C\u0431\u0430"
     Price: 12
-    Icon: {fileID: 21300000, guid: 9c08761f8251ab945825ccc3440ec113, type: 3}
-    Model: {fileID: 450394965000000414, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
+    Icon: {fileID: 21300000, guid: 25ac67d0af3c5d649ad0fbe16f6a6d03, type: 3}
+    Model: {fileID: 2295461278681528595, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
     IsDefault: 0
   - SkinId: 5
     SkinName: "\u0413\u0430\u0434\u044E\u043A\u0430"
