@@ -57,7 +57,7 @@ public class Beast : MonoBehaviour
     {
         Cleanup();
         _animator.ResetSettings();
-        _animator.EnableAnimator(false);
+        _animator.EnableAnimator(true);
 
         IsMoving = false;
 
@@ -116,8 +116,7 @@ public class Beast : MonoBehaviour
     }
 
     private IEnumerator MoveRoutine()
-    {
-        _animator.EnableAnimator(true);
+    {        
         _animator.ResetSettings();
         _animator.SetWalkBool(true);
 
