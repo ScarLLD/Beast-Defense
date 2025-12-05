@@ -4083,8 +4083,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tangentLength: 0
-  _smoothness: 1
-  _subdivisions: 60
+  _cornerRadius: 3
+  _cornerSmoothness: 1
+  _subdivisions: 1
+  _minAngleForRounding: 15
 --- !u!4 &561811628
 Transform:
   m_ObjectHideFlags: 0
@@ -7072,8 +7074,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stumpPrefab: {fileID: 111961057221059734, guid: 292388e638fd66048a64ebf78558f183, type: 3}
   _boundaryMaker: {fileID: 1295288266}
-  _segmentLength: 4.5
-  _minPathSegments: 7
+  _segmentLength: 7
+  _minPathSegments: 4
   _maxPathSegments: 20
 --- !u!114 &979470876
 MonoBehaviour:
