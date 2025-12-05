@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 9087374509959751712}
@@ -49,10 +49,10 @@ MonoBehaviour:
   _animator: {fileID: 1420414763721653651}
   _head: {fileID: 3233947447566195704}
   _modelContainer: {fileID: 7903436286129542357}
-  _moveSpeed: 5
+  _moveSpeed: 3
   _moveBackSpeed: 30
   _segmentDistance: 1.6
-  _segmentRollback: 1.75
+  _segmentRollback: 2.6
   _startSplinePosition: -2
   _segmentPrefab: {fileID: 2981236321332471647, guid: 685cf3ea123b19d41bbd141c9da44ae3, type: 3}
   _recoilDuration: 0.15
@@ -125,7 +125,7 @@ Transform:
   m_GameObject: {fileID: 7629182050109368968}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.6, z: -0.25}
+  m_LocalPosition: {x: 0, y: -0.6, z: -0.4}
   m_LocalScale: {x: 1.08, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
