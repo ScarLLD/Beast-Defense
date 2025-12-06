@@ -49,7 +49,7 @@ MonoBehaviour:
   _animator: {fileID: 1420414763721653651}
   _head: {fileID: 3233947447566195704}
   _modelContainer: {fileID: 7903436286129542357}
-  _moveSpeed: 3
+  _moveSpeed: 5
   _moveBackSpeed: 30
   _segmentDistance: 1.6
   _segmentRollback: 2.6
@@ -93,12 +93,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _transitionDuration: 2
-  _slowedMultiplier: 0.3
-  _deepSlowedMultiplier: 0.1
-  _finalSlowdownMultiplier: 0.015
+  _slowedMultiplier: 0.5
+  _deepSlowedMultiplier: 0.15
+  _finalSlowdownMultiplier: 0.04
   _slowedDistance: 0.5
-  _deepSlowedDistance: 0.75
-  _finalSlowdownDistance: 0.95
+  _deepSlowedDistance: 0.7
+  _finalSlowdownDistance: 0.9
   _stopDistance: 0.99
 --- !u!1 &7629182050109368968
 GameObject:
@@ -125,7 +125,7 @@ Transform:
   m_GameObject: {fileID: 7629182050109368968}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.6, z: -0.4}
+  m_LocalPosition: {x: 0, y: -0.6, z: 0.8}
   m_LocalScale: {x: 1.08, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -228,7 +228,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5845707304106701422, guid: 3861d8b7d2feca34baa70c5150995b03, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.493
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 5845707304106701422, guid: 3861d8b7d2feca34baa70c5150995b03, type: 3}
       propertyPath: m_LocalRotation.w

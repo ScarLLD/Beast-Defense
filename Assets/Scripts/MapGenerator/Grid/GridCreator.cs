@@ -103,7 +103,12 @@ public class GridCreator : MonoBehaviour
 
         CreateGridCells(localMinX, localMinZ);
 
+        bool _isCreateObstaclesSucces = false;
+
         if (_isCreateObstacles)
+            _isCreateObstaclesSucces = UserUtils.GetIntRandomNumber(0, 2) == 1;
+
+        if (_isCreateObstaclesSucces)
         {
             CreateAllObstacles();
             CreateStretchedObstaclesBetweenNeighbors();
@@ -199,7 +204,7 @@ public class GridCreator : MonoBehaviour
         float rightX = localMaxX + _objectWidth / 2f + _wallOffsetX;
         Vector3 topPosition = new(rightX, 0f, localMinZ + (_objectDepth / 2f) + (_rows - 1) * (_objectDepth + _spacingZ));
         Obstacle topObstacle = Instantiate(_obstaclePrefab, _container);
-                
+
         topPosition.y = topObstacle.transform.localScale.y / 2;
         topObstacle.transform.position = topPosition;
         _obstacles.Add(topObstacle);

@@ -911,7 +911,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _particleCreator: {fileID: 117216350}
-  _bulletPrefab: {fileID: 553974823020006137, guid: b2d1767d0c9d1ad46873383905e528e3, type: 3}
+  _bulletPrefab: {fileID: 5784865934724844671, guid: b2d1767d0c9d1ad46873383905e528e3, type: 3}
   _container: {fileID: 117216349}
 --- !u!4 &117216349
 Transform:
@@ -4069,7 +4069,7 @@ MonoBehaviour:
   _meshFilter: {fileID: 561811630}
   _meshRenderer: {fileID: 561811629}
   _platformSegments: 32
-  _resolution: 250
+  _resolution: 240
 --- !u!114 &561811627
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4083,9 +4083,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tangentLength: 0
-  _cornerRadius: 3
+  _cornerRadius: 3.5
   _cornerSmoothness: 1
-  _subdivisions: 1
+  _subdivisions: 3
   _minAngleForRounding: 15
 --- !u!4 &561811628
 Transform:
@@ -7075,8 +7075,10 @@ MonoBehaviour:
   _stumpPrefab: {fileID: 111961057221059734, guid: 292388e638fd66048a64ebf78558f183, type: 3}
   _boundaryMaker: {fileID: 1295288266}
   _segmentLength: 7
-  _minPathSegments: 4
-  _maxPathSegments: 20
+  _minPathSegments: 7
+  _maxPathSegments: 30
+  _minHeightPercentage: 0.565
+  _maxHeightPercentage: 0.85
 --- !u!114 &979470876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7089,9 +7091,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed2d8644c72f68c49b5b9e2e1ce27698, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _boundaryMargin: 1.5
+  _boundaryMargin: 1
   _radiusBetweenSegments: 1.8
-  _endPointMargin: 1
+  _endPointMargin: 0.5
 --- !u!1 &993928555
 GameObject:
   m_ObjectHideFlags: 0
@@ -8567,8 +8569,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1295288261}
   - component: {fileID: 1295288265}
-  - component: {fileID: 1295288259}
   - component: {fileID: 1295288266}
+  - component: {fileID: 1295288259}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -8645,10 +8647,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5588065a101592044b292902ef342c20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _lineMaterial: {fileID: 2100000, guid: 3d96b70da33c5a24cb58812461d00eed, type: 2}
   _container: {fileID: 1111248026}
-  _borderZLowerReduction: 0.8
-  _borderZUpperReduction: 0.89
+  _borderZLowerReduction: 0.82
+  _borderZUpperReduction: 0.85
+  _lineColor: {r: 0, g: 1, b: 0, a: 1}
+  _lineWidth: 0.1
+  _drawGizmos: 1
+  _gizmosHeight: 0.1
 --- !u!1 &1324862769
 GameObject:
   m_ObjectHideFlags: 0
@@ -12327,9 +12332,9 @@ Transform:
   m_Children:
   - {fileID: 4874195528728397673}
   - {fileID: 529893068}
-  - {fileID: 1295288261}
   - {fileID: 1727559507}
   - {fileID: 437241862}
+  - {fileID: 1295288261}
   - {fileID: 979470872}
   - {fileID: 561811628}
   - {fileID: 1441411480}

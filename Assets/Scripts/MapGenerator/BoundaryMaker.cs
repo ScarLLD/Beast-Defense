@@ -4,36 +4,59 @@ using System.Collections.Generic;
 
 public class BoundaryMaker : MonoBehaviour
 {
-    [SerializeField] private Material _lineMaterial;
     [SerializeField] private Transform _container;
 
     [Range(0.6f, 0.84f)]
-    [SerializeField] private float _borderZLowerReduction;
+    [SerializeField] private float _borderZLowerReduction = 0.7f;
 
     [Range(0.85f, 0.98f)]
-    [SerializeField] private float _borderZUpperReduction;
+    [SerializeField] private float _borderZUpperReduction = 0.9f;
+
+    [Header("Gizmos Settings")]
+    [SerializeField] private Color _lineColor = Color.green;
+    [SerializeField] private float _lineWidth = 0.1f;
+    [SerializeField] private bool _drawGizmos = true;
+    [SerializeField] private float _gizmosHeight = 0.1f;
 
     private List<Vector3> _planePoints;
-    private List<LineRenderer> _lines;
+    private List<LineSegment> _lineSegments;
     private Camera _camera;
 
     public event Action<List<Vector3>> PointsInitialized;
 
+    private struct LineSegment
+    {
+        public Vector3 Start;
+        public Vector3 End;
+
+        public LineSegment(Vector3 start, Vector3 end)
+        {
+            Start = start;
+            End = end;
+        }
+
+        public readonly Vector3 GetRandomPoint(float minT = 0.3f, float maxT = 0.7f)
+        {
+            float randomT = UnityEngine.Random.Range(minT, maxT);
+            return Vector3.Lerp(Start, End, randomT);
+        }
+    }
+
     private void Awake()
     {
         _planePoints = new List<Vector3>();
-        _lines = new List<LineRenderer>();
+        _lineSegments = new List<LineSegment>();
         _camera = Camera.main;
     }
 
     public Vector3 GetRandomPointOnRandomLine()
     {
-        if (_lines.Count == 0) return Vector3.zero;
+        if (_lineSegments.Count == 0) return Vector3.zero;
 
-        int index = UserUtils.GetIntRandomNumber(0, _lines.Count);
-        var line = _lines[index];
+        int index = UnityEngine.Random.Range(0, _lineSegments.Count);
+        var segment = _lineSegments[index];
 
-        return GetRandomLinePoint(line.GetPosition(0), line.GetPosition(1));
+        return segment.GetRandomPoint(0.3f, 0.7f);
     }
 
     public bool TryGetScreenBottomCenter(out Vector3 bottomScreenCenter)
@@ -91,31 +114,34 @@ public class BoundaryMaker : MonoBehaviour
         if (_camera == null)
             return false;
 
-        float partHeight = _camera.pixelHeight * _borderZLowerReduction;
+        float lowerHeight = _camera.pixelHeight * _borderZLowerReduction;
+        float upperHeight = _camera.pixelHeight * _borderZUpperReduction;
 
         List<Vector3> screenPoints = new()
         {
-            new Vector3(0f, partHeight, 10),
-            new Vector3(0f, _camera.pixelHeight * _borderZUpperReduction, 10),
+            new Vector3(0f, lowerHeight, 10),
+            new Vector3(0f, upperHeight, 10),
 
-            new Vector3(_camera.pixelWidth, partHeight, 10),
-            new Vector3(_camera.pixelWidth, _camera.pixelHeight * _borderZUpperReduction, 10),
+            new Vector3(_camera.pixelWidth, lowerHeight, 10),
+            new Vector3(_camera.pixelWidth, upperHeight, 10),
 
             new Vector3(0f, _camera.pixelHeight, 10),
             new Vector3(_camera.pixelWidth, _camera.pixelHeight, 10)
         };
 
         _planePoints.Clear();
+        _lineSegments.Clear();
 
         foreach (Vector3 screenPoint in screenPoints)
         {
             if (TryGetWorldPointFromScreenPoint(screenPoint, out Vector3 worldPoint))
-            {
+            {               
+                worldPoint.y += _gizmosHeight;
                 _planePoints.Add(worldPoint);
             }
         }
 
-        CreateBorderLines();
+        CreateBorderSegments();
         PointsInitialized?.Invoke(_planePoints);
 
         if (_planePoints.Count == 0)
@@ -124,39 +150,56 @@ public class BoundaryMaker : MonoBehaviour
         return _planePoints.Count > 0;
     }
 
-    private void CreateBorderLines()
+    private void CreateBorderSegments()
     {
         if (_planePoints.Count < 2) return;
 
-        _lines.Clear();
-
         for (int i = 0; i < _planePoints.Count - 1; i += 2)
         {
-            CreateLine(_planePoints[i], _planePoints[i + 1]);
+            if (i + 1 < _planePoints.Count)
+            {
+                LineSegment segment = new(_planePoints[i], _planePoints[i + 1]);
+                _lineSegments.Add(segment);
+            }
         }
     }
 
-    private void CreateLine(Vector3 start, Vector3 end)
+    private void OnDrawGizmos()
     {
-        GameObject line = new("Line");
-        line.transform.SetParent(_container);
+        if (!_drawGizmos || _lineSegments == null || _lineSegments.Count == 0)
+            return;
 
-        LineRenderer lineRenderer = line.AddComponent<LineRenderer>();
-        lineRenderer.SetPosition(0, start);
-        lineRenderer.SetPosition(1, end);
+        Gizmos.color = _lineColor;
 
-        lineRenderer.startWidth = 0.1f;
-        lineRenderer.endWidth = 0.1f;
-        lineRenderer.material = _lineMaterial;
+        foreach (var segment in _lineSegments)
+        {
+            Gizmos.DrawLine(segment.Start, segment.End);
 
-        _lines.Add(lineRenderer);
+            Gizmos.DrawSphere(segment.Start, _lineWidth * 0.5f);
+            Gizmos.DrawSphere(segment.End, _lineWidth * 0.5f);
+        }
+
+        Gizmos.color = Color.yellow;
+        foreach (var point in _planePoints)
+        {
+            Gizmos.DrawWireSphere(point, _lineWidth * 0.3f);
+        }
     }
 
-    private Vector3 GetRandomLinePoint(Vector3 start, Vector3 end)
+    private void OnDrawGizmosSelected()
     {
-        float randomT = UserUtils.GetFloatRandomNumber(0.3f, 0.7f);
-        Vector3 randomPosition = Vector3.Lerp(start, end, randomT);
+        if (!_drawGizmos || _lineSegments == null || _lineSegments.Count == 0)
+            return;
 
-        return randomPosition;
+        Gizmos.color = new Color(_lineColor.r, _lineColor.g, _lineColor.b, 0.5f);
+
+        foreach (var segment in _lineSegments)
+        {
+            Vector3 direction = (segment.End - segment.Start).normalized;
+            Vector3 perpendicular = _lineWidth * 0.5f * Vector3.Cross(direction, Vector3.up).normalized;
+
+            Gizmos.DrawLine(segment.Start + perpendicular, segment.End + perpendicular);
+            Gizmos.DrawLine(segment.Start - perpendicular, segment.End - perpendicular);
+        }
     }
 }

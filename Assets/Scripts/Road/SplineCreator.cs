@@ -86,7 +86,7 @@ public class SplineCreator : MonoBehaviour
 
     private List<int> FindCorners(List<Vector3> points)
     {
-        List<int> corners = new List<int>();
+        List<int> corners = new();
 
         for (int i = 1; i < points.Count - 1; i++)
         {
@@ -109,7 +109,7 @@ public class SplineCreator : MonoBehaviour
         if (cornerIndices.Count == 0)
             return originalPoints;
 
-        List<Vector3> result = new List<Vector3>();
+        List<Vector3> result = new();
 
         for (int i = 0; i < originalPoints.Count; i++)
         {
@@ -130,7 +130,7 @@ public class SplineCreator : MonoBehaviour
                 Vector3 startPoint = cornerPoint - inDir * radius;
                 Vector3 endPoint = cornerPoint + outDir * radius;
 
-                if (result.Count == 0 || Vector3.Distance(result[result.Count - 1], startPoint) > 0.01f)
+                if (result.Count == 0 || Vector3.Distance(result[^1], startPoint) > 0.01f)
                 {
                     result.Add(startPoint);
                 }
