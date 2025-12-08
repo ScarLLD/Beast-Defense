@@ -9,10 +9,11 @@ public class RoadSpawner : MonoBehaviour
     [SerializeField] private float _segmentLength = 2f;
     [SerializeField] private int _minPathSegments = 5;
     [SerializeField] private int _maxPathSegments = 15;
-    
+
     [Header("Height Limits")]
-    [SerializeField] private float _minHeightPercentage = 0.565f;
+    [SerializeField] private float _minHeightPercentage = 0.2f;
     [SerializeField] private float _maxHeightPercentage = 0.85f;
+    [SerializeField] private bool _allowTopStart = true;
 
     private DirectionAnalyzer _directionAnalyzer;
     private RoadLimiter _limiter;
@@ -34,14 +35,14 @@ public class RoadSpawner : MonoBehaviour
         _mainCamera = Camera.main;
 
         if (_mainCamera != null)
-        {            
+        {
             CalculateHeightLimits();
         }
     }
 
     private void CalculateHeightLimits()
     {
-        Vector3 screenBottomCenter = new(_mainCamera.pixelWidth * 0.5f,
+        Vector3 screenBottomCenter = new Vector3(_mainCamera.pixelWidth * 0.5f,
                                                _mainCamera.pixelHeight * _minHeightPercentage,
                                                0f);
 
@@ -57,7 +58,7 @@ public class RoadSpawner : MonoBehaviour
             _minAllowedHeight = worldPoint.z;
         }
 
-        Vector3 screenTopCenter = new(_mainCamera.pixelWidth * 0.5f,
+        Vector3 screenTopCenter = new Vector3(_mainCamera.pixelWidth * 0.5f,
                                              _mainCamera.pixelHeight * _maxHeightPercentage,
                                              0f);
 
@@ -105,6 +106,7 @@ public class RoadSpawner : MonoBehaviour
         Vector3 currentDirection = _initialDirection;
         Vector3 currentPosition = _spawnPoint;
         int safetyCounter = 0;
+        bool startedFromTop = _spawnPoint.z > _maxAllowedHeight;
 
         while (_road.Count < _maxPathSegments && safetyCounter++ < 200)
         {
@@ -112,23 +114,23 @@ public class RoadSpawner : MonoBehaviour
             {
                 _road.Add(currentPosition);
 
-                if (IsOutsideHeightLimits(currentPosition))
+                if (IsOutsideHeightLimits(currentPosition, startedFromTop))
                 {
                     _road.RemoveAt(_road.Count - 1);
-                    currentDirection = GetValidTurnDirection(currentDirection, currentPosition, true);
+                    currentDirection = GetValidTurnDirection(currentDirection, currentPosition, true, startedFromTop);
                     if (currentDirection == Vector3.zero) break;
                     continue;
                 }
 
                 if (ShouldTurn())
                 {
-                    currentDirection = GetValidTurnDirection(currentDirection, currentPosition);
+                    currentDirection = GetValidTurnDirection(currentDirection, currentPosition, false, startedFromTop);
                     if (currentDirection == Vector3.zero) break;
                 }
             }
             else
             {
-                currentDirection = GetValidTurnDirection(currentDirection, currentPosition);
+                currentDirection = GetValidTurnDirection(currentDirection, currentPosition, false, startedFromTop);
                 if (currentDirection == Vector3.zero) break;
             }
 
@@ -159,11 +161,13 @@ public class RoadSpawner : MonoBehaviour
 
                 if (lastPointValid && noSelfIntersection && withinHeightLimit)
                 {
+                    Debug.Log($"Road generated from top: {_spawnPoint.z > _maxAllowedHeight}, start Z: {_spawnPoint.z}, max: {_maxAllowedHeight}");
                     return true;
                 }
             }
         }
 
+        Debug.Log("Failed to generate road");
         return false;
     }
 
@@ -173,6 +177,11 @@ public class RoadSpawner : MonoBehaviour
         _road.Add(_spawnPoint);
 
         _initialDirection = _directionAnalyzer.GetValidDirection(_spawnPoint);
+
+        if (_allowTopStart && _initialDirection == Vector3.forward && _spawnPoint.z > _maxAllowedHeight)
+        {
+            _initialDirection = Vector3.back;
+        }
     }
 
     private bool TryMoveForward(ref Vector3 position, Vector3 direction)
@@ -192,7 +201,7 @@ public class RoadSpawner : MonoBehaviour
         return Random.value < turnProbability;
     }
 
-    private Vector3 GetValidTurnDirection(Vector3 currentDirection, Vector3 currentPosition, bool avoidExtremeDirections = false)
+    private Vector3 GetValidTurnDirection(Vector3 currentDirection, Vector3 currentPosition, bool avoidExtremeDirections, bool startedFromTop)
     {
         List<Vector3> validDirections = new();
         Vector3[] possibleTurns = GetAllPossibleDirections();
@@ -201,13 +210,16 @@ public class RoadSpawner : MonoBehaviour
         {
             Vector3 testPosition = currentPosition + turn * _segmentLength;
 
-            bool wouldBeOutsideLimits = IsOutsideHeightLimits(testPosition);
+            bool wouldBeOutsideLimits = IsOutsideHeightLimits(testPosition, startedFromTop);
 
             if (avoidExtremeDirections)
             {
-                if (turn == Vector3.forward && currentPosition.z >= _maxAllowedHeight * 0.9f)
+                if (startedFromTop && turn == Vector3.forward)
                     continue;
-                if (turn == Vector3.back && currentPosition.z <= _minAllowedHeight * 1.1f)
+
+                if (turn == Vector3.forward && currentPosition.z >= _maxAllowedHeight - _segmentLength * 0.5f)
+                    continue;
+                if (turn == Vector3.back && currentPosition.z <= _minAllowedHeight + _segmentLength * 0.5f)
                     continue;
             }
 
@@ -220,7 +232,7 @@ public class RoadSpawner : MonoBehaviour
         if (validDirections.Count == 0)
         {
             Vector3 testPosition = currentPosition + currentDirection * _segmentLength;
-            if (_limiter.IsPositionValid(testPosition, _road) && !IsOutsideHeightLimits(testPosition))
+            if (_limiter.IsPositionValid(testPosition, _road) && !IsOutsideHeightLimits(testPosition, startedFromTop))
             {
                 return currentDirection;
             }
@@ -240,16 +252,26 @@ public class RoadSpawner : MonoBehaviour
         };
     }
 
-    private bool IsOutsideHeightLimits(Vector3 position)
+    private bool IsOutsideHeightLimits(Vector3 position, bool startedFromTop)
     {
-        return position.z < _minAllowedHeight || position.z > _maxAllowedHeight;
+        bool belowMin = position.z < _minAllowedHeight;
+        bool aboveMax = position.z > _maxAllowedHeight;
+
+        if (startedFromTop && _allowTopStart)
+        {
+            return belowMin;
+        }
+
+        return belowMin || aboveMax;
     }
 
     private bool IsRoadWithinHeightLimit()
     {
+        bool startedFromTop = _road.Count > 0 && _road[0].z > _maxAllowedHeight;
+
         foreach (var point in _road)
         {
-            if (IsOutsideHeightLimits(point))
+            if (IsOutsideHeightLimits(point, startedFromTop))
             {
                 return false;
             }
@@ -281,10 +303,10 @@ public class RoadSpawner : MonoBehaviour
 
     private bool DoSegmentsIntersect(Vector3 a1, Vector3 a2, Vector3 b1, Vector3 b2)
     {
-        Vector2 a1_2d = new(a1.x, a1.z);
-        Vector2 a2_2d = new(a2.x, a2.z);
-        Vector2 b1_2d = new(b1.x, b1.z);
-        Vector2 b2_2d = new(b2.x, b2.z);
+        Vector2 a1_2d = new Vector2(a1.x, a1.z);
+        Vector2 a2_2d = new Vector2(a2.x, a2.z);
+        Vector2 b1_2d = new Vector2(b1.x, b1.z);
+        Vector2 b2_2d = new Vector2(b2.x, b2.z);
 
         return LineSegmentsIntersect(a1_2d, a2_2d, b1_2d, b2_2d);
     }
@@ -310,25 +332,14 @@ public class RoadSpawner : MonoBehaviour
         if (_boundaryMaker.TryGetScreenWidthBounds(out float minX, out float maxX))
         {
             Gizmos.color = Color.red;
-            Vector3 upperLeft = new(minX, 0, _maxAllowedHeight);
-            Vector3 upperRight = new(maxX, 0, _maxAllowedHeight);
+            Vector3 upperLeft = new Vector3(minX, 0, _maxAllowedHeight);
+            Vector3 upperRight = new Vector3(maxX, 0, _maxAllowedHeight);
             Gizmos.DrawLine(upperLeft, upperRight);
-            Gizmos.DrawSphere(upperLeft, 0.2f);
-            Gizmos.DrawSphere(upperRight, 0.2f);
 
             Gizmos.color = Color.blue;
-            Vector3 lowerLeft = new(minX, 0, _minAllowedHeight);
-            Vector3 lowerRight = new(maxX, 0, _minAllowedHeight);
+            Vector3 lowerLeft = new Vector3(minX, 0, _minAllowedHeight);
+            Vector3 lowerRight = new Vector3(maxX, 0, _minAllowedHeight);
             Gizmos.DrawLine(lowerLeft, lowerRight);
-            Gizmos.DrawSphere(lowerLeft, 0.2f);
-            Gizmos.DrawSphere(lowerRight, 0.2f);
-
-            Gizmos.color = new Color(0, 1, 0, 0.2f);
-            for (float x = minX; x <= maxX; x += (maxX - minX) / 10f)
-            {
-                Gizmos.DrawLine(new Vector3(x, 0, _minAllowedHeight), 
-                               new Vector3(x, 0, _maxAllowedHeight));
-            }
         }
     }
 }
