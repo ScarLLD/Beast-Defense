@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +31,7 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private SmoothBarSlider _slider;
     [SerializeField] private DeathModule _deathModule;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
+    [SerializeField] private Adv _adv;
 
     private Snake _snake;
     private Beast _beast;
@@ -42,6 +42,7 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started += OnGameStarted;
         _game.Continued += OnGameContinued;
         _game.Restarted += OnGameRestarted;
+        _adv.Watched += OnAdvWatched;
     }
 
     private void OnDisable()
@@ -49,6 +50,7 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started -= OnGameStarted;
         _game.Continued -= OnGameContinued;
         _game.Restarted -= OnGameRestarted;
+        _adv.Watched -= OnAdvWatched;
     }
 
     private void OnGameStarted()
@@ -77,6 +79,12 @@ public class LaunchSequencer : MonoBehaviour
     {
         _disabler.EnableObjects();
         RestartCurrentLevel();
+    }
+
+    private void OnAdvWatched()
+    {
+        StartNewLevel();
+        _game.ContinueGame();
     }
 
     private void StartNewLevel()

@@ -102,7 +102,6 @@ public class SkinShop : MonoBehaviour
         }
         _beastSkinItems.Clear();
 
-        // Очищаем контейнер змеи
         foreach (Transform child in _snakeSkinsContainer)
         {
             Destroy(child.gameObject);
@@ -187,7 +186,7 @@ public class SkinShop : MonoBehaviour
                     item.SetSelected(false);
                 }
             }
-            else 
+            else
             {
                 foreach (var item in _snakeSkinItems)
                 {
@@ -288,20 +287,27 @@ public class SkinShop : MonoBehaviour
     {
         SelectSkin(_selectedSkinId, _selectedSkinType);
 
-        if (_selectedSkinType == SkinType.Beast)
+        foreach (var item in _beastSkinItems)
         {
-            foreach (var item in _beastSkinItems)
+            bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Beast);
+            item.UpdatePurchaseState(isPurchased);
+            item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
+
+            if (item.SkinId == _selectedSkinId && _selectedSkinType == SkinType.Beast)
             {
-                item.UpdatePurchaseState(IsSkinPurchased(item.SkinId, SkinType.Beast));
-                item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
+                item.SetSelected(true);
             }
         }
-        else
+
+        foreach (var item in _snakeSkinItems)
         {
-            foreach (var item in _snakeSkinItems)
+            bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Snake);
+            item.UpdatePurchaseState(isPurchased);
+            item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
+
+            if (item.SkinId == _selectedSkinId && _selectedSkinType == SkinType.Snake)
             {
-                item.UpdatePurchaseState(IsSkinPurchased(item.SkinId, SkinType.Snake));
-                item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
+                item.SetSelected(true);
             }
         }
     }
