@@ -13,6 +13,7 @@ public class Game : MonoBehaviour
 
     [Header("Other settings")]
     [SerializeField] private DeathModule _deathModule;
+    [SerializeField] private GameHeart _gameHeart;
 
     private Coroutine _currentCoroutine;
 
@@ -41,7 +42,7 @@ public class Game : MonoBehaviour
 
     public void StartGame()
     {
-        if (_transition.IsTransiting == false)
+        if (_transition.IsTransiting == false && _gameHeart.IsPossibleDecrease == true)
             StartRoutine(StartGameRoutine());
     }
 
@@ -89,6 +90,7 @@ public class Game : MonoBehaviour
 
     private IEnumerator StartGameRoutine()
     {
+        yield return StartCoroutine(_gameHeart.ChangeRoutine());
         _transition.SetText("Запуск");
         yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color));
         Started?.Invoke();

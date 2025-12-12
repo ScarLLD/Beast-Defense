@@ -6,6 +6,7 @@ public class MainMenu : Window
     [SerializeField] private Game _game;
     [SerializeField] private LeaderBoardMenu _leaderBoardMenu;
     [SerializeField] private ShopMenu _shopMenu;
+    [SerializeField] private GameHeart _gameHeart;
 
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _shopButton;
@@ -44,7 +45,10 @@ public class MainMenu : Window
 
     private void OnPlayButtonClick()
     {
-        _game.StartGame();
+        if (_gameHeart.IsPossibleDecrease)
+            _game.StartGame();
+        else
+            _gameHeart.PlayShakeAnimation();
     }
 
     private void OnShopButtonClick()
