@@ -90,7 +90,7 @@ public class Game : MonoBehaviour
 
     private IEnumerator StartGameRoutine()
     {
-        yield return StartCoroutine(_gameHeart.ChangeRoutine());
+        yield return StartCoroutine(_gameHeart.UseHeartRoutine());
         _transition.SetText("Запуск");
         yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color));
         Started?.Invoke();

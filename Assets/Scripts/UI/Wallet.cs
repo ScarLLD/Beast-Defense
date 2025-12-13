@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Wallet : MonoBehaviour
 {
+    [SerializeField] private Adv _adv;
     [SerializeField] private Game _game;
     [SerializeField] private int _victoryRewardCount = 5;
 
@@ -17,11 +18,13 @@ public class Wallet : MonoBehaviour
 
     private void OnEnable()
     {
+        _adv.Doubled += OnRewardDoubled;
         _game.Completed += OnGameCompleted;
     }
 
     private void OnDisable()
     {
+        _adv.Doubled -= OnRewardDoubled;
         _game.Completed -= OnGameCompleted;
     }
 
@@ -61,6 +64,11 @@ public class Wallet : MonoBehaviour
     }
 
     private void OnGameCompleted()
+    {
+        IncreaseMoney(_victoryRewardCount);
+    }
+
+    private void OnRewardDoubled()
     {
         IncreaseMoney(_victoryRewardCount);
     }
