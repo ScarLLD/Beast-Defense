@@ -73,6 +73,9 @@ MonoBehaviour:
         rank: 5
         score: 60
         extraData: 
+  RewardedAdv:
+    skipInterAdvAfterReward: 0
+    labelAdvSimLabel: 0
   Basic:
     platform: {fileID: 11400000, guid: c2a303d33a9fd394bae4c4b88b9a1c44, type: 2}
     autoApplySettings: 1
@@ -84,7 +87,8 @@ MonoBehaviour:
     syncInitSDK: 0
     loadSceneIfSDKLate: 0
     loadSceneIndex: 0
-    simulationLoadScene: 0
+    initDelaySimulation: 0
+    buildNumber: 0
   Simulation:
     device: 0
     language: ru
@@ -108,9 +112,9 @@ MonoBehaviour:
       height: 24
       color1: {r: 0.25, g: 0.6392, b: 1, a: 1}
       color2: {r: 1, g: 0.831, b: 0.149, a: 0.7}
-    fixedAspectRatio: 0
-    aspectRatio: 16/9
-    disableForMobile: 1
+    fixedAspectRatio: 1
+    aspectRatio: 9/16
+    disableForMobile: 0
     fillBackground: 0
     imageBackground: 0
     imageName: background.jpg
@@ -125,6 +129,7 @@ MonoBehaviour:
   platformInfo:
     ownHost: 0
   platformToggles:
+    skipInterAdvAfterReward: 0
     autoPauseGame: 0
     selectWebGLTemplate: 1
     runInBackground: 1
