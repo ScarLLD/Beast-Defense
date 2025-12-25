@@ -16,6 +16,8 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private int _columns = 8;
     [SerializeField] private float _minZ = -12;
     [SerializeField] private float _maxZ = 10;
+    [SerializeField] private float _minX = -10f;
+    [SerializeField] private float _maxX = 10f;
 
     [Header("Width & Offsets")]
     [SerializeField] private float _gridExtraWidth = -4f;
@@ -65,24 +67,24 @@ public class GridCreator : MonoBehaviour
         _objectWidth = _cubePrefab.transform.localScale.x;
         _objectDepth = _cubePrefab.transform.localScale.z;
 
-        SetGridWidthByScreen();
+        // SetGridWidthByScreen();
     }
 
-    private void SetGridWidthByScreen()
-    {
-        if (_boundaryMaker.TryGetScreenWidthBounds(out float minX, out float maxX, _gridExtraWidth))
-        {
-            _minXScreen = minX;
-            _maxXScreen = maxX;
-        }
-    }
+    // private void SetGridWidthByScreen()
+    // {
+    //     if (_boundaryMaker.TryGetScreenWidthBounds(out float minX, out float maxX, _gridExtraWidth))
+    //     {
+    //         _minXScreen = minX;
+    //         _maxXScreen = maxX;
+    //     }
+    // }
 
     public bool TryCreate(out Vector3 cubeScale)
     {
         cubeScale = _cubePrefab.transform.localScale;
 
-        float localMinX = _minXScreen + _gridCenterOffset.x;
-        float localMaxX = _maxXScreen + _gridCenterOffset.x;
+        float localMinX = _minX + _gridCenterOffset.x;
+        float localMaxX = _maxX + _gridCenterOffset.x;
         float localMinZ = _minZ + _gridCenterOffset.z;
         float localMaxZ = _maxZ + _gridCenterOffset.z;
 
