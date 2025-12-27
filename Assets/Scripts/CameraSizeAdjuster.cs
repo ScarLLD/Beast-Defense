@@ -1,72 +1,45 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CameraSizeAdjuster : MonoBehaviour
 {
-    [SerializeField] private CanvasScaler scaler;
-
-    private float baseHeight;
-    private float originalOrthographicSize;
-    private Camera _camera;
-
-    [SerializeField] private float maxSizeMultiplier = 1.15f; // Макс. увеличение 15%
-    [SerializeField] private float minSizeMultiplier = 0.9f;  // Мин. уменьшение 10%
-    [SerializeField] private AnimationCurve sizeCurve = AnimationCurve.Linear(0, 0, 1, 1);
+    [SerializeField] private Camera targetCamera;
+    [SerializeField] private Transform leftBoundaryObject;
+    [SerializeField] private Transform rightBoundaryObject;
+    [SerializeField] private Transform bottomBoundaryObject;
 
     private void Start()
-    {
-        _camera = Camera.main;
-        originalOrthographicSize = _camera.orthographicSize;
-
-        if (scaler != null)
-        {
-            baseHeight = scaler.referenceResolution.y;
-            Debug.Log($"Using CanvasScaler reference: {baseHeight}");
-        }
-        else
-        {
-            baseHeight = 1920f;
-            Debug.LogWarning("CanvasScaler not assigned, using default 1920");
-        }
-
-        AdjustCameraSize();
+    {        
+        FitCameraToBoundaries();
     }
 
-    private void Update()
+    public void FitCameraToBoundaries()
     {
-        if (Application.isEditor && (Screen.width != lastWidth || Screen.height != lastHeight))
+        if (targetCamera == null || !targetCamera.orthographic)
+            return;
+
+        if (leftBoundaryObject == null || rightBoundaryObject == null)
+            return;
+
+        Vector3 leftInCameraSpace = targetCamera.transform.InverseTransformPoint(leftBoundaryObject.position);
+        Vector3 rightInCameraSpace = targetCamera.transform.InverseTransformPoint(rightBoundaryObject.position);
+
+        float leftBoundary = leftInCameraSpace.x;
+        float rightBoundary = rightInCameraSpace.x;
+        float requiredWidth = Mathf.Abs(rightBoundary - leftBoundary);
+
+        float aspect = targetCamera.aspect;
+        float requiredOrthoSizeForWidth = (requiredWidth / aspect) / 2f;
+        float requiredOrthoSize = requiredOrthoSizeForWidth;
+
+        if (bottomBoundaryObject != null)
         {
-            AdjustCameraSize();
+            Vector3 bottomInCameraSpace = targetCamera.transform.InverseTransformPoint(bottomBoundaryObject.position);
+            float bottomBoundary = bottomInCameraSpace.y;
+
+            float requiredOrthoSizeForBottom = Mathf.Abs(bottomBoundary);
+            requiredOrthoSize = Mathf.Max(requiredOrthoSizeForWidth, requiredOrthoSizeForBottom);
         }
-    }
 
-    private int lastWidth, lastHeight;
-
-    private void AdjustCameraSize()
-    {
-        if (!_camera.orthographic || baseHeight == 0) return;
-
-        float currentHeight = Screen.height;
-        float heightRatio = currentHeight / baseHeight;
-
-        // Нормализуем ratio для кривой (пример: 0.5 = 0, 1.0 = 0.5, 1.5 = 1.0)
-        float normalizedRatio = Mathf.Clamp01((heightRatio - 0.5f) / 1.0f);
-
-        // Получаем значение из кривой
-        float curveValue = sizeCurve.Evaluate(normalizedRatio);
-
-        // Применяем ограниченный множитель
-        float sizeMultiplier = Mathf.Lerp(minSizeMultiplier, maxSizeMultiplier, curveValue);
-
-        _camera.orthographicSize = originalOrthographicSize * sizeMultiplier;
-
-        Debug.Log($"Resolution: {Screen.width}x{Screen.height}\n" +
-                 $"Height ratio: {heightRatio:F2}\n" +
-                 $"Normalized: {normalizedRatio:F2}\n" +
-                 $"Multiplier: {sizeMultiplier:F2}\n" +
-                 $"Final size: {_camera.orthographicSize:F2}");
-
-        lastWidth = Screen.width;
-        lastHeight = Screen.height;
+        targetCamera.orthographicSize = requiredOrthoSize;
     }
 }

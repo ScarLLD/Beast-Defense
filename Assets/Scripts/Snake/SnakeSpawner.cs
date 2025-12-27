@@ -88,8 +88,6 @@ public class SnakeSpawner : MonoBehaviour
     {
         Transform modelContainer = _snake.ModelContainer;
 
-        Debug.Log(modelContainer.name);
-
         foreach (Transform child in modelContainer)
         {
             Destroy(child.gameObject);

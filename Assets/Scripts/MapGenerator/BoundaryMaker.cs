@@ -1,167 +1,179 @@
-using System;
 using UnityEngine;
 using System.Collections.Generic;
 
 public class BoundaryMaker : MonoBehaviour
 {
-    [SerializeField] private Transform _container;
-
-    [Range(0.6f, 0.84f)]
-    [SerializeField] private float _borderZLowerReduction = 0.7f;
-
-    [Range(0.85f, 0.98f)]
-    [SerializeField] private float _borderZUpperReduction = 0.9f;
+    [SerializeField] private Transform _manualBoundaryContainer;
+    [SerializeField] private List<Transform> _customBoundaryPoints;
+    [SerializeField] private List<BoundarySegment> _manualSegments;
+    [SerializeField] private float _spawnAreaOffset = 0.3f;
 
     [Header("Gizmos Settings")]
     [SerializeField] private Color _lineColor = Color.green;
+    [SerializeField] private Color _spawnAreaColor = Color.yellow;
     [SerializeField] private float _lineWidth = 0.1f;
     [SerializeField] private bool _drawGizmos = true;
-    [SerializeField] private float _gizmosHeight = 0.1f;
 
-    private List<Vector3> _planePoints;
     private List<LineSegment> _lineSegments;
-    private Camera _camera;
+    private Dictionary<BoundarySide, List<LineSegment>> _segmentsBySide;
 
-    public event Action<List<Vector3>> PointsInitialized;
+    [System.Serializable]
+    public class BoundarySegment
+    {
+        public Transform startPoint;
+        public Transform endPoint;
+        public BoundarySide side;
+        public float spawnMinOffset = 0.3f;
+        public float spawnMaxOffset = 0.7f;
+    }
+
+    public enum BoundarySide { Left, Right, Top, Bottom, Custom }
 
     private struct LineSegment
     {
         public Vector3 Start;
         public Vector3 End;
+        public BoundarySide Side;
+        public float SpawnMinOffset;
+        public float SpawnMaxOffset;
 
-        public LineSegment(Vector3 start, Vector3 end)
+        public LineSegment(Vector3 start, Vector3 end, BoundarySide side, float minOffset = 0.3f, float maxOffset = 0.7f)
         {
             Start = start;
             End = end;
+            Side = side;
+            SpawnMinOffset = minOffset;
+            SpawnMaxOffset = maxOffset;
         }
 
-        public readonly Vector3 GetRandomPoint(float minT = 0.3f, float maxT = 0.7f)
+        public Vector3 GetRandomPoint()
         {
-            float randomT = UnityEngine.Random.Range(minT, maxT);
+            float randomT = Random.Range(SpawnMinOffset, SpawnMaxOffset);
             return Vector3.Lerp(Start, End, randomT);
         }
     }
 
     private void Awake()
     {
-        _planePoints = new List<Vector3>();
         _lineSegments = new List<LineSegment>();
-        _camera = Camera.main;
+        _segmentsBySide = new Dictionary<BoundarySide, List<LineSegment>>();
+        InitializeManualBoundaries();
     }
 
-    public Vector3 GetRandomPointOnRandomLine()
+    public void InitializeManualBoundaries()
     {
-        if (_lineSegments.Count == 0) return Vector3.zero;
+        _lineSegments.Clear();
+        _segmentsBySide.Clear();
 
-        int index = UnityEngine.Random.Range(0, _lineSegments.Count);
-        var segment = _lineSegments[index];
-
-        return segment.GetRandomPoint(0.3f, 0.7f);
-    }
-
-    public bool TryGetScreenBottomCenter(out Vector3 bottomScreenCenter)
-    {
-        bottomScreenCenter = Vector3.zero;
-
-        Vector3 screenPoint = new(_camera.pixelWidth * 0.5f, _camera.pixelHeight * 0.25f, 0f);
-
-        Ray ray = _camera.ScreenPointToRay(screenPoint);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (_manualSegments != null && _manualSegments.Count > 0)
         {
-            bottomScreenCenter = hit.point;
-            return true;
+            foreach (var segment in _manualSegments)
+            {
+                if (segment == null) continue;
+
+                if (segment.startPoint != null && segment.endPoint != null)
+                {
+                    var lineSegment = new LineSegment(
+                        segment.startPoint.position,
+                        segment.endPoint.position,
+                        segment.side,
+                        segment.spawnMinOffset,
+                        segment.spawnMaxOffset
+                    );
+
+                    _lineSegments.Add(lineSegment);
+
+                    if (!_segmentsBySide.ContainsKey(segment.side))
+                    {
+                        _segmentsBySide[segment.side] = new List<LineSegment>();
+                    }
+                    _segmentsBySide[segment.side].Add(lineSegment);
+                }
+            }
         }
 
-        return false;
+        if (_customBoundaryPoints != null && _customBoundaryPoints.Count >= 2)
+        {
+            for (int i = 0; i < _customBoundaryPoints.Count - 1; i++)
+            {
+                if (_customBoundaryPoints[i] != null && _customBoundaryPoints[i + 1] != null)
+                {
+                    var lineSegment = new LineSegment(
+                        _customBoundaryPoints[i].position,
+                        _customBoundaryPoints[i + 1].position,
+                        BoundarySide.Custom
+                    );
+
+                    _lineSegments.Add(lineSegment);
+
+                    if (!_segmentsBySide.ContainsKey(BoundarySide.Custom))
+                    {
+                        _segmentsBySide[BoundarySide.Custom] = new List<LineSegment>();
+                    }
+                    _segmentsBySide[BoundarySide.Custom].Add(lineSegment);
+                }
+            }
+        }
     }
 
-    public bool TryGetScreenWidthBounds(out float minX, out float maxX, float gridExtraWidth = 0f)
+    public Vector3 GetRandomPointOnSide(BoundarySide side)
     {
-        minX = 0f;
-        maxX = 0f;
+        if (!_segmentsBySide.ContainsKey(side) || _segmentsBySide[side].Count == 0)
+        {
+            return Vector3.zero;
+        }
 
-        if (_camera == null)
+        var segments = _segmentsBySide[side];
+        int segmentIndex = UnityEngine.Random.Range(0, segments.Count);
+        var segment = segments[segmentIndex];
+
+        return segment.GetRandomPoint();
+    }
+
+    public bool TryGetBoundaryLimits(out float minX, out float maxX, out float minZ, out float maxZ)
+    {
+        minX = float.MaxValue;
+        maxX = float.MinValue;
+        minZ = float.MaxValue;
+        maxZ = float.MinValue;
+
+        if (_lineSegments.Count == 0)
+        {
             return false;
+        }
 
-        Vector3 leftScreen = _camera.ViewportToWorldPoint(new Vector3(0, 0.5f, _camera.nearClipPlane));
-        Vector3 rightScreen = _camera.ViewportToWorldPoint(new Vector3(1, 0.5f, _camera.nearClipPlane));
-
-        minX = leftScreen.x - gridExtraWidth / 2f;
-        maxX = rightScreen.x + gridExtraWidth / 2f;
+        foreach (var segment in _lineSegments)
+        {
+            minX = Mathf.Min(minX, segment.Start.x, segment.End.x);
+            maxX = Mathf.Max(maxX, segment.Start.x, segment.End.x);
+            minZ = Mathf.Min(minZ, segment.Start.z, segment.End.z);
+            maxZ = Mathf.Max(maxZ, segment.Start.z, segment.End.z);
+        }
 
         return true;
     }
 
-    public bool TryGetWorldPointFromScreenPoint(Vector3 screenPoint, out Vector3 worldPoint)
+    public BoundarySide GetRandomSide()
     {
-        worldPoint = Vector3.zero;
-
-        if (_camera == null)
-            return false;
-
-        Ray ray = _camera.ScreenPointToRay(screenPoint);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        if (_segmentsBySide.Count == 0)
         {
-            worldPoint = hit.point;
-            return true;
+            return BoundarySide.Custom;
         }
 
-        return false;
-    }
+        List<BoundarySide> availableSides = new List<BoundarySide>(_segmentsBySide.Keys);
 
-    public bool TryGeneratePathMarkers()
-    {
-        if (_camera == null)
-            return false;
-
-        float lowerHeight = _camera.pixelHeight * _borderZLowerReduction;
-        float upperHeight = _camera.pixelHeight * _borderZUpperReduction;
-
-        List<Vector3> screenPoints = new()
+        if (availableSides.Count > 1 && availableSides.Contains(BoundarySide.Custom))
         {
-            new Vector3(0f, lowerHeight, 10),
-            new Vector3(0f, upperHeight, 10),
-
-            new Vector3(_camera.pixelWidth, lowerHeight, 10),
-            new Vector3(_camera.pixelWidth, upperHeight, 10),
-
-            new Vector3(0f, _camera.pixelHeight, 10),
-            new Vector3(_camera.pixelWidth, _camera.pixelHeight, 10)
-        };
-
-        _planePoints.Clear();
-        _lineSegments.Clear();
-
-        foreach (Vector3 screenPoint in screenPoints)
-        {
-            if (TryGetWorldPointFromScreenPoint(screenPoint, out Vector3 worldPoint))
-            {               
-                worldPoint.y += _gizmosHeight;
-                _planePoints.Add(worldPoint);
-            }
+            availableSides.Remove(BoundarySide.Custom);
         }
 
-        CreateBorderSegments();
-        PointsInitialized?.Invoke(_planePoints);
-
-        if (_planePoints.Count == 0)
-            Debug.Log("Не удалось сгенерировать грань карты.");
-
-        return _planePoints.Count > 0;
-    }
-
-    private void CreateBorderSegments()
-    {
-        if (_planePoints.Count < 2) return;
-
-        for (int i = 0; i < _planePoints.Count - 1; i += 2)
+        if (availableSides.Count == 0)
         {
-            if (i + 1 < _planePoints.Count)
-            {
-                LineSegment segment = new(_planePoints[i], _planePoints[i + 1]);
-                _lineSegments.Add(segment);
-            }
+            return BoundarySide.Custom;
         }
+
+        int index = UnityEngine.Random.Range(0, availableSides.Count);
+        return availableSides[index];
     }
 
     private void OnDrawGizmos()
@@ -169,37 +181,32 @@ public class BoundaryMaker : MonoBehaviour
         if (!_drawGizmos || _lineSegments == null || _lineSegments.Count == 0)
             return;
 
-        Gizmos.color = _lineColor;
-
         foreach (var segment in _lineSegments)
         {
-            Gizmos.DrawLine(segment.Start, segment.End);
+            Gizmos.color = GetSideColor(segment.Side);
 
+            Gizmos.DrawLine(segment.Start, segment.End);
             Gizmos.DrawSphere(segment.Start, _lineWidth * 0.5f);
             Gizmos.DrawSphere(segment.End, _lineWidth * 0.5f);
-        }
 
-        Gizmos.color = Color.yellow;
-        foreach (var point in _planePoints)
-        {
-            Gizmos.DrawWireSphere(point, _lineWidth * 0.3f);
+            Gizmos.color = _spawnAreaColor;
+            Vector3 spawnStart = Vector3.Lerp(segment.Start, segment.End, segment.SpawnMinOffset);
+            Vector3 spawnEnd = Vector3.Lerp(segment.Start, segment.End, segment.SpawnMaxOffset);
+            Gizmos.DrawLine(spawnStart, spawnEnd);
+            Gizmos.DrawSphere(spawnStart, _lineWidth * 0.3f);
+            Gizmos.DrawSphere(spawnEnd, _lineWidth * 0.3f);
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private Color GetSideColor(BoundarySide side)
     {
-        if (!_drawGizmos || _lineSegments == null || _lineSegments.Count == 0)
-            return;
-
-        Gizmos.color = new Color(_lineColor.r, _lineColor.g, _lineColor.b, 0.5f);
-
-        foreach (var segment in _lineSegments)
+        switch (side)
         {
-            Vector3 direction = (segment.End - segment.Start).normalized;
-            Vector3 perpendicular = _lineWidth * 0.5f * Vector3.Cross(direction, Vector3.up).normalized;
-
-            Gizmos.DrawLine(segment.Start + perpendicular, segment.End + perpendicular);
-            Gizmos.DrawLine(segment.Start - perpendicular, segment.End - perpendicular);
+            case BoundarySide.Left: return Color.red;
+            case BoundarySide.Right: return Color.blue;
+            case BoundarySide.Top: return Color.green;
+            case BoundarySide.Bottom: return Color.cyan;
+            default: return _lineColor;
         }
     }
 }

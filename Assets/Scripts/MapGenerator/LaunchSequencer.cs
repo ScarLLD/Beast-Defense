@@ -146,10 +146,9 @@ public class LaunchSequencer : MonoBehaviour
 
     private bool TryGenerateLevel()
     {
-        bool success = _boundaryMaker.TryGeneratePathMarkers()
-            && _gridCreator.TryCreate(out Vector3 cubeScale)
+        bool success = _gridCreator.TryCreate(out Vector3 cubeScale)
             && _placeSpawner.TryGeneratePlaces(cubeScale)
-            && _cubeCreator.TryCreate(_boundaryMaker, _cubeStorage, _bulletSpawner, _targetStorage)
+            && _cubeCreator.TryCreate(_cubeStorage, _bulletSpawner, _targetStorage)
             && _roadSpawner.TrySpawn(out List<Vector3> road)
             && _splineCreator.TryCreateSpline(road, out _splineContainer)
             && _splineVisualizer.TryGenerateRoadFromSpline(_splineContainer);

@@ -21,21 +21,10 @@ public class CubeCreator : MonoBehaviour
     {
         _transform = transform;
     }
-
-    public bool TryMoveToCenterScreenBottom(BoundaryMaker boundaryMaker)
+        
+    public bool TryCreate(CubeStorage cubeStorage, BulletSpawner bulletSpawner, TargetStorage targetStorage)
     {
-        if (boundaryMaker.TryGetScreenBottomCenter(out Vector3 bottomScreenCenter))
-        {
-            _transform.position = new Vector3(bottomScreenCenter.x, bottomScreenCenter.y + _cubePrefab.transform.localScale.y / 2, bottomScreenCenter.z);
-            return true;
-        }
-
-        return false;
-    }
-
-    public bool TryCreate(BoundaryMaker boundaryMaker, CubeStorage cubeStorage, BulletSpawner bulletSpawner, TargetStorage targetStorage)
-    {
-        if (_gridStorage.GridCount > 0 && TryMoveToCenterScreenBottom(boundaryMaker))
+        if (_gridStorage.GridCount > 0)
         {
             int gridCount = _gridStorage.GridCount;
 

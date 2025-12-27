@@ -1,57 +1,65 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-[RequireComponent(typeof(RoadSpawner))]
 public class DirectionAnalyzer : MonoBehaviour
 {
     [SerializeField] private BoundaryMaker _boundaryMaker;
 
-    public float LeftBoundX { get; private set; }
-    public float RightBoundX { get; private set; }
-    public float UpperBoundZ { get; private set; }
-    public float LowerBoundZ { get; private set; }
+    private float _leftBoundX;
+    private float _rightBoundX;
+    private float _upperBoundZ;
+    private float _lowerBoundZ;
 
-    public bool IsLeftBound(Vector3 point) => CompareDifference(point.x, LeftBoundX);
-    public bool IsRightBound(Vector3 point) => CompareDifference(point.x, RightBoundX);
-    public bool IsUpperBound(Vector3 point) => CompareDifference(point.z, UpperBoundZ);
+    public float LeftBoundX => _leftBoundX;
+    public float RightBoundX => _rightBoundX;
+    public float UpperBoundZ => _upperBoundZ;
+    public float LowerBoundZ => _lowerBoundZ;
 
-    private void OnEnable()
+    private void Start()
     {
-        _boundaryMaker.PointsInitialized += InitBounds;
+        if (_boundaryMaker != null)
+        {
+            UpdateBoundaries();
+        }
+        else
+        {
+            _leftBoundX = -10f;
+            _rightBoundX = 10f;
+            _upperBoundZ = 10f;
+            _lowerBoundZ = -10f;
+        }
     }
 
-    private void OnDisable()
+    public void UpdateBoundaries()
     {
-        _boundaryMaker.PointsInitialized -= InitBounds;
-    }
-
-    public void InitBounds(List<Vector3> _points)
-    {
-        if (_points == null || _points.Count == 0)
-            return;
-
-        LeftBoundX = _points.Min(p => p.x);
-        RightBoundX = _points.Max(p => p.x);
-        UpperBoundZ = _points.Max(p => p.z);
-        LowerBoundZ = _points.Min(p => p.z) * 0.25f;
+        if (_boundaryMaker != null && _boundaryMaker.TryGetBoundaryLimits(out float minX, out float maxX, out float minZ, out float maxZ))
+        {
+            _leftBoundX = minX;
+            _rightBoundX = maxX;
+            _upperBoundZ = maxZ;
+            _lowerBoundZ = minZ;
+        }
     }
 
     public Vector3 GetValidDirection(Vector3 point)
     {
-        if (IsLeftBound(point))
-            return Vector3.right;
-        else if (IsUpperBound(point))
-            return Vector3.back;
-        else if (IsRightBound(point))
-            return Vector3.left;
+        Vector3 direction = Vector3.zero;
 
-        return Vector3.zero;
-    }
+        float distToLeft = Mathf.Abs(point.x - _leftBoundX);
+        float distToRight = Mathf.Abs(point.x - _rightBoundX);
+        float distToTop = Mathf.Abs(point.z - _upperBoundZ);
+        float distToBottom = Mathf.Abs(point.z - _lowerBoundZ);
 
-    private bool CompareDifference(float firstNumber, float secondNumber)
-    {
-        float distance = firstNumber - secondNumber;
-        return distance < 0.1f && distance > -0.1f;
+        float minDist = Mathf.Min(distToLeft, distToRight, distToTop, distToBottom);
+
+        if (minDist == distToLeft)
+            direction = Vector3.right;
+        else if (minDist == distToRight)
+            direction = Vector3.left;
+        else if (minDist == distToTop)
+            direction = Vector3.back;
+        else
+            direction = Vector3.forward;
+
+        return direction;
     }
 }
