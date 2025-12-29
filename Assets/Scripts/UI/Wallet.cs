@@ -35,8 +35,7 @@ public class Wallet : MonoBehaviour
     }
 
     public bool CanAfford(int count)
-    {
-        Debug.Log($"{_money} - {count}");
+    {        
         return _money >= count;
     }
 

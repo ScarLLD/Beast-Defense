@@ -2,44 +2,44 @@ using UnityEngine;
 
 public class CameraSizeAdjuster : MonoBehaviour
 {
-    [SerializeField] private Camera targetCamera;
-    [SerializeField] private Transform leftBoundaryObject;
-    [SerializeField] private Transform rightBoundaryObject;
-    [SerializeField] private Transform bottomBoundaryObject;
+    [SerializeField] private Camera _targetCamera;
+    [SerializeField] private Transform _leftBoundaryObject;
+    [SerializeField] private Transform _rightBoundaryObject;
+    [SerializeField] private Transform _bottomBoundaryObject;
 
     private void Start()
-    {        
+    {
         FitCameraToBoundaries();
     }
 
     public void FitCameraToBoundaries()
     {
-        if (targetCamera == null || !targetCamera.orthographic)
+        if (_targetCamera == null || !_targetCamera.orthographic)
             return;
 
-        if (leftBoundaryObject == null || rightBoundaryObject == null)
+        if (_leftBoundaryObject == null || _rightBoundaryObject == null)
             return;
 
-        Vector3 leftInCameraSpace = targetCamera.transform.InverseTransformPoint(leftBoundaryObject.position);
-        Vector3 rightInCameraSpace = targetCamera.transform.InverseTransformPoint(rightBoundaryObject.position);
+        Vector3 leftInCameraSpace = _targetCamera.transform.InverseTransformPoint(_leftBoundaryObject.position);
+        Vector3 rightInCameraSpace = _targetCamera.transform.InverseTransformPoint(_rightBoundaryObject.position);
 
         float leftBoundary = leftInCameraSpace.x;
         float rightBoundary = rightInCameraSpace.x;
         float requiredWidth = Mathf.Abs(rightBoundary - leftBoundary);
 
-        float aspect = targetCamera.aspect;
+        float aspect = _targetCamera.aspect;
         float requiredOrthoSizeForWidth = (requiredWidth / aspect) / 2f;
         float requiredOrthoSize = requiredOrthoSizeForWidth;
 
-        if (bottomBoundaryObject != null)
+        if (_bottomBoundaryObject != null)
         {
-            Vector3 bottomInCameraSpace = targetCamera.transform.InverseTransformPoint(bottomBoundaryObject.position);
+            Vector3 bottomInCameraSpace = _targetCamera.transform.InverseTransformPoint(_bottomBoundaryObject.position);
             float bottomBoundary = bottomInCameraSpace.y;
 
             float requiredOrthoSizeForBottom = Mathf.Abs(bottomBoundary);
             requiredOrthoSize = Mathf.Max(requiredOrthoSizeForWidth, requiredOrthoSizeForBottom);
         }
 
-        targetCamera.orthographicSize = requiredOrthoSize;
+        _targetCamera.orthographicSize = requiredOrthoSize;
     }
 }

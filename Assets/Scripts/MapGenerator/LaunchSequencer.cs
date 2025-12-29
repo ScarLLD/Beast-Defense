@@ -124,6 +124,7 @@ public class LaunchSequencer : MonoBehaviour
     private IEnumerator RestartCurrentLevelRoutine()
     {
         yield return StartCoroutine(CleanupRoutine());
+        _placeSpawner.TryGeneratePlaces();
         _cubeCreator.Respawn();
         _availabilityManagement.UpdateAvailability();
         ResumeGameplay();
@@ -146,8 +147,8 @@ public class LaunchSequencer : MonoBehaviour
 
     private bool TryGenerateLevel()
     {
-        bool success = _gridCreator.TryCreate(out Vector3 cubeScale)
-            && _placeSpawner.TryGeneratePlaces(cubeScale)
+        bool success = _gridCreator.TryCreate()
+            && _placeSpawner.TryGeneratePlaces()
             && _cubeCreator.TryCreate(_cubeStorage, _bulletSpawner, _targetStorage)
             && _roadSpawner.TrySpawn(out List<Vector3> road)
             && _splineCreator.TryCreateSpline(road, out _splineContainer)

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(DirectionAnalyzer))]
+[RequireComponent(typeof(DirectionAnalyzer), typeof(RoadLimiter))]
 public class RoadSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject _stumpPrefab;
@@ -14,8 +14,6 @@ public class RoadSpawner : MonoBehaviour
     [SerializeField] private bool _allowTopSpawn = true;
     [SerializeField] private bool _allowLeftSpawn = true;
     [SerializeField] private bool _allowRightSpawn = true;
-    [SerializeField] private bool _allowBottomSpawn = false;
-    [SerializeField] private float _minDistanceFromBoundary = 2f;
 
     [Header("Pathfinding Settings")]
     [SerializeField] private float _initialTurnProbability = 0.3f;
@@ -23,7 +21,6 @@ public class RoadSpawner : MonoBehaviour
 
     private DirectionAnalyzer _directionAnalyzer;
     private RoadLimiter _limiter;
-    private Camera _mainCamera;
     private float _minAllowedHeight;
     private float _maxAllowedHeight;
     private float _minAllowedX;
@@ -40,7 +37,6 @@ public class RoadSpawner : MonoBehaviour
     {
         _directionAnalyzer = GetComponent<DirectionAnalyzer>();
         _limiter = GetComponent<RoadLimiter>();
-        _mainCamera = Camera.main;
         CalculatePlayAreaLimits();
     }
 
@@ -54,10 +50,10 @@ public class RoadSpawner : MonoBehaviour
 
         if (_boundaryMaker.TryGetBoundaryLimits(out float minX, out float maxX, out float minZ, out float maxZ))
         {
-            _minAllowedX = minX + _minDistanceFromBoundary;
-            _maxAllowedX = maxX - _minDistanceFromBoundary;
-            _minAllowedHeight = minZ + _minDistanceFromBoundary;
-            _maxAllowedHeight = maxZ - _minDistanceFromBoundary;
+            _minAllowedX = minX ;
+            _maxAllowedX = maxX;
+            _minAllowedHeight = minZ;
+            _maxAllowedHeight = maxZ;
         }
         else
         {
@@ -176,29 +172,27 @@ public class RoadSpawner : MonoBehaviour
             case BoundaryMaker.BoundarySide.Top: return Vector3.back;
             case BoundaryMaker.BoundarySide.Left: return Vector3.right;
             case BoundaryMaker.BoundarySide.Right: return Vector3.left;
-            case BoundaryMaker.BoundarySide.Bottom: return Vector3.forward;
             default: return _directionAnalyzer.GetValidDirection(_spawnPoint);
         }
     }
 
     private BoundaryMaker.BoundarySide GetPreferredSpawnSide()
     {
-        List<BoundaryMaker.BoundarySide> availableSides = new List<BoundaryMaker.BoundarySide>();
+        List<BoundaryMaker.BoundarySide> availableSides = new();
 
         if (_allowTopSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Top);
         if (_allowLeftSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Left);
         if (_allowRightSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Right);
-        if (_allowBottomSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Bottom);
 
         if (availableSides.Count == 0) return BoundaryMaker.BoundarySide.Top;
 
-        int index = UnityEngine.Random.Range(0, availableSides.Count);
+        int index = Random.Range(0, availableSides.Count);
         return availableSides[index];
     }
 
     private bool IsPointNearTopBoundary(Vector3 point)
     {
-        return Mathf.Abs(point.z - _maxAllowedHeight) < _minDistanceFromBoundary * 2f;
+        return Mathf.Abs(point.z - _maxAllowedHeight) < 0.1f;
     }
 
     private bool TryMoveForward(ref Vector3 position, Vector3 direction)
@@ -215,7 +209,7 @@ public class RoadSpawner : MonoBehaviour
     private bool ShouldTurn(int segmentCount)
     {
         float turnProbability = _initialTurnProbability + (segmentCount * _turnProbabilityIncrease);
-        return UnityEngine.Random.value < turnProbability;
+        return Random.value < turnProbability;
     }
 
     private Vector3 GetValidTurnDirection(Vector3 currentDirection, Vector3 currentPosition, bool avoidExtremeDirections, bool startedFromTop)
@@ -302,10 +296,10 @@ public class RoadSpawner : MonoBehaviour
 
     private bool DoSegmentsIntersect(Vector3 a1, Vector3 a2, Vector3 b1, Vector3 b2)
     {
-        Vector2 a1_2d = new Vector2(a1.x, a1.z);
-        Vector2 a2_2d = new Vector2(a2.x, a2.z);
-        Vector2 b1_2d = new Vector2(b1.x, b1.z);
-        Vector2 b2_2d = new Vector2(b2.x, b2.z);
+        Vector2 a1_2d = new(a1.x, a1.z);
+        Vector2 a2_2d = new(a2.x, a2.z);
+        Vector2 b1_2d = new(b1.x, b1.z);
+        Vector2 b2_2d = new(b2.x, b2.z);
 
         return LineSegmentsIntersect(a1_2d, a2_2d, b1_2d, b2_2d);
     }
@@ -345,10 +339,10 @@ public class RoadSpawner : MonoBehaviour
 
     private void DrawRectangle(float minX, float maxX, float minZ, float maxZ)
     {
-        Vector3 tl = new Vector3(minX, 0, maxZ);
-        Vector3 tr = new Vector3(maxX, 0, maxZ);
-        Vector3 bl = new Vector3(minX, 0, minZ);
-        Vector3 br = new Vector3(maxX, 0, minZ);
+        Vector3 tl = new(minX, 0, maxZ);
+        Vector3 tr = new(maxX, 0, maxZ);
+        Vector3 bl = new(minX, 0, minZ);
+        Vector3 br = new(maxX, 0, minZ);
 
         Gizmos.DrawLine(tl, tr);
         Gizmos.DrawLine(tr, br);

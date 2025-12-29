@@ -9,13 +9,16 @@ public class RayCreator : MonoBehaviour
     [SerializeField] private float _rayDirection;
 
     private WaitForSeconds _sleepTime;
+    private WaitForSeconds _clickCooldown;
     private Coroutine _rayCoroutine;
+    private bool _isClickProcessed;
 
     public event Action<PlayerCube> Clicked;
 
     private void Awake()
     {
         _sleepTime = new WaitForSeconds(0.01f);
+        _clickCooldown = new WaitForSeconds(0.1f);
     }
 
     private void OnEnable()
@@ -59,7 +62,7 @@ public class RayCreator : MonoBehaviour
                 Ray ray = new();
                 bool hasInput = false;
 
-                if (Input.GetMouseButton(0))
+                if (Input.GetMouseButtonDown(0))
                 {
                     ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                     hasInput = true;
@@ -70,16 +73,24 @@ public class RayCreator : MonoBehaviour
                     hasInput = true;
                 }
 
-                if (hasInput && Physics.Raycast(ray, out RaycastHit hit, _rayDirection))
+                if (hasInput && !_isClickProcessed && Physics.Raycast(ray, out RaycastHit hit, _rayDirection))
                 {
                     if (hit.transform.TryGetComponent(out PlayerCube cube) && cube.IsAvailable && cube.IsScaling == false)
                     {
+                        _isClickProcessed = true;
                         Clicked?.Invoke(cube);
+                        yield return StartCoroutine(ResetClickCooldown());
                     }
                 }
             }
 
             yield return _sleepTime;
         }
+    }
+
+    private IEnumerator ResetClickCooldown()
+    {
+        yield return _clickCooldown;
+        _isClickProcessed = false;
     }
 }

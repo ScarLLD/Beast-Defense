@@ -9,12 +9,7 @@ public class GameHeart : MonoBehaviour
     [SerializeField] private TMP_Text _countText;
     [SerializeField] private Image _heartImage;
     [SerializeField] private TMP_Text _timerText;
-    [SerializeField] private AnimationCurve _deathAnimationCurve;
-    [SerializeField] private AnimationCurve _restoreAnimationCurve;
-
-    [Header("Восстановление")]
-    [SerializeField] private GameObject _restorePanel;
-    [SerializeField] private Button _restoreButton;
+    [SerializeField] private AnimationCurve _changeAnimationCurve;
 
     [Header("Анимации")]
     [SerializeField] private float _changeDuration = 0.5f;
@@ -23,22 +18,18 @@ public class GameHeart : MonoBehaviour
     private HeartTimer _heartTimer;
     private Animator _animator;
     private Coroutine _timerCoroutine;
+    private Coroutine _heartUpdateCoroutine;
     private bool _isAnimating = false;
+    private int _lastHeartCount = 0;
+    private bool _isFirstUpdate = true;
 
-    public bool IsPossibleDecrease => _heartTimer?.HasAvailableHearts ?? false;    
+    public bool IsPossibleDecrease => _heartTimer?.HasAvailableHearts ?? false;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-
         _heartTimer = new HeartTimer();
-
         _heartTimer.OnHeartsChanged += OnHeartsChanged;
-
-        if (_restoreButton != null)
-        {
-            _restoreButton.onClick.AddListener(QuickRestore);
-        }
     }
 
     private void Start()
@@ -48,19 +39,26 @@ public class GameHeart : MonoBehaviour
             _heartTimer.Initialize();
         }
 
+        _lastHeartCount = _heartTimer?.CurrentHearts ?? 0;
         UpdateUI();
+
+        // Запускаем все корутины
         StartTimerUpdate();
+        StartHeartUpdateCoroutine();
     }
 
     private void OnEnable()
     {
         UpdateUI();
         StartTimerUpdate();
+        StartHeartUpdateCoroutine();
     }
 
     private void OnDisable()
     {
-        StopTimerUpdate();
+        StopAllCoroutines();
+        _timerCoroutine = null;
+        _heartUpdateCoroutine = null;
     }
 
     private void OnDestroy()
@@ -71,19 +69,59 @@ public class GameHeart : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void StartHeartUpdateCoroutine()
     {
-        if (_heartTimer == null || !_heartTimer.IsInitialized) return;
+        if (_heartUpdateCoroutine != null)
+            StopCoroutine(_heartUpdateCoroutine);
 
-        if (_heartTimer.ShouldRestoreHeart() && !_isAnimating)
+        _heartUpdateCoroutine = StartCoroutine(HeartUpdateRoutine());
+    }
+
+    private IEnumerator HeartUpdateRoutine()
+    {
+        while (true)
         {
-            StartCoroutine(RestoreOneHeartRoutine());
+            if (_heartTimer != null && _heartTimer.IsInitialized)
+            {
+                _heartTimer.UpdateTimer();
+            }
+            yield return null; // Проверяем каждый кадр
         }
     }
 
     private void OnHeartsChanged()
     {
-        UpdateUI();
+        if (_heartTimer == null) return;
+
+        int currentCount = _heartTimer.CurrentHearts;
+
+        // Пропускаем первое обновление при запуске
+        if (_isFirstUpdate)
+        {
+            _isFirstUpdate = false;
+            _lastHeartCount = currentCount;
+            UpdateUI();
+            return;
+        }
+
+        // Определяем, было ли восстановление сердца
+        if (currentCount > _lastHeartCount && !_isAnimating)
+        {
+            // Это восстановление в реальном времени
+            StartCoroutine(RestoreHeartAnimationRoutine(_lastHeartCount, currentCount));
+        }
+        else if (currentCount < _lastHeartCount)
+        {
+            // Это трата сердца (обрабатывается в UseHeartRoutine)
+            UpdateUI();
+        }
+        else
+        {
+            // Без изменений или другие случаи
+            UpdateUI();
+        }
+
+        _lastHeartCount = currentCount;
     }
 
     private void StartTimerUpdate()
@@ -92,15 +130,6 @@ public class GameHeart : MonoBehaviour
             StopCoroutine(_timerCoroutine);
 
         _timerCoroutine = StartCoroutine(TimerUpdateRoutine());
-    }
-
-    private void StopTimerUpdate()
-    {
-        if (_timerCoroutine != null)
-        {
-            StopCoroutine(_timerCoroutine);
-            _timerCoroutine = null;
-        }
     }
 
     private IEnumerator TimerUpdateRoutine()
@@ -131,7 +160,7 @@ public class GameHeart : MonoBehaviour
         yield return StartCoroutine(AnimateHeartChange(
             previousCount,
             _heartTimer.CurrentHearts,
-            _deathAnimationCurve
+            _changeAnimationCurve
         ));
 
         yield return new WaitForSeconds(_changeDelay);
@@ -139,23 +168,24 @@ public class GameHeart : MonoBehaviour
         _isAnimating = false;
     }
 
-    private IEnumerator RestoreOneHeartRoutine()
+    private IEnumerator RestoreHeartAnimationRoutine(int startCount, int endCount)
     {
-        if (_isAnimating || _heartTimer == null || !_heartTimer.IsInitialized)
-            yield break;
+        if (_isAnimating) yield break;
 
         _isAnimating = true;
 
-        int previousCount = _heartTimer.CurrentHearts;
-        _heartTimer.RestoreOneHeart();
-               
         yield return StartCoroutine(AnimateHeartChange(
-            previousCount,
-            _heartTimer.CurrentHearts,
-            _restoreAnimationCurve
+            startCount,
+            endCount,
+            _changeAnimationCurve
         ));
 
+        yield return new WaitForSeconds(_changeDelay);
+
         _isAnimating = false;
+
+        // Обновляем UI после анимации
+        UpdateUI();
     }
 
     private IEnumerator AnimateHeartChange(int startCount, int endCount, AnimationCurve curve)
@@ -171,36 +201,17 @@ public class GameHeart : MonoBehaviour
 
             _heartImage.fillAmount = Mathf.Lerp(startFillAmount, targetFillAmount, curve.Evaluate(t));
 
+            // Обновляем счетчик во время анимации для плавного перехода
+            int displayCount = Mathf.RoundToInt(Mathf.Lerp(startCount, endCount, t));
+            _countText.text = $"{displayCount}/{_heartTimer.MaxHearts}";
+
             yield return null;
         }
 
         _heartImage.fillAmount = targetFillAmount;
-        _countText.text = $"{_heartTimer.CurrentHearts}/{_heartTimer.MaxHearts}";
+        _countText.text = $"{endCount}/{_heartTimer.MaxHearts}";
     }
 
-    public void QuickRestore()
-    {
-        if (_heartTimer == null || !_heartTimer.IsInitialized ||
-            _heartTimer.CurrentHearts >= _heartTimer.MaxHearts || _isAnimating)
-            return;
-
-        int previousCount = _heartTimer.CurrentHearts;
-        _heartTimer.RestoreOneHeart();
-
-        StartCoroutine(AnimateHeartChange(
-            previousCount,
-            _heartTimer.CurrentHearts,
-            _restoreAnimationCurve
-        ));
-    }
-        
-    public void RestoreAllHearts()
-    {
-        if (_isAnimating || _heartTimer == null || !_heartTimer.IsInitialized) return;
-
-        _heartTimer.RestoreAllHearts();
-    }
-        
     public void PlayShakeAnimation()
     {
         if (_animator != null)
@@ -215,31 +226,21 @@ public class GameHeart : MonoBehaviour
         if (_heartTimer == null || !_heartTimer.IsInitialized)
         {
             _heartImage.fillAmount = 1f;
-            _countText.text = $"{_heartTimer.CurrentHearts}/{_heartTimer.MaxHearts}";
-            if (_timerText != null) _timerText.text = "Загрузка...";
-            if (_restorePanel != null) _restorePanel.SetActive(false);
+            _countText.text = $"{_heartTimer?.CurrentHearts ?? 0}/{_heartTimer?.MaxHearts ?? 5}";
+            if (_timerText != null) _timerText.text = "";
             return;
         }
 
         _heartImage.fillAmount = _heartTimer.GetFillAmount();
         _countText.text = $"{_heartTimer.CurrentHearts}/{_heartTimer.MaxHearts}";
         UpdateTimerText();
-        UpdateRestorePanel();
     }
 
     private void UpdateTimerText()
     {
         if (_timerText != null)
         {
-            _timerText.text = _heartTimer?.GetTimerText() ?? "Загрузка...";
-        }
-    }
-
-    private void UpdateRestorePanel()
-    {
-        if (_restorePanel != null && _heartTimer != null && _heartTimer.IsInitialized)
-        {
-            _restorePanel.SetActive(_heartTimer.CurrentHearts < _heartTimer.MaxHearts);
+            _timerText.text = _heartTimer?.GetTimerText() ?? "";
         }
     }
 }

@@ -5,9 +5,9 @@ using UnityEngine.Splines;
 
 public class SplineCreator : MonoBehaviour
 {
-    [SerializeField] private float _tangentLength = 3f;
-    [SerializeField] private float _cornerRadius = 2f;
-    [SerializeField] private float _cornerSmoothness = 0.7f;
+    [SerializeField] private float _tangentLength = 0.3f;
+    [SerializeField] private float _cornerRadius = 3f;
+    [SerializeField] private float _cornerSmoothness = 0.75f;
     [SerializeField] private int _subdivisions = 3;
     [SerializeField] private float _minAngleForRounding = 15f;
 
@@ -18,7 +18,7 @@ public class SplineCreator : MonoBehaviour
         if (roadPoints == null || roadPoints.Count < 2)
             return false;
 
-        GameObject splineObject = new("DynamicSpline");
+        GameObject splineObject = new("Spline");
         splineObject.transform.position = Vector3.zero;
         splineObject.transform.parent = transform;
 
@@ -28,9 +28,7 @@ public class SplineCreator : MonoBehaviour
         spline.Clear();
 
         List<int> cornerIndices = FindCorners(roadPoints);
-
         List<Vector3> roundedPoints = CreateRoundedCorners(roadPoints, cornerIndices);
-
         List<Vector3> processedPoints = SmoothPointsWithCatmullRom(roundedPoints);
 
         for (int i = 0; i < processedPoints.Count; i++)
@@ -135,17 +133,17 @@ public class SplineCreator : MonoBehaviour
                     result.Add(startPoint);
                 }
 
-                for (int j = 1; j <= 3; j++) 
+                for (int j = 1; j <= 3; j++)
                 {
                     float t = j / 4f;
-                                        
+
                     Vector3 point1 = Vector3.Lerp(startPoint, cornerPoint, t);
                     Vector3 point2 = Vector3.Lerp(cornerPoint, endPoint, t);
                     Vector3 smoothedPoint = Vector3.Lerp(point1, point2, t);
 
                     result.Add(smoothedPoint);
                 }
-                                
+
                 result.Add(endPoint);
             }
         }
@@ -154,9 +152,9 @@ public class SplineCreator : MonoBehaviour
     }
 
     private bool IsCornerPoint(int index, List<Vector3> processedPoints, List<Vector3> originalPoints, List<int> cornerIndices)
-    {        
+    {
         foreach (int cornerIndex in cornerIndices)
-        {           
+        {
             float minDistance = float.MaxValue;
             int closestOriginalIndex = -1;
 

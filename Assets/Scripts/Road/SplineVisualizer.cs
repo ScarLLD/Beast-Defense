@@ -5,26 +5,20 @@ using UnityEngine.Splines;
 
 public class SplineVisualizer : MonoBehaviour
 {
-    [Header("Road Settings")]
-    [SerializeField] private float _roadWidth = 3.3f;
-    [SerializeField] private float _textureTiling = 4f;
     [SerializeField] private Material _roadMaterial;
-    [SerializeField] private MeshFilter _meshFilter;
-    [SerializeField] private MeshRenderer _meshRenderer;
-
-    [Header("End Platform Settings")]
+    [SerializeField] private float _roadWidth = 3.3f;
     [SerializeField] private int _platformSegments = 16;
-
-    [Header("Quality Settings")]
-    [Range(50, 500)] public int _resolution = 200;
+    [SerializeField] private int _roadQualitySegments = 240;
 
     private float _endPlatformRadius;
+    private MeshFilter _meshFilter;
     private SplineContainer _splineContainer;
     private Mesh _roadMesh;
 
     private void Awake()
     {
         _endPlatformRadius = _roadWidth / 2;
+        _meshFilter = GetComponent<MeshFilter>();
     }
 
     public bool TryGenerateRoadFromSpline(SplineContainer splineContainer)
@@ -35,7 +29,7 @@ public class SplineVisualizer : MonoBehaviour
         _splineContainer = splineContainer;
 
         if (_splineContainer == null)
-            return false;        
+            return false;
 
         GenerateSmoothRoadMesh();
 
@@ -58,38 +52,38 @@ public class SplineVisualizer : MonoBehaviour
 
         Spline spline = _splineContainer.Spline;
 
-        for (int i = 0; i <= _resolution; i++)
+        for (int segmentIndex = 0; segmentIndex <= _roadQualitySegments; segmentIndex++)
         {
-            float t = i / (float)_resolution;
+            float splinePosition = segmentIndex / (float)_roadQualitySegments;
 
-            spline.Evaluate(t, out float3 position, out float3 tangent, out float3 upVector);
+            spline.Evaluate(splinePosition, out float3 position, out float3 tangent, out float3 upVector);
 
-            Vector3 roadTangentNormalized = new Vector3(tangent.x, tangent.y, tangent.z).normalized;
-            Vector3 roadUpNormalized = new Vector3(upVector.x, upVector.y, upVector.z).normalized;
-            Vector3 right = Vector3.Cross(roadTangentNormalized, roadUpNormalized).normalized;
+            Vector3 roadTangent = new Vector3(tangent.x, tangent.y, tangent.z).normalized;
+            Vector3 roadUp = new Vector3(upVector.x, upVector.y, upVector.z).normalized;
+            Vector3 roadRight = Vector3.Cross(roadTangent, roadUp).normalized;
 
             float widthMultiplier = 1f;
 
-            Vector3 leftEdge = new Vector3(position.x, position.y, position.z) - 0.5f * _roadWidth * widthMultiplier * right;
-            Vector3 rightEdge = new Vector3(position.x, position.y, position.z) + 0.5f * _roadWidth * widthMultiplier * right;
+            Vector3 leftEdge = new Vector3(position.x, position.y, position.z) - 0.5f * _roadWidth * widthMultiplier * roadRight;
+            Vector3 rightEdge = new Vector3(position.x, position.y, position.z) + 0.5f * _roadWidth * widthMultiplier * roadRight;
 
             vertices.Add(leftEdge);
             vertices.Add(rightEdge);
 
-            float uvY = t * _textureTiling;
-            uv.Add(new Vector2(0f, uvY));
-            uv.Add(new Vector2(1f, uvY));
+            float uvVertical = splinePosition;
+            uv.Add(new Vector2(0f, uvVertical));
+            uv.Add(new Vector2(1f, uvVertical));
 
-            normals.Add(roadUpNormalized);
-            normals.Add(roadUpNormalized);
+            normals.Add(roadUp);
+            normals.Add(roadUp);
         }
 
-        for (int i = 0; i < _resolution; i++)
+        for (int segmentIndex = 0; segmentIndex < _roadQualitySegments; segmentIndex++)
         {
-            int currentLeft = i * 2;
-            int currentRight = i * 2 + 1;
-            int nextLeft = (i + 1) * 2;
-            int nextRight = (i + 1) * 2 + 1;
+            int currentLeft = segmentIndex * 2;
+            int currentRight = segmentIndex * 2 + 1;
+            int nextLeft = (segmentIndex + 1) * 2;
+            int nextRight = (segmentIndex + 1) * 2 + 1;
 
             triangles.Add(currentLeft);
             triangles.Add(currentRight);
@@ -103,51 +97,51 @@ public class SplineVisualizer : MonoBehaviour
         float platformYOffset = -0.001f;
 
         _splineContainer.Evaluate(1f, out float3 endPosition, out float3 endTangent, out float3 endUp);
-        Vector3 platformTangentNormalized = new Vector3(endTangent.x, endTangent.y, endTangent.z).normalized;
-        Vector3 platformUpNormalized = new Vector3(endUp.x, endUp.y, endUp.z).normalized;
-        Vector3 center = new Vector3(endPosition.x, endPosition.y, endPosition.z) + Vector3.up * platformYOffset;
+        Vector3 platformTangent = new Vector3(endTangent.x, endTangent.y, endTangent.z).normalized;
+        Vector3 platformUp = new Vector3(endUp.x, endUp.y, endUp.z).normalized;
+        Vector3 platformCenter = new Vector3(endPosition.x, endPosition.y, endPosition.z) + Vector3.up * platformYOffset;
 
         int centerIndex = vertices.Count;
-        vertices.Add(center);
+        vertices.Add(platformCenter);
         uv.Add(new Vector2(0.5f, 0.5f));
-        normals.Add(platformUpNormalized);
+        normals.Add(platformUp);
 
-        float startAngle = Mathf.Atan2(platformTangentNormalized.z, platformTangentNormalized.x) + Mathf.PI * 0.5f;
+        float startAngle = Mathf.Atan2(platformTangent.z, platformTangent.x) + Mathf.PI * 0.5f;
 
-        for (int i = 0; i <= _platformSegments; i++)
+        for (int segmentIndex = 0; segmentIndex <= _platformSegments; segmentIndex++)
         {
-            float angle = startAngle + i / (float)_platformSegments * Mathf.PI * 2f;
+            float angle = startAngle + segmentIndex / (float)_platformSegments * Mathf.PI * 2f;
             Vector3 direction = new(Mathf.Cos(angle), 0, Mathf.Sin(angle));
-            Vector3 platformEdge = center + direction * _endPlatformRadius;
+            Vector3 platformEdge = platformCenter + direction * _endPlatformRadius;
 
             vertices.Add(platformEdge);
 
-            float uvX = 0.5f + Mathf.Cos(angle) * 0.5f;
-            float uvY = 0.5f + Mathf.Sin(angle) * 0.5f;
-            uv.Add(new Vector2(uvX, uvY));
-            normals.Add(platformUpNormalized);
+            float uvHorizontal = 0.5f + Mathf.Cos(angle) * 0.5f;
+            float uvVertical = 0.5f + Mathf.Sin(angle) * 0.5f;
+            uv.Add(new Vector2(uvHorizontal, uvVertical));
+            normals.Add(platformUp);
         }
 
-        for (int i = 1; i < _platformSegments; i++)
+        for (int segmentIndex = 1; segmentIndex < _platformSegments; segmentIndex++)
         {
             triangles.Add(centerIndex);
-            triangles.Add(centerIndex + i + 1);
-            triangles.Add(centerIndex + i);
+            triangles.Add(centerIndex + segmentIndex + 1);
+            triangles.Add(centerIndex + segmentIndex);
         }
 
         triangles.Add(centerIndex);
         triangles.Add(centerIndex + 1);
         triangles.Add(centerIndex + _platformSegments);
 
-        int lastRoadLeft = (_resolution) * 2;
-        int lastRoadRight = (_resolution) * 2 + 1;
+        int lastRoadLeft = _roadQualitySegments * 2;
+        int lastRoadRight = _roadQualitySegments * 2 + 1;
 
-        for (int i = 0; i < _platformSegments; i++)
+        for (int segmentIndex = 0; segmentIndex < _platformSegments; segmentIndex++)
         {
-            int platformVertex1 = centerIndex + i + 1;
-            int platformVertex2 = centerIndex + i + 2;
+            int platformVertex1 = centerIndex + segmentIndex + 1;
+            int platformVertex2 = centerIndex + segmentIndex + 2;
 
-            if (i < _platformSegments / 2)
+            if (segmentIndex < _platformSegments / 2)
             {
                 triangles.Add(lastRoadLeft);
                 triangles.Add(platformVertex1);

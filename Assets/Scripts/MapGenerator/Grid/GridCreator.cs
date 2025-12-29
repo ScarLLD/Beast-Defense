@@ -41,8 +41,6 @@ public class GridCreator : MonoBehaviour
     private float _spacingX;
     private float _spacingZ;
     private Vector3 _gridCenterOffset;
-    private Vector3 _leftCornerPosition;
-    private Vector3 _rightCornerPosition;
 
     public event Action Created;
 
@@ -57,10 +55,8 @@ public class GridCreator : MonoBehaviour
         _objectDepth = _cubePrefab.transform.localScale.z;
     }
 
-    public bool TryCreate(out Vector3 cubeScale)
+    public bool TryCreate()
     {
-        cubeScale = _cubePrefab.transform.localScale;
-
         float localMinX = _minX + _gridCenterOffset.x;
         float localMaxX = _maxX + _gridCenterOffset.x;
         float localMinZ = _minZ + _gridCenterOffset.z;

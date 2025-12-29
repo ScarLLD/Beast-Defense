@@ -12,7 +12,6 @@ public class PlaceSpawner : MonoBehaviour
     [SerializeField] private float _scaleMultiplier = 0.9f;
 
     private int _initialPlacesCount;
-    private Vector3 _spawnPoint;
 
     public bool PlacesIncreased { get; private set; }
 
@@ -32,37 +31,18 @@ public class PlaceSpawner : MonoBehaviour
         _game.Completed -= SetDefaultSettings;
     }
 
-    public bool TryGeneratePlaces(Vector3 cubeScale)
+    public bool TryGeneratePlaces()
     {
-        _placePrefab.transform.localScale = new(cubeScale.x * _scaleMultiplier, 0.01f, cubeScale.z * _scaleMultiplier);
-        Vector3 cameraCenter = new(_camera.pixelWidth / 2, _camera.pixelHeight / 2, 0f);
+        _storage.Clear();
+        GenerateShootingPlaces();
 
-        Ray ray = _camera.ScreenPointToRay(cameraCenter);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 100f))
-        {
-            _spawnPoint = hit.point;
-            transform.position = new Vector3(_spawnPoint.x, transform.position.y, 0);
-
-            _storage.Clear();
-            GenerateShootingPlaces();
-            GenerateEscapePlaces();
-
-            return true;
-        }
-
-        Debug.Log("Не удалось сгенерировать точки стрельбы.");
-        return false;
+        return true;
     }
 
     public void IncreasePlace()
     {
         _placesCount++;
         PlacesIncreased = true;
-
-        _storage.Clear();
-        GenerateShootingPlaces();
-        GenerateEscapePlaces();
     }
 
     public void SetDefaultSettings()
@@ -76,9 +56,8 @@ public class PlaceSpawner : MonoBehaviour
         float placeWidth = _placePrefab.transform.localScale.x;
         float totalWidth = (_placesCount - 1) * (placeWidth + _distanceBetweenPlaces);
 
-        Vector3 startPoint = _spawnPoint;
-        startPoint.x = _spawnPoint.x - totalWidth / 2;
-        startPoint.y = _spawnPoint.y + 0.01f;
+        Vector3 startPoint = Vector3.zero;
+        startPoint.x -= totalWidth / 2;
 
         for (int i = 0; i < _placesCount; i++)
         {
@@ -88,27 +67,6 @@ public class PlaceSpawner : MonoBehaviour
             ShootingPlace place = Instantiate(_placePrefab, transform);
             place.transform.localPosition = spawnPosition;
             _storage.PutPlace(place);
-        }
-    }
-
-    private void GenerateEscapePlaces()
-    {
-        Vector3 escapePlace;
-
-        if (_storage.TryGetFirstPlace(out ShootingPlace firstPlace))
-        {
-            escapePlace = new Vector3(firstPlace.transform.position.x - _movingAwayFromShootingPlace,
-                firstPlace.transform.position.y, firstPlace.transform.position.z + _movingAwayFromShootingPlace);
-
-            _storage.PutEscapePlace(escapePlace);
-        }
-
-        if (_storage.TryGetLastPlace(out ShootingPlace lastPlace))
-        {
-            escapePlace = new Vector3(lastPlace.transform.position.x + _movingAwayFromShootingPlace,
-                lastPlace.transform.position.y, lastPlace.transform.position.z + _movingAwayFromShootingPlace);
-
-            _storage.PutEscapePlace(escapePlace);
         }
     }
 }

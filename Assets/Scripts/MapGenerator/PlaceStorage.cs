@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class PlaceStorage : MonoBehaviour
 {
+    [SerializeField] private List<Vector3> _escapePlaces;
+
     private List<ShootingPlace> _shootingPlaces;
-    private List<Vector3> _escapePlaces;
 
     private void Awake()
     {
         _shootingPlaces = new List<ShootingPlace>();
-        _escapePlaces = new List<Vector3>();
     }
 
     public void Clear()
@@ -21,7 +21,6 @@ public class PlaceStorage : MonoBehaviour
         }
 
         _shootingPlaces.Clear();
-        _escapePlaces.Clear();
     }
 
     public bool TryGetPlace(PlayerCube cube, out ShootingPlace shootingPlace, out Vector3 escapePlace)
@@ -48,35 +47,6 @@ public class PlaceStorage : MonoBehaviour
     public void PutPlace(ShootingPlace place)
     {
         _shootingPlaces.Add(place);
-    }
-
-    public bool TryGetFirstPlace(out ShootingPlace place)
-    {
-        place = null;
-
-        if (_shootingPlaces.Count > 0)
-        {
-            place = _shootingPlaces.First();
-        }
-
-        return place != null;
-    }
-
-    public bool TryGetLastPlace(out ShootingPlace place)
-    {
-        place = null;
-
-        if (_shootingPlaces.Count > 0)
-        {
-            place = _shootingPlaces.Last();
-        }
-
-        return place != null;
-    }
-
-    public void PutEscapePlace(Vector3 escapePlace)
-    {
-        _escapePlaces.Add(escapePlace);
     }
 
     public void SetDefaultSettings()

@@ -2,15 +2,14 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class BoundaryMaker : MonoBehaviour
-{
-    [SerializeField] private Transform _manualBoundaryContainer;
+{    
     [SerializeField] private List<Transform> _customBoundaryPoints;
     [SerializeField] private List<BoundarySegment> _manualSegments;
     [SerializeField] private float _spawnAreaOffset = 0.3f;
 
     [Header("Gizmos Settings")]
     [SerializeField] private Color _lineColor = Color.green;
-    [SerializeField] private Color _spawnAreaColor = Color.yellow;
+    private Color _spawnAreaColor = Color.yellow;
     [SerializeField] private float _lineWidth = 0.1f;
     [SerializeField] private bool _drawGizmos = true;
 
@@ -46,7 +45,7 @@ public class BoundaryMaker : MonoBehaviour
             SpawnMaxOffset = maxOffset;
         }
 
-        public Vector3 GetRandomPoint()
+        public readonly Vector3 GetRandomPoint()
         {
             float randomT = Random.Range(SpawnMinOffset, SpawnMaxOffset);
             return Vector3.Lerp(Start, End, randomT);
@@ -160,7 +159,7 @@ public class BoundaryMaker : MonoBehaviour
             return BoundarySide.Custom;
         }
 
-        List<BoundarySide> availableSides = new List<BoundarySide>(_segmentsBySide.Keys);
+        List<BoundarySide> availableSides = new(_segmentsBySide.Keys);
 
         if (availableSides.Count > 1 && availableSides.Contains(BoundarySide.Custom))
         {
