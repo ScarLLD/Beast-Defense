@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class GameOverMenu : Window
 {
     [SerializeField] private Game _game;
+    [SerializeField] private GameHeart _gameHeart;
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _exitButton;
 
@@ -32,7 +33,10 @@ public class GameOverMenu : Window
 
     private void OnRestartButtonClick()
     {
-        _game.RestartGame();
+        if (_gameHeart.IsPossibleDecrease)
+            _game.RestartGame();
+        else
+            _gameHeart.PlayShakeAnimation();
     }
 
     private void OnExitButtonClick()

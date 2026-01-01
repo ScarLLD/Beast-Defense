@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -19,16 +20,19 @@ public class GameHeart : MonoBehaviour
     private Animator _animator;
     private Coroutine _timerCoroutine;
     private Coroutine _heartUpdateCoroutine;
+    private Vector3 _initPosition;
     private bool _isAnimating = false;
     private int _lastHeartCount = 0;
     private bool _isFirstUpdate = true;
 
     public bool IsPossibleDecrease => _heartTimer?.HasAvailableHearts ?? false;
+    public Vector3 InitPosiiton => _initPosition;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
         _heartTimer = new HeartTimer();
+        _initPosition = transform.position;
         _heartTimer.OnHeartsChanged += OnHeartsChanged;
     }
 
@@ -42,7 +46,6 @@ public class GameHeart : MonoBehaviour
         _lastHeartCount = _heartTimer?.CurrentHearts ?? 0;
         UpdateUI();
 
-        // Запускаем все корутины
         StartTimerUpdate();
         StartHeartUpdateCoroutine();
     }
@@ -85,7 +88,7 @@ public class GameHeart : MonoBehaviour
             {
                 _heartTimer.UpdateTimer();
             }
-            yield return null; // Проверяем каждый кадр
+            yield return null;
         }
     }
 
@@ -95,7 +98,6 @@ public class GameHeart : MonoBehaviour
 
         int currentCount = _heartTimer.CurrentHearts;
 
-        // Пропускаем первое обновление при запуске
         if (_isFirstUpdate)
         {
             _isFirstUpdate = false;
@@ -104,20 +106,16 @@ public class GameHeart : MonoBehaviour
             return;
         }
 
-        // Определяем, было ли восстановление сердца
         if (currentCount > _lastHeartCount && !_isAnimating)
         {
-            // Это восстановление в реальном времени
             StartCoroutine(RestoreHeartAnimationRoutine(_lastHeartCount, currentCount));
         }
         else if (currentCount < _lastHeartCount)
         {
-            // Это трата сердца (обрабатывается в UseHeartRoutine)
             UpdateUI();
         }
         else
         {
-            // Без изменений или другие случаи
             UpdateUI();
         }
 
@@ -184,7 +182,6 @@ public class GameHeart : MonoBehaviour
 
         _isAnimating = false;
 
-        // Обновляем UI после анимации
         UpdateUI();
     }
 
@@ -201,7 +198,6 @@ public class GameHeart : MonoBehaviour
 
             _heartImage.fillAmount = Mathf.Lerp(startFillAmount, targetFillAmount, curve.Evaluate(t));
 
-            // Обновляем счетчик во время анимации для плавного перехода
             int displayCount = Mathf.RoundToInt(Mathf.Lerp(startCount, endCount, t));
             _countText.text = $"{displayCount}/{_heartTimer.MaxHearts}";
 
@@ -242,5 +238,10 @@ public class GameHeart : MonoBehaviour
         {
             _timerText.text = _heartTimer?.GetTimerText() ?? "";
         }
+    }
+
+    public void TryDecreaseCount()
+    {
+        _heartTimer.TryUseHeart();
     }
 }

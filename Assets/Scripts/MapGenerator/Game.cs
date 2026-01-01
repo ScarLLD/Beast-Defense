@@ -5,6 +5,10 @@ using UnityEngine;
 public class Game : MonoBehaviour
 {
     [SerializeField] private Transition _transition;
+    [SerializeField] private Transform _canvasTransform;
+    [SerializeField] private GameOverMenu _gameOverMenu;
+    [SerializeField] private VictoryMenu _victoryMenu;
+    [SerializeField] private MainMenu _mainMenu;
 
     [Header("Transition Colors")]
     [SerializeField] private Material _goodMaterial;
@@ -37,6 +41,12 @@ public class Game : MonoBehaviour
     private void OnDisable()
     {
         _deathModule.SnakeDie -= CompleteGame;
+    }
+
+    private void OnApplicationQuit()
+    {
+        if (IsPlaying)
+            _gameHeart.TryDecreaseCount();
     }
 
     public void StartGame()
@@ -89,7 +99,6 @@ public class Game : MonoBehaviour
 
     private IEnumerator StartGameRoutine()
     {
-        yield return StartCoroutine(_gameHeart.UseHeartRoutine());
         _transition.SetText("Запуск");
         yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color));
         Started?.Invoke();
@@ -119,6 +128,8 @@ public class Game : MonoBehaviour
         Completed?.Invoke();
         _transition.SetText(string.Empty);
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color));
+        _gameHeart.transform.SetParent(_canvasTransform.transform);
+        _gameHeart.gameObject.SetActive(true);
         Debug.Log("Игра успешно окончена.");
         ClearRoutine();
     }
@@ -127,7 +138,9 @@ public class Game : MonoBehaviour
     {
         IsPlaying = false;
         Leaved?.Invoke();
+        _gameHeart.transform.SetParent(_canvasTransform.transform);
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
+        _gameHeart.transform.SetParent(_mainMenu.transform);
         Transited?.Invoke();
         Debug.Log("Игра покинута!");
         ClearRoutine();
@@ -140,7 +153,10 @@ public class Game : MonoBehaviour
         IsPlaying = false;
         HasCompleted = false;
         Leaved?.Invoke();
+        _gameHeart.transform.SetParent(_mainMenu.transform);
+        _gameHeart.gameObject.SetActive(true);
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
+        yield return StartCoroutine(_gameHeart.UseHeartRoutine());
         Debug.Log("Игра покинута!");
         ClearRoutine();
     }
@@ -152,6 +168,9 @@ public class Game : MonoBehaviour
         Over?.Invoke();
         _transition.SetText(string.Empty);
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color));
+        _gameHeart.transform.SetParent(_gameOverMenu.transform);
+        _gameHeart.gameObject.SetActive(true);
+        yield return StartCoroutine(_gameHeart.UseHeartRoutine());
         Debug.Log($"Игра проиграна!");
         ClearRoutine();
     }
@@ -160,6 +179,7 @@ public class Game : MonoBehaviour
     {
         Restarted.Invoke();
         yield return StartCoroutine(_transition.ContinueTransitionRoutine());
+        _gameHeart.gameObject.SetActive(false);
         Transited?.Invoke();
         IsPlaying = true;
         Debug.Log("Игра перезапущена!");

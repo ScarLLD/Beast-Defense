@@ -238,12 +238,12 @@ public class Snake : MonoBehaviour
 
     private void UpdateHeadPosition()
     {
+        bool shouldBeActive = _splinePosition - _headRollback > 0f;
+        _head.gameObject.SetActive(shouldBeActive);
+
         PlaceOnSpline(_head.transform, _splinePosition - _headRollback);
         NormalizedPosition = _splineLength > 0 ?
-            Mathf.Clamp01(_splinePosition / _splineLength) : 0f;
-
-        bool shouldBeActive = _splinePosition > 0f;
-        _head.gameObject.SetActive(shouldBeActive);
+            Mathf.Clamp01(_splinePosition / _splineLength) : 0f;        
     }
 
     private void UpdateSegmentsPosition()
@@ -326,6 +326,7 @@ public class Snake : MonoBehaviour
         }
 
         float timer = 0f;
+
         while (timer < _recoilDuration)
         {
             timer += Time.deltaTime;

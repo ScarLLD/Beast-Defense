@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class HeartTimer
 {
-    private const int MAX_HEARTS = 5;
-    private const int RESTORE_TIME_SECONDS = 30;
+    private const int MAX_HEARTS = 3;
+    private const int RESTORE_TIME_SECONDS = 900;
 
     public event Action OnHeartsChanged;
 
