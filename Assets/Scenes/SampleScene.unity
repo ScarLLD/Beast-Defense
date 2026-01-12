@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3200,11 +3200,11 @@ RectTransform:
   - {fileID: 828451537}
   m_Father: {fileID: 2081478664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.9105796, y: 0.083255745}
-  m_AnchorMax: {x: 0.9105796, y: 0.083255745}
-  m_AnchoredPosition: {x: -158.61302, y: 128.00006}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 312.59598, y: -408.99146}
   m_SizeDelta: {x: 220.418, y: 163.983}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 1, y: 0}
 --- !u!114 &385178235
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6388,7 +6388,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u0417\u0430\u043D\u043E\u0433\u043E"
+  m_text: "\u0417\u0430\u043D\u043E\u0432\u043E"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 435d3076e96efa0498d552dd23fc5895, type: 2}
   m_sharedMaterial: {fileID: -2073899142141566514, guid: 435d3076e96efa0498d552dd23fc5895, type: 2}
@@ -7057,7 +7057,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 7.0000167}
+  m_AnchoredPosition: {x: 0, y: 7.0000305}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &828451538
@@ -11000,9 +11000,9 @@ RectTransform:
   - {fileID: 880557289}
   m_Father: {fileID: 2081478664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.9195877}
-  m_AnchorMax: {x: 0.5, y: 0.9195877}
-  m_AnchoredPosition: {x: 0, y: -25}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 433}
   m_SizeDelta: {x: 500.009, y: 190.16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1439456406
@@ -12584,7 +12584,7 @@ MonoBehaviour:
   - {fileID: 465669800}
   - {fileID: 272712147}
   _game: {fileID: 1614255502}
-  _gameHeart: {fileID: 0}
+  _gameHeart: {fileID: 830789544}
   _restartButton: {fileID: 1035850449}
   _exitButton: {fileID: 465669802}
 --- !u!1001 &1794089532
@@ -14064,10 +14064,10 @@ RectTransform:
   - {fileID: 1176293686}
   m_Father: {fileID: 1675306277}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.092833325, y: 0.266}
-  m_AnchorMax: {x: 0.9073335, y: 0.73700005}
-  m_AnchoredPosition: {x: -0.0078125, y: -2.6894531}
-  m_SizeDelta: {x: -2.5776062, y: -0.46279907}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.0078125, y: 0.8105469}
+  m_SizeDelta: {x: 877.42236, y: 1092.5372}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2085075448
 GameObject:
@@ -14728,11 +14728,11 @@ RectTransform:
   - {fileID: 5835664293875063102}
   m_Father: {fileID: 2081478664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.08733729, y: 0.083255745}
-  m_AnchorMax: {x: 0.08733729, y: 0.083255745}
-  m_AnchoredPosition: {x: 257, y: 128}
-  m_SizeDelta: {x: 390.567, y: 163.983}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -300.2835, y: -408.99152}
+  m_SizeDelta: {x: 390.56702, y: 163.983}
+  m_Pivot: {x: 0, y: 0}
 --- !u!114 &3300932318801059255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15185,10 +15185,10 @@ RectTransform:
   - {fileID: 2936093548470098812}
   m_Father: {fileID: 2081478664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.9105796, y: 0.89400005}
-  m_AnchorMax: {x: 0.9105796, y: 0.89400005}
-  m_AnchoredPosition: {x: -10, y: -17}
-  m_SizeDelta: {x: 151.576, y: 151.576}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 350, y: 413}
+  m_SizeDelta: {x: 151.576, y: 151.57599}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8171465631447092846
 CanvasRenderer:

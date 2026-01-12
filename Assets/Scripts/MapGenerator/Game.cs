@@ -57,7 +57,8 @@ public class Game : MonoBehaviour
 
     public void ContinueGame()
     {
-        StartRoutine(ContinueGameRoutine());
+        if (_transition.IsTransiting == false)
+            StartRoutine(ContinueGameRoutine());
     }
 
     public void GameOver()
@@ -67,7 +68,8 @@ public class Game : MonoBehaviour
 
     public void RestartGame()
     {
-        StartRoutine(GameRestartRoutine());
+        if (_transition.IsTransiting == false)
+            StartRoutine(GameRestartRoutine());
     }
 
     public void CompleteGame()
