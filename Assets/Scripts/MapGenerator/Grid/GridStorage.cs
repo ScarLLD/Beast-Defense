@@ -9,6 +9,7 @@ public class GridStorage : MonoBehaviour
     public IReadOnlyList<GridCell>[,] Cells => _cells;
 
     public int GridCount => _grid.Count;
+    public List<GridCell> GetAllCells => _grid;
 
     private void Awake()
     {

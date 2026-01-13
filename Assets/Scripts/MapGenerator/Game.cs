@@ -130,7 +130,6 @@ public class Game : MonoBehaviour
         Completed?.Invoke();
         _transition.SetText(string.Empty);
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color));
-        _gameHeart.transform.SetParent(_canvasTransform.transform);
         _gameHeart.gameObject.SetActive(true);
         Debug.Log("Игра успешно окончена.");
         ClearRoutine();

@@ -8,8 +8,6 @@ public class PlaceSpawner : MonoBehaviour
     [SerializeField] private ShootingPlace _placePrefab;
     [SerializeField] private float _distanceBetweenPlaces = 1;
     [SerializeField] private int _placesCount = 4;
-    [SerializeField] private float _movingAwayFromShootingPlace = 10;
-    [SerializeField] private float _scaleMultiplier = 0.9f;
 
     private int _initialPlacesCount;
 

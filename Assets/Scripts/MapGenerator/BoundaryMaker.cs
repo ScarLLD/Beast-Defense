@@ -2,10 +2,9 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class BoundaryMaker : MonoBehaviour
-{    
+{
     [SerializeField] private List<Transform> _customBoundaryPoints;
     [SerializeField] private List<BoundarySegment> _manualSegments;
-    [SerializeField] private float _spawnAreaOffset = 0.3f;
 
     [Header("Gizmos Settings")]
     [SerializeField] private Color _lineColor = Color.green;
