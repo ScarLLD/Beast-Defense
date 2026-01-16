@@ -57,8 +57,7 @@ public class Game : MonoBehaviour
 
     public void ContinueGame()
     {
-        if (_transition.IsTransiting == false)
-            StartRoutine(ContinueGameRoutine());
+        StartRoutine(ContinueGameRoutine());
     }
 
     public void GameOver()
@@ -130,7 +129,6 @@ public class Game : MonoBehaviour
         Completed?.Invoke();
         _transition.SetText(string.Empty);
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color));
-        _gameHeart.gameObject.SetActive(true);
         Debug.Log("Игра успешно окончена.");
         ClearRoutine();
     }

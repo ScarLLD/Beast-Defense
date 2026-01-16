@@ -5,39 +5,46 @@ using YG;
 
 public class Adv : MonoBehaviour
 {
+    [SerializeField] private Transition _transition;
     [SerializeField] private Button _advSkipLevelButton;
     [SerializeField] private Button _advDoubleRewardButton;
     [SerializeField] private string _skipLevelID = "Skip";
     [SerializeField] private string _doubleRewardID = "Double";
 
-    public event Action Skipped;
+    public event Action Regenerated;
     public event Action Doubled;
 
     private void OnEnable()
     {
-        _advSkipLevelButton.onClick.AddListener(SkipLevelAdvShow);
+        _advSkipLevelButton.onClick.AddListener(RegenerateLevelAdvShow);
         _advDoubleRewardButton.onClick.AddListener(DoubleRewardAdvShow);
     }
 
     private void OnDisable()
     {
-        _advSkipLevelButton.onClick.RemoveListener(SkipLevelAdvShow);
+        _advSkipLevelButton.onClick.RemoveListener(RegenerateLevelAdvShow);
         _advDoubleRewardButton.onClick.RemoveListener(DoubleRewardAdvShow);
     }
 
-    private void SkipLevelAdvShow()
+    private void RegenerateLevelAdvShow()
     {
-        YG2.RewardedAdvShow(_skipLevelID, () =>
+        if (_transition.IsTransiting == false)
         {
-            Skipped?.Invoke();
-        });
+            YG2.RewardedAdvShow(_skipLevelID, () =>
+            {
+                Regenerated?.Invoke();
+            });
+        }
     }
 
     private void DoubleRewardAdvShow()
     {
-        YG2.RewardedAdvShow(_doubleRewardID, () =>
+        if (_transition.IsTransiting == false)
         {
-            Doubled?.Invoke();
-        });
+            YG2.RewardedAdvShow(_doubleRewardID, () =>
+            {
+                Doubled?.Invoke();
+            });
+        }
     }
 }

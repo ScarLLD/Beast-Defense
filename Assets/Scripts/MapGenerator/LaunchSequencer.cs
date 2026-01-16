@@ -36,13 +36,14 @@ public class LaunchSequencer : MonoBehaviour
     private Snake _snake;
     private Beast _beast;
     private SplineContainer _splineContainer;
+    private Coroutine _advLevelCreationCoroutine;
 
     private void OnEnable()
     {
         _game.Started += OnGameStarted;
         _game.Continued += OnGameContinued;
         _game.Restarted += OnGameRestarted;
-        _adv.Skipped += OnAdvWatched;
+        _adv.Regenerated += OnAdvWatched;
     }
 
     private void OnDisable()
@@ -50,7 +51,13 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started -= OnGameStarted;
         _game.Continued -= OnGameContinued;
         _game.Restarted -= OnGameRestarted;
-        _adv.Skipped -= OnAdvWatched;
+        _adv.Regenerated -= OnAdvWatched;
+
+        if (_advLevelCreationCoroutine != null)
+        {
+            StopCoroutine(_advLevelCreationCoroutine);
+            _advLevelCreationCoroutine = null;
+        }
     }
 
     private void OnGameStarted()
@@ -83,8 +90,21 @@ public class LaunchSequencer : MonoBehaviour
 
     private void OnAdvWatched()
     {
-        StartNewLevel();
+        if (_advLevelCreationCoroutine != null)
+        {
+            StopCoroutine(_advLevelCreationCoroutine);
+        }
+
+        _advLevelCreationCoroutine = StartCoroutine(AdvLevelCreationRoutine());
+    }
+
+    private IEnumerator AdvLevelCreationRoutine()
+    {
+        yield return StartNewLevelRoutine();
+
         _game.ContinueGame();
+
+        _advLevelCreationCoroutine = null;
     }
 
     private void StartNewLevel()
@@ -142,7 +162,6 @@ public class LaunchSequencer : MonoBehaviour
         _bulletSpawner.Cleanup();
         _placeStorage.SetDefaultSettings();
         _targetStorage.Cleanup();
-
     }
 
     private bool TryGenerateLevel()

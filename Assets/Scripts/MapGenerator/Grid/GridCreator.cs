@@ -9,7 +9,6 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private GridCell _cellPrefab;
     [SerializeField] private Obstacle _obstaclePrefab;
     [SerializeField] private Obstacle _stretchedObstaclePrefab;
-    [SerializeField] private Transform _wallsPrefab;
 
     [SerializeField] private Vector3 _centerPosition;
     [SerializeField] private int _rows = 7;
@@ -22,6 +21,7 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private int _maxObstacles = 6;
     [SerializeField] private int _maxObstacleLength = 3;
     [SerializeField] private Transform _obstaclesContainer;
+    [SerializeField] private Transform _walls;
 
     [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private CubeCreator _cubeCreator;
@@ -31,7 +31,6 @@ public class GridCreator : MonoBehaviour
     private GridCell[,] _cellGrid;
     private bool[,] _obstacleMap;
     private Vector3[,] _cellPositions;
-    private Transform _wallsInstance;
 
     private float _objectWidth;
     private float _objectDepth;
@@ -71,11 +70,10 @@ public class GridCreator : MonoBehaviour
             CreateAllObstacles();
             CreateStretchedObstaclesBetweenNeighbors();
 
-            if (_wallsPrefab != null)
+            if (_walls != null)
             {
-                _wallsInstance = Instantiate(_wallsPrefab, transform);
-                _wallsInstance.position = _centerPosition;
-                _wallsInstance.gameObject.SetActive(true);
+                _walls.position = _centerPosition;
+                _walls.gameObject.SetActive(true);
             }
         }
 
@@ -104,10 +102,9 @@ public class GridCreator : MonoBehaviour
                 Destroy(obstacle.gameObject);
         }
 
-        if (_wallsInstance != null)
+        if (_walls != null)
         {
-            Destroy(_wallsInstance.gameObject);
-            _wallsInstance = null;
+            _walls.gameObject.SetActive(false);
         }
 
         _obstacles.Clear();
@@ -126,13 +123,12 @@ public class GridCreator : MonoBehaviour
                 float z = gridStart.z + row * (_objectDepth + _cellSpacingZ) + _objectDepth / 2f;
                 float y = _centerPosition.y + _cellHeightOffset;
 
-                Vector3 position = new Vector3(x, y, z);
+                Vector3 position = new(x, y, z);
 
                 _cellPositions[row, col] = position;
 
                 GridCell cell = Instantiate(_cellPrefab, transform);
-                cell.transform.position = position;
-                cell.transform.rotation = Quaternion.identity;
+                cell.transform.SetPositionAndRotation(position, Quaternion.identity);
 
                 _cellGrid[row, col] = cell;
                 _gridStorage.Add(cell);
@@ -169,7 +165,7 @@ public class GridCreator : MonoBehaviour
         Obstacle obstacle = Instantiate(_obstaclePrefab, parent);
 
         Vector3 cellPos = _cellPositions[row, col];
-        Vector3 obstaclePos = new Vector3(
+        Vector3 obstaclePos = new(
             cellPos.x,
             cellPos.y + obstacle.transform.localScale.y / 2f,
             cellPos.z
@@ -271,8 +267,7 @@ public class GridCreator : MonoBehaviour
         scale.x = distance;
         obstacle.transform.localScale = scale;
 
-        obstacle.transform.position = centerPosition;
-        obstacle.transform.rotation = Quaternion.Euler(0f, 90f, 0f);
+        obstacle.transform.SetPositionAndRotation(centerPosition, Quaternion.Euler(0f, 90f, 0f));
 
         _obstacles.Add(obstacle);
     }

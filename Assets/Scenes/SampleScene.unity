@@ -2037,7 +2037,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &272712148
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2522,7 +2522,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &327508445
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3985,7 +3985,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &465669801
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7090,7 +7090,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &811472018
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7806,7 +7806,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &845424080
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9268,7 +9268,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1035850448
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9537,6 +9537,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bd5c8a0eac1e964ebea965261c57718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transition: {fileID: 844318620}
   _advSkipLevelButton: {fileID: 272712149}
   _advDoubleRewardButton: {fileID: 811472019}
   _skipLevelID: Skip
@@ -10593,7 +10594,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1217931082
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11028,7 +11029,6 @@ MonoBehaviour:
   _cellPrefab: {fileID: 8177197784567442016, guid: f3f8a39fa9fa1424586c9c9f66aea54a, type: 3}
   _obstaclePrefab: {fileID: 4161744107708799639, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
   _stretchedObstaclePrefab: {fileID: 1295060935370253680, guid: ca6719bd2b335f349944975a0282fdc9, type: 3}
-  _wallsPrefab: {fileID: 0}
   _centerPosition: {x: 0, y: -0.5, z: -11.2}
   _rows: 8
   _columns: 7
@@ -11039,6 +11039,7 @@ MonoBehaviour:
   _maxObstacles: 16
   _maxObstacleLength: 3
   _obstaclesContainer: {fileID: 102800278}
+  _walls: {fileID: 780775028}
   _gridStorage: {fileID: 1295288259}
   _cubeCreator: {fileID: 529893070}
   _boundaryMaker: {fileID: 1295288266}
