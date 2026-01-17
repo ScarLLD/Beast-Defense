@@ -146,7 +146,6 @@ public class RoadSpawner : MonoBehaviour
 
             if (GenerateRoad() && _road.Count >= _minPathSegments)
             {
-                // Добавляем точку "до" начальной точки
                 AddEntryPointBeforeStart();
 
                 bool lastPointValid = !_limiter.IsEndTooCloseToBoundary(_road[^1]);
@@ -162,21 +161,15 @@ public class RoadSpawner : MonoBehaviour
 
     private void AddEntryPointBeforeStart()
     {
-        // Первая точка - это spawnPoint
-        // Создаем точку "до" spawnPoint в противоположном направлении от initialDirection
-
         if (_road.Count > 0)
         {
             Vector3 firstPoint = _road[0];
             Vector3 secondPoint = _road[1];
 
-            // Определяем направление от первой точки ко второй
             Vector3 direction = (secondPoint - firstPoint).normalized;
 
-            // Создаем точку "до" первой точки в противоположном направлении
             Vector3 entryPoint = firstPoint - direction * _segmentLength;
 
-            // Вставляем эту точку в начало списка
             _road.Insert(0, entryPoint);
         }
     }
@@ -211,7 +204,6 @@ public class RoadSpawner : MonoBehaviour
         if (_allowTopSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Top);
         if (_allowLeftSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Left);
         if (_allowRightSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Right);
-        // Можно добавить и bottom, если нужно
 
         if (availableSides.Count == 0) return BoundaryMaker.BoundarySide.Top;
 
@@ -298,8 +290,6 @@ public class RoadSpawner : MonoBehaviour
 
     private bool IsRoadWithinPlayArea()
     {
-        // Пропускаем первую точку (entry point) при проверке,
-        // так как она может быть за пределами игровой области
         for (int i = 1; i < _road.Count; i++)
         {
             if (IsOutsidePlayArea(_road[i])) return false;
@@ -366,7 +356,7 @@ public class RoadSpawner : MonoBehaviour
             }
 
             Gizmos.color = Color.yellow;
-            for (int i = 1; i < _road.Count - 1; i++) // Начинаем с 1, так как 0 уже нарисовали
+            for (int i = 1; i < _road.Count - 1; i++)
             {
                 Gizmos.DrawLine(_road[i], _road[i + 1]);
                 Gizmos.DrawSphere(_road[i], 0.2f);

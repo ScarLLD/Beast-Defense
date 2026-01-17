@@ -116,6 +116,7 @@ public class Snake : MonoBehaviour
         _animator.StopPlayback();
 
         _head.enabled = false;
+        _head.SetDefaultSetting();
         _head.transform.localScale = _initialHeadSize;
         PlaceOnSpline(_head.transform, _splinePosition);
 
@@ -218,15 +219,17 @@ public class Snake : MonoBehaviour
 
         if (_playableSegments.Count == 0)
         {
-            _head.enabled = false;
             _deathModule.KillSnake(_head.transform);
-
+            _animator.Rebind();
+            _animator.StopPlayback();
+            _head.enabled = false;
         }
-
-        if (MoveSpeed == 0)
+        else if (MoveSpeed == 0)
         {
             _deathModule.KillBeast(_beast.transform);
-            _animator.SetTrigger("isMouthClose");
+            _animator.Rebind();
+            _animator.enabled = false;
+            _head.enabled = false;
         }
     }
 
@@ -243,7 +246,7 @@ public class Snake : MonoBehaviour
 
         PlaceOnSpline(_head.transform, _splinePosition - _headRollback);
         NormalizedPosition = _splineLength > 0 ?
-            Mathf.Clamp01(_splinePosition / _splineLength) : 0f;        
+            Mathf.Clamp01(_splinePosition / _splineLength) : 0f;
     }
 
     private void UpdateSegmentsPosition()

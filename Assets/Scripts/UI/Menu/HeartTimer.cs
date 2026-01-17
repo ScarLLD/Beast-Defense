@@ -26,7 +26,7 @@ public class HeartTimer
         _pendingRestores = PlayerPrefs.GetInt("PendingRestores", 0);
 
         string restoreTimeString = PlayerPrefs.GetString("NextRestoreTime", "");
-        
+
         if (!string.IsNullOrEmpty(restoreTimeString))
         {
             if (DateTime.TryParse(restoreTimeString, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime parsedTime))
@@ -44,7 +44,8 @@ public class HeartTimer
         }
 
         ValidateData();
-        CheckRestoreOnLoad();
+
+        ProcessOfflineRestores();
 
         IsInitialized = true;
         SaveData();
@@ -77,62 +78,77 @@ public class HeartTimer
         }
     }
 
-    private void CheckRestoreOnLoad()
+    private void ProcessOfflineRestores()
     {
-        if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
+        if (!_nextRestoreTimeUtc.HasValue || _pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
         {
-            _isRestoring = false;
-            _nextRestoreTimeUtc = null;
             return;
         }
 
-        if (_nextRestoreTimeUtc.HasValue)
-        {
-            DateTime nowUtc = DateTime.UtcNow;
-            TimeSpan timeRemaining = _nextRestoreTimeUtc.Value - nowUtc;
+        DateTime nowUtc = DateTime.UtcNow;
 
-            if (nowUtc >= _nextRestoreTimeUtc.Value)
+        if (nowUtc < _nextRestoreTimeUtc.Value)
+        {
+            _isRestoring = true;
+            return;
+        }
+
+        TimeSpan timePassed = nowUtc - _nextRestoreTimeUtc.Value;
+
+        if (timePassed.TotalSeconds < RESTORE_TIME_SECONDS)
+        {
+            CompleteSingleRestore();
+
+            if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
             {
-                ProcessExpiredRestores();
+                StartNextRestore();
+            }
+            return;
+        }
+
+        int fullRestores = (int)(timePassed.TotalSeconds / RESTORE_TIME_SECONDS);
+        int heartsToAdd = Mathf.Min(fullRestores, _pendingRestores);
+
+        if (heartsToAdd > 0)
+        {
+            _currentHearts += heartsToAdd;
+            _pendingRestores -= heartsToAdd;
+
+            if (_currentHearts > MAX_HEARTS) _currentHearts = MAX_HEARTS;
+            if (_pendingRestores < 0) _pendingRestores = 0;
+
+            double remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
+
+            if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
+            {
+                _nextRestoreTimeUtc = nowUtc.AddSeconds(RESTORE_TIME_SECONDS - remainingSeconds);
+                _isRestoring = true;
             }
             else
             {
-                int maxExpectedTime = _pendingRestores * RESTORE_TIME_SECONDS;
-                if (timeRemaining.TotalSeconds > maxExpectedTime + 10) 
-                {                    
-                    ResetRestoreTimer();
-                }
-                else
-                {
-                    _isRestoring = true;
-                }
+                _nextRestoreTimeUtc = null;
+                _isRestoring = false;
             }
-        }
-        else if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
-        {
-            StartNextRestore();
-        }
-    }
 
-    private void ProcessExpiredRestores()
-    {
-        if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS) return;
-
-        while (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
-        {
-            _currentHearts++;
-            _pendingRestores--;
-        }
-
-        if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
-        {
-            StartNextRestore();
+            OnHeartsChanged?.Invoke();
         }
         else
         {
-            _isRestoring = false;
-            _nextRestoreTimeUtc = null;
+            double remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
+            _nextRestoreTimeUtc = nowUtc.AddSeconds(RESTORE_TIME_SECONDS - remainingSeconds);
+            _isRestoring = true;
         }
+    }
+
+    private void CompleteSingleRestore()
+    {
+        if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS) return;
+
+        _currentHearts++;
+        _pendingRestores--;
+
+        if (_currentHearts > MAX_HEARTS) _currentHearts = MAX_HEARTS;
+        if (_pendingRestores < 0) _pendingRestores = 0;
     }
 
     public void UpdateTimer()
@@ -165,22 +181,6 @@ public class HeartTimer
     }
 
     private void StartNextRestore()
-    {
-        if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
-        {
-            _isRestoring = false;
-            _nextRestoreTimeUtc = null;
-            SaveData();
-            return;
-        }
-
-        _isRestoring = true;
-        _nextRestoreTimeUtc = DateTime.UtcNow.AddSeconds(RESTORE_TIME_SECONDS);
-
-        SaveData();
-    }
-
-    private void ResetRestoreTimer()
     {
         if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
         {

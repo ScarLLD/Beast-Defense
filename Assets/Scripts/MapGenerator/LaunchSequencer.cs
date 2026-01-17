@@ -204,7 +204,7 @@ public class LaunchSequencer : MonoBehaviour
     {
         if (_roadSpawner.LastSpawnedRoad != null && _roadSpawner.LastSpawnedRoad.Count > 1)
         {
-            _detector.transform.position = _roadSpawner.LastSpawnedRoad[1] + Vector3.up * _snake.transform.localScale.y;
+            _detector.transform.position = _roadSpawner.LastSpawnedRoad[2] + Vector3.up * _snake.transform.localScale.y;
             _detector.gameObject.SetActive(true);
             _detector.EnableTrigger();
         }
