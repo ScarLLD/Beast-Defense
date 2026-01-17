@@ -1,3 +1,0 @@
-﻿Build path: H:/Downloads/BeastDefense.apk
-Build number: 1
-PluginYG version: 2.007

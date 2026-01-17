@@ -38,6 +38,12 @@ namespace YG
 #endif
             }
         }
+
+        public static void RewardedAdvShow(string id, Action callback)
+        {
+            YGInsides.rewardCallback = callback;
+            RewardedAdvShow(id);
+        }
     }
 }
 

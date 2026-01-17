@@ -102,7 +102,7 @@ public class LaunchSequencer : MonoBehaviour
     {
         yield return StartNewLevelRoutine();
 
-        _game.ContinueGame();
+        _game.Continue();
 
         _advLevelCreationCoroutine = null;
     }

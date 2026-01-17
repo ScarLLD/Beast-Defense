@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2032,7 +2032,7 @@ GameObject:
   - component: {fileID: 272712150}
   - component: {fileID: 272712149}
   m_Layer: 5
-  m_Name: SkipButton
+  m_Name: RegenerateButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8744,7 +8744,7 @@ Transform:
   m_GameObject: {fileID: 969564441}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -16.52, y: 1, z: -0.75620174}
+  m_LocalPosition: {x: -16.52, y: 1.01, z: -0.75620174}
   m_LocalScale: {x: 1.0449286, y: 1, z: 3.314855}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -8948,7 +8948,7 @@ Transform:
   m_GameObject: {fileID: 989046321}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.4064, y: 1, z: -11.8914}
+  m_LocalPosition: {x: 0.4064, y: 1.01, z: -11.8914}
   m_LocalScale: {x: 2.5213661, y: 1, z: 1.072318}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9538,8 +9538,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _transition: {fileID: 844318620}
-  _advSkipLevelButton: {fileID: 272712149}
-  _advDoubleRewardButton: {fileID: 811472019}
   _skipLevelID: Skip
   _doubleRewardID: Double
 --- !u!1 &1062508302
@@ -13647,8 +13645,7 @@ MonoBehaviour:
   _totalRewardText: {fileID: 989606505}
   _doubleRewardText: {fileID: 596051829}
   _doubleRewardMultipleText: {fileID: 2049759624}
-  _advButtonAlphaPressedColor: 0.5
-  _doubleRewardButton: {fileID: 811472019}
+  _advDoubleRewardButton: {fileID: 811472019}
   _continueButton: {fileID: 1217931083}
   _exitButton: {fileID: 327508446}
 --- !u!1 &1760482867
@@ -13740,9 +13737,12 @@ MonoBehaviour:
   - {fileID: 465669800}
   - {fileID: 272712147}
   _game: {fileID: 1614255502}
+  _adv: {fileID: 1040958134}
   _gameHeart: {fileID: 830789544}
   _restartButton: {fileID: 1035850449}
+  _advRegenerateLevelButton: {fileID: 272712149}
   _exitButton: {fileID: 465669802}
+  _regenerateText: {fileID: 114901186}
 --- !u!1001 &1794089532
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14064,7 +14064,7 @@ Transform:
   m_GameObject: {fileID: 1858240027}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 17.1824, y: 1, z: -0.7463007}
+  m_LocalPosition: {x: 17.1824, y: 1.01, z: -0.7463007}
   m_LocalScale: {x: 1.203219, y: 1, z: 3.3128479}
   m_ConstrainProportionsScale: 0
   m_Children: []

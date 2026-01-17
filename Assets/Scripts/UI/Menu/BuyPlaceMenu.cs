@@ -49,20 +49,20 @@ public class BuyPlaceMenu : Window
     {
         if (_placeSpawner.PlacesIncreased)
         {
-            _game.GameOver();
+            _game.End();
         }
         else
         {
             EnableMenu();
-            _game.StopGameTime();
+            _game.StopTime();
         }
 
     }
 
     private void OnBuyButtonClick()
     {
-        _game.ContinueGameTime();
-        _game.RestartGame();
+        _game.ContinueTime();
+        _game.Restart();
         _wallet.DecreaseMoney(_placePrice);
         _placeSpawner.IncreasePlace();
         DisableMenu();
@@ -70,8 +70,8 @@ public class BuyPlaceMenu : Window
 
     private void OnExitButtonClick()
     {
-        _game.ContinueGameTime();
-        _game.GameOver();
+        _game.ContinueTime();
+        _game.End();
         DisableMenu();
     }
 

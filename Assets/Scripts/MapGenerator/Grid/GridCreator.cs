@@ -164,19 +164,11 @@ public class GridCreator : MonoBehaviour
         Transform parent = _obstaclesContainer != null ? _obstaclesContainer : transform;
         Obstacle obstacle = Instantiate(_obstaclePrefab, parent);
 
-        Vector3 cellPos = _cellPositions[row, col];
-        Vector3 obstaclePos = new(
-            cellPos.x,
-            cellPos.y + obstacle.transform.localScale.y / 2f,
-            cellPos.z
-        );
-
-        obstacle.transform.position = obstaclePos;
+        obstacle.transform.position = cell.transform.position;
+        obstacle.transform.position += Vector3.up * obstacle.transform.localScale.y;
 
         _obstacles.Add(obstacle);
-
-        var initMethod = cell.GetType().GetMethod("InitObstacle");
-        initMethod?.Invoke(cell, new object[] { obstacle });
+        cell.InitObstacle(obstacle);
     }
 
     private void CreateStretchedObstaclesBetweenNeighbors()
@@ -241,7 +233,7 @@ public class GridCreator : MonoBehaviour
     private void CreateHorizontalStretchedObstacle(Vector3 startPos, Vector3 endPos, Transform parent)
     {
         Vector3 centerPosition = (startPos + endPos) / 2f;
-        centerPosition.y += _stretchedObstaclePrefab.transform.localScale.y / 2f;
+        centerPosition.y = startPos.y + _stretchedObstaclePrefab.transform.localScale.y;
 
         Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
 
@@ -258,7 +250,7 @@ public class GridCreator : MonoBehaviour
     private void CreateVerticalStretchedObstacle(Vector3 startPos, Vector3 endPos, Transform parent)
     {
         Vector3 centerPosition = (startPos + endPos) / 2f;
-        centerPosition.y += _stretchedObstaclePrefab.transform.localScale.y / 2f;
+        centerPosition.y = startPos.y + _stretchedObstaclePrefab.transform.localScale.y;
 
         Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
 

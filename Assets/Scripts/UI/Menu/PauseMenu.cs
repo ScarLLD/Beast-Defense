@@ -55,14 +55,14 @@ public class PauseMenu : Window
     {
         DisableMenu();
         YG2.PauseGame(false);
-        _game.RestartGame();
+        _game.Restart();
     }
 
     private void OnExitButtonClick()
     {
         DisableMenu();
         YG2.PauseGame(false);
-        _game.FastLeaveGame();
+        _game.FastLeave();
     }
 
     private void OnClosePauseButtonClick()

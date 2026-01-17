@@ -35,12 +35,12 @@ public class Game : MonoBehaviour
 
     private void OnEnable()
     {
-        _deathModule.SnakeDie += CompleteGame;
+        _deathModule.SnakeDie += Complete;
     }
 
     private void OnDisable()
     {
-        _deathModule.SnakeDie -= CompleteGame;
+        _deathModule.SnakeDie -= Complete;
     }
 
     private void OnApplicationQuit()
@@ -49,56 +49,56 @@ public class Game : MonoBehaviour
             _gameHeart.TryDecreaseCount();
     }
 
-    public void StartGame()
+    public void Begin()
     {
         if (_transition.IsTransiting == false && _gameHeart.IsPossibleDecrease == true)
-            StartRoutine(StartGameRoutine());
+            StartRoutine(BeginRoutine());
     }
 
-    public void ContinueGame()
+    public void Continue()
     {
-        StartRoutine(ContinueGameRoutine());
+        StartRoutine(ContinueRoutine());
     }
 
-    public void GameOver()
+    public void End()
     {
-        StartRoutine(GameOverRoutine());
+        StartRoutine(EndRoutine());
     }
 
-    public void RestartGame()
+    public void Restart()
     {
         if (_transition.IsTransiting == false)
-            StartRoutine(GameRestartRoutine());
+            StartRoutine(RestartRoutine());
     }
 
-    public void CompleteGame()
+    public void Complete()
     {
-        StartRoutine(GameCompleteRoutine());
+        StartRoutine(CompleteRoutine());
     }
 
-    public void LeaveGame()
+    public void Leave()
     {
-        StartRoutine(GameLeaveRoutine());
+        StartRoutine(LeaveRoutine());
     }
 
-    public void FastLeaveGame()
+    public void FastLeave()
     {
-        StartRoutine(FastGameLeaveRoutine());
+        StartRoutine(FastLeaveRoutine());
     }
 
-    public void StopGameTime()
+    public void StopTime()
     {
         Time.timeScale = 0f;
         IsPause = true;
     }
 
-    public void ContinueGameTime()
+    public void ContinueTime()
     {
         Time.timeScale = 1f;
         IsPause = false;
     }
 
-    private IEnumerator StartGameRoutine()
+    private IEnumerator BeginRoutine()
     {
         _transition.SetText("Запуск");
         yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color));
@@ -111,7 +111,7 @@ public class Game : MonoBehaviour
         ClearRoutine();
     }
 
-    private IEnumerator ContinueGameRoutine()
+    private IEnumerator ContinueRoutine()
     {
         Continued?.Invoke();
         yield return StartCoroutine(_transition.ContinueTransitionRoutine());
@@ -122,7 +122,7 @@ public class Game : MonoBehaviour
         ClearRoutine();
     }
 
-    private IEnumerator GameCompleteRoutine()
+    private IEnumerator CompleteRoutine()
     {
         IsPlaying = false;
         HasCompleted = true;
@@ -133,19 +133,17 @@ public class Game : MonoBehaviour
         ClearRoutine();
     }
 
-    private IEnumerator GameLeaveRoutine()
+    private IEnumerator LeaveRoutine()
     {
         IsPlaying = false;
         Leaved?.Invoke();
-        _gameHeart.transform.SetParent(_canvasTransform.transform);
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
-        _gameHeart.transform.SetParent(_mainMenu.transform);
         Transited?.Invoke();
         Debug.Log("Игра покинута!");
         ClearRoutine();
     }
 
-    private IEnumerator FastGameLeaveRoutine()
+    private IEnumerator FastLeaveRoutine()
     {
         _transition.SetText("Выход");
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color));
@@ -160,7 +158,7 @@ public class Game : MonoBehaviour
         ClearRoutine();
     }
 
-    private IEnumerator GameOverRoutine()
+    private IEnumerator EndRoutine()
     {
         IsPlaying = false;
         HasCompleted = false;
@@ -174,7 +172,7 @@ public class Game : MonoBehaviour
         ClearRoutine();
     }
 
-    private IEnumerator GameRestartRoutine()
+    private IEnumerator RestartRoutine()
     {
         Restarted.Invoke();
         yield return StartCoroutine(_transition.ContinueTransitionRoutine());

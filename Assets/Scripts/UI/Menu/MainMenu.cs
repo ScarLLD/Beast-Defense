@@ -46,7 +46,7 @@ public class MainMenu : Window
     private void OnPlayButtonClick()
     {
         if (_gameHeart.IsPossibleDecrease)
-            _game.StartGame();
+            _game.Begin();
         else
             _gameHeart.PlayShakeAnimation();
     }

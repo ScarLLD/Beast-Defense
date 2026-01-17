@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,11 +13,13 @@ public class VictoryMenu : Window
     [SerializeField] private TMP_Text _totalRewardText;
     [SerializeField] private TMP_Text _doubleRewardText;
     [SerializeField] private TMP_Text _doubleRewardMultipleText;
-    [SerializeField] private float _advButtonAlphaPressedColor = 0.5f;
 
-    [SerializeField] private Button _doubleRewardButton;
+    [SerializeField] private Button _advDoubleRewardButton;
     [SerializeField] private Button _continueButton;
     [SerializeField] private Button _exitButton;
+
+    private float _advButtonAlphaPressedColor = 0.5f;
+    private int _rewardMultiple = 2;
 
     private void Awake()
     {
@@ -28,17 +31,25 @@ public class VictoryMenu : Window
         _game.Completed += OnGameCompleted;
         _game.Transited += DisableMenu;
 
-        _adv.Doubled += OnRewardDoubled;
-
+        _advDoubleRewardButton.onClick.AddListener(OnDoubleRewardButtonClick);
         _continueButton.onClick.AddListener(OnContinuedButtonClick);
         _exitButton.onClick.AddListener(OnExitButtonClick);
         EnableAdvButton();
+    }
 
+    private void OnDisable()
+    {
+        _game.Completed -= OnGameCompleted;
+        _game.Transited -= DisableMenu;
+
+        _advDoubleRewardButton.onClick.RemoveListener(OnDoubleRewardButtonClick);
+        _continueButton.onClick.RemoveListener(OnContinuedButtonClick);
+        _exitButton.onClick.RemoveListener(OnExitButtonClick);
     }
 
     private void EnableAdvButton()
     {
-        _doubleRewardButton.interactable = true;
+        _advDoubleRewardButton.interactable = true;
 
         Color iconColor = _iconImage.color;
         iconColor.a = 1f;
@@ -50,7 +61,7 @@ public class VictoryMenu : Window
 
     private void DisableAdvButton()
     {
-        _doubleRewardButton.interactable = false;
+        _advDoubleRewardButton.interactable = false;
 
         Color iconColor = _iconImage.color;
         iconColor.a = _advButtonAlphaPressedColor;
@@ -60,22 +71,16 @@ public class VictoryMenu : Window
         _doubleRewardMultipleText.alpha = _advButtonAlphaPressedColor;
     }
 
-    private void OnDisable()
+    private void OnDoubleRewardButtonClick()
     {
-        _game.Completed -= OnGameCompleted;
-        _game.Transited -= DisableMenu;
-
-        _adv.Doubled -= OnRewardDoubled;
-
-        _continueButton.onClick.RemoveListener(OnContinuedButtonClick);
-        _exitButton.onClick.RemoveListener(OnExitButtonClick);
+        _adv.DoubleRewardAdvShow();
+        DisableAdvButton();
+        DisplayNewRaward();
     }
 
-    private void OnRewardDoubled()
+    private void DisplayNewRaward()
     {
-        DisableAdvButton();
-
-        _totalRewardText.text = $"+{_wallet.GetRewardMoneyCount() * 2}";
+        _totalRewardText.text = $"+{_wallet.GetRewardMoneyCount() * _rewardMultiple}";
         _totalRewardText.color = Color.yellow;
     }
 
@@ -88,11 +93,11 @@ public class VictoryMenu : Window
 
     private void OnContinuedButtonClick()
     {
-        _game.ContinueGame();
+        _game.Continue();
     }
 
     private void OnExitButtonClick()
     {
-        _game.LeaveGame();
+        _game.Leave();
     }
 }
