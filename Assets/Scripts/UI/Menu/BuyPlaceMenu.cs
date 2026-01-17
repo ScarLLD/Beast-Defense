@@ -49,7 +49,7 @@ public class BuyPlaceMenu : Window
     {
         if (_placeSpawner.PlacesIncreased)
         {
-            _game.End();
+            _game.Over();
         }
         else
         {
@@ -71,7 +71,7 @@ public class BuyPlaceMenu : Window
     private void OnExitButtonClick()
     {
         _game.ContinueTime();
-        _game.End();
+        _game.Over();
         DisableMenu();
     }
 

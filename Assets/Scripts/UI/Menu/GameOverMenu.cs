@@ -17,7 +17,7 @@ public class GameOverMenu : Window
 
     private void OnEnable()
     {
-        _game.Over += EnableMenu;
+        _game.Loss += EnableMenu;
         _game.Transited += DisableMenu;
 
         _advRegenerateLevelButton.onClick.AddListener(OnRegenerateButtonCLick);
@@ -30,7 +30,7 @@ public class GameOverMenu : Window
 
     private void OnDisable()
     {
-        _game.Over -= EnableMenu;
+        _game.Loss -= EnableMenu;
         _game.Transited -= DisableMenu;
 
         _advRegenerateLevelButton.onClick.RemoveListener(OnRegenerateButtonCLick);

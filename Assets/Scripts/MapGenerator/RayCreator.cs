@@ -24,21 +24,24 @@ public class RayCreator : MonoBehaviour
     private void OnEnable()
     {
         _game.Started += EnableRay;
+        _game.Restarted += EnableRay;
         _game.Continued += EnableRay;
         _game.Completed += DisableRay;
-        _game.Over += DisableRay;
+        _game.Loss += DisableRay;
     }
 
     private void OnDisable()
     {
         _game.Started -= EnableRay;
+        _game.Restarted -= EnableRay;
         _game.Continued -= EnableRay;
         _game.Completed -= DisableRay;
-        _game.Over -= DisableRay;
+        _game.Loss -= DisableRay;
     }
 
     private void EnableRay()
     {
+        DisableRay();
         _rayCoroutine ??= StartCoroutine(MouseRaycastInteraction());
     }
 
@@ -49,6 +52,8 @@ public class RayCreator : MonoBehaviour
             StopCoroutine(_rayCoroutine);
             _rayCoroutine = null;
         }
+
+        _isClickProcessed = false;
     }
 
     private IEnumerator MouseRaycastInteraction()

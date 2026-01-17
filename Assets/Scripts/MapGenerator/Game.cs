@@ -22,7 +22,7 @@ public class Game : MonoBehaviour
 
     public event Action Started;
     public event Action Continued;
-    public event Action Over;
+    public event Action Loss;
     public event Action Completed;
     public event Action Restarted;
     public event Action Leaved;
@@ -60,9 +60,9 @@ public class Game : MonoBehaviour
         StartRoutine(ContinueRoutine());
     }
 
-    public void End()
+    public void Over()
     {
-        StartRoutine(EndRoutine());
+        StartRoutine(OverRoutine());
     }
 
     public void Restart()
@@ -137,6 +137,8 @@ public class Game : MonoBehaviour
     {
         IsPlaying = false;
         Leaved?.Invoke();
+        _gameHeart.transform.SetParent(_mainMenu.transform);
+        _gameHeart.gameObject.SetActive(true);
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
         Transited?.Invoke();
         Debug.Log("Игра покинута!");
@@ -158,11 +160,11 @@ public class Game : MonoBehaviour
         ClearRoutine();
     }
 
-    private IEnumerator EndRoutine()
+    private IEnumerator OverRoutine()
     {
         IsPlaying = false;
         HasCompleted = false;
-        Over?.Invoke();
+        Loss?.Invoke();
         _transition.SetText(string.Empty);
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color));
         _gameHeart.transform.SetParent(_gameOverMenu.transform);

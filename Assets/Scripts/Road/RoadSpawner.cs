@@ -50,7 +50,7 @@ public class RoadSpawner : MonoBehaviour
 
         if (_boundaryMaker.TryGetBoundaryLimits(out float minX, out float maxX, out float minZ, out float maxZ))
         {
-            _minAllowedX = minX ;
+            _minAllowedX = minX;
             _maxAllowedX = maxX;
             _minAllowedHeight = minZ;
             _maxAllowedHeight = maxZ;
@@ -78,12 +78,15 @@ public class RoadSpawner : MonoBehaviour
         {
             road = _road;
 
-            if (_stump == null)
-                _stump = Instantiate(_stumpPrefab, road[0], Quaternion.identity, transform);
-            else
-                _stump.transform.position = road[0];
+            Vector3 spawnPosition = road[1];
+            Vector3 lookPosition = road[2];
 
-            _stump.transform.LookAt(road[1]);
+            if (_stump == null)
+                _stump = Instantiate(_stumpPrefab, spawnPosition, Quaternion.identity, transform);
+            else
+                _stump.transform.position = spawnPosition;
+
+            _stump.transform.LookAt(lookPosition);
             return true;
         }
 
@@ -143,6 +146,9 @@ public class RoadSpawner : MonoBehaviour
 
             if (GenerateRoad() && _road.Count >= _minPathSegments)
             {
+                // Добавляем точку "до" начальной точки
+                AddEntryPointBeforeStart();
+
                 bool lastPointValid = !_limiter.IsEndTooCloseToBoundary(_road[^1]);
                 bool noSelfIntersection = !HasSelfIntersection();
                 bool withinPlayArea = IsRoadWithinPlayArea();
@@ -152,6 +158,27 @@ public class RoadSpawner : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void AddEntryPointBeforeStart()
+    {
+        // Первая точка - это spawnPoint
+        // Создаем точку "до" spawnPoint в противоположном направлении от initialDirection
+
+        if (_road.Count > 0)
+        {
+            Vector3 firstPoint = _road[0];
+            Vector3 secondPoint = _road[1];
+
+            // Определяем направление от первой точки ко второй
+            Vector3 direction = (secondPoint - firstPoint).normalized;
+
+            // Создаем точку "до" первой точки в противоположном направлении
+            Vector3 entryPoint = firstPoint - direction * _segmentLength;
+
+            // Вставляем эту точку в начало списка
+            _road.Insert(0, entryPoint);
+        }
     }
 
     private void InitializeStartingPointAndDirection()
@@ -172,6 +199,7 @@ public class RoadSpawner : MonoBehaviour
             case BoundaryMaker.BoundarySide.Top: return Vector3.back;
             case BoundaryMaker.BoundarySide.Left: return Vector3.right;
             case BoundaryMaker.BoundarySide.Right: return Vector3.left;
+            case BoundaryMaker.BoundarySide.Bottom: return Vector3.forward;
             default: return _directionAnalyzer.GetValidDirection(_spawnPoint);
         }
     }
@@ -183,6 +211,7 @@ public class RoadSpawner : MonoBehaviour
         if (_allowTopSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Top);
         if (_allowLeftSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Left);
         if (_allowRightSpawn) availableSides.Add(BoundaryMaker.BoundarySide.Right);
+        // Можно добавить и bottom, если нужно
 
         if (availableSides.Count == 0) return BoundaryMaker.BoundarySide.Top;
 
@@ -269,9 +298,11 @@ public class RoadSpawner : MonoBehaviour
 
     private bool IsRoadWithinPlayArea()
     {
-        foreach (var point in _road)
+        // Пропускаем первую точку (entry point) при проверке,
+        // так как она может быть за пределами игровой области
+        for (int i = 1; i < _road.Count; i++)
         {
-            if (IsOutsidePlayArea(point)) return false;
+            if (IsOutsidePlayArea(_road[i])) return false;
         }
         return true;
     }
@@ -326,13 +357,22 @@ public class RoadSpawner : MonoBehaviour
 
         if (_road.Count > 0)
         {
+            // Рисуем entry point другим цветом
+            Gizmos.color = Color.gray;
+            if (_road.Count > 1)
+            {
+                Gizmos.DrawLine(_road[0], _road[1]);
+                Gizmos.DrawSphere(_road[0], 0.15f);
+            }
+
             Gizmos.color = Color.yellow;
-            for (int i = 0; i < _road.Count - 1; i++)
+            for (int i = 1; i < _road.Count - 1; i++) // Начинаем с 1, так как 0 уже нарисовали
             {
                 Gizmos.DrawLine(_road[i], _road[i + 1]);
                 Gizmos.DrawSphere(_road[i], 0.2f);
             }
-            if (_road.Count > 0)
+
+            if (_road.Count > 1)
                 Gizmos.DrawSphere(_road[^1], 0.2f);
         }
     }

@@ -11028,8 +11028,8 @@ MonoBehaviour:
   _obstaclePrefab: {fileID: 4161744107708799639, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
   _stretchedObstaclePrefab: {fileID: 1295060935370253680, guid: ca6719bd2b335f349944975a0282fdc9, type: 3}
   _centerPosition: {x: 0, y: -0.5, z: -11.2}
-  _rows: 8
-  _columns: 7
+  _rows: 2
+  _columns: 2
   _cellSpacingX: 0.8
   _cellSpacingZ: 0.7
   _cellHeightOffset: 0.01

@@ -34,7 +34,6 @@ public class VictoryMenu : Window
         _advDoubleRewardButton.onClick.AddListener(OnDoubleRewardButtonClick);
         _continueButton.onClick.AddListener(OnContinuedButtonClick);
         _exitButton.onClick.AddListener(OnExitButtonClick);
-        EnableAdvButton();
     }
 
     private void OnDisable()
@@ -86,6 +85,7 @@ public class VictoryMenu : Window
 
     private void OnGameCompleted()
     {
+        EnableAdvButton();
         EnableMenu();
         _totalRewardText.color = Color.green;
         _totalRewardText.text = $"+{_wallet.GetRewardMoneyCount()}";
