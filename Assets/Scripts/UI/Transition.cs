@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using TMPro;
@@ -137,10 +138,7 @@ public class Transition : MonoBehaviour
         while (timer < _transitionDuration)
         {
             timer += Time.deltaTime;
-            float t = Mathf.Clamp01(timer / _transitionDuration);
-            float smooth = _animationCurve.Evaluate(t);
-
-            _sprite.transform.position = Vector3.Lerp(startPosition, targetPosition, smooth);
+            _sprite.DOMoveX(targetPosition.x, _transitionDuration);
 
             yield return null;
         }

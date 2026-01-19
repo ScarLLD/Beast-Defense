@@ -733,17 +733,23 @@ PlayerSettings:
   webGLMemoryGeometricGrowthCap: 96
   webGLPowerPreference: 2
   scriptingDefineSymbols:
-    Android: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;RU_YG2
-    LinuxHeadlessSimulation: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    Nintendo Switch: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    PS4: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    PS5: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    Standalone: DREAMTECK_SPLINES;PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    WebGL: PLUGIN_YG_2;TMP_YG2;RU_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    Windows Store Apps: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    XboxOne: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    iPhone: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
-    tvOS: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg
+    Android: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;RU_YG2;DOTWEEN
+    EmbeddedLinux: DOTWEEN
+    GameCoreScarlett: DOTWEEN
+    GameCoreXboxOne: DOTWEEN
+    LinuxHeadlessSimulation: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    Nintendo Switch: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    PS4: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    PS5: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    QNX: DOTWEEN
+    Stadia: DOTWEEN
+    Standalone: DREAMTECK_SPLINES;PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    VisionOS: DOTWEEN
+    WebGL: PLUGIN_YG_2;TMP_YG2;RU_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    Windows Store Apps: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    XboxOne: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    iPhone: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
+    tvOS: PLUGIN_YG_2;TMP_YG2;Authorization_yg;Leaderboards_yg;RewardedAdv_yg;DOTWEEN
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend: {}
