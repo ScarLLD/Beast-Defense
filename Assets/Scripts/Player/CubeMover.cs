@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(RoadFinder))]
 public class CubeMover : MonoBehaviour
 {
-    private readonly float _arrivalThreshold = 0.1f;
+    private readonly float _arrivalThreshold = 0.15f;
     private float _speed;
     private bool _isNewMove = true;
     private Vector3 _initialPosition;
