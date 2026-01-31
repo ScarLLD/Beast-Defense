@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,7 +12,7 @@ public class GameOverMenu : Window
     [SerializeField] private Button _exitButton;
     [SerializeField] private TMP_Text _regenerateText;
 
-    private float _advButtonAlphaPressedColor = 0.5f;
+    private readonly float _advButtonAlphaPressedColor = 0.5f;
 
     private void OnEnable()
     {

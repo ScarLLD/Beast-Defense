@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -20,19 +19,16 @@ public class GameHeart : MonoBehaviour
     private Animator _animator;
     private Coroutine _timerCoroutine;
     private Coroutine _heartUpdateCoroutine;
-    private Vector3 _initPosition;
     private bool _isAnimating = false;
     private int _lastHeartCount = 0;
     private bool _isFirstUpdate = true;
 
     public bool IsPossibleDecrease => _heartTimer?.HasAvailableHearts ?? false;
-    public Vector3 InitPosiiton => _initPosition;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
         _heartTimer = new HeartTimer();
-        _initPosition = transform.position;
         _heartTimer.OnHeartsChanged += OnHeartsChanged;
     }
 
@@ -70,6 +66,38 @@ public class GameHeart : MonoBehaviour
         {
             _heartTimer.OnHeartsChanged -= OnHeartsChanged;
         }
+    }
+
+    public IEnumerator UseHeartRoutine()
+    {
+        if (_heartTimer == null || !_heartTimer.IsInitialized || !_heartTimer.HasAvailableHearts || _isAnimating)
+            yield break;
+
+        _isAnimating = true;
+
+        int previousCount = _heartTimer.CurrentHearts;
+
+        bool success = _heartTimer.TryUseHeart();
+        if (!success)
+        {
+            _isAnimating = false;
+            yield break;
+        }
+
+        yield return StartCoroutine(AnimateHeartChange(
+            previousCount,
+            _heartTimer.CurrentHearts,
+            _changeAnimationCurve
+        ));
+
+        yield return new WaitForSeconds(_changeDelay);
+
+        _isAnimating = false;
+    }
+
+    public void TryDecreaseCount()
+    {
+        _heartTimer.TryUseHeart();
     }
 
     private void StartHeartUpdateCoroutine()
@@ -138,34 +166,7 @@ public class GameHeart : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
     }
-
-    public IEnumerator UseHeartRoutine()
-    {
-        if (_heartTimer == null || !_heartTimer.IsInitialized || !_heartTimer.HasAvailableHearts || _isAnimating)
-            yield break;
-
-        _isAnimating = true;
-
-        int previousCount = _heartTimer.CurrentHearts;
-
-        bool success = _heartTimer.TryUseHeart();
-        if (!success)
-        {
-            _isAnimating = false;
-            yield break;
-        }
-
-        yield return StartCoroutine(AnimateHeartChange(
-            previousCount,
-            _heartTimer.CurrentHearts,
-            _changeAnimationCurve
-        ));
-
-        yield return new WaitForSeconds(_changeDelay);
-
-        _isAnimating = false;
-    }
-
+        
     private IEnumerator RestoreHeartAnimationRoutine(int startCount, int endCount)
     {
         if (_isAnimating) yield break;
@@ -238,10 +239,5 @@ public class GameHeart : MonoBehaviour
         {
             _timerText.text = _heartTimer?.GetTimerText() ?? "";
         }
-    }
-
-    public void TryDecreaseCount()
-    {
-        _heartTimer.TryUseHeart();
     }
 }

@@ -347,7 +347,6 @@ public class RoadSpawner : MonoBehaviour
 
         if (_road.Count > 0)
         {
-            // Рисуем entry point другим цветом
             Gizmos.color = Color.gray;
             if (_road.Count > 1)
             {

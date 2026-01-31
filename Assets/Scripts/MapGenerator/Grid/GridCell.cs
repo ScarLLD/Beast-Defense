@@ -6,7 +6,7 @@ public class GridCell : MonoBehaviour
 {
     private List<GridCell> _availableCells;
     public PlayerCube Cube { get; private set; }
-    public Obstacle Obstacle { get; private set; }
+    public Obstracle Obstacle { get; private set; }
 
     public bool IsStatic { get; private set; }
     public bool IsTopRow { get; private set; }
@@ -54,7 +54,7 @@ public class GridCell : MonoBehaviour
         Cube = cube;
     }
 
-    public void InitObstacle(Obstacle obstacle)
+    public void InitObstacle(Obstracle obstacle)
     {
         if (obstacle == null)
             throw new ArgumentNullException(nameof(obstacle), $"obstacle не может быть null.");

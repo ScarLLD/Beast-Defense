@@ -110,12 +110,6 @@ public class PlayerCube : MonoBehaviour
         SetHalfSizeTransform();
     }
 
-    private void InitialDefaultTransform()
-    {
-        _defaultScale = _transform.localScale;
-        _defaultPosition = _transform.position;
-    }
-
     public void StartMoving()
     {
         TurnOnLegs();
@@ -131,6 +125,12 @@ public class PlayerCube : MonoBehaviour
             ActivateAvailability();
         else
             DeactivateAvailability();
+    }
+
+    private void InitialDefaultTransform()
+    {
+        _defaultScale = _transform.localScale;
+        _defaultPosition = _transform.position;
     }
 
     private void ActivateAvailability()

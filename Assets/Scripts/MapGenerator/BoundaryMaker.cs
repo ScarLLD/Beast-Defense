@@ -170,7 +170,7 @@ public class BoundaryMaker : MonoBehaviour
             return BoundarySide.Custom;
         }
 
-        int index = UnityEngine.Random.Range(0, availableSides.Count);
+        int index = Random.Range(0, availableSides.Count);
         return availableSides[index];
     }
 
@@ -181,7 +181,7 @@ public class BoundaryMaker : MonoBehaviour
 
         foreach (var segment in _lineSegments)
         {
-            Gizmos.color = GetSideColor(segment.Side);
+            Gizmos.color = Color.green;
 
             Gizmos.DrawLine(segment.Start, segment.End);
             Gizmos.DrawSphere(segment.Start, _lineWidth * 0.5f);
@@ -193,18 +193,6 @@ public class BoundaryMaker : MonoBehaviour
             Gizmos.DrawLine(spawnStart, spawnEnd);
             Gizmos.DrawSphere(spawnStart, _lineWidth * 0.3f);
             Gizmos.DrawSphere(spawnEnd, _lineWidth * 0.3f);
-        }
-    }
-
-    private Color GetSideColor(BoundarySide side)
-    {
-        switch (side)
-        {
-            case BoundarySide.Left: return Color.red;
-            case BoundarySide.Right: return Color.blue;
-            case BoundarySide.Top: return Color.green;
-            case BoundarySide.Bottom: return Color.cyan;
-            default: return _lineColor;
         }
     }
 }

@@ -32,20 +32,6 @@ public class DeathModule : MonoBehaviour
         StartCoroutine(KillBeastRoutine(gameObject));
     }
 
-    private IEnumerator KillSnakeRoutine(Transform gameObject)
-    {
-        _particleModule.startColor = Color.red;
-        yield return StartCoroutine(DeathRoutine(gameObject));
-        SnakeDie?.Invoke();
-    }
-
-    private IEnumerator KillBeastRoutine(Transform gameObject)
-    {
-        _particleModule.startColor = Color.white;
-        yield return StartCoroutine(DeathRoutine(gameObject));
-        BeastDie?.Invoke();        
-    }
-
     public IEnumerator DeathRoutine(Transform gameObject)
     {
         Vector3 startScale = gameObject.localScale;
@@ -64,5 +50,19 @@ public class DeathModule : MonoBehaviour
         _cloudParticle.Play();
 
         yield return new WaitForSeconds(particleTime + _deathDelay);
+    }
+
+    private IEnumerator KillSnakeRoutine(Transform gameObject)
+    {
+        _particleModule.startColor = Color.red;
+        yield return StartCoroutine(DeathRoutine(gameObject));
+        SnakeDie?.Invoke();
+    }
+
+    private IEnumerator KillBeastRoutine(Transform gameObject)
+    {
+        _particleModule.startColor = Color.white;
+        yield return StartCoroutine(DeathRoutine(gameObject));
+        BeastDie?.Invoke();        
     }
 }

@@ -3,7 +3,6 @@ using UnityEngine;
 public class SnakeHead : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _dragonFiraParticle;
-    [SerializeField] private float _particleSpeedMultiplier = 1.5f;
     [SerializeField] private float _minParticleSpeed = 20f;
     [SerializeField] private float _maxParticleSpeed = 30f;
 

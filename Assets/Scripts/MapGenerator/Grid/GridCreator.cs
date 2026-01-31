@@ -7,8 +7,8 @@ public class GridCreator : MonoBehaviour
 {
     [SerializeField] private PlayerCube _cubePrefab;
     [SerializeField] private GridCell _cellPrefab;
-    [SerializeField] private Obstacle _obstaclePrefab;
-    [SerializeField] private Obstacle _stretchedObstaclePrefab;
+    [SerializeField] private Obstracle _obstaclePrefab;
+    [SerializeField] private Obstracle _stretchedObstaclePrefab;
 
     [SerializeField] private Vector3 _centerPosition;
     [SerializeField] private int _rows = 7;
@@ -27,7 +27,7 @@ public class GridCreator : MonoBehaviour
     [SerializeField] private CubeCreator _cubeCreator;
     [SerializeField] private BoundaryMaker _boundaryMaker;
 
-    private List<Obstacle> _obstacles;
+    private List<Obstracle> _obstacles;
     private GridCell[,] _cellGrid;
     private bool[,] _obstacleMap;
     private Vector3[,] _cellPositions;
@@ -39,7 +39,7 @@ public class GridCreator : MonoBehaviour
 
     private void Awake()
     {
-        _obstacles = new List<Obstacle>();
+        _obstacles = new List<Obstracle>();
     }
 
     private void Start()
@@ -162,7 +162,7 @@ public class GridCreator : MonoBehaviour
         if (cell == null) return;
 
         Transform parent = _obstaclesContainer != null ? _obstaclesContainer : transform;
-        Obstacle obstacle = Instantiate(_obstaclePrefab, parent);
+        Obstracle obstacle = Instantiate(_obstaclePrefab, parent);
 
         obstacle.transform.position = cell.transform.position;
         obstacle.transform.position += Vector3.up * obstacle.transform.localScale.y;
@@ -235,7 +235,7 @@ public class GridCreator : MonoBehaviour
         Vector3 centerPosition = (startPos + endPos) / 2f;
         centerPosition.y = startPos.y + _stretchedObstaclePrefab.transform.localScale.y;
 
-        Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
+        Obstracle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
 
         float distance = Vector3.Distance(startPos, endPos);
         Vector3 scale = obstacle.transform.localScale;
@@ -252,7 +252,7 @@ public class GridCreator : MonoBehaviour
         Vector3 centerPosition = (startPos + endPos) / 2f;
         centerPosition.y = startPos.y + _stretchedObstaclePrefab.transform.localScale.y;
 
-        Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
+        Obstracle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
 
         float distance = Vector3.Distance(startPos, endPos);
         Vector3 scale = obstacle.transform.localScale;

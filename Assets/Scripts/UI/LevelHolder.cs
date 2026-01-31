@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class LevelHolder : MonoBehaviour
@@ -26,6 +25,12 @@ public class LevelHolder : MonoBehaviour
         LoadLevel();
     }
 
+    public void IncreaseLevel()
+    {
+        _levelNumber++;
+        SaveLevel();
+    }
+
     private void LoadLevel()
     {
         _levelNumber = PlayerPrefs.GetInt(LEVEL_KEY, 1);
@@ -35,11 +40,5 @@ public class LevelHolder : MonoBehaviour
     {
         PlayerPrefs.SetInt(LEVEL_KEY, _levelNumber);
         PlayerPrefs.Save();
-    }
-
-    public void IncreaseLevel()
-    {
-        _levelNumber++;
-        SaveLevel();
     }
 }

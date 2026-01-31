@@ -67,7 +67,6 @@ public class SnakeSegment : MonoBehaviour
         return false;
     }
 
-
     public void TryDestroy()
     {
         if (_isDestroyed == false)

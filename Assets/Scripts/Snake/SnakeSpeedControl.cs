@@ -55,7 +55,6 @@ public class SnakeSpeedControl : MonoBehaviour
 
     public void StartControl()
     {
-        // Мгновенно сбрасываем скорость при старте контроля
         InstantResetSpeed();
 
         if (_controlCoroutine != null)
@@ -64,14 +63,12 @@ public class SnakeSpeedControl : MonoBehaviour
         _controlCoroutine = StartCoroutine(ControlSpeed());
     }
 
-    // Новый метод для мгновенного сброса скорости
     public void InstantResetSpeed()
     {
         _initialSpeed = GetSnakeBaseSpeed();
         _snake.ChangeSpeed(_initialSpeed);
         _currentState = SpeedState.Normal;
 
-        // Останавливаем все переходы
         if (_transitionCoroutine != null)
         {
             StopCoroutine(_transitionCoroutine);
@@ -243,7 +240,6 @@ public class SnakeSpeedControl : MonoBehaviour
 
     private IEnumerator SpeedTransitionCoroutine(float targetSpeed, float duration)
     {
-        // Если цель - начальная скорость (возврат к нормальной), делаем мгновенный переход
         if (Mathf.Approximately(targetSpeed, _initialSpeed) && _currentState == SpeedState.Normal)
         {
             _snake.ChangeSpeed(targetSpeed);

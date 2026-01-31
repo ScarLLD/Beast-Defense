@@ -20,7 +20,6 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     private SkinShop.SkinType _skinType;
 
     public string SkinId => _skin?.SkinId;
-    public SkinShop.SkinType SkinType => _skinType;
 
     public void Initialize(SkinData.Skin skin, SkinShop shop, Wallet wallet, SkinShop.SkinType skinType)
     {

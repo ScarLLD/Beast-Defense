@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(Animator))]
 public class Shooter : MonoBehaviour
@@ -14,7 +13,6 @@ public class Shooter : MonoBehaviour
     private Animator _animator;
     private Queue<SnakeSegment> _targets;
     private WaitForSeconds _sleepTime;
-    private WaitForSeconds _coroutineSleep;
 
     private int _initialBulletCount;
     private int _bulletCount;
@@ -29,7 +27,6 @@ public class Shooter : MonoBehaviour
         _animator = GetComponent<Animator>();
         _targets = new Queue<SnakeSegment>();
         _sleepTime = new WaitForSeconds(_timeBetweenShoot);
-        _coroutineSleep = new WaitForSeconds(0.1f);
     }
 
     public void Init(BulletSpawner bulletSpawner, int bulletCount)
