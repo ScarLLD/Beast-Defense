@@ -149,12 +149,12 @@ public class Transition : MonoBehaviour
     private void SetSpriteOptions()
     {
         _spriteLeftPosition =
-            new(_canvas.transform.position.x - Camera.main.pixelWidth * 2,
+            new(_canvas.transform.position.x - Camera.main.pixelWidth * 3,
             _canvas.transform.position.y,
             _canvas.transform.position.z);
 
         _spriteRightPosition =
-            new(_canvas.transform.position.x + Camera.main.pixelWidth * 2,
+            new(_canvas.transform.position.x + Camera.main.pixelWidth * 3,
             _canvas.transform.position.y,
             _canvas.transform.position.z);
 
