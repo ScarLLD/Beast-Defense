@@ -19,6 +19,12 @@ MonoBehaviour:
     uniqueID: 000
     playerPhoto: demo image
     payingStatus: 0
+  InterstitialAdv:
+    showFirstAdv: 1
+    interAdvInterval: 60
+    postponeCallByFail: 0
+    postponeCallTimer: 10
+    labelAdvSimLabel: 0
   Leaderboards:
     enable: 1
     saveScoreAnonymousPlayers: 1
@@ -185,6 +191,7 @@ MonoBehaviour:
     autoGRA: 1
     logInEditor: 1
     archivingBuild: 1
+    autoDefineSymbols: 1
     syncInitSDK: 0
     loadSceneIfSDKLate: 0
     loadSceneIndex: 0
@@ -230,6 +237,9 @@ MonoBehaviour:
   platformInfo:
     ownHost: 0
   platformToggles:
+    showFirstAdv: 0
+    interAdvInterval: 0
+    postponeCallByFail: 0
     skipInterAdvAfterReward: 0
     autoPauseGame: 0
     selectWebGLTemplate: 1

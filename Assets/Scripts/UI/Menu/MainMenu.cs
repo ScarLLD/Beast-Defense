@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class MainMenu : Window
 {
+    [SerializeField] private ShopMenu _shop;
     [SerializeField] private Game _game;
     [SerializeField] private LeaderBoardMenu _leaderBoardMenu;
     [SerializeField] private ShopMenu _shopMenu;
@@ -21,6 +22,9 @@ public class MainMenu : Window
         _game.Started += DisableMenu;
         _game.Leaved += EnableMenu;
 
+        _shop.Opened += DisableMenu;
+        _shop.Closed += EnableMenu;
+
         _leaderBoardMenu.Opened += DisableMenu;
         _leaderBoardMenu.Closed += EnableMenu;
     }
@@ -33,6 +37,9 @@ public class MainMenu : Window
 
         _game.Started -= DisableMenu;
         _game.Leaved -= EnableMenu;
+
+        _shop.Opened -= DisableMenu;
+        _shop.Closed -= EnableMenu;
 
         _leaderBoardMenu.Opened -= DisableMenu;
         _leaderBoardMenu.Closed -= EnableMenu;
