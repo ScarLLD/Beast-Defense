@@ -215,7 +215,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &14181175
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6793,7 +6793,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &782946248
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7127,6 +7127,11 @@ LightingSettings:
   m_PVRTiledBaking: 0
   m_NumRaysToShootPerTexel: -1
   m_RespectSceneVisibilityWhenBakingGI: 0
+--- !u!1 &792566853 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1705290334077199572, guid: f40a236569a66c344b68a9feb3f86a18, type: 3}
+  m_PrefabInstance: {fileID: 1369210164}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &792566854 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1705290334077199573, guid: f40a236569a66c344b68a9feb3f86a18, type: 3}
@@ -12951,7 +12956,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menu:
-  - {fileID: 0}
+  - {fileID: 792566853}
   - {fileID: 141861797}
   - {fileID: 718423109}
   _transition: {fileID: 844318620}
@@ -16224,7 +16229,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 150.85
+  m_fontSize: 101.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1

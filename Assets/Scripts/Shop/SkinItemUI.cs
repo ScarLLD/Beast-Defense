@@ -11,7 +11,6 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Image _selectedFrame;
     [SerializeField] private TextMeshProUGUI _priceText;
     [SerializeField] private GameObject _priceParent;
-    [SerializeField] private GameObject _purchasedOverlay;
     [SerializeField] private GameObject _equippedBadge;
 
     private SkinShop _shop;
@@ -33,13 +32,11 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
         {
             _priceText.text = "0";
             _priceText.color = Color.green;
-            _purchasedOverlay.SetActive(true);
             _priceParent.SetActive(false);
         }
         else
         {
             _priceText.text = $"{skin.Price}";
-            _purchasedOverlay.SetActive(false);
 
             _priceText.color = Color.white;
         }
@@ -60,7 +57,7 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
             _selectedFrame.gameObject.SetActive(selected);
 
         if (_background != null)
-            _background.color = selected ? new Color(0.8f, 0.8f, 1f) : Color.white;
+            _background.color = selected ? new Color(0.95f, 1f, 0.33f) : Color.white;
     }
 
     public void UpdatePurchaseState(bool isPurchased)
@@ -68,12 +65,13 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
         if (isPurchased || _skin.IsDefault)
         {
             _priceParent.SetActive(false);
-            _purchasedOverlay.SetActive(true);
+
+            if (_background != null)
+                _background.color = new Color(0.0039f, 0.773f, 0.5686275f);
         }
         else
         {
             _priceParent.SetActive(true);
-            _purchasedOverlay.SetActive(false);
 
             bool canAfford = _wallet.CanAfford(_skin.Price);
             _priceText.color = canAfford ? Color.green : Color.red;
