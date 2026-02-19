@@ -294,7 +294,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 191.6963, y: 103.4226}
+  m_SizeDelta: {x: 142.1074, y: 103.4226}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2330583999343982928
 CanvasRenderer:
@@ -369,7 +369,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -2.0061, y: 0.5}
-  m_SizeDelta: {x: 121.994, y: 49.831}
+  m_SizeDelta: {x: 88.4412, y: 49.831}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &722965355629054472
 CanvasRenderer:
@@ -479,6 +479,7 @@ GameObject:
   - component: {fileID: 8033477565800103554}
   - component: {fileID: 6955006208715144575}
   - component: {fileID: 4271251869485383861}
+  - component: {fileID: 3915322290043188125}
   m_Layer: 0
   m_Name: SkinItemUI
   m_TagString: Untagged
@@ -535,6 +536,19 @@ MonoBehaviour:
   _priceText: {fileID: 8276891917976666958}
   _priceParent: {fileID: 1798843487448834608}
   _equippedBadge: {fileID: 9143927629797518117}
+--- !u!114 &3915322290043188125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6758278884193014521}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ed84ea22745c4c4eab6be2f62be952c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rectTransform: {fileID: 8033477565800103554}
 --- !u!1 &9143927629797518117
 GameObject:
   m_ObjectHideFlags: 0

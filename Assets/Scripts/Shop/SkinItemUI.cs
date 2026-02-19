@@ -11,7 +11,7 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI _priceText;
     [SerializeField] private GameObject _priceParent;
     [SerializeField] private GameObject _equippedBadge;
-
+    
     private SkinShop _shop;
     private SkinData.Skin _skin;
     private Wallet _wallet;
@@ -50,7 +50,7 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     }
 
     public void OnPointerClick(PointerEventData eventData)
-    {
+    {        
         _shop.SelectSkin(_skin.SkinId, _skinType);
         _shop.OpenPreview();
     }

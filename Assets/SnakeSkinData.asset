@@ -16,36 +16,36 @@ MonoBehaviour:
   - SkinId: 1
     SkinName: "\u0423\u0436"
     Price: 0
-    Icon: {fileID: 21300000, guid: e67e1d042a2c86940b726dc74aedbee6, type: 3}
+    Icon: {fileID: 21300000, guid: ec633c578f16b754a977037c79535dab, type: 3}
     Model: {fileID: 1296140454803845365, guid: db886d5e53a23c64ba4e5c7aaa860c4a, type: 3}
     IsDefault: 1
   - SkinId: 2
     SkinName: "\u041F\u0438\u0442\u043E\u043D"
     Price: 10
-    Icon: {fileID: 21300000, guid: 2afbc0eb2be9f544294f42afd63652e7, type: 3}
+    Icon: {fileID: 21300000, guid: 53b9f6025cfc5e4468506ffff1e4ac6c, type: 3}
     Model: {fileID: 5116626564932785323, guid: c511eb49e5b4888418b77ed212509020, type: 3}
     IsDefault: 0
   - SkinId: 3
     SkinName: "\u041C\u0435\u0434\u044F\u043D\u043A\u0430"
     Price: 30
-    Icon: {fileID: 21300000, guid: 3529e83bfb66dc740b24ff2150df37d4, type: 3}
+    Icon: {fileID: 21300000, guid: 659aab1ea77ea7d4ba12e8bc817a4f05, type: 3}
     Model: {fileID: 5148117867433908707, guid: 7b099670ce0f5a045bcab46d259fba3c, type: 3}
     IsDefault: 0
   - SkinId: 4
     SkinName: "\u041C\u0430\u043C\u0431\u0430"
     Price: 60
-    Icon: {fileID: 21300000, guid: 25ac67d0af3c5d649ad0fbe16f6a6d03, type: 3}
+    Icon: {fileID: 21300000, guid: 0293a7066550f644ab8fe688a44a975d, type: 3}
     Model: {fileID: 2295461278681528595, guid: b404d8a3024c57a4195892b6c50c33c0, type: 3}
     IsDefault: 0
   - SkinId: 5
     SkinName: "\u0422\u0430\u0439\u043F\u0430\u043D"
     Price: 75
-    Icon: {fileID: 21300000, guid: d76c34aab3a80694bb781fe08f81123e, type: 3}
+    Icon: {fileID: 21300000, guid: 4878f178ea91c454a82a6a865b1da50a, type: 3}
     Model: {fileID: 5052684871663818227, guid: d3f85fc52bfff514989d72cb39f0637e, type: 3}
     IsDefault: 0
   - SkinId: 6
     SkinName: "\u0413\u0430\u0434\u044E\u043A\u0430"
     Price: 100
-    Icon: {fileID: 21300000, guid: 42d03c8cb6818a241b51a62eca8f1c02, type: 3}
+    Icon: {fileID: 21300000, guid: d0de1c73a822ebd409c8ff9c97bc3680, type: 3}
     Model: {fileID: 9081936023752382002, guid: a86b98a2b2e43804fbf445fee2a22a3a, type: 3}
     IsDefault: 0
