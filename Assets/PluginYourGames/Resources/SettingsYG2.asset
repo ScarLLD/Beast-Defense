@@ -127,7 +127,7 @@ MonoBehaviour:
   Basic:
     platform: {fileID: 11400000, guid: c2a303d33a9fd394bae4c4b88b9a1c44, type: 2}
     autoApplySettings: 1
-    autoPauseGame: 1
+    autoPauseGame: 0
     editEventSystem: 1
     autoGRA: 1
     logInEditor: 1

@@ -24,6 +24,7 @@ public class SkinShop : MonoBehaviour
 
     [Header("Preview")]
     [SerializeField] private GameObject _preview;
+    [SerializeField] private Image _backgroundImage;
     [SerializeField] private Image _selectedSkinImage;
     [SerializeField] private Image _buyButtonImage;
     [SerializeField] private TMP_Text _selectedSkinName;
@@ -33,6 +34,9 @@ public class SkinShop : MonoBehaviour
     [SerializeField] private Button _selectButton;
     [SerializeField] private TMP_Text _buyButtonText;
     [SerializeField] private TMP_Text _selectButtonText;
+
+    private Color _greenColor = new(0.004f, 0.78f, 0.57f);
+    private Color _redColor = new(1f, 0.3f, 0.25f);
 
     private readonly List<SkinItemUI> _beastSkinItems = new();
     private readonly List<SkinItemUI> _snakeSkinItems = new();
@@ -78,7 +82,7 @@ public class SkinShop : MonoBehaviour
         foreach (var skin in _beastSkinData.Skins)
         {
             SkinItemUI skinItem = Instantiate(_skinItemPrefab, _beastSkinsContainer);
-            skinItem.Initialize(skin, this, _wallet, SkinType.Beast);
+            skinItem.Initialize(skin, this, _wallet, SkinType.Beast, _greenColor, _redColor);
             _beastSkinItems.Add(skinItem);
             skinItem.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
         }
@@ -86,7 +90,7 @@ public class SkinShop : MonoBehaviour
         foreach (var skin in _snakeSkinData.Skins)
         {
             SkinItemUI skinItem = Instantiate(_skinItemPrefab, _snakeSkinsContainer);
-            skinItem.Initialize(skin, this, _wallet, SkinType.Snake);
+            skinItem.Initialize(skin, this, _wallet, SkinType.Snake, _greenColor, _redColor);
             _snakeSkinItems.Add(skinItem);
             skinItem.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
         }
@@ -157,9 +161,12 @@ public class SkinShop : MonoBehaviour
             {
                 _selectButton.interactable = true;
                 _selectButtonText.text = "¬€¡–¿“‹";
+                _backgroundImage.color = _greenColor;
             }
             else
             {
+                _backgroundImage.color = _redColor;
+
                 if (_wallet.CanAfford(skin.Price))
                 {
                     _buyButtonImage.color = Color.white;
@@ -171,31 +178,6 @@ public class SkinShop : MonoBehaviour
                     _buyButtonImage.color = Color.black;
                     _buyButtonText.text = $"Õ≈ ’¬¿“¿≈“ ÃŒÕ≈“";
                     _buyButton.interactable = false;
-                }
-            }
-
-            if (skinType == SkinType.Beast)
-            {
-                foreach (var item in _beastSkinItems)
-                {
-                    item.SetSelected(item.SkinId == skinId);
-                }
-
-                foreach (var item in _snakeSkinItems)
-                {
-                    item.SetSelected(false);
-                }
-            }
-            else
-            {
-                foreach (var item in _snakeSkinItems)
-                {
-                    item.SetSelected(item.SkinId == skinId);
-                }
-
-                foreach (var item in _beastSkinItems)
-                {
-                    item.SetSelected(false);
                 }
             }
         }
@@ -226,6 +208,7 @@ public class SkinShop : MonoBehaviour
         {
             BuySkin(_selectedSkinId, _selectedSkinType);
             UpdateUIAfterPurchase();
+            OnSelectButtonClick();
         }
     }
 
@@ -292,11 +275,6 @@ public class SkinShop : MonoBehaviour
             bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Beast);
             item.UpdatePurchaseState(isPurchased);
             item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
-
-            if (item.SkinId == _selectedSkinId && _selectedSkinType == SkinType.Beast)
-            {
-                item.SetSelected(true);
-            }
         }
 
         foreach (var item in _snakeSkinItems)
@@ -304,11 +282,6 @@ public class SkinShop : MonoBehaviour
             bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Snake);
             item.UpdatePurchaseState(isPurchased);
             item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
-
-            if (item.SkinId == _selectedSkinId && _selectedSkinType == SkinType.Snake)
-            {
-                item.SetSelected(true);
-            }
         }
     }
 

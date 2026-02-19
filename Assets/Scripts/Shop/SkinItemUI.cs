@@ -8,7 +8,6 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     [Header("UI Elements")]
     [SerializeField] private Image _skinIcon;
     [SerializeField] private Image _background;
-    [SerializeField] private Image _selectedFrame;
     [SerializeField] private TextMeshProUGUI _priceText;
     [SerializeField] private GameObject _priceParent;
     [SerializeField] private GameObject _equippedBadge;
@@ -18,15 +17,21 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     private Wallet _wallet;
     private SkinShop.SkinType _skinType;
 
+    private Color _greenColor;
+    private Color _redColor;
+
     public string SkinId => _skin?.SkinId;
 
-    public void Initialize(SkinData.Skin skin, SkinShop shop, Wallet wallet, SkinShop.SkinType skinType)
+    public void Initialize(SkinData.Skin skin, SkinShop shop, Wallet wallet, SkinShop.SkinType skinType, Color greenColor, Color redColor)
     {
         _wallet = wallet;
         _skin = skin;
         _shop = shop;
         _skinType = skinType;
         _skinIcon.sprite = skin.Icon;
+
+        _greenColor = greenColor;
+        _redColor = redColor;
 
         if (skin.IsDefault)
         {
@@ -41,7 +46,6 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
             _priceText.color = Color.white;
         }
 
-        SetSelected(false);
         UpdatePurchaseState(_shop.IsSkinPurchased(skin.SkinId, skinType));
     }
 
@@ -51,15 +55,6 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
         _shop.OpenPreview();
     }
 
-    public void SetSelected(bool selected)
-    {
-        if (_selectedFrame != null)
-            _selectedFrame.gameObject.SetActive(selected);
-
-        if (_background != null)
-            _background.color = selected ? new Color(0.95f, 1f, 0.33f) : Color.white;
-    }
-
     public void UpdatePurchaseState(bool isPurchased)
     {
         if (isPurchased || _skin.IsDefault)
@@ -67,11 +62,14 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
             _priceParent.SetActive(false);
 
             if (_background != null)
-                _background.color = new Color(0.0039f, 0.773f, 0.5686275f);
+                _background.color = _greenColor;
         }
         else
         {
             _priceParent.SetActive(true);
+
+            if (_background != null)
+                _background.color = _redColor;
 
             bool canAfford = _wallet.CanAfford(_skin.Price);
             _priceText.color = canAfford ? Color.green : Color.red;

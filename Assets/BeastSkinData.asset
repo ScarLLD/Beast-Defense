@@ -46,6 +46,6 @@ MonoBehaviour:
   - SkinId: 6
     SkinName: "\u041E\u043B\u0435\u043D\u044C"
     Price: 20
-    Icon: {fileID: 21300000, guid: d4c0abc6909cb4d4998c80c35b287d63, type: 3}
+    Icon: {fileID: 21300000, guid: 378142868511bd5498eb04259287dad5, type: 3}
     Model: {fileID: 3968583859538033789, guid: e898b6de91e311843a975bdd6c6e7b20, type: 3}
     IsDefault: 0
