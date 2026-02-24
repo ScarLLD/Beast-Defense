@@ -127,7 +127,7 @@ MonoBehaviour:
   Basic:
     platform: {fileID: 11400000, guid: c2a303d33a9fd394bae4c4b88b9a1c44, type: 2}
     autoApplySettings: 1
-    autoPauseGame: 0
+    autoPauseGame: 1
     editEventSystem: 1
     autoGRA: 1
     logInEditor: 1
@@ -137,7 +137,7 @@ MonoBehaviour:
     loadSceneIfSDKLate: 0
     loadSceneIndex: 0
     initDelaySimulation: 0
-    buildNumber: 9
+    buildNumber: 16
   Simulation:
     device: 0
     language: ru
