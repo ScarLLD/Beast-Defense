@@ -26,8 +26,6 @@ public class PauseMenu : Window
         _musicButton.onClick.AddListener(_gameOptions.ToggleMusic);
         _soundButton.onClick.AddListener(_gameOptions.ToggleSound);
         _vibroButton.onClick.AddListener(_gameOptions.ToggleVibration);
-
-        YG2.onFocusWindowGame += OnFocusWindowGame;
     }
 
     private void OnDisable()
@@ -40,8 +38,6 @@ public class PauseMenu : Window
         _musicButton.onClick.RemoveListener(_gameOptions.ToggleMusic);
         _soundButton.onClick.RemoveListener(_gameOptions.ToggleSound);
         _vibroButton.onClick.RemoveListener(_gameOptions.ToggleVibration);
-
-        YG2.onFocusWindowGame -= OnFocusWindowGame;
     }
 
     private void Awake()
@@ -51,13 +47,6 @@ public class PauseMenu : Window
 
     private void OnApplicationFocus(bool focus)
     {
-        OnPauseButtonClick();
-    }
-
-    private void OnFocusWindowGame(bool focus)
-    {
-
-
         if (focus)
             OnClosePauseButtonClick();
         else
