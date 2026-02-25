@@ -125,9 +125,13 @@ public class SkinShop : MonoBehaviour
         }
     }
 
-    public void OpenPreview()
+    public void OpenPreview(string skinId, SkinType skinType)
     {
-        _preview.SetActive(true);
+        if (_preview.activeInHierarchy == false)
+        {
+            _preview.SetActive(true);
+            SelectSkin(skinId, skinType);
+        }
     }
 
     public void SelectSkin(string skinId, SkinType skinType)

@@ -51,8 +51,7 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {        
-        _shop.SelectSkin(_skin.SkinId, _skinType);
-        _shop.OpenPreview();
+        _shop.OpenPreview(_skin.SkinId, _skinType);
     }
 
     public void UpdatePurchaseState(bool isPurchased)
