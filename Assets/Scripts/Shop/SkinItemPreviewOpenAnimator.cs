@@ -25,6 +25,7 @@ public class SkinItemPreviewOpenAnimator : MonoBehaviour
     {
         _previewRectTransform.position = startPreviewPosition;
         _previewRectTransform.localScale = _startPreviewScale;
+        _canvasGroup.alpha = 0;
 
         // Отключаем взаимодействие во время анимации
         if (_canvasGroup != null)
