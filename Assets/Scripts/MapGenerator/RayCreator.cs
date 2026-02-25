@@ -18,7 +18,7 @@ public class RayCreator : MonoBehaviour
     private void Awake()
     {
         _sleepTime = new WaitForSeconds(0.01f);
-        _clickCooldown = new WaitForSeconds(0.1f);
+        _clickCooldown = new WaitForSeconds(0.5f);
     }
 
     private void OnEnable()
