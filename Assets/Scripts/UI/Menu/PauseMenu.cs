@@ -49,8 +49,6 @@ public class PauseMenu : Window
     {
         if (focus)
             OnClosePauseButtonClick();
-        else
-            OnPauseButtonClick();
     }
 
     private void OnPauseButtonClick()
@@ -59,6 +57,7 @@ public class PauseMenu : Window
         {
             EnableMenu();
             YG2.PauseGame(true, true, true, false, false);
+            Debug.Log("Включаю паузу");
         }
     }
 
@@ -78,7 +77,9 @@ public class PauseMenu : Window
 
     private void OnClosePauseButtonClick()
     {
-        DisableMenu();
+        if (_game.IsPlaying)
+            DisableMenu();
         YG2.PauseGame(false, false, false, false, false);
+        Debug.Log("Выключаю паузу");
     }
 }
