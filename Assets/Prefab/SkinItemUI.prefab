@@ -548,6 +548,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ed84ea22745c4c4eab6be2f62be952c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _rectTransform: {fileID: 8033477565800103554}
+  _animTargetScale: {x: 0.95, y: 0.95, z: 0.95}
+  _animDuration: 0.1
+  _easeType: 27
 --- !u!1 &9143927629797518117
 GameObject:
   m_ObjectHideFlags: 0
