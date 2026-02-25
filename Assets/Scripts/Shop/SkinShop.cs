@@ -23,6 +23,7 @@ public class SkinShop : MonoBehaviour
     [SerializeField] private TMP_Text _snakeSectionHeader;
 
     [Header("Preview")]
+    [SerializeField] private SkinItemPreviewOpenAnimator _previewAnimator;
     [SerializeField] private GameObject _preview;
     [SerializeField] private Image _backgroundImage;
     [SerializeField] private Image _selectedSkinImage;
@@ -125,13 +126,18 @@ public class SkinShop : MonoBehaviour
         }
     }
 
-    public void OpenPreview(string skinId, SkinType skinType)
+    public bool TryOpenPreview(string skinId, SkinType skinType, Vector3 startPosition)
     {
         if (_preview.activeInHierarchy == false)
         {
             _preview.SetActive(true);
             SelectSkin(skinId, skinType);
+            _previewAnimator.Open(startPosition);
+
+            return true;
         }
+
+        return false;
     }
 
     public void SelectSkin(string skinId, SkinType skinType)

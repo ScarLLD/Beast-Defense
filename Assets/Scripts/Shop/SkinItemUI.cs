@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 
+[RequireComponent(typeof(RectTransform), typeof(SkinItemUIClickAnimator))]
 public class SkinItemUI : MonoBehaviour, IPointerClickHandler
 {
     [Header("UI Elements")]
@@ -11,7 +12,9 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI _priceText;
     [SerializeField] private GameObject _priceParent;
     [SerializeField] private GameObject _equippedBadge;
-    
+
+    private RectTransform _rectTransform;
+    private SkinItemUIClickAnimator _clickAnimator;
     private SkinShop _shop;
     private SkinData.Skin _skin;
     private Wallet _wallet;
@@ -21,6 +24,12 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     private Color _redColor;
 
     public string SkinId => _skin?.SkinId;
+
+    private void Awake()
+    {
+        _rectTransform = GetComponent<RectTransform>();
+        _clickAnimator = GetComponent<SkinItemUIClickAnimator>();
+    }
 
     public void Initialize(SkinData.Skin skin, SkinShop shop, Wallet wallet, SkinShop.SkinType skinType, Color greenColor, Color redColor)
     {
@@ -50,8 +59,9 @@ public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     }
 
     public void OnPointerClick(PointerEventData eventData)
-    {        
-        _shop.OpenPreview(_skin.SkinId, _skinType);
+    {
+        if (_shop.TryOpenPreview(_skin.SkinId, _skinType, _rectTransform.position))
+            _clickAnimator.Interact();
     }
 
     public void UpdatePurchaseState(bool isPurchased)

@@ -2,13 +2,12 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SkinItemUIAnimator : MonoBehaviour, IPointerClickHandler
+public class SkinItemUIClickAnimator : MonoBehaviour
 {
     [SerializeField] private RectTransform _rectTransform;
 
     [SerializeField] private Vector3 _animTargetScale;
     [SerializeField] private float _animDuration = 0.2f;
-    [SerializeField] private Ease _easeType = Ease.OutBack;
 
     private Vector3 _originScale;
 
@@ -18,7 +17,7 @@ public class SkinItemUIAnimator : MonoBehaviour, IPointerClickHandler
         _animTargetScale = _originScale * 0.95f;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void Interact()
     {
         _rectTransform.DOScale(_animTargetScale, _animDuration / 2)
             .SetEase(Ease.OutQuad)
