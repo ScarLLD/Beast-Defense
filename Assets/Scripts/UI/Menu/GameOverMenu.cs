@@ -7,10 +7,12 @@ public class GameOverMenu : Window
     [SerializeField] private Game _game;
     [SerializeField] private Adv _adv;
     [SerializeField] private GameHeart _gameHeart;
+    [SerializeField] private IncreaseHeartMenu _increaseHeartMenu;
+    [SerializeField] private TMP_Text _regenerateText;
+
     [SerializeField] private Button _restartButton;
     [SerializeField] private Button _advRegenerateLevelButton;
     [SerializeField] private Button _exitButton;
-    [SerializeField] private TMP_Text _regenerateText;
 
     private readonly float _advButtonAlphaPressedColor = 0.5f;
 
@@ -44,6 +46,9 @@ public class GameOverMenu : Window
 
     private void OnRegenerateButtonCLick()
     {
+        if (_increaseHeartMenu.IsActive)
+            return;
+
         if (_gameHeart.IsPossibleDecrease)
             _adv.RegenerateLevelAdvShow();
         else
@@ -54,6 +59,9 @@ public class GameOverMenu : Window
 
     private void OnRestartButtonClick()
     {
+        if (_increaseHeartMenu.IsActive)
+            return;
+
         if (_gameHeart.IsPossibleDecrease)
             _game.Restart();
         else
@@ -62,6 +70,9 @@ public class GameOverMenu : Window
 
     private void OnExitButtonClick()
     {
+        if (_increaseHeartMenu.IsActive)
+            return;
+
         _game.Leave();
     }
 

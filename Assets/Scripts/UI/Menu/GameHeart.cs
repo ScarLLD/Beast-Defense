@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -24,6 +25,8 @@ public class GameHeart : MonoBehaviour
     private bool _isFirstUpdate = true;
 
     public bool IsPossibleDecrease => _heartTimer?.HasAvailableHearts ?? false;
+
+    public event Action Devastated;
 
     private void Awake()
     {
@@ -166,7 +169,7 @@ public class GameHeart : MonoBehaviour
             yield return new WaitForSeconds(1f);
         }
     }
-        
+
     private IEnumerator RestoreHeartAnimationRoutine(int startCount, int endCount)
     {
         if (_isAnimating) yield break;
@@ -216,6 +219,8 @@ public class GameHeart : MonoBehaviour
             _animator.enabled = true;
             _animator.SetTrigger("Shake");
         }
+
+        Devastated?.Invoke();
     }
 
     private void UpdateUI()

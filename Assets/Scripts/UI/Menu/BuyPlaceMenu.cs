@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,7 +13,7 @@ public class BuyPlaceMenu : Window
     [SerializeField] private Button _buyButton;
     [SerializeField] private Button _exitButton;
     [SerializeField] private Image _buyButtonImage;
-    [SerializeField] private Image _buyButtonIconImane;
+    [SerializeField] private Image _buyButtonIconImage;
 
     private Color _notEnoughMoneyColor = Color.red;
     private Color _enoughMoneyColor = Color.green;
@@ -88,9 +86,9 @@ public class BuyPlaceMenu : Window
             buttonColor.a = _enoughMoneyAlpha;
             _buyButtonImage.color = buttonColor;
 
-            Color iconColor = _buyButtonIconImane.color;
+            Color iconColor = _buyButtonIconImage.color;
             iconColor.a = _enoughMoneyAlpha;
-            _buyButtonIconImane.color = iconColor;
+            _buyButtonIconImage.color = iconColor;
 
         }
         else
@@ -102,9 +100,9 @@ public class BuyPlaceMenu : Window
             buttonColor.a = _notEnoughMoneyAlpha;
             _buyButtonImage.color = buttonColor;
 
-            Color iconColor = _buyButtonIconImane.color;
+            Color iconColor = _buyButtonIconImage.color;
             iconColor.a = _notEnoughMoneyAlpha;
-            _buyButtonIconImane.color = iconColor;
+            _buyButtonIconImage.color = iconColor;
 
         }
     }

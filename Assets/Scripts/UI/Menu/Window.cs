@@ -5,6 +5,8 @@ public abstract class Window : MonoBehaviour
 {
     [SerializeField] protected List<GameObject> menu = new();
 
+    public bool IsActive { private set; get; }
+
     protected void SwitchVisible(bool isActive)
     {
         foreach (GameObject gameObject in menu)
@@ -16,10 +18,12 @@ public abstract class Window : MonoBehaviour
     protected void EnableMenu()
     {
         SwitchVisible(true);
+        IsActive = true;
     }
 
     protected void DisableMenu()
     {
         SwitchVisible(false);
+        IsActive = false;
     }
 }
