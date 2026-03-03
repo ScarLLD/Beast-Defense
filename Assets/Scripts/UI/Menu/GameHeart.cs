@@ -16,11 +16,15 @@ public class GameHeart : MonoBehaviour
     [SerializeField] private float _changeDuration = 0.5f;
     [SerializeField] private float _changeDelay = 0.2f;
 
+    [Header("Другое")]
+    [SerializeField] private Adv _adv;
+
     private HeartTimer _heartTimer;
     private Animator _animator;
     private Coroutine _timerCoroutine;
     private Coroutine _heartUpdateCoroutine;
     private bool _isAnimating = false;
+    private bool _isAnimatingHeartChange = false; // Флаг анимации изменения сердца
     private int _lastHeartCount = 0;
     private bool _isFirstUpdate = true;
 
@@ -54,6 +58,9 @@ public class GameHeart : MonoBehaviour
         UpdateUI();
         StartTimerUpdate();
         StartHeartUpdateCoroutine();
+
+        // Подписываемся на событие увеличения сердец
+        _adv.HeartIncreased += OnHeartIncreased;
     }
 
     private void OnDisable()
@@ -61,6 +68,9 @@ public class GameHeart : MonoBehaviour
         StopAllCoroutines();
         _timerCoroutine = null;
         _heartUpdateCoroutine = null;
+
+        // Отписываемся от события
+        _adv.HeartIncreased -= OnHeartIncreased;
     }
 
     private void OnDestroy()
@@ -69,6 +79,15 @@ public class GameHeart : MonoBehaviour
         {
             _heartTimer.OnHeartsChanged -= OnHeartsChanged;
         }
+    }
+
+    private void OnHeartIncreased()
+    {
+        if (_heartTimer == null || !_heartTimer.IsInitialized || _isAnimating || _isAnimatingHeartChange)
+            return;
+
+        _isAnimatingHeartChange = true;
+        StartCoroutine(RestoreHeartAnimationRoutine(_lastHeartCount, _lastHeartCount + 1));
     }
 
     public IEnumerator UseHeartRoutine()
@@ -137,6 +156,12 @@ public class GameHeart : MonoBehaviour
             return;
         }
 
+        // Если идёт анимация изменения сердца — не обновляем UI здесь
+        if (_isAnimatingHeartChange)
+        {
+            return;
+        }
+
         if (currentCount > _lastHeartCount && !_isAnimating)
         {
             StartCoroutine(RestoreHeartAnimationRoutine(_lastHeartCount, currentCount));
@@ -172,6 +197,14 @@ public class GameHeart : MonoBehaviour
 
     private IEnumerator RestoreHeartAnimationRoutine(int startCount, int endCount)
     {
+        // Проверка на превышение максимума
+        if (endCount > _heartTimer.MaxHearts)
+        {
+            Debug.LogWarning($"Попытка добавить сердце выше максимума ({_heartTimer.MaxHearts}). Операция отменена.");
+            _isAnimatingHeartChange = false;
+            yield break;
+        }
+
         if (_isAnimating) yield break;
 
         _isAnimating = true;
@@ -185,8 +218,10 @@ public class GameHeart : MonoBehaviour
         yield return new WaitForSeconds(_changeDelay);
 
         _isAnimating = false;
+        _isAnimatingHeartChange = false; // Сбрасываем флаг анимации
 
-        UpdateUI();
+        _lastHeartCount = endCount;
+        UpdateUI(); // Гарантируем актуальное отображение UI после анимации
     }
 
     private IEnumerator AnimateHeartChange(int startCount, int endCount, AnimationCurve curve)
@@ -208,6 +243,8 @@ public class GameHeart : MonoBehaviour
             yield return null;
         }
 
+        // Финальное состояние: синхронизируем данные HeartTimer с UI
+        _heartTimer.SetCurrentHearts(endCount);
         _heartImage.fillAmount = targetFillAmount;
         _countText.text = $"{endCount}/{_heartTimer.MaxHearts}";
     }

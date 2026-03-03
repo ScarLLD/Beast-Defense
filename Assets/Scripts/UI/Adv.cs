@@ -7,12 +7,14 @@ public class Adv : MonoBehaviour
 {
     [SerializeField] private Transition _transition;
     [SerializeField] private string _skipLevelID = "Skip";
+    [SerializeField] private string _increaseHeartID = "Heart";
     [SerializeField] private string _doubleRewardID = "Double";
 
     [SerializeField] private Button _beginButton;
 
-    public event Action Regenerated;
-    public event Action Doubled;
+    public event Action HeartIncreased;
+    public event Action LevelRegenerated;
+    public event Action WinRewardDoubled;
 
     private void OnEnable()
     {
@@ -24,13 +26,21 @@ public class Adv : MonoBehaviour
         _beginButton.onClick.RemoveListener(ShowInterstitialAdv);
     }
 
+    public void IncreaseGameHeartAdvShow()
+    {
+        YG2.RewardedAdvShow(_increaseHeartID, () =>
+        {
+            HeartIncreased?.Invoke();
+        });
+    }
+
     public void RegenerateLevelAdvShow()
     {
         if (_transition.IsTransiting == false)
         {
             YG2.RewardedAdvShow(_skipLevelID, () =>
             {
-                Regenerated?.Invoke();
+                LevelRegenerated?.Invoke();
             });
         }
     }
@@ -41,7 +51,7 @@ public class Adv : MonoBehaviour
         {
             YG2.RewardedAdvShow(_doubleRewardID, () =>
             {
-                Doubled?.Invoke();
+                WinRewardDoubled?.Invoke();
             });
         }
     }

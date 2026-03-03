@@ -43,7 +43,7 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started += OnGameStarted;
         _game.Continued += OnGameContinued;
         _game.Restarted += OnGameRestarted;
-        _adv.Regenerated += OnAdvWatched;
+        _adv.LevelRegenerated += OnAdvWatched;
     }
 
     private void OnDisable()
@@ -51,7 +51,7 @@ public class LaunchSequencer : MonoBehaviour
         _game.Started -= OnGameStarted;
         _game.Continued -= OnGameContinued;
         _game.Restarted -= OnGameRestarted;
-        _adv.Regenerated -= OnAdvWatched;
+        _adv.LevelRegenerated -= OnAdvWatched;
 
         if (_advLevelCreationCoroutine != null)
         {

@@ -18,13 +18,13 @@ public class Wallet : MonoBehaviour
 
     private void OnEnable()
     {
-        _adv.Doubled += OnRewardDoubled;
+        _adv.WinRewardDoubled += OnRewardDoubled;
         _game.Completed += OnGameCompleted;
     }
 
     private void OnDisable()
     {
-        _adv.Doubled -= OnRewardDoubled;
+        _adv.WinRewardDoubled -= OnRewardDoubled;
         _game.Completed -= OnGameCompleted;
     }
 
