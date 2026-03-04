@@ -6,6 +6,7 @@ using static UnityEngine.ParticleSystem;
 public class DeathModule : MonoBehaviour
 {
     [SerializeField] private Game _game;
+    [SerializeField] private GameTimer _timer;
 
     [SerializeField] private AnimationCurve _deathAnimationCurve;
     [SerializeField] private ParticleSystem _cloudParticle;
@@ -24,11 +25,13 @@ public class DeathModule : MonoBehaviour
 
     public void KillSnake(Transform gameObject)
     {
+        _timer.StopTimer();
         StartCoroutine(KillSnakeRoutine(gameObject));
     }
 
     public void KillBeast(Transform gameObject)
     {
+        _timer.StopTimer();
         StartCoroutine(KillBeastRoutine(gameObject));
     }
 

@@ -6,6 +6,7 @@ using UnityEngine.Splines;
 public class LaunchSequencer : MonoBehaviour
 {
     [SerializeField] private Game _game;
+    [SerializeField] private GameTimer _timer;
     [SerializeField] private SliderLevelViewer _levelViewer;
     [SerializeField] private GameObjectsDisabler _disabler;
 
@@ -213,5 +214,6 @@ public class LaunchSequencer : MonoBehaviour
     private void StartGameplay()
     {
         _snake.StartMove();
+        _timer.StartTimer();
     }
 }

@@ -356,8 +356,10 @@ GameObject:
   m_Component:
   - component: {fileID: 26740339}
   - component: {fileID: 26740340}
+  - component: {fileID: 26740342}
+  - component: {fileID: 26740341}
   m_Layer: 0
-  m_Name: DeathModule
+  m_Name: GameFinisher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -392,6 +394,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 1614255502}
+  _timer: {fileID: 26740342}
   _deathAnimationCurve:
     serializedVersion: 2
     m_Curve:
@@ -419,6 +422,32 @@ MonoBehaviour:
   _cloudParticle: {fileID: 1104804092}
   _deathDuration: 0.5
   _deathDelay: 1.5
+--- !u!114 &26740341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 26740338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 898a1da5dd2c44747880cc70fe8d72d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _leaderBoard: {fileID: 427125381440358199}
+  _timer: {fileID: 26740342}
+--- !u!114 &26740342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 26740338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5a799bd9b89bf4a966e8b98bb8cb81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &51831306
 GameObject:
   m_ObjectHideFlags: 0
@@ -4782,7 +4811,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &504501001
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6227,7 +6256,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &610149801
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8431,7 +8460,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &830789543
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10156,7 +10185,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &990524599
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12574,8 +12603,8 @@ MonoBehaviour:
   _obstaclePrefab: {fileID: 4161744107708799639, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
   _stretchedObstaclePrefab: {fileID: 1295060935370253680, guid: ca6719bd2b335f349944975a0282fdc9, type: 3}
   _centerPosition: {x: 0, y: -0.5, z: -11.2}
-  _rows: 8
-  _columns: 7
+  _rows: 2
+  _columns: 2
   _cellSpacingX: 0.8
   _cellSpacingZ: 0.7
   _cellHeightOffset: 0.01
@@ -13387,7 +13416,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1408448934
 RectTransform:
   m_ObjectHideFlags: 0
@@ -14897,6 +14926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 1614255502}
+  _timer: {fileID: 0}
   _levelViewer: {fileID: 750858112}
   _disabler: {fileID: 1614255501}
   _placeSpawner: {fileID: 1842505877}
@@ -15748,7 +15778,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1810401362
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17880,8 +17910,8 @@ Transform:
   - {fileID: 561811628}
   - {fileID: 1923091038}
   - {fileID: 1111248026}
-  - {fileID: 26740339}
   - {fileID: 442903045}
+  - {fileID: 26740339}
   m_Father: {fileID: 1614255500}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2107332992
@@ -18061,7 +18091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423e13a42d313f948a13bcedae13febe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameLB: Players
+  nameLB: Board
   maxQuantityPlayers: 9
   quantityTop: 3
   quantityAround: 3
@@ -18090,12 +18120,12 @@ GameObject:
   - component: {fileID: 427125381440358199}
   - component: {fileID: 1705290334856567266}
   m_Layer: 5
-  m_Name: LB Example
+  m_Name: Board
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1705290334856567265
 RectTransform:
   m_ObjectHideFlags: 0
