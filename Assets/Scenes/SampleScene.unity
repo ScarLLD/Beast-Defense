@@ -14926,7 +14926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 1614255502}
-  _timer: {fileID: 0}
+  _timer: {fileID: 26740342}
   _levelViewer: {fileID: 750858112}
   _disabler: {fileID: 1614255501}
   _placeSpawner: {fileID: 1842505877}
@@ -18091,7 +18091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423e13a42d313f948a13bcedae13febe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameLB: Board
+  nameLB: TimeBoard
   maxQuantityPlayers: 9
   quantityTop: 3
   quantityAround: 3
@@ -18120,7 +18120,7 @@ GameObject:
   - component: {fileID: 427125381440358199}
   - component: {fileID: 1705290334856567266}
   m_Layer: 5
-  m_Name: Board
+  m_Name: TimeBoard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

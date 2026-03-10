@@ -1,3 +1,3 @@
-﻿Build path: D:/WebGame
-Build number: 24
+﻿Build path: Z:/Builds
+Build number: 26
 PluginYG version: 2.008

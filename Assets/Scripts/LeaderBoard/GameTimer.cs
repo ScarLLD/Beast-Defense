@@ -3,15 +3,15 @@ using UnityEngine;
 
 public class GameTimer : MonoBehaviour
 {
-    private int startTime;
+    private float startTime;
     private bool isRunning = false;
-    private int elapsedTime = 0;
+    private float elapsedTime = 0;
 
-    public event Action<int> Stoped;
+    public event Action<float> Stoped;
 
     public void StartTimer()
     {
-        startTime = (int)Time.time;
+        startTime = Time.time;
         isRunning = true;
         elapsedTime = 0;
         Debug.Log("Таймер запущен.");
@@ -25,7 +25,7 @@ public class GameTimer : MonoBehaviour
         }
 
         isRunning = false;
-        elapsedTime = (int)Time.time - startTime;
+        elapsedTime = Time.time - startTime;
 
         int minutes = Mathf.FloorToInt(elapsedTime / 60);
         float seconds = elapsedTime % 60;
