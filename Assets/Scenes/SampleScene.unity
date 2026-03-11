@@ -18102,8 +18102,8 @@ MonoBehaviour:
   playerDataPrefab: {fileID: 7442660659306160117, guid: c66c7bac89f010b47979344bbb77584b, type: 3}
   playerPhoto: 1
   isHiddenPlayerPhoto: {fileID: 0}
-  timeTypeConvert: 0
-  decimalSize: 0
+  timeTypeConvert: 1
+  decimalSize: 2
   onUpdateData:
     m_PersistentCalls:
       m_Calls: []
