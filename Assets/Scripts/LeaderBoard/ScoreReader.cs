@@ -6,9 +6,12 @@ public class ScoreReader : MonoBehaviour
     [SerializeField] private LeaderboardYG _leaderBoard;
     [SerializeField] private GameTimer _timer;
 
+    private float _lastTimeScore = 0;
     private float _currentTimeScore = 0;
 
     private const string SCORE_KEY = "Score";
+
+    public float GetScore => _lastTimeScore;
 
     private void Awake()
     {
@@ -18,19 +21,19 @@ public class ScoreReader : MonoBehaviour
 
     private void OnEnable()
     {
-        _timer.Stoped += SetNewScore;
+        _timer.Stopped += SetNewScore;
     }
 
     private void OnDisable()
     {
-        _timer.Stoped -= SetNewScore;
+        _timer.Stopped -= SetNewScore;
     }
 
     private void SetNewScore(float timeScore)
     {
-        _currentTimeScore = timeScore;
+        _lastTimeScore = _currentTimeScore;
 
-        if (timeScore > _currentTimeScore)
+        if (timeScore < _currentTimeScore)
         {
             _currentTimeScore = timeScore;
             SaveHighScore();
@@ -45,7 +48,7 @@ public class ScoreReader : MonoBehaviour
         PlayerPrefs.SetFloat(SCORE_KEY, _currentTimeScore);
         PlayerPrefs.Save();
     }
-      
+
     private void LoadHighScore()
     {
         if (PlayerPrefs.HasKey(SCORE_KEY))

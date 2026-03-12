@@ -114,6 +114,8 @@ public class Game : MonoBehaviour
     private IEnumerator ContinueRoutine()
     {
         Continued?.Invoke();
+        _gameHeart.transform.SetParent(_mainMenu.transform);
+        _gameHeart.gameObject.SetActive(false);
         yield return StartCoroutine(_transition.ContinueTransitionRoutine());
         Transited?.Invoke();
         HasCompleted = false;
@@ -177,8 +179,9 @@ public class Game : MonoBehaviour
     private IEnumerator RestartRoutine()
     {
         Restarted.Invoke();
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
+        _gameHeart.transform.SetParent(_mainMenu.transform);
         _gameHeart.gameObject.SetActive(false);
+        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
         Transited?.Invoke();
         IsPlaying = true;
         Debug.Log("Игра перезапущена!");

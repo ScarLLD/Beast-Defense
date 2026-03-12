@@ -7,7 +7,7 @@ public class GameTimer : MonoBehaviour
     private bool isRunning = false;
     private float elapsedTime = 0;
 
-    public event Action<float> Stoped;
+    public event Action<float> Stopped;
 
     public void StartTimer()
     {
@@ -33,6 +33,6 @@ public class GameTimer : MonoBehaviour
         Debug.Log($"Уровень пройден за: {minutes} мин {seconds:F2} сек");
         Debug.Log($"Общее время в секундах: {elapsedTime:F3} сек");
 
-        Stoped?.Invoke(elapsedTime);
+        Stopped?.Invoke(elapsedTime);
     }
 }

@@ -24,7 +24,7 @@ public class GameHeart : MonoBehaviour
     private Coroutine _timerCoroutine;
     private Coroutine _heartUpdateCoroutine;
     private bool _isAnimating = false;
-    private bool _isAnimatingHeartChange = false; // Флаг анимации изменения сердца
+    private bool _isAnimatingHeartChange = false;
     private int _lastHeartCount = 0;
     private bool _isFirstUpdate = true;
 
@@ -59,7 +59,6 @@ public class GameHeart : MonoBehaviour
         StartTimerUpdate();
         StartHeartUpdateCoroutine();
 
-        // Подписываемся на событие увеличения сердец
         _adv.HeartIncreased += OnHeartIncreased;
     }
 
@@ -69,7 +68,6 @@ public class GameHeart : MonoBehaviour
         _timerCoroutine = null;
         _heartUpdateCoroutine = null;
 
-        // Отписываемся от события
         _adv.HeartIncreased -= OnHeartIncreased;
     }
 
@@ -156,7 +154,6 @@ public class GameHeart : MonoBehaviour
             return;
         }
 
-        // Если идёт анимация изменения сердца — не обновляем UI здесь
         if (_isAnimatingHeartChange)
         {
             return;
@@ -197,7 +194,6 @@ public class GameHeart : MonoBehaviour
 
     private IEnumerator RestoreHeartAnimationRoutine(int startCount, int endCount)
     {
-        // Проверка на превышение максимума
         if (endCount > _heartTimer.MaxHearts)
         {
             Debug.LogWarning($"Попытка добавить сердце выше максимума ({_heartTimer.MaxHearts}). Операция отменена.");
@@ -218,10 +214,10 @@ public class GameHeart : MonoBehaviour
         yield return new WaitForSeconds(_changeDelay);
 
         _isAnimating = false;
-        _isAnimatingHeartChange = false; // Сбрасываем флаг анимации
+        _isAnimatingHeartChange = false;
 
         _lastHeartCount = endCount;
-        UpdateUI(); // Гарантируем актуальное отображение UI после анимации
+        UpdateUI();
     }
 
     private IEnumerator AnimateHeartChange(int startCount, int endCount, AnimationCurve curve)
@@ -243,7 +239,6 @@ public class GameHeart : MonoBehaviour
             yield return null;
         }
 
-        // Финальное состояние: синхронизируем данные HeartTimer с UI
         _heartTimer.SetCurrentHearts(endCount);
         _heartImage.fillAmount = targetFillAmount;
         _countText.text = $"{endCount}/{_heartTimer.MaxHearts}";
