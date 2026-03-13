@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class IncreaseHeartMenu : Window
 {
     [SerializeField] private Adv _adv;
+    [SerializeField] private MiniGame _miniGame;
     [SerializeField] private GameHeart _gameHeart;
     [SerializeField] private Button _AdvButton;
     [SerializeField] private Button _miniGameButton;
@@ -17,6 +19,7 @@ public class IncreaseHeartMenu : Window
     private void OnEnable()
     {
         _gameHeart.Devastated += OnGameHeartDevastated;
+        _miniGame.Started += OnMiniGameStarted;
 
         _miniGameButton.onClick.AddListener(OnMiniGameButtonClick);
         _AdvButton.onClick.AddListener(OnAdvButtonClick);
@@ -26,10 +29,16 @@ public class IncreaseHeartMenu : Window
     private void OnDisable()
     {
         _gameHeart.Devastated -= OnGameHeartDevastated;
+        _miniGame.Started -= OnMiniGameStarted;
 
         _miniGameButton.onClick.RemoveListener(OnMiniGameButtonClick);
         _AdvButton.onClick.RemoveListener(OnAdvButtonClick);
         _closeMenuButton.onClick.RemoveListener(OnCloseMenuButtonClick);
+    }
+
+    private void OnMiniGameStarted()
+    {
+        DisableMenu();
     }
 
     private void OnGameHeartDevastated()
