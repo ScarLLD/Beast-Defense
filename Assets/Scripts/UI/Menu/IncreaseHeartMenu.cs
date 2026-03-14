@@ -38,6 +38,7 @@ public class IncreaseHeartMenu : Window
 
     private void OnMiniGameStarted()
     {
+        _miniGame.OnStartButtonClick();
         DisableMenu();
     }
 

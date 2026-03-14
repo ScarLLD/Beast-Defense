@@ -1,0 +1,127 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody))]
+public class MGSnake : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    [SerializeField] private float _moveSpeed = 5f;
+    [SerializeField] private float _steerSpeed = 180f;
+    [SerializeField] private int _gap = 10;
+
+    [Header("Body Settings")]
+    [SerializeField] private GameObject _bodyContainer;
+    [SerializeField] private GameObject _bodyPrefab;
+    [SerializeField] private float _growInterval = 3f;
+    [SerializeField] private float _tailPullback = 0.5f;
+    [SerializeField] private float _bodyYoffset = 0.5f;
+
+    private List<GameObject> _bodyParts = new();
+    private List<Vector3> _positionsHistory = new();
+    private float _steerDirection;
+    private Rigidbody _rb;
+
+    private void Awake()
+    {
+        _rb = GetComponent<Rigidbody>();
+        _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
+    }
+
+    private void Start()
+    {
+        StartCoroutine(GrowSnakeRoutine());
+    }
+
+    private void FixedUpdate()
+    {
+        Vector3 moveDirection = transform.forward * _moveSpeed;
+        _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
+
+        _steerDirection = Input.GetAxis("Horizontal");
+        Quaternion turnRotation = Quaternion.Euler(0f, _steerDirection * _steerSpeed * Time.fixedDeltaTime, 0f);
+        _rb.MoveRotation(_rb.rotation * turnRotation);
+
+
+        _positionsHistory.Insert(0, transform.position);
+
+        MoveBodyParts();
+    }
+
+    private void MoveBodyParts()
+    {
+        int index = 0;
+        foreach (var body in _bodyParts)
+        {
+            if (body == null) continue;
+
+            int historyIndex = (index + 1) * _gap;
+            int pullbackIndex = Mathf.FloorToInt(historyIndex + (historyIndex + _tailPullback));
+
+            if (pullbackIndex < _positionsHistory.Count)
+            {
+                Vector3 targetPoint = _positionsHistory[pullbackIndex];
+                body.transform.position = targetPoint;
+
+                if (pullbackIndex + 1 < _positionsHistory.Count)
+                {
+                    Vector3 nextPoint = _positionsHistory[pullbackIndex + 1];
+                    Vector3 direction = nextPoint - targetPoint;
+                    if (direction.magnitude > 0.001f)
+                    {
+                        body.transform.rotation = Quaternion.LookRotation(direction);
+                    }
+                }
+            }
+            else
+            {
+                Vector3 targetPoint = _positionsHistory[_positionsHistory.Count - 1];
+                Vector3 direction = body.transform.position - targetPoint;
+                if (direction.magnitude > 0.001f)
+                {
+                    body.transform.rotation = Quaternion.LookRotation(direction);
+                }
+            }
+
+            index++;
+        }
+    }
+
+    private IEnumerator GrowSnakeRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(_growInterval);
+            GrowSnake();
+        }
+    }
+
+    private void GrowSnake()
+    {
+        Vector3 spawnPosition;
+        Quaternion spawnRotation = transform.rotation;
+
+        if (_bodyParts.Count > 0)
+        {
+            GameObject lastSegment = _bodyParts[_bodyParts.Count - 1];
+            spawnPosition = lastSegment.transform.position - lastSegment.transform.forward * 1.5f;
+            spawnRotation = lastSegment.transform.rotation;
+        }
+        else
+        {
+            spawnPosition = transform.position - transform.forward * 2f;
+            spawnRotation = transform.rotation;
+        }
+
+        spawnPosition.y = transform.position.y;
+
+        GameObject body = Instantiate(_bodyPrefab, spawnPosition, spawnRotation);
+        body.transform.parent = _bodyContainer.transform;
+        _bodyParts.Add(body);
+    }
+
+    private void OnDestroy()
+    {
+        StopAllCoroutines();
+    }
+}
