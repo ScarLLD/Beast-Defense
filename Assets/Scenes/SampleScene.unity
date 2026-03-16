@@ -11594,6 +11594,56 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2100491923}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1111640600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1111640601}
+  - component: {fileID: 1111640602}
+  m_Layer: 0
+  m_Name: BeastSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1111640601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111640600}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1417510878}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1111640602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1111640600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 590d33d8a04bf8e40b020b07728b5700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _spawnPlatform: {fileID: 599227854}
+  _beastPrefab: {fileID: 1001616797407859506, guid: 6aa34e5a9a84f5e4584a9d1a696542e1, type: 3}
+  _maxBeastCount: 5
+  _spawnDelay: 2
+  _boundOffset: 1
+  _checkRadius: 2
 --- !u!1 &1113191936
 GameObject:
   m_ObjectHideFlags: 0
@@ -14330,6 +14380,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1111640601}
   - {fileID: 1447742555}
   - {fileID: 232732963}
   - {fileID: 599227854}
@@ -14577,12 +14628,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a16cf9cdf3813546ab534e34dcebf91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _moveSpeed: 5
-  _steerSpeed: 120
-  _gap: 12
+  _moveSpeed: 10
+  _steerSpeed: 130
+  _gap: 5
   _bodyContainer: {fileID: 232732962}
   _bodyPrefab: {fileID: 7562471073137532860, guid: 7b462bb99ee255e4198d4919e5a33b6f, type: 3}
-  _growInterval: 1
+  _growInterval: 0.5
   _tailPullback: 4.5
   _bodyYoffset: -0.4
 --- !u!54 &1447742557
