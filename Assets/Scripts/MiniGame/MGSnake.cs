@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,10 +18,18 @@ public class MGSnake : MonoBehaviour
     [SerializeField] private float _tailPullback = 0.5f;
     [SerializeField] private float _bodyYoffset = 0.5f;
 
+    [Header("Other")]
+    [SerializeField] private DeathAnimator _deathAnimator;
+
     private List<GameObject> _bodyParts = new();
     private List<Vector3> _positionsHistory = new();
     private float _steerDirection;
     private Rigidbody _rb;
+    private Coroutine _movementCoroutine;
+    private Coroutine _growCoroutine;
+    private bool _isMove;
+
+    public event Action Died;
 
     private void Awake()
     {
@@ -30,22 +39,54 @@ public class MGSnake : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(GrowSnakeRoutine());
+        _growCoroutine ??= StartCoroutine(GrowSnakeRoutine());
+        _movementCoroutine ??= StartCoroutine(MovementRoutine());
     }
 
-    private void FixedUpdate()
+    private void OnTriggerEnter(Collider other)
     {
-        Vector3 moveDirection = transform.forward * _moveSpeed;
-        _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
+        if (other.gameObject.TryGetComponent(out Beast beast))
+        {
+            _deathAnimator.SetParticleColor(Color.green);
+            _deathAnimator.KillRoutine(beast.transform);
+        }
+        else if (other.gameObject.TryGetComponent(out MGCube cube))
+        {
+            Die();
+        }
+    }
 
-        _steerDirection = Input.GetAxis("Horizontal");
-        Quaternion turnRotation = Quaternion.Euler(0f, _steerDirection * _steerSpeed * Time.fixedDeltaTime, 0f);
-        _rb.MoveRotation(_rb.rotation * turnRotation);
+    private void Die()
+    {
+        _isMove = false;
 
+        StopCoroutine(_growCoroutine);
+        StopCoroutine(_movementCoroutine);
 
-        _positionsHistory.Insert(0, transform.position);
+        _rb.velocity = Vector3.zero;
 
-        MoveBodyParts();
+        Died?.Invoke();
+    }
+
+    private IEnumerator MovementRoutine()
+    {
+        _isMove = true;
+
+        while (_isMove)
+        {
+            yield return new WaitForFixedUpdate();
+
+            Vector3 moveDirection = transform.forward * _moveSpeed;
+            _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
+
+            _steerDirection = Input.GetAxis("Horizontal");
+            Quaternion turnRotation = Quaternion.Euler(0f, _steerDirection * _steerSpeed * Time.fixedDeltaTime, 0f);
+            _rb.MoveRotation(_rb.rotation * turnRotation);
+
+            _positionsHistory.Insert(0, transform.position);
+
+            MoveBodyParts();
+        }
     }
 
     private void MoveBodyParts()

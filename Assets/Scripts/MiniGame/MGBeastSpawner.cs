@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class MGBeastSpawner : MonoBehaviour
 {
+    [SerializeField] private MiniGame _miniGame;
     [SerializeField] private Transform _spawnPlatform;
     [SerializeField] private GameObject _beastPrefab;
 
     [Header("Spawn Settings")]
+    [SerializeField] private Transform _container;
     [SerializeField] private float _maxBeastCount;
     [SerializeField] private float _spawnDelay;
     [SerializeField] private float _boundOffset;
@@ -15,9 +17,15 @@ public class MGBeastSpawner : MonoBehaviour
 
     private List<GameObject> _beast = new();
     private int _spawnAttempsCount = 50;
+    private int _allowedCountColliders = 2;
+    private Bounds _bounds;
     private Coroutine _coroutine;
     private WaitForSeconds _sleepTime;
-    private Bounds _bounds;
+
+    private void Start()
+    {
+        StartRoutine();
+    }
 
     private void Awake()
     {
@@ -25,14 +33,9 @@ public class MGBeastSpawner : MonoBehaviour
         _sleepTime = new WaitForSeconds(_spawnDelay);
     }
 
-    private void Start()
-    {
-        StartRoutine();
-    }
-
     Vector3 GetRandomPointInCube()
     {
-        Vector3 randomPoint = new Vector3(
+        Vector3 randomPoint = new(
             Random.Range(_bounds.min.x + _boundOffset, _bounds.max.x - _boundOffset),
             _bounds.max.y,
             Random.Range(_bounds.min.z + _boundOffset, _bounds.max.z - _boundOffset)
@@ -41,7 +44,7 @@ public class MGBeastSpawner : MonoBehaviour
         return randomPoint;
     }
 
-    public void StartRoutine()
+    private void StartRoutine()
     {
         _coroutine ??= StartCoroutine(SpawnRoutine());
     }
@@ -56,6 +59,7 @@ public class MGBeastSpawner : MonoBehaviour
             }
         }
 
+        yield return null;
         StopRoutine();
     }
 
@@ -83,7 +87,7 @@ public class MGBeastSpawner : MonoBehaviour
     {
         Collider[] hitColliders = Physics.OverlapSphere(spawnPoint, _checkRadius);
 
-        if (hitColliders.Length > 1)
+        if (hitColliders.Length > _allowedCountColliders)
             return false;
         else
             return true;
@@ -92,7 +96,9 @@ public class MGBeastSpawner : MonoBehaviour
     private void Spawn(Vector3 spawnPoint)
     {
         spawnPoint.y += _beastPrefab.transform.localScale.y;
-        GameObject beast = Instantiate(_beastPrefab, spawnPoint, Quaternion.LookRotation(Vector3.back));
+        GameObject beast = Instantiate(_beastPrefab, spawnPoint, Quaternion.LookRotation(Vector3.back), _container);
+        beast.AddComponent<Beast>();
+        beast.AddComponent<BoxCollider>().isTrigger = true;
         _beast.Add(beast);
     }
 

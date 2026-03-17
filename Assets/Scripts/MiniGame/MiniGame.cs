@@ -1,10 +1,11 @@
 using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class MiniGame : MonoBehaviour
-{    
+{
     public event Action Started;
+    public event Action Finished;
+
 
     public void OnStartButtonClick()
     {
