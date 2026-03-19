@@ -26,8 +26,6 @@ public class DeathModule : MonoBehaviour
     public IEnumerator DeathRoutine(Transform gameObject)
     {
         yield return StartCoroutine(_animator.DeathRoutine(gameObject));
-
-
     }
 
     private IEnumerator KillSnakeRoutine(Transform gameObject)

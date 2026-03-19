@@ -13,6 +13,7 @@ public class SkinData : ScriptableObject
         public int Price;
         public Sprite Icon;
         public GameObject Model;
+        public Color Color;
         public bool IsDefault = false;
     }
 

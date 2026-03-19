@@ -50,7 +50,7 @@ public class SkinShop : MonoBehaviour
     private const string EQUIPPED_BEAST_SKIN_KEY = "EquippedBeastSkin";
     private const string EQUIPPED_SNAKE_SKIN_KEY = "EquippedSnakeSkin";
     private const string PURCHASED_BEAST_SKINS_KEY = "PurchasedBeastSkins";
-    private const string PURCHASED_SNAKE_SKINS_KEY = "PurchasedSnakeSkins";
+    private const string PURCHASED_SNAKE_SKINS_KEY = "PurchasedSnakeSkins";       
 
     private void OnEnable()
     {

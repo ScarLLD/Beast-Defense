@@ -13,13 +13,14 @@ public class MGSnake : MonoBehaviour
 
     [Header("Body Settings")]
     [SerializeField] private GameObject _bodyContainer;
-    [SerializeField] private GameObject _bodyPrefab;
+    [SerializeField] private MGCube _bodyPrefab;
     [SerializeField] private float _growInterval = 3f;
     [SerializeField] private float _tailPullback = 0.5f;
-    [SerializeField] private float _bodyYoffset = 0.5f;
 
     [Header("Other")]
+    [SerializeField] private DOTWeenAnimator _animator;
     [SerializeField] private DeathAnimator _deathAnimator;
+    [SerializeField] private BeastCollector _collector;
 
     private List<GameObject> _bodyParts = new();
     private List<Vector3> _positionsHistory = new();
@@ -37,18 +38,13 @@ public class MGSnake : MonoBehaviour
         _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
     }
 
-    private void Start()
-    {
-        _growCoroutine ??= StartCoroutine(GrowSnakeRoutine());
-        _movementCoroutine ??= StartCoroutine(MovementRoutine());
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.TryGetComponent(out Beast beast))
         {
             _deathAnimator.SetParticleColor(Color.green);
             _deathAnimator.KillRoutine(beast.transform);
+            _collector.IncreaseBeastCount();
         }
         else if (other.gameObject.TryGetComponent(out MGCube cube))
         {
@@ -56,7 +52,23 @@ public class MGSnake : MonoBehaviour
         }
     }
 
-    private void Die()
+    public void ResetSettings()
+    {
+        StopAllCoroutines();
+    }
+
+    public void SetBodyColor(Color color)
+    {
+        _bodyPrefab.SetColor(color);
+    }
+
+    public void StartMove()
+    {
+        _growCoroutine ??= StartCoroutine(GrowSnakeRoutine());
+        _movementCoroutine ??= StartCoroutine(MovementRoutine());
+    }
+
+    public void Die()
     {
         _isMove = false;
 
@@ -156,9 +168,10 @@ public class MGSnake : MonoBehaviour
 
         spawnPosition.y = transform.position.y;
 
-        GameObject body = Instantiate(_bodyPrefab, spawnPosition, spawnRotation);
+        GameObject body = Instantiate(_bodyPrefab.gameObject, spawnPosition, spawnRotation);
         body.transform.parent = _bodyContainer.transform;
         _bodyParts.Add(body);
+        _animator.DoScaleUp(body);
     }
 
     private void OnDestroy()

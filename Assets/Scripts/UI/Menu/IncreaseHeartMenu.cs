@@ -6,6 +6,7 @@ public class IncreaseHeartMenu : Window
 {
     [SerializeField] private Adv _adv;
     [SerializeField] private MiniGame _miniGame;
+    [SerializeField] private MiniGameSequencer _sequencer;
     [SerializeField] private GameHeart _gameHeart;
     [SerializeField] private Button _AdvButton;
     [SerializeField] private Button _miniGameButton;
@@ -38,7 +39,6 @@ public class IncreaseHeartMenu : Window
 
     private void OnMiniGameStarted()
     {
-        _miniGame.OnStartButtonClick();
         DisableMenu();
     }
 
@@ -55,7 +55,7 @@ public class IncreaseHeartMenu : Window
 
     private void OnMiniGameButtonClick()
     {
-
+        _sequencer.Launch();
         DisableMenu();
     }
 

@@ -4,7 +4,7 @@ using static UnityEngine.ParticleSystem;
 
 public class DeathAnimator : MonoBehaviour
 {
-
+    [SerializeField] DOTWeenAnimator _animator;
     [SerializeField] private AnimationCurve _deathAnimationCurve;
     [SerializeField] private ParticleSystem _cloudParticle;
     [SerializeField] private float _deathDuration;
@@ -23,25 +23,16 @@ public class DeathAnimator : MonoBehaviour
         StartCoroutine(DeathRoutine(gameObject));
     }
 
-    public IEnumerator DeathRoutine(Transform gameObject)
+    public IEnumerator DeathRoutine(Transform transform)
     {
-        Vector3 startScale = gameObject.localScale;
-        float timer = 0f;
-
-        while (timer < _deathDuration)
-        {
-            timer += Time.deltaTime;
-            float t = timer / _deathDuration;
-            gameObject.localScale = Vector3.Lerp(startScale, Vector3.zero, _deathAnimationCurve.Evaluate(t));
-            yield return null;
-        }
+        _animator.DoScaleDown(transform.gameObject);
 
         float particleTime = _cloudParticle.main.duration;
-        _cloudParticle.transform.position = gameObject.position;
+        _cloudParticle.transform.position = transform.position;
         _cloudParticle.Play();
 
         yield return new WaitForSeconds(particleTime + _deathDelay);
-        Destroy(gameObject.gameObject);
+        Destroy(transform.gameObject);
     }
 
     public void SetParticleColor(Color color)

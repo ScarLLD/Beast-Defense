@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,9 @@ public class GameOverMenu : Window
     [SerializeField] private Button _advRegenerateLevelButton;
     [SerializeField] private Button _exitButton;
 
+    [Header("Mini-Game")]
+    [SerializeField] private Button _miniGameStartButton;
+
     private readonly float _advButtonAlphaPressedColor = 0.5f;
 
     private void OnEnable()
@@ -25,8 +29,16 @@ public class GameOverMenu : Window
         _restartButton.onClick.AddListener(OnRestartButtonClick);
         _exitButton.onClick.AddListener(OnExitButtonClick);
 
+        _miniGameStartButton.onClick.AddListener(OnMiniGameStartButtonClick);
+
         if (_gameHeart.IsPossibleDecrease)
             EnableAdvButton();
+    }
+
+    private void OnMiniGameStartButtonClick()
+    {
+        if (IsActive)
+            _game.Leave();
     }
 
     private void OnDisable()

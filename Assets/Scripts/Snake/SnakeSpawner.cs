@@ -12,6 +12,10 @@ public class SnakeSpawner : MonoBehaviour
     private Transform _transform;
     private string _currentSkinId;
 
+    public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
+
+    private const string EQUIPPED_SNAKE_SKIN_KEY = "EquippedSnakeSkin";
+
     private void Awake()
     {
         _transform = transform;
@@ -24,7 +28,7 @@ public class SnakeSpawner : MonoBehaviour
 
     private void LoadCurrentSkin()
     {
-        string savedSkinId = PlayerPrefs.GetString("EquippedSnakeSkin", "");
+        string savedSkinId = PlayerPrefs.GetString(EQUIPPED_SNAKE_SKIN_KEY, "");
 
         if (string.IsNullOrEmpty(savedSkinId) == false)
         {
@@ -70,7 +74,7 @@ public class SnakeSpawner : MonoBehaviour
             ApplyCurrentSkin();
         }
 
-        PlayerPrefs.SetString("EquippedSkin", _currentSkinId);
+        PlayerPrefs.SetString(EQUIPPED_SNAKE_SKIN_KEY, _currentSkinId);
         PlayerPrefs.Save();
     }
 

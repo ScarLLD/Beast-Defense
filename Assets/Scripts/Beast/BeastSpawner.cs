@@ -9,6 +9,10 @@ public class BeastSpawner : MonoBehaviour
     private Transform _transform;
     private string _currentSkinId;
 
+    public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
+
+    private const string EQUIPPED_BEAST_SKIN_KEY = "EquippedBeastSkin";
+
     private void Awake()
     {
         _transform = transform;
@@ -21,7 +25,7 @@ public class BeastSpawner : MonoBehaviour
 
     private void LoadCurrentSkin()
     {
-        string savedSkinId = PlayerPrefs.GetString("EquippedBeastSkin", "");
+        string savedSkinId = PlayerPrefs.GetString(EQUIPPED_BEAST_SKIN_KEY, "");
 
         if (string.IsNullOrEmpty(savedSkinId) == false)
         {
@@ -64,7 +68,7 @@ public class BeastSpawner : MonoBehaviour
             ApplyCurrentSkin();
         }
 
-        PlayerPrefs.SetString("EquippedSkin", _currentSkinId);
+        PlayerPrefs.SetString(EQUIPPED_BEAST_SKIN_KEY, _currentSkinId);
         PlayerPrefs.Save();
     }
 

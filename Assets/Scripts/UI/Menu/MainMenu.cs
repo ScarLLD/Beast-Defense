@@ -5,6 +5,7 @@ public class MainMenu : Window
 {
     [SerializeField] private ShopMenu _shop;
     [SerializeField] private Game _game;
+    [SerializeField] private MiniGame _miniGame;
     [SerializeField] private LeaderBoardMenu _leaderBoardMenu;
     [SerializeField] private IncreaseHeartMenu _increaseHeartMenu;
     [SerializeField] private ShopMenu _shopMenu;
@@ -13,6 +14,7 @@ public class MainMenu : Window
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _shopButton;
     [SerializeField] private Button _leaderboardButton;
+    [SerializeField] private Button _miniGameStartButton;
 
     private void OnEnable()
     {
@@ -21,7 +23,9 @@ public class MainMenu : Window
         _leaderboardButton.onClick.AddListener(OnLeaderBoardButtonClick);
 
         _game.Started += DisableMenu;
-        _game.Leaved += EnableMenu;
+        _game.Leaved += OnGameLeaved;
+
+        _miniGameStartButton.onClick.AddListener(DisableMenu);
 
         _shop.Opened += DisableMenu;
         _shop.Closed += EnableMenu;
@@ -37,7 +41,9 @@ public class MainMenu : Window
         _leaderboardButton.onClick.RemoveListener(OnLeaderBoardButtonClick);
 
         _game.Started -= DisableMenu;
-        _game.Leaved -= EnableMenu;
+        _game.Leaved -= OnGameLeaved;
+
+        _miniGameStartButton.onClick.RemoveListener(DisableMenu);
 
         _shop.Opened -= DisableMenu;
         _shop.Closed -= EnableMenu;
@@ -76,5 +82,13 @@ public class MainMenu : Window
             return;
 
         _leaderBoardMenu.Open();
+    }
+
+    private void OnGameLeaved()
+    {
+        if (_miniGame.IsActive == false)
+        {
+            EnableMenu();
+        }
     }
 }

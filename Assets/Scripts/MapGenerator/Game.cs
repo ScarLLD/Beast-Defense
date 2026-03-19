@@ -15,6 +15,7 @@ public class Game : MonoBehaviour
     [SerializeField] private Material _badMaterial;
 
     [Header("Other settings")]
+    [SerializeField] private MiniGame _miniGame;
     [SerializeField] private DeathModule _deathModule;
     [SerializeField] private GameHeart _gameHeart;
 
@@ -139,8 +140,13 @@ public class Game : MonoBehaviour
     {
         IsPlaying = false;
         Leaved?.Invoke();
-        _gameHeart.transform.SetParent(_mainMenu.transform);
-        _gameHeart.gameObject.SetActive(true);
+
+        if (_miniGame.IsActive == false)
+        {
+            _gameHeart.transform.SetParent(_mainMenu.transform);
+            _gameHeart.gameObject.SetActive(true);
+        }
+
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
         Transited?.Invoke();
         Debug.Log("Игра покинута!");
@@ -154,8 +160,13 @@ public class Game : MonoBehaviour
         IsPlaying = false;
         HasCompleted = false;
         Leaved?.Invoke();
-        _gameHeart.transform.SetParent(_mainMenu.transform);
-        _gameHeart.gameObject.SetActive(true);
+
+        if (_miniGame.IsActive == false)
+        {
+            _gameHeart.transform.SetParent(_mainMenu.transform);
+            _gameHeart.gameObject.SetActive(true);
+        }
+
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
         yield return StartCoroutine(_gameHeart.UseHeartRoutine());
         Debug.Log("Игра покинута!");

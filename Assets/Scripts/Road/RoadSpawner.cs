@@ -10,7 +10,7 @@ public class RoadSpawner : MonoBehaviour
     [SerializeField] private int _minPathSegments = 5;
     [SerializeField] private int _maxPathSegments = 15;
 
-    [Header("Spawn Settings")]
+    [Header("SpawnRoutine Settings")]
     [SerializeField] private bool _allowTopSpawn = true;
     [SerializeField] private bool _allowLeftSpawn = true;
     [SerializeField] private bool _allowRightSpawn = true;
