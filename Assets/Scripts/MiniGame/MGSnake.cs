@@ -42,8 +42,7 @@ public class MGSnake : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out Beast beast))
         {
-            _deathAnimator.SetParticleColor(Color.green);
-            _deathAnimator.KillRoutine(beast.transform);
+            _deathAnimator.KillRoutine(beast.transform, Color.white);
             _collector.IncreaseBeastCount();
         }
         else if (other.gameObject.TryGetComponent(out MGCube cube))
@@ -172,10 +171,5 @@ public class MGSnake : MonoBehaviour
         body.transform.parent = _bodyContainer.transform;
         _bodyParts.Add(body);
         _animator.DoScaleUp(body);
-    }
-
-    private void OnDestroy()
-    {
-        StopAllCoroutines();
     }
 }

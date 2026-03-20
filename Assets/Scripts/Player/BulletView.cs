@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerCube))]
-public class View : MonoBehaviour
+public class BulletView : MonoBehaviour
 {
     [SerializeField] private TMP_Text _text;
     [SerializeField] private Shooter _shooter;

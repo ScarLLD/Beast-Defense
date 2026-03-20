@@ -5,6 +5,7 @@ public class CubeCreator : MonoBehaviour
 {
     [SerializeField] private GridStorage _gridStorage;
     [SerializeField] private PlayerCube _cubePrefab;
+    [SerializeField] private DOTWeenAnimator _animator;
 
     private Transform _transform;
 
@@ -21,7 +22,7 @@ public class CubeCreator : MonoBehaviour
     {
         _transform = transform;
     }
-        
+
     public bool TryCreate(CubeStorage cubeStorage, BulletSpawner bulletSpawner, TargetStorage targetStorage)
     {
         if (_gridStorage.GridCount > 0)

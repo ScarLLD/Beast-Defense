@@ -25,7 +25,7 @@ public class PlayerCube : MonoBehaviour
     private CubeStack _stack;
     private TargetRadar _radar;
     private Shooter _shooter;
-    private View _view;
+    private BulletView _bulletView;
     private GridCell _gridCell;
     private CubeMover _mover;
     private bool _isScaled;
@@ -44,7 +44,7 @@ public class PlayerCube : MonoBehaviour
         _mover = GetComponent<CubeMover>();
         _shooter = GetComponent<Shooter>();
         _radar = GetComponent<TargetRadar>();
-        _view = GetComponent<View>();
+        _bulletView = GetComponent<BulletView>();
         _stack = GetComponent<CubeStack>();
     }
 
@@ -85,7 +85,7 @@ public class PlayerCube : MonoBehaviour
 
         _outline.OutlineWidth = _outlineDisable;
         _gridCell.ChangeStaticStatus(false);
-        _view.DisplayBullets();
+        _bulletView.DisplayBullets();
         _mover.SetPlaces(shootingPlace, escapePlace, _gridCell);
         StartMoving();
     }
@@ -103,7 +103,7 @@ public class PlayerCube : MonoBehaviour
         _radar.TurnOff();
         _shooter.SetDafaultSettings();
         _mover.SetDefaultSetting();
-        _view.SetEmpty();
+        _bulletView.SetEmpty();
 
         TurnOffLegs();
 
@@ -138,7 +138,7 @@ public class PlayerCube : MonoBehaviour
         if (_isScaled == false)
         {
             _outline.OutlineWidth = _outlineActive;
-            _view.DisplayBullets();
+            _bulletView.DisplayBullets();
             StartCoroutine(ScaleRoutine());
         }
     }
@@ -148,7 +148,7 @@ public class PlayerCube : MonoBehaviour
         _outline.OutlineWidth = _outlineDisable;
 
         if (_gridCell.IsStatic)
-            _view.SetEmpty();
+            _bulletView.SetEmpty();
     }
 
 

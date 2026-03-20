@@ -1,43 +1,48 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
 
 public class DeathAnimator : MonoBehaviour
 {
-    [SerializeField] DOTWeenAnimator _animator;
+    [Header("Animator settings.")]
+    [SerializeField] private DOTWeenAnimator _animator;
     [SerializeField] private AnimationCurve _deathAnimationCurve;
-    [SerializeField] private ParticleSystem _cloudParticle;
+    [SerializeField] private Particle _cloudParticlePrefab;
     [SerializeField] private float _deathDuration;
     [SerializeField] private float _deathDelay;
 
-    private Coroutine _coroutine;
-    private MainModule _particleModule;
+    private WaitForSeconds _deathTime;
+    private WaitForSeconds _delayTime;
+
+    private ObjectPool<Particle> _pool;
+
 
     private void Awake()
     {
-        _particleModule = _cloudParticle.main;
+        _pool = new(_cloudParticlePrefab, transform);
+
+        _deathTime = new WaitForSeconds(_animator.GetDuration);
+        _delayTime = new WaitForSeconds(_cloudParticlePrefab.GetDuration + _deathDelay);
     }
 
-    public void KillRoutine(Transform gameObject)
+    public void KillRoutine(Transform gameObject, Color color)
     {
-        StartCoroutine(DeathRoutine(gameObject));
+        StartCoroutine(DeathRoutine(gameObject, color));
     }
 
-    public IEnumerator DeathRoutine(Transform transform)
+    public IEnumerator DeathRoutine(Transform transform, Color color)
     {
         _animator.DoScaleDown(transform.gameObject);
+        yield return _deathTime;
 
-        float particleTime = _cloudParticle.main.duration;
-        _cloudParticle.transform.position = transform.position;
-        _cloudParticle.Play();
 
-        yield return new WaitForSeconds(particleTime + _deathDelay);
+        var cloudParticle = _pool.GetObject();
+        cloudParticle.SetColor(color);
+        cloudParticle.transform.position = transform.position;
+
+        yield return _delayTime;
         Destroy(transform.gameObject);
-    }
 
-    public void SetParticleColor(Color color)
-    {
-        _particleModule.startColor = color;
+        ClearRoutine();
     }
 
     private void ClearRoutine()

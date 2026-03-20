@@ -23,22 +23,20 @@ public class DeathModule : MonoBehaviour
         StartCoroutine(KillBeastRoutine(gameObject));
     }
 
-    public IEnumerator DeathRoutine(Transform gameObject)
+    public IEnumerator DeathRoutine(Transform gameObject, Color color)
     {
-        yield return StartCoroutine(_animator.DeathRoutine(gameObject));
+        yield return StartCoroutine(_animator.DeathRoutine(gameObject, color));
     }
 
     private IEnumerator KillSnakeRoutine(Transform gameObject)
     {
-        _animator.SetParticleColor(Color.red);
-        yield return StartCoroutine(DeathRoutine(gameObject));
+        yield return StartCoroutine(DeathRoutine(gameObject, Color.red));
         SnakeDie?.Invoke();
     }
 
     private IEnumerator KillBeastRoutine(Transform gameObject)
     {
-        _animator.SetParticleColor(Color.white);
-        yield return StartCoroutine(DeathRoutine(gameObject));
+        yield return StartCoroutine(DeathRoutine(gameObject, Color.white));
         BeastDie?.Invoke();
     }
 }
