@@ -8,9 +8,21 @@ public class MiniGameSequencer : MonoBehaviour
     [Header("MiniGameSettings")]
     [SerializeField] private MiniGame _miniGame;
     [SerializeField] private GameObject _gameObjectsParent;
-    [SerializeField] private MiniGameOpenAnimator _animator;
+    [SerializeField] private MiniGameSequenceAnimator _animator;
     [SerializeField] private MGBeastSpawner _mgBeastSpawner;
     [SerializeField] private MGSnakeSpawner _mgSnakeSpawner;
+
+    private void OnEnable()
+    {
+        _miniGame.Victory += Close;
+        _miniGame.Defeat += Close;
+    }
+
+    private void OnDisable()
+    {
+        _miniGame.Victory -= Close;
+        _miniGame.Defeat -= Close;
+    }
 
     public void Launch()
     {
@@ -20,6 +32,11 @@ public class MiniGameSequencer : MonoBehaviour
         _animator.StartAnimation();
         _miniGame.ResetSettings();
         _miniGame.StartGame();
+    }
+
+    private void Close()
+    {
+        _animator.CloseAnimation();
     }
 
     private void InitializeSkins()

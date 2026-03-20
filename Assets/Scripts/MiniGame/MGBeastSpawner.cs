@@ -5,40 +5,47 @@ using UnityEngine;
 public class MGBeastSpawner : MonoBehaviour
 {
     [SerializeField] private MiniGame _miniGame;
+    [SerializeField] private BeastCollector _collector;
     [SerializeField] private DOTWeenAnimator _miniGameAnimator;
     [SerializeField] private Transform _spawnPlatform;
     [SerializeField] private MGBeast _beastPrefab;
 
     [Header("SpawnRoutine Settings")]
     [SerializeField] private Transform _container;
-    [SerializeField] private int _maxBeastCount;
     [SerializeField] private float _spawnDelay;
     [SerializeField] private float _boundOffset;
     [SerializeField] private float _checkRadius;
+    [SerializeField] private int _minRandomBeastCount = 3;
+    [SerializeField] private int _maxRandomBeastCount = 10;
 
+    private List<MGBeast> _beasts;
+    private int _maxBeastCount;
     private int _spawnAttempsCount = 50;
     private Bounds _bounds;
     private Coroutine _coroutine;
     private WaitForSeconds _sleepTime;
     private ObjectPool<MGBeast> _pool;
 
-    public int MaxBeastCount => _maxBeastCount;
-
     private void OnEnable()
     {
         _miniGame.Started += StartRoutine;
+        _miniGame.Defeat += ResetSettings;
     }
 
     private void OnDisable()
     {
         _miniGame.Started -= StartRoutine;
+        _miniGame.Defeat -= ResetSettings;
     }
 
     private void Awake()
     {
         _pool = new(_beastPrefab, transform);
+        _beasts = new();
         _bounds = new Bounds(_spawnPlatform.position, _spawnPlatform.localScale);
         _sleepTime = new WaitForSeconds(_spawnDelay);
+
+        RandomizeMaxBeastCount();
     }
 
     public void InitializeSkin(GameObject beastPrefab)
@@ -135,6 +142,9 @@ public class MGBeastSpawner : MonoBehaviour
         beast.transform.position = spawnPoint;
         beast.transform.rotation = Quaternion.LookRotation(Vector3.back);
         _miniGameAnimator.DoScaleUp(beast.gameObject);
+
+        if (_beasts.Contains(beast) == false)
+            _beasts.Add(beast);
     }
 
     private void StopRoutine()
@@ -148,6 +158,20 @@ public class MGBeastSpawner : MonoBehaviour
 
     private void ResetSettings()
     {
+        RandomizeMaxBeastCount();
         StopRoutine();
+
+        foreach (var beast in _beasts)
+        {
+            beast.gameObject.SetActive(false);
+        }
+
+        _beasts.Clear();
+    }
+
+    private void RandomizeMaxBeastCount()
+    {
+        _maxBeastCount = Random.Range(_minRandomBeastCount, _maxRandomBeastCount);
+        _collector.SetNewMaxBeastCount(_maxBeastCount);
     }
 }

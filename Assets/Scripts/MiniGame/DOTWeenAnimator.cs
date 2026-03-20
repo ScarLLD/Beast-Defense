@@ -9,12 +9,18 @@ public class DOTWeenAnimator : MonoBehaviour
 
     public void DoScaleUp(GameObject gameObject)
     {
+        if (gameObject == null)
+            return;
+
         gameObject.transform.localScale = Vector3.zero;
         gameObject.transform.DOScale(Vector3.one, _scaleDuration).SetEase(Ease.OutBack);
     }
 
     public void DoScaleDown(GameObject gameObject)
     {
+        if (gameObject == null)
+            return;
+            
         gameObject.transform.localScale = Vector3.one;
         gameObject.transform.DOScale(Vector3.zero, _scaleDuration).SetEase(Ease.InCubic);
     }

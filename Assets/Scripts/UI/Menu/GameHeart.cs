@@ -18,6 +18,7 @@ public class GameHeart : MonoBehaviour
 
     [Header("Другое")]
     [SerializeField] private Adv _adv;
+    [SerializeField] private MiniGame _miniGame;
 
     private HeartTimer _heartTimer;
     private Animator _animator;
@@ -60,6 +61,7 @@ public class GameHeart : MonoBehaviour
         StartHeartUpdateCoroutine();
 
         _adv.HeartIncreased += OnHeartIncreased;
+        _miniGame.Victory += OnHeartIncreased;
     }
 
     private void OnDisable()
@@ -69,6 +71,7 @@ public class GameHeart : MonoBehaviour
         _heartUpdateCoroutine = null;
 
         _adv.HeartIncreased -= OnHeartIncreased;
+        _miniGame.Victory -= OnHeartIncreased;
     }
 
     private void OnDestroy()

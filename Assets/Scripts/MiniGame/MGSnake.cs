@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -42,18 +43,25 @@ public class MGSnake : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out MGBeast beast))
         {
-            _deathAnimator.KillRoutine(beast.transform, Color.white);
             _collector.IncreaseBeastCount();
+
+            if (_collector.IsBeastsFull)
+                beast.gameObject.SetActive(false);
+            else
+                _deathAnimator.KillRoutine(beast.transform, Color.white);
         }
         else if (other.gameObject.TryGetComponent(out MGCube cube))
         {
-            Die();
+            Die();            
         }
     }
 
     public void ResetSettings()
     {
         StopAllCoroutines();
+        _isMove = false;
+        ClearBody();
+        _positionsHistory.Clear();
     }
 
     public void SetBodyColor(Color color)
@@ -63,8 +71,17 @@ public class MGSnake : MonoBehaviour
 
     public void StartMove()
     {
-        _growCoroutine ??= StartCoroutine(GrowSnakeRoutine());
-        _movementCoroutine ??= StartCoroutine(MovementRoutine());
+        _isMove = true;
+
+        if (_growCoroutine != null)
+            StopCoroutine(_growCoroutine);
+        _growCoroutine = StartCoroutine(GrowSnakeRoutine());
+
+        if (_movementCoroutine != null)
+            StopCoroutine(_movementCoroutine);
+        _movementCoroutine = StartCoroutine(MovementRoutine());
+
+        _rb.velocity = transform.forward * _moveSpeed;
     }
 
     public void Die()
@@ -76,12 +93,13 @@ public class MGSnake : MonoBehaviour
 
         _rb.velocity = Vector3.zero;
 
+        ClearBody();
         Died?.Invoke();
     }
 
     private IEnumerator MovementRoutine()
     {
-        _isMove = true;
+        Debug.Log("MovementRoutine started. IsMove: " + _isMove);
 
         while (_isMove)
         {
@@ -108,7 +126,7 @@ public class MGSnake : MonoBehaviour
             if (body == null) continue;
 
             int historyIndex = (index + 1) * _gap;
-            int pullbackIndex = Mathf.FloorToInt(historyIndex + (historyIndex + _tailPullback));
+            int pullbackIndex = Mathf.FloorToInt(historyIndex + _tailPullback);
 
             if (pullbackIndex < _positionsHistory.Count)
             {
@@ -125,14 +143,10 @@ public class MGSnake : MonoBehaviour
                     }
                 }
             }
-            else
+            else if (_positionsHistory.Count > 0)
             {
                 Vector3 targetPoint = _positionsHistory[_positionsHistory.Count - 1];
-                Vector3 direction = body.transform.position - targetPoint;
-                if (direction.magnitude > 0.001f)
-                {
-                    body.transform.rotation = Quaternion.LookRotation(direction);
-                }
+                body.transform.position = targetPoint;
             }
 
             index++;
@@ -141,7 +155,9 @@ public class MGSnake : MonoBehaviour
 
     private IEnumerator GrowSnakeRoutine()
     {
-        while (true)
+        Debug.Log("GrowSnakeRoutine started. Body count: " + _bodyParts.Count);
+
+        while (_isMove)
         {
             yield return new WaitForSeconds(_growInterval);
             GrowSnake();
@@ -150,10 +166,12 @@ public class MGSnake : MonoBehaviour
 
     private void GrowSnake()
     {
+        if (!_isMove) return;
+
         Vector3 spawnPosition;
         Quaternion spawnRotation = transform.rotation;
 
-        if (_bodyParts.Count > 0)
+        if (_bodyParts.Count > 0 && _bodyParts[_bodyParts.Count - 1] != null)
         {
             GameObject lastSegment = _bodyParts[_bodyParts.Count - 1];
             spawnPosition = lastSegment.transform.position - lastSegment.transform.forward * 1.5f;
@@ -170,6 +188,21 @@ public class MGSnake : MonoBehaviour
         GameObject body = Instantiate(_bodyPrefab.gameObject, spawnPosition, spawnRotation);
         body.transform.parent = _bodyContainer.transform;
         _bodyParts.Add(body);
-        _animator.DoScaleUp(body);
+
+        if (_animator != null && body != null)
+        {
+            _animator.DoScaleUp(body);
+        }
+    }
+
+    private void ClearBody()
+    {
+        foreach (var bodyPart in _bodyParts)
+        {
+            if (bodyPart != null)
+                Destroy(bodyPart.gameObject);
+        }
+
+        _bodyParts.Clear();
     }
 }

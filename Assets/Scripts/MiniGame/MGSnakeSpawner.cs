@@ -32,6 +32,8 @@ public class MGSnakeSpawner : MonoBehaviour
     {
         ResetSettings();
         Spawn();
+
+        _snake.ResetSettings();
         _snake.StartMove();
     }
 

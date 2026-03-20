@@ -6,14 +6,12 @@ public class BeastCollector : MonoBehaviour
     [SerializeField] private Text _text;
     [SerializeField] private MiniGame _miniGame;
     [SerializeField] private MGBeastSpawner _beastSpawner;
+    [SerializeField] private MGSnake _snake;
 
     private int _beastCollectedCount = 0;
     private int _maxBeastCollectedCount = 10;
 
-    private void Awake()
-    {
-        _maxBeastCollectedCount = _beastSpawner.MaxBeastCount;
-    }
+    public bool IsBeastsFull => _beastCollectedCount == _maxBeastCollectedCount;
 
     public void IncreaseBeastCount()
     {
@@ -21,13 +19,21 @@ public class BeastCollector : MonoBehaviour
         DisplayCount();
 
         if (_beastCollectedCount == _maxBeastCollectedCount)
+        {
+            _snake.Die();
             _miniGame.VictoryGame();
+        }
     }
 
     public void ResetSettings()
     {
         _beastCollectedCount = 0;
         DisplayCount();
+    }
+
+    public void SetNewMaxBeastCount(int count)
+    {
+        _maxBeastCollectedCount = count;
     }
 
     private void DisplayCount()

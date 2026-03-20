@@ -6,6 +6,7 @@ public class MainMenu : Window
     [SerializeField] private ShopMenu _shop;
     [SerializeField] private Game _game;
     [SerializeField] private MiniGame _miniGame;
+    [SerializeField] private MiniGameSequenceAnimator _miniGameSequenceAnimator;
     [SerializeField] private LeaderBoardMenu _leaderBoardMenu;
     [SerializeField] private IncreaseHeartMenu _increaseHeartMenu;
     [SerializeField] private ShopMenu _shopMenu;
@@ -26,6 +27,7 @@ public class MainMenu : Window
         _game.Leaved += OnGameLeaved;
 
         _miniGameStartButton.onClick.AddListener(DisableMenu);
+        _miniGameSequenceAnimator.Closed += EnableMenu;
 
         _shop.Opened += DisableMenu;
         _shop.Closed += EnableMenu;
@@ -44,6 +46,7 @@ public class MainMenu : Window
         _game.Leaved -= OnGameLeaved;
 
         _miniGameStartButton.onClick.RemoveListener(DisableMenu);
+        _miniGameSequenceAnimator.Closed -= EnableMenu;
 
         _shop.Opened -= DisableMenu;
         _shop.Closed -= EnableMenu;
