@@ -40,7 +40,7 @@ public class MGSnake : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent(out Beast beast))
+        if (other.gameObject.TryGetComponent(out MGBeast beast))
         {
             _deathAnimator.KillRoutine(beast.transform, Color.white);
             _collector.IncreaseBeastCount();

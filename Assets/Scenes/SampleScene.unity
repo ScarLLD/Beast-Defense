@@ -11698,7 +11698,7 @@ MonoBehaviour:
   _spawnPlatform: {fileID: 599227854}
   _beastPrefab: {fileID: 1001616797407859506, guid: 6aa34e5a9a84f5e4584a9d1a696542e1, type: 3}
   _container: {fileID: 1111640601}
-  _maxBeastCount: 10
+  _maxBeastCount: 12
   _spawnDelay: 2
   _boundOffset: 2
   _checkRadius: 4
@@ -11716,6 +11716,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _text: {fileID: 1394113401}
   _miniGame: {fileID: 1417510877}
+  _beastSpawner: {fileID: 1111640602}
 --- !u!1 &1113191936
 GameObject:
   m_ObjectHideFlags: 0
@@ -14833,11 +14834,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 10
-  _steerSpeed: 130
+  _steerSpeed: 150
   _gap: 5
   _bodyContainer: {fileID: 232732962}
   _bodyPrefab: {fileID: 3160416396482440501, guid: 7b462bb99ee255e4198d4919e5a33b6f, type: 3}
-  _growInterval: 0.5
+  _growInterval: 0.6
   _tailPullback: 4.5
   _animator: {fileID: 668936184}
   _deathAnimator: {fileID: 668936182}

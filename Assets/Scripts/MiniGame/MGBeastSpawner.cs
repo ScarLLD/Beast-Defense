@@ -7,21 +7,22 @@ public class MGBeastSpawner : MonoBehaviour
     [SerializeField] private MiniGame _miniGame;
     [SerializeField] private DOTWeenAnimator _miniGameAnimator;
     [SerializeField] private Transform _spawnPlatform;
-    [SerializeField] private GameObject _beastPrefab;
+    [SerializeField] private MGBeast _beastPrefab;
 
     [Header("SpawnRoutine Settings")]
     [SerializeField] private Transform _container;
-    [SerializeField] private float _maxBeastCount;
+    [SerializeField] private int _maxBeastCount;
     [SerializeField] private float _spawnDelay;
     [SerializeField] private float _boundOffset;
     [SerializeField] private float _checkRadius;
 
-    private readonly List<GameObject> _beasts = new();
     private int _spawnAttempsCount = 50;
-    private int _allowedCountColliders = 2;
     private Bounds _bounds;
     private Coroutine _coroutine;
     private WaitForSeconds _sleepTime;
+    private ObjectPool<MGBeast> _pool;
+
+    public int MaxBeastCount => _maxBeastCount;
 
     private void OnEnable()
     {
@@ -35,13 +36,14 @@ public class MGBeastSpawner : MonoBehaviour
 
     private void Awake()
     {
+        _pool = new(_beastPrefab, transform);
         _bounds = new Bounds(_spawnPlatform.position, _spawnPlatform.localScale);
         _sleepTime = new WaitForSeconds(_spawnDelay);
     }
 
     public void InitializeSkin(GameObject beastPrefab)
     {
-        _beastPrefab = beastPrefab;
+        _beastPrefab = beastPrefab.GetComponent<MGBeast>();
     }
 
     private Vector3 GetRandomPointInCube()
@@ -63,16 +65,25 @@ public class MGBeastSpawner : MonoBehaviour
 
     private IEnumerator SpawnRoutine()
     {
-        for (int i = 0; i < _maxBeastCount && _miniGame.IsActive; i++)
+        int spawnedCount = 0;
+
+        while (spawnedCount < _maxBeastCount && _miniGame.IsActive)
         {
+            yield return _sleepTime;
+
             if (TrySpawn())
             {
-                yield return _sleepTime;
+                spawnedCount++;
+                Debug.Log($"Заспавнен зверь №{spawnedCount} из {_maxBeastCount}");
+            }
+            else
+            {
+                Debug.Log($"Не удалось заспавнить зверя после {_spawnAttempsCount} попыток.");
             }
         }
 
-        yield return null;
         StopRoutine();
+        Debug.Log($"Завершён спавн. Всего заспавнено: {spawnedCount}");
     }
 
     private bool TrySpawn()
@@ -86,6 +97,7 @@ public class MGBeastSpawner : MonoBehaviour
             if (CheckCollidersNearPoint(spawnPoint))
             {
                 Spawn(spawnPoint);
+                Debug.Log($"Заспавнил зверя. Успешная попытка №{attempts + 1}.");
                 return true;
             }
 
@@ -99,22 +111,30 @@ public class MGBeastSpawner : MonoBehaviour
     {
         Collider[] hitColliders = Physics.OverlapSphere(spawnPoint, _checkRadius);
 
-        if (hitColliders.Length > _allowedCountColliders)
-            return false;
-        else
-            return true;
+        foreach (Collider collider in hitColliders)
+        {
+            if (collider.GetComponent<Beast>() != null)
+            {
+                return false;
+            }
+
+            if (collider.GetComponent<MGCube>() != null)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
+
 
     private void Spawn(Vector3 spawnPoint)
     {
+        var beast = _pool.GetObject();
         spawnPoint.y += _beastPrefab.transform.localScale.y;
-        GameObject beast = Instantiate(_beastPrefab, spawnPoint, Quaternion.LookRotation(Vector3.back), _container);
-        beast.transform.localScale = Vector3.zero;
-        _miniGameAnimator.DoScaleUp(beast);
-
-        beast.AddComponent<Beast>();
-        beast.AddComponent<BoxCollider>().isTrigger = true;
-        _beasts.Add(beast);
+        beast.transform.position = spawnPoint;
+        beast.transform.rotation = Quaternion.LookRotation(Vector3.back);
+        _miniGameAnimator.DoScaleUp(beast.gameObject);
     }
 
     private void StopRoutine()
@@ -129,12 +149,5 @@ public class MGBeastSpawner : MonoBehaviour
     private void ResetSettings()
     {
         StopRoutine();
-
-        foreach (var beast in _beasts)
-        {
-            Destroy(beast.gameObject);
-        }
-
-        _beasts.Clear();
     }
 }

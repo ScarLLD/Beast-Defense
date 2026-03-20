@@ -34,13 +34,12 @@ public class DeathAnimator : MonoBehaviour
         _animator.DoScaleDown(transform.gameObject);
         yield return _deathTime;
 
-
+        transform.gameObject.SetActive(false);
         var cloudParticle = _pool.GetObject();
         cloudParticle.SetColor(color);
         cloudParticle.transform.position = transform.position;
 
         yield return _delayTime;
-        Destroy(transform.gameObject);
 
         ClearRoutine();
     }
