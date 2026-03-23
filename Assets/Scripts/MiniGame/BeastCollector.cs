@@ -34,6 +34,7 @@ public class BeastCollector : MonoBehaviour
     public void SetNewMaxBeastCount(int count)
     {
         _maxBeastCollectedCount = count;
+        DisplayCount();
     }
 
     private void DisplayCount()
