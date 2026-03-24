@@ -16,7 +16,7 @@ public class ScoreReader : MonoBehaviour
     private void Awake()
     {
         LoadHighScore();
-        SetNewScore(_currentTimeScore);
+        _lastTimeScore = _currentTimeScore;
     }
 
     private void OnEnable()
@@ -31,16 +31,15 @@ public class ScoreReader : MonoBehaviour
 
     private void SetNewScore(float timeScore)
     {
-        _lastTimeScore = _currentTimeScore;
+        _lastTimeScore = timeScore;
 
-        if (timeScore < _currentTimeScore)
+        if (_currentTimeScore == 0 || timeScore < _currentTimeScore)
         {
             _currentTimeScore = timeScore;
             SaveHighScore();
+            YG2.SetLBTimeConvert(_leaderBoard.name, _currentTimeScore);
+            _leaderBoard.UpdateLB();
         }
-
-        YG2.SetLBTimeConvert(_leaderBoard.name, timeScore);
-        _leaderBoard.UpdateLB();
     }
 
     private void SaveHighScore()
