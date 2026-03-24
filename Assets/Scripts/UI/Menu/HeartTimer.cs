@@ -113,7 +113,6 @@ public class HeartTimer
         return true;
     }
 
-    // Новый метод для принудительного обновления количества сердец
     public void SetCurrentHearts(int newCount)
     {
         _currentHearts = Mathf.Clamp(newCount, 0, MAX_HEARTS);

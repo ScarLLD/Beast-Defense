@@ -17,7 +17,6 @@ public class Transition : MonoBehaviour
 
     private Vector3 _spriteLeftPosition;
     private Vector3 _spriteRightPosition;
-    private AnimationCurve _animationCurve;
     private WaitForSeconds _sleep;
 
     private Coroutine _transitionCoroutine;
@@ -133,7 +132,6 @@ public class Transition : MonoBehaviour
     private IEnumerator TransitionRoutine(AnimationCurve animationCurve, Vector3 startPosition, Vector3 targetPosition)
     {
         float timer = 0;
-        _animationCurve = animationCurve;
 
         while (timer < _transitionDuration)
         {

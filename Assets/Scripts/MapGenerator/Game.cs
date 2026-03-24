@@ -141,10 +141,10 @@ public class Game : MonoBehaviour
         IsPlaying = false;
         Leaved?.Invoke();
 
-        if (_miniGame.IsActive == false)
+        if (_miniGame.IsActive == true)
         {
             _gameHeart.transform.SetParent(_mainMenu.transform);
-            _gameHeart.gameObject.SetActive(true);
+            _gameHeart.gameObject.SetActive(false);
         }
 
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
@@ -161,11 +161,7 @@ public class Game : MonoBehaviour
         HasCompleted = false;
         Leaved?.Invoke();
 
-        if (_miniGame.IsActive == false)
-        {
-            _gameHeart.transform.SetParent(_mainMenu.transform);
-            _gameHeart.gameObject.SetActive(true);
-        }
+        _gameHeart.transform.SetParent(_mainMenu.transform);
 
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
         yield return StartCoroutine(_gameHeart.UseHeartRoutine());
