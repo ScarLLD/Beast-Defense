@@ -13,13 +13,13 @@ public class DeathModule : MonoBehaviour
 
     public void KillSnake(Transform gameObject)
     {
-        _timer.StopTimer();
+        _timer.StopTimer(true);
         StartCoroutine(KillSnakeRoutine(gameObject));
     }
 
     public void KillBeast(Transform gameObject)
     {
-        _timer.StopTimer();
+        _timer.StopTimer(false);
         StartCoroutine(KillBeastRoutine(gameObject));
     }
 

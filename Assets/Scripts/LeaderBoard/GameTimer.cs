@@ -17,7 +17,7 @@ public class GameTimer : MonoBehaviour
         Debug.Log("Таймер запущен.");
     }
 
-    public void StopTimer()
+    public void StopTimer(bool isVictory)
     {
         if (!isRunning)
         {
@@ -27,12 +27,19 @@ public class GameTimer : MonoBehaviour
         isRunning = false;
         elapsedTime = Time.time - startTime;
 
-        int minutes = Mathf.FloorToInt(elapsedTime / 60);
-        float seconds = elapsedTime % 60;
+        if (isVictory)
+        {
+            int minutes = Mathf.FloorToInt(elapsedTime / 60);
+            float seconds = elapsedTime % 60;
 
-        Debug.Log($"Уровень пройден за: {minutes} мин {seconds:F2} сек");
-        Debug.Log($"Общее время в секундах: {elapsedTime:F3} сек");
+            Debug.Log($"Уровень пройден за: {minutes} мин {seconds:F2} сек");
+            Debug.Log($"Общее время в секундах: {elapsedTime:F3} сек");
 
-        Stopped?.Invoke(elapsedTime);
+            Stopped?.Invoke(elapsedTime);
+        }
+        else
+        {
+            Debug.Log($"Уровень не пройден.");
+        }
     }
 }

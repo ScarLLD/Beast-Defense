@@ -29,6 +29,8 @@ public class VictoryMenu : Window
         _game.Completed += OnGameCompleted;
         _game.Transited += DisableMenu;
 
+        _adv.WinRewardDoubled += DisplayNewRaward;
+
         _advDoubleRewardButton.onClick.AddListener(OnDoubleRewardButtonClick);
         _continueButton.onClick.AddListener(OnContinuedButtonClick);
         _exitButton.onClick.AddListener(OnExitButtonClick);
@@ -38,6 +40,8 @@ public class VictoryMenu : Window
     {
         _game.Completed -= OnGameCompleted;
         _game.Transited -= DisableMenu;
+
+        _adv.WinRewardDoubled -= DisplayNewRaward;
 
         _advDoubleRewardButton.onClick.RemoveListener(OnDoubleRewardButtonClick);
         _continueButton.onClick.RemoveListener(OnContinuedButtonClick);
@@ -72,7 +76,6 @@ public class VictoryMenu : Window
     {
         _adv.DoubleRewardAdvShow();
         DisableAdvButton();
-        DisplayNewRaward();
     }
 
     private void DisplayNewRaward()
