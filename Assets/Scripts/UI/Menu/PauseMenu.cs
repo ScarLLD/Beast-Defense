@@ -14,7 +14,6 @@ public class PauseMenu : Window
     [SerializeField] private Button _exitButton;
     [SerializeField] private Button _musicButton;
     [SerializeField] private Button _soundButton;
-    [SerializeField] private Button _vibroButton;
 
     private void OnEnable()
     {
@@ -25,7 +24,6 @@ public class PauseMenu : Window
 
         _musicButton.onClick.AddListener(_gameOptions.ToggleMusic);
         _soundButton.onClick.AddListener(_gameOptions.ToggleSound);
-        _vibroButton.onClick.AddListener(_gameOptions.ToggleVibration);
     }
 
     private void OnDisable()
@@ -37,7 +35,6 @@ public class PauseMenu : Window
 
         _musicButton.onClick.RemoveListener(_gameOptions.ToggleMusic);
         _soundButton.onClick.RemoveListener(_gameOptions.ToggleSound);
-        _vibroButton.onClick.RemoveListener(_gameOptions.ToggleVibration);
     }
 
     private void Awake()

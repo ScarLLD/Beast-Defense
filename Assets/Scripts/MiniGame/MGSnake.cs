@@ -51,7 +51,7 @@ public class MGSnake : MonoBehaviour
         }
         else if (other.gameObject.TryGetComponent(out MGCube cube))
         {
-            Die();            
+            Die();
         }
     }
 
@@ -107,7 +107,29 @@ public class MGSnake : MonoBehaviour
             Vector3 moveDirection = transform.forward * _moveSpeed;
             _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
 
-            _steerDirection = Input.GetAxis("Horizontal");
+            if (Application.isEditor || !Application.isMobilePlatform)
+            {
+                _steerDirection = Input.GetAxis("Horizontal");
+            }
+            else if (Input.touchCount > 0)
+            {
+                Touch touch = Input.GetTouch(0);
+                float screenCenter = Screen.width * 0.5f;
+
+                if (touch.position.x < screenCenter)
+                {
+                    _steerDirection = -1f;
+                }
+                else
+                {
+                    _steerDirection = 1f;
+                }
+            }
+            else
+            {
+                _steerDirection = 0f;
+            }
+
             Quaternion turnRotation = Quaternion.Euler(0f, _steerDirection * _steerSpeed * Time.fixedDeltaTime, 0f);
             _rb.MoveRotation(_rb.rotation * turnRotation);
 
