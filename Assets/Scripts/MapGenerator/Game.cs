@@ -15,6 +15,7 @@ public class Game : MonoBehaviour
     [SerializeField] private Material _badMaterial;
 
     [Header("Other settings")]
+    [SerializeField] private float _transitionDuration = 0.75f;
     [SerializeField] private MiniGame _miniGame;
     [SerializeField] private DeathModule _deathModule;
     [SerializeField] private GameHeart _gameHeart;
@@ -102,9 +103,9 @@ public class Game : MonoBehaviour
     private IEnumerator BeginRoutine()
     {
         _transition.SetText("Запуск");
-        yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color));
+        yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color, _transitionDuration));
         Started?.Invoke();
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
+        yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
         HasStarted = true;
         HasCompleted = false;
         IsPlaying = true;
@@ -117,7 +118,7 @@ public class Game : MonoBehaviour
         Continued?.Invoke();
         _gameHeart.transform.SetParent(_mainMenu.transform);
         _gameHeart.gameObject.SetActive(false);
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
+        yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
         Transited?.Invoke();
         HasCompleted = false;
         IsPlaying = true;
@@ -131,7 +132,7 @@ public class Game : MonoBehaviour
         HasCompleted = true;
         Completed?.Invoke();
         _transition.SetText(string.Empty);
-        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color));
+        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color, _transitionDuration));
         Debug.Log("Игра успешно окончена.");
         ClearRoutine();
     }
@@ -147,7 +148,7 @@ public class Game : MonoBehaviour
             _gameHeart.gameObject.SetActive(false);
         }
 
-        yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
+        yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
         Transited?.Invoke();
         Debug.Log("Игра покинута!");
         ClearRoutine();
@@ -156,14 +157,14 @@ public class Game : MonoBehaviour
     private IEnumerator FastLeaveRoutine()
     {
         _transition.SetText("Выход");
-        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color));
+        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
         IsPlaying = false;
         HasCompleted = false;
         Leaved?.Invoke();
 
         _gameHeart.transform.SetParent(_mainMenu.transform);
 
-        yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
+        yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
         yield return StartCoroutine(_gameHeart.UseHeartRoutine());
         Debug.Log("Игра покинута!");
         ClearRoutine();
@@ -175,7 +176,7 @@ public class Game : MonoBehaviour
         HasCompleted = false;
         Loss?.Invoke();
         _transition.SetText(string.Empty);
-        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color));
+        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
         _gameHeart.transform.SetParent(_gameOverMenu.transform);
         _gameHeart.gameObject.SetActive(true);
         yield return StartCoroutine(_gameHeart.UseHeartRoutine());
@@ -188,7 +189,7 @@ public class Game : MonoBehaviour
         Restarted.Invoke();
         _gameHeart.transform.SetParent(_mainMenu.transform);
         _gameHeart.gameObject.SetActive(false);
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
+        yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
         Transited?.Invoke();
         IsPlaying = true;
         Debug.Log("Игра перезапущена!");

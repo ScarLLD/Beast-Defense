@@ -8889,8 +8889,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57c7314544b9c148904a42cfd4501a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _transitionDuration: 0.75
-  _holdTime: 0.5
+  _holdTime: 0.3
   _sprite: {fileID: 844318617}
   _spriteImage: {fileID: 611399245}
   _text: {fileID: 886586840}
@@ -9983,6 +9982,7 @@ MonoBehaviour:
   - {fileID: 51831306}
   - {fileID: 1878845042}
   _transition: {fileID: 844318620}
+  _transitionDuration: 0.35
   _shopMaterial: {fileID: 2100000, guid: 58aa66add2ff33d468aeb12adfe8351a, type: 2}
   _exitButton: {fileID: 271957195}
 --- !u!1 &963194225
@@ -14953,6 +14953,7 @@ MonoBehaviour:
   - {fileID: 471112885}
   _transition: {fileID: 844318620}
   _leaderBoardMaterial: {fileID: 2100000, guid: 8c49f3477d0aa0d4fbe0995ed33323de, type: 2}
+  _transitionDuration: 0.35
   _exitButton: {fileID: 141861799}
 --- !u!1 &1523841108
 GameObject:
@@ -15471,6 +15472,7 @@ MonoBehaviour:
   _mainMenu: {fileID: 181562870}
   _goodMaterial: {fileID: 2100000, guid: de64b38f1381a154bb7bbfc4c3a9d25c, type: 2}
   _badMaterial: {fileID: 2100000, guid: 9d3516045c2737b41971afc6e0696933, type: 2}
+  _transitionDuration: 0.65
   _miniGame: {fileID: 1417510877}
   _deathModule: {fileID: 26740340}
   _gameHeart: {fileID: 830789544}
@@ -15890,7 +15892,6 @@ MonoBehaviour:
   _exitButton: {fileID: 385178235}
   _musicButton: {fileID: 2023837060}
   _soundButton: {fileID: 1167326912}
-  _vibroButton: {fileID: 0}
 --- !u!114 &1675306279
 MonoBehaviour:
   m_ObjectHideFlags: 0

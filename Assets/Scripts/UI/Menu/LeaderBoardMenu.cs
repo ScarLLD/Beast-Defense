@@ -7,7 +7,7 @@ public class LeaderBoardMenu : Window
 {
     [SerializeField] private Transition _transition;
     [SerializeField] private Material _leaderBoardMaterial;
-
+    [SerializeField] private float _transitionDuration = 0.4f;
     [SerializeField] private Button _exitButton;
 
     public event Action Opened;
@@ -37,10 +37,10 @@ public class LeaderBoardMenu : Window
     private IEnumerator OpenLeaderBoardRoutine()
     {
         _transition.SetText("Загрузка");
-        yield return StartCoroutine(_transition.StartTransitionRoutine(_leaderBoardMaterial.color));
+        yield return StartCoroutine(_transition.StartTransitionRoutine(_leaderBoardMaterial.color, _transitionDuration));
         EnableMenu();
         Opened?.Invoke();
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine());
+        yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
     }
 
     private void OnExitButtonClick()
@@ -54,10 +54,10 @@ public class LeaderBoardMenu : Window
         if (_transition.IsTransiting == false)
         {
             _transition.SetText("Выход");
-            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_leaderBoardMaterial.color));
+            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_leaderBoardMaterial.color, _transitionDuration));
             Closed?.Invoke();
             DisableMenu();
-            yield return StartCoroutine(_transition.ContinueBackTransitionRoutine());
+            yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
         }
     }
 }

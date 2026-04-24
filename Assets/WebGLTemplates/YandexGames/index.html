@@ -27,9 +27,10 @@
             user-select: none;
             -webkit-tap-highlight-color: rgba(0,0,0,0);
             height: 100%;
-            background: #FFE0B6;
+            background: url('Images/background.png') center center / cover no-repeat;
         }
     </style>
+
 
     <!-- Additional head modules -->
 
@@ -174,6 +175,14 @@
 
             requestAnimationFrame(() => {
                 if (checkingPauseStatus && isPausedGame) return;
+
+                const active = document.activeElement;
+                if (active && (active.tagName === 'INPUT' ||
+                    active.tagName === 'TEXTAREA' ||
+                    active.isContentEditable
+                )) {
+                    return;
+                }
 
                 canvas.focus({ preventScroll: true });
             });

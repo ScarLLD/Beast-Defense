@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class Transition : MonoBehaviour
 {
     [Header("Transition Settings")]
-    [SerializeField] private float _transitionDuration;
     [SerializeField] private float _holdTime;
     [SerializeField] private Transform _sprite;
     [SerializeField] private Image _spriteImage;
@@ -38,27 +37,27 @@ public class Transition : MonoBehaviour
         _text.text = text;
     }
 
-    public IEnumerator StartTransitionRoutine(Color color)
+    public IEnumerator StartTransitionRoutine(Color color, float transitionDuration)
     {
-        yield return _transitionCoroutine ??= StartCoroutine(LeftToCenterTransitionRoutine(color));
+        yield return _transitionCoroutine ??= StartCoroutine(LeftToCenterTransitionRoutine(color, transitionDuration));
     }
 
-    public IEnumerator StartBackTransitionRoutine(Color color)
+    public IEnumerator StartBackTransitionRoutine(Color color, float transitionDuration)
     {
-        yield return _transitionCoroutine ??= StartCoroutine(RightToCenterTransitionRoutine(color));
+        yield return _transitionCoroutine ??= StartCoroutine(RightToCenterTransitionRoutine(color, transitionDuration));
     }
 
-    public IEnumerator ContinueTransitionRoutine()
+    public IEnumerator ContinueTransitionRoutine(float transitionDuration)
     {
-        yield return _transitionCoroutine ??= StartCoroutine(CenterToRightTransitionRoutine());
+        yield return _transitionCoroutine ??= StartCoroutine(CenterToRightTransitionRoutine(transitionDuration));
     }
 
-    public IEnumerator ContinueBackTransitionRoutine()
+    public IEnumerator ContinueBackTransitionRoutine(float transitionDuration)
     {
-        yield return _transitionCoroutine ??= StartCoroutine(CenterToLeftTransitionRoutine());
+        yield return _transitionCoroutine ??= StartCoroutine(CenterToLeftTransitionRoutine(transitionDuration));
     }
 
-    private IEnumerator LeftToCenterTransitionRoutine(Color color)
+    private IEnumerator LeftToCenterTransitionRoutine(Color color, float transitionDuration)
     {
         IsTransiting = true;
 
@@ -66,14 +65,14 @@ public class Transition : MonoBehaviour
         _spriteImage.enabled = true;
         _text.enabled = true;
 
-        yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteLeftPosition, _canvas.transform.position));
+        yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteLeftPosition, _canvas.transform.position, transitionDuration));
         yield return _sleep;
 
         _transitionCoroutine = null;
         IsTransiting = false;
     }
 
-    private IEnumerator RightToCenterTransitionRoutine(Color color)
+    private IEnumerator RightToCenterTransitionRoutine(Color color, float transitionDuration)
     {
         IsTransiting = true;
 
@@ -81,7 +80,7 @@ public class Transition : MonoBehaviour
         _spriteImage.enabled = true;
         _text.enabled = true;
 
-        yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position));
+        yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position, transitionDuration));
         yield return _sleep;
 
         _transitionCoroutine = null;
@@ -89,14 +88,14 @@ public class Transition : MonoBehaviour
         IsTransiting = false;
     }
 
-    private IEnumerator CenterToLeftTransitionRoutine()
+    private IEnumerator CenterToLeftTransitionRoutine(float transitionDuration)
     {
         IsTransiting = true;
 
         if (_spriteImage.enabled == true)
         {
             yield return _sleep;
-            yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteLeftPosition));
+            yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteLeftPosition, transitionDuration));
 
             _spriteImage.enabled = false;
         }
@@ -109,14 +108,14 @@ public class Transition : MonoBehaviour
         IsTransiting = false;
     }
 
-    private IEnumerator CenterToRightTransitionRoutine()
+    private IEnumerator CenterToRightTransitionRoutine(float transitionDuration)
     {
         IsTransiting = true;
 
         if (_spriteImage.enabled == true)
         {
             yield return _sleep;
-            yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteRightPosition));
+            yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(0, 0, 1, 1), _canvas.transform.position, _spriteRightPosition, transitionDuration));
 
             _spriteImage.enabled = false;
         }
@@ -129,14 +128,14 @@ public class Transition : MonoBehaviour
         IsTransiting = false;
     }
 
-    private IEnumerator TransitionRoutine(AnimationCurve animationCurve, Vector3 startPosition, Vector3 targetPosition)
+    private IEnumerator TransitionRoutine(AnimationCurve animationCurve, Vector3 startPosition, Vector3 targetPosition, float transitionDuration)
     {
         float timer = 0;
 
-        while (timer < _transitionDuration)
+        while (timer < transitionDuration)
         {
             timer += Time.deltaTime;
-            _sprite.DOMoveX(targetPosition.x, _transitionDuration);
+            _sprite.DOMoveX(targetPosition.x, transitionDuration);
 
             yield return null;
         }
