@@ -96,6 +96,7 @@ public class LaunchSequencer : MonoBehaviour
             StopCoroutine(_advLevelCreationCoroutine);
         }
 
+        _placeSpawner.SetDefaultSettings();
         _advLevelCreationCoroutine = StartCoroutine(AdvLevelCreationRoutine());
     }
 
