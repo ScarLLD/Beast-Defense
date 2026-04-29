@@ -3,7 +3,7 @@ using UnityEngine;
 public class CubesInteractor : MonoBehaviour
 {
     [SerializeField] private RayCreator _ray;
-    [SerializeField] private NoPlacesMessage _noPlacesMessage;
+    [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessage;
     [SerializeField] private PlaceStorage _placesHolder;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
 

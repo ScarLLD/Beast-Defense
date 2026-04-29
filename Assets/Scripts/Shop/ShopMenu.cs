@@ -45,6 +45,8 @@ public class ShopMenu : Window
 
     private void OnExitButtonClick()
     {
+        CallClickEvent();
+
         if (_transition.IsTransiting == false)
             StartCoroutine(CloseShopRoutine());
     }

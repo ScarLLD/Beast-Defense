@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NoPlacesMessage : MonoBehaviour
+public class NoPlacesMessageDisplayer : MonoBehaviour
 {
     [SerializeField] private RectTransform _messageRectTransform;
     [SerializeField] private RawImage _messageImage;
@@ -19,6 +20,8 @@ public class NoPlacesMessage : MonoBehaviour
     private Vector3 _upperPosition;
     private Vector3 _centarPosition;
     private Vector3 _lowerPosition;
+
+    public event Action Displayed;
 
     private void Awake()
     {
@@ -38,6 +41,8 @@ public class NoPlacesMessage : MonoBehaviour
     public void DisplayMessage()
     {
         _transitionCoroutine ??= StartCoroutine(DisplayMessageRoutine());
+
+        Displayed?.Invoke();
     }
 
     private IEnumerator DisplayMessageRoutine()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ public abstract class Window : MonoBehaviour
     [SerializeField] protected List<GameObject> menu = new();
 
     public bool IsActive { private set; get; }
+
+    public static event Action ButtonClicked;
 
     protected void SwitchVisible(bool isActive)
     {
@@ -25,5 +28,10 @@ public abstract class Window : MonoBehaviour
     {
         SwitchVisible(false);
         IsActive = false;
+    }
+
+    protected void CallClickEvent()
+    {
+        ButtonClicked?.Invoke();
     }
 }

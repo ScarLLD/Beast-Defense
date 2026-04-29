@@ -62,6 +62,8 @@ public class MainMenu : Window
 
     private void OnPlayButtonClick()
     {
+        CallClickEvent();
+
         if (_increaseHeartMenu.IsActive)
             return;
 
@@ -73,6 +75,8 @@ public class MainMenu : Window
 
     private void OnShopButtonClick()
     {
+        CallClickEvent();
+
         if (_increaseHeartMenu.IsActive)
             return;
 
@@ -81,6 +85,8 @@ public class MainMenu : Window
 
     private void OnLeaderBoardButtonClick()
     {
+        CallClickEvent();
+
         if (_increaseHeartMenu.IsActive)
             return;
 

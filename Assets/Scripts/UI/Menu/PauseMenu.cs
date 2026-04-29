@@ -50,6 +50,8 @@ public class PauseMenu : Window
 
     private void OnPauseButtonClick()
     {
+        CallClickEvent();
+
         if (_game.IsPlaying)
         {
             EnableMenu();
@@ -60,6 +62,8 @@ public class PauseMenu : Window
 
     private void OnRestartButtonClick()
     {
+        CallClickEvent();
+
         DisableMenu();
         YG2.PauseGame(false);
         _game.Restart();
@@ -67,6 +71,8 @@ public class PauseMenu : Window
 
     private void OnExitButtonClick()
     {
+        CallClickEvent();
+
         DisableMenu();
         YG2.PauseGame(false);
         _game.FastLeave();
@@ -74,6 +80,8 @@ public class PauseMenu : Window
 
     private void OnClosePauseButtonClick()
     {
+        CallClickEvent();
+
         if (_game.IsPlaying)
             DisableMenu();
         YG2.PauseGame(false, false, false, false, false);

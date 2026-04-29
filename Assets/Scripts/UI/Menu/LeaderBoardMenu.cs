@@ -45,6 +45,8 @@ public class LeaderBoardMenu : Window
 
     private void OnExitButtonClick()
     {
+        CallClickEvent();
+
         if (_transition.IsTransiting == false)
             StartCoroutine(CloseLeaderBoardRoutine());
     }

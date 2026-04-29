@@ -48,20 +48,24 @@ public class IncreaseHeartMenu : Window
 
     private void OnAdvButtonClick()
     {
+        CallClickEvent();
+
         _adv.IncreaseGameHeartAdvShow();
         DisableMenu();
     }
 
     private void OnMiniGameButtonClick()
     {
+        CallClickEvent();
+
         _sequencer.Launch();
         DisableMenu();
     }
 
     private void OnCloseMenuButtonClick()
     {
+        CallClickEvent();
 
         DisableMenu();
     }
-
 }

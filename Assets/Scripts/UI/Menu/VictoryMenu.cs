@@ -74,6 +74,8 @@ public class VictoryMenu : Window
 
     private void OnDoubleRewardButtonClick()
     {
+        CallClickEvent();
+
         _adv.DoubleRewardAdvShow();
         DisableAdvButton();
     }
@@ -94,11 +96,15 @@ public class VictoryMenu : Window
 
     private void OnContinuedButtonClick()
     {
+        CallClickEvent();
+
         _game.Continue();
     }
 
     private void OnExitButtonClick()
     {
+        CallClickEvent();
+
         _game.Leave();
     }
 }

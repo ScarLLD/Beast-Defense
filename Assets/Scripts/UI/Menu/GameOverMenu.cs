@@ -63,6 +63,8 @@ public class GameOverMenu : Window
 
     private void OnRegenerateButtonCLick()
     {
+        CallClickEvent();
+
         if (_increaseHeartMenu.IsActive)
             return;
 
@@ -79,6 +81,8 @@ public class GameOverMenu : Window
 
     private void OnRestartButtonClick()
     {
+        CallClickEvent();
+
         if (_increaseHeartMenu.IsActive)
             return;
 
@@ -90,6 +94,8 @@ public class GameOverMenu : Window
 
     private void OnExitButtonClick()
     {
+        CallClickEvent();
+
         if (_increaseHeartMenu.IsActive)
             return;
 

@@ -9,6 +9,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private BulletTrail _bulletTrail;
 
     private ParticleCreator _particleCreator;
+    private AudioPlayer _audioPlayer;
     private Transform _transform;
     private Rigidbody _rigidbody;
     private Coroutine _moveCoroutine;
@@ -25,9 +26,10 @@ public class Bullet : MonoBehaviour
         _isMove = false;
     }
 
-    public void Init(ParticleCreator creator)
+    public void Init(ParticleCreator creator, AudioPlayer audioPlayer)
     {
         _particleCreator = creator;
+        _audioPlayer = audioPlayer;
     }
 
     public void InitTarget(Cube cube)
@@ -55,6 +57,7 @@ public class Bullet : MonoBehaviour
 
                 _isMove = false;
                 cube.Hit();
+                _audioPlayer.PlayHitSound();
             }
 
             yield return null;

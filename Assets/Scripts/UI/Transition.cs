@@ -23,6 +23,7 @@ public class Transition : MonoBehaviour
 
     public bool IsTransiting { get; private set; }
 
+    public event Action Transiting;
     public event Action BackTransited;
 
     private void Awake()
@@ -131,6 +132,8 @@ public class Transition : MonoBehaviour
     private IEnumerator TransitionRoutine(AnimationCurve animationCurve, Vector3 startPosition, Vector3 targetPosition, float transitionDuration)
     {
         float timer = 0;
+
+        Transiting?.Invoke();
 
         while (timer < transitionDuration)
         {

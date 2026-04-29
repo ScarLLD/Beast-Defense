@@ -59,6 +59,8 @@ public class BuyPlaceMenu : Window
 
     private void OnBuyButtonClick()
     {
+        CallClickEvent();
+
         _game.ContinueTime();
         _game.Restart();
         _wallet.DecreaseMoney(_placePrice);
@@ -68,6 +70,8 @@ public class BuyPlaceMenu : Window
 
     private void OnExitButtonClick()
     {
+        CallClickEvent();
+
         _game.ContinueTime();
         _game.Over();
         DisableMenu();

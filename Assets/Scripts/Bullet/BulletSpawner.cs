@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,10 +7,13 @@ public class BulletSpawner : MonoBehaviour
     [SerializeField] private ParticleCreator _particleCreator;
     [SerializeField] private Bullet _bulletPrefab;
     [SerializeField] private Transform _container;
+    [SerializeField] private AudioPlayer _audioPlayer;
 
     private List<Bullet> _bullets;
 
     private ObjectPool<Bullet> _pool;
+
+    public event Action Shooting;
 
     private void Awake()
     {
@@ -25,8 +29,10 @@ public class BulletSpawner : MonoBehaviour
             _bullets.Add(bullet);
 
         bullet.transform.position = spawnPosition;
-        bullet.Init(_particleCreator);
+        bullet.Init(_particleCreator, _audioPlayer);
         bullet.InitTarget(cube);
+
+        Shooting.Invoke();
     }
 
     public void Cleanup()
