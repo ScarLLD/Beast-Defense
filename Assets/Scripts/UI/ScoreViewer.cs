@@ -6,7 +6,7 @@ public class ScoreViewer : MonoBehaviour
     [SerializeField] private Text _scoreText;
     [SerializeField] private GameObject _recordIdentifier;
     [SerializeField] private GameTimer _timer;
-    [SerializeField] private ScoreReader _reader;
+    [SerializeField] private ScoreReader _scoreReader;
 
     private void OnEnable()
     {
@@ -33,7 +33,7 @@ public class ScoreViewer : MonoBehaviour
         Debug.Log(formattedTime);
         Display(formattedTime);
 
-        if (_reader.GetScore > time)
+        if (_scoreReader.TryGetScore(out float loadedTime) && loadedTime > time)
             _recordIdentifier.SetActive(true);
         else
             _recordIdentifier.SetActive(false);

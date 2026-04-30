@@ -1,62 +1,77 @@
+using System;
+using TMPro;
 using UnityEngine;
 using YG;
+using YG.Utils.LB;
 
 public class ScoreReader : MonoBehaviour
 {
-    [SerializeField] private LeaderboardYG _leaderBoard;
+    [SerializeField] private LeaderboardYG _leaderboard;
+    [SerializeField] private LeaderBoardMenu _leaderboardMenu;
     [SerializeField] private GameTimer _timer;
 
-    private float _lastTimeScore = 0;
-    private float _currentTimeScore = 0;
-
-    private const string SCORE_KEY = "Score";
-
-    public float GetScore => _lastTimeScore;
+    private LBData _lbData;
 
     private void Awake()
     {
-        LoadHighScore();
-        _lastTimeScore = _currentTimeScore;
+        _leaderboard.UpdateLB();
     }
 
     private void OnEnable()
     {
+        YG2.onGetLeaderboard += OnLeaderboardDataReceived;
+        _leaderboardMenu.Opened += _leaderboard.UpdateLB;
         _timer.Stopped += SetNewScore;
     }
 
     private void OnDisable()
     {
+        YG2.onGetLeaderboard -= OnLeaderboardDataReceived;
+        _leaderboardMenu.Opened -= _leaderboard.UpdateLB;
         _timer.Stopped -= SetNewScore;
     }
 
-    private void SetNewScore(float timeScore)
+    private void SetNewScore(float newScore)
     {
-        _lastTimeScore = timeScore;
+        if (newScore <= 0)
+            return;
 
-        if (_currentTimeScore == 0 || timeScore < _currentTimeScore)
+        if (TryGetScore(out float loadedScore) && loadedScore > 0 && loadedScore > newScore)
         {
-            _currentTimeScore = timeScore;
-            SaveHighScore();
-            YG2.SetLBTimeConvert(_leaderBoard.name, _currentTimeScore);
-            _leaderBoard.UpdateLB();
+            YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
+            _leaderboard.UpdateLB();
         }
     }
 
-    private void SaveHighScore()
+    private void OnLeaderboardDataReceived(LBData lbData)
     {
-        PlayerPrefs.SetFloat(SCORE_KEY, _currentTimeScore);
-        PlayerPrefs.Save();
+        if (lbData.technoName == _leaderboard.nameLB)
+        {
+            _lbData = lbData;
+        }
     }
 
-    private void LoadHighScore()
+    public bool TryGetScore(out float score)
     {
-        if (PlayerPrefs.HasKey(SCORE_KEY))
+        score = 0;
+
+        if (_lbData == null)
+            return false;
+
+        if (_lbData.entries == InfoYG.NO_DATA)
         {
-            _currentTimeScore = PlayerPrefs.GetFloat(SCORE_KEY);
+            return false;
         }
-        else
+
+        foreach (var player in _lbData.players)
         {
-            _currentTimeScore = 0;
+            if (player.uniqueID == YG2.player.id)
+            {
+                score = player.score / 1000;
+                return true;
+            }
         }
+
+        return false;
     }
 }

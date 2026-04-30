@@ -407,7 +407,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 898a1da5dd2c44747880cc70fe8d72d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _leaderBoard: {fileID: 427125381440358199}
+  _leaderboard: {fileID: 427125381440358199}
+  _leaderboardMenu: {fileID: 1514983222}
   _timer: {fileID: 26740342}
 --- !u!114 &26740342
 MonoBehaviour:
@@ -4091,7 +4092,7 @@ MonoBehaviour:
   _scoreText: {fileID: 190090970}
   _recordIdentifier: {fileID: 933888961}
   _timer: {fileID: 26740342}
-  _reader: {fileID: 26740341}
+  _scoreReader: {fileID: 26740341}
 --- !u!1 &407307142
 GameObject:
   m_ObjectHideFlags: 0
@@ -19071,7 +19072,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 423e13a42d313f948a13bcedae13febe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameLB: PlayersTime
+  nameLB: ScoreBoard
   maxQuantityPlayers: 9
   quantityTop: 3
   quantityAround: 3
@@ -19100,7 +19101,7 @@ GameObject:
   - component: {fileID: 427125381440358199}
   - component: {fileID: 1705290334856567266}
   m_Layer: 5
-  m_Name: PlayersTime
+  m_Name: ScoreBoard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
