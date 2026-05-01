@@ -32,6 +32,7 @@ public class LaunchSequencer : MonoBehaviour
     [SerializeField] private SmoothBarSlider _slider;
     [SerializeField] private DeathModule _deathModule;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
+    [SerializeField] private AudioPlayer _audioPlayer;
     [SerializeField] private Adv _adv;
 
     private Snake _snake;
@@ -199,7 +200,7 @@ public class LaunchSequencer : MonoBehaviour
         _beast = _beastSpawner.Spawn();
         _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _splineContainer, _deathModule, _beast);
         _slider.Init(_snake);
-        _beast.Init(_snake.MoveSpeed, _splineContainer);
+        _beast.Init(_snake.MoveSpeed, _splineContainer, _audioPlayer);
     }
 
     private void SetupDetector()

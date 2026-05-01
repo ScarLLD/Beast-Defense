@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
+using System;
 
 public class SkinShop : MonoBehaviour
 {
@@ -47,10 +48,13 @@ public class SkinShop : MonoBehaviour
     private string _equippedBeastSkinId;
     private string _equippedSnakeSkinId;
 
+    public event Action Purchased;
+    public event Action Selected;
+
     private const string EQUIPPED_BEAST_SKIN_KEY = "EquippedBeastSkin";
     private const string EQUIPPED_SNAKE_SKIN_KEY = "EquippedSnakeSkin";
     private const string PURCHASED_BEAST_SKINS_KEY = "PurchasedBeastSkins";
-    private const string PURCHASED_SNAKE_SKINS_KEY = "PurchasedSnakeSkins";       
+    private const string PURCHASED_SNAKE_SKINS_KEY = "PurchasedSnakeSkins";
 
     private void OnEnable()
     {
@@ -242,6 +246,7 @@ public class SkinShop : MonoBehaviour
         {
             _wallet.DecreaseMoney(skin.Price);
             SavePurchasedSkin(skinId, skinType);
+            Purchased?.Invoke();
 
             Debug.Log($"Куплен скин: {skin.SkinName} для {skinType}");
         }
@@ -272,6 +277,7 @@ public class SkinShop : MonoBehaviour
 
             PlayerPrefs.Save();
 
+            Selected?.Invoke();
             Debug.Log($"Выбран скин: {skinData.GetSkinById(skinId).SkinName} для {skinType}");
         }
     }

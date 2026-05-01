@@ -11,7 +11,7 @@ public class Beast : MonoBehaviour
     [SerializeField] private float _speedMultiplier = 3f;
     [SerializeField] private float _rotationSpeed = 15f;
     [SerializeField] private float _rotateDuration = 0.3f;
-
+    
     private readonly float _arrivalThreshold = 0.005f;
     private readonly float _escapeThreshold = 0.15f;
     private readonly float _startSplinePosition = 0.5f;
@@ -23,6 +23,7 @@ public class Beast : MonoBehaviour
     private Coroutine _rotateCoroutine;
     private Coroutine _moveCoroutine;
     private Transform _transform;
+    private AudioPlayer _audioPlayer;
     private float _snakeSpeed;
 
     private float _cachedSplineLength;
@@ -37,7 +38,7 @@ public class Beast : MonoBehaviour
         _animator = GetComponent<BeastAnimator>();
     }
 
-    public void Init(float snakeSpeed, SplineContainer splineContainer)
+    public void Init(float snakeSpeed, SplineContainer splineContainer, AudioPlayer audioPlayer)
     {
         if (snakeSpeed < 0)
             throw new ArgumentException("SnakeSpeed не может быть меньше 0.", nameof(snakeSpeed));
@@ -45,8 +46,12 @@ public class Beast : MonoBehaviour
         if (splineContainer == null)
             throw new ArgumentNullException("splineContainer не может быть null.", nameof(splineContainer));
 
+        if (audioPlayer == null)
+            throw new ArgumentNullException("audioPlayer не может быть null.", nameof(audioPlayer));
+
         _snakeSpeed = snakeSpeed;
         _splineContainer = splineContainer;
+        _audioPlayer = audioPlayer;
 
         _cachedSplineLength = _splineContainer.Spline.GetLength();
 
@@ -74,6 +79,12 @@ public class Beast : MonoBehaviour
         PlaceOnSpline();
         _rotateCoroutine = StartCoroutine(RotateToFace());
     }
+
+    public void CallJumpSound(AnimationEvent animationEvent)
+    {
+        _audioPlayer.PlayBeastJumpSound();
+    }
+
 
     public bool TryApproachNotify(float snakeSplinePosition)
     {
@@ -116,7 +127,7 @@ public class Beast : MonoBehaviour
     }
 
     private IEnumerator MoveRoutine()
-    {        
+    {
         _animator.ResetSettings();
         _animator.SetWalkBool(true);
 

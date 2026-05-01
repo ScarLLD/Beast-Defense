@@ -9,9 +9,12 @@ public class AudioPlayer : MonoBehaviour
 
     [Header("Sounds")]
     [SerializeField] private AudioClip _transitionSound;
+    [SerializeField] private AudioClip _beastJumpSound;
     [SerializeField] private AudioClip _shootSound;
     [SerializeField] private AudioClip _hitSound;
     [SerializeField] private AudioClip _noPlacesMessageSound;
+    [SerializeField] private AudioClip _skinBuySound;
+    [SerializeField] private AudioClip _skinSelectSound;
     [SerializeField] private AudioClip _buttonClickSound;
 
     [Header("Musics")]
@@ -19,6 +22,7 @@ public class AudioPlayer : MonoBehaviour
 
     [Header("Other")]
     [SerializeField] private Game _game;
+    [SerializeField] private SkinShop _shop;
     [SerializeField] private Transition _transition;
     [SerializeField] private BulletSpawner _bulletSpawner;
     [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessageDisplayer;
@@ -31,6 +35,9 @@ public class AudioPlayer : MonoBehaviour
         _game.Completed += OnGameCompleted;
         _game.Loss += OnGameLoss;
         _game.Leaved += OnGameLeaved;
+
+        _shop.Purchased += OnPurchasedSkin;
+        _shop.Selected += OnSelectedSkin;
 
         _transition.Transiting += OnTransiting;
         _bulletSpawner.Shooting += OnShooting;
@@ -46,6 +53,9 @@ public class AudioPlayer : MonoBehaviour
         _game.Completed -= OnGameCompleted;
         _game.Loss -= OnGameLoss;
         _game.Leaved -= OnGameLeaved;
+
+        _shop.Purchased -= OnPurchasedSkin;
+        _shop.Selected -= OnSelectedSkin;
 
         _transition.Transiting -= OnTransiting;
         _bulletSpawner.Shooting -= OnShooting;
@@ -76,6 +86,11 @@ public class AudioPlayer : MonoBehaviour
     private void OnShooting()
     {
         PlaySound(_shootSound);
+    }
+
+    public void PlayBeastJumpSound()
+    {
+        PlaySound(_beastJumpSound);
     }
 
     private void PlaySound(AudioClip clip)
@@ -129,5 +144,15 @@ public class AudioPlayer : MonoBehaviour
     {
         //play loss sound;
         StopMusic();
+    }
+
+    private void OnSelectedSkin()
+    {
+        PlaySound(_skinSelectSound);
+    }
+
+    private void OnPurchasedSkin()
+    {
+        PlaySound(_skinBuySound);
     }
 }
