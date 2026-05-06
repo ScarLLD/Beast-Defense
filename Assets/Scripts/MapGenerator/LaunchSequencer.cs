@@ -198,7 +198,7 @@ public class LaunchSequencer : MonoBehaviour
     private void SpawnCharacters()
     {
         _beast = _beastSpawner.Spawn();
-        _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _splineContainer, _deathModule, _beast);
+        _snake = _snakeSpawner.Spawn(_cubeStorage.GetStacks(), _splineContainer, _deathModule, _audioPlayer, _beast);
         _slider.Init(_snake);
         _beast.Init(_snake.MoveSpeed, _splineContainer, _audioPlayer);
     }

@@ -39,6 +39,7 @@ public class Snake : MonoBehaviour
     private Beast _beast;
     private Coroutine _movementCoroutine;
     private Coroutine _recoilCoroutine;
+    private AudioPlayer _audioPlayer;
     private bool _isRecoiling = false;
 
     public float MoveSpeed { get; private set; }
@@ -54,7 +55,7 @@ public class Snake : MonoBehaviour
         _speedControl = GetComponent<SnakeSpeedControl>();
     }
 
-    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
+    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, AudioPlayer audioPlayer, Beast beast)
     {
         _beast = beast;
         _deathModule = deathModule;
@@ -63,6 +64,7 @@ public class Snake : MonoBehaviour
         _splineContainer = splineContainer;
         _splineLength = _splineContainer.Spline.GetLength();
 
+        _head.Init(audioPlayer);
         CreateSegmentsFromStacks(stacks);
 
         SetDefaultSetting();
@@ -121,17 +123,6 @@ public class Snake : MonoBehaviour
         PlaceOnSpline(_head.transform, _splinePosition);
 
         _splinePosition = _startSplinePosition;
-    }
-
-    private void Cleanup()
-    {
-        if (_movementCoroutine != null)
-        {
-            StopCoroutine(_movementCoroutine);
-            _movementCoroutine = null;
-        }
-
-        _recoilQueue.Clear();
     }
 
     public void CreateSegmentsFromStacks(List<CubeStack> stacks)
@@ -367,5 +358,16 @@ public class Snake : MonoBehaviour
         UpdateSegmentsPosition();
 
         _recoilCoroutine = null;
+    }
+
+    private void Cleanup()
+    {
+        if (_movementCoroutine != null)
+        {
+            StopCoroutine(_movementCoroutine);
+            _movementCoroutine = null;
+        }
+
+        _recoilQueue.Clear();
     }
 }

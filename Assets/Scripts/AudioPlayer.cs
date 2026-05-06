@@ -10,6 +10,9 @@ public class AudioPlayer : MonoBehaviour
     [Header("Sounds")]
     [SerializeField] private AudioClip _transitionSound;
     [SerializeField] private AudioClip _beastJumpSound;
+    [SerializeField] private AudioClip _snakeFireSound;
+    [SerializeField] private AudioClip _gameWinSound;
+    [SerializeField] private AudioClip _gameLossSound;
     [SerializeField] private AudioClip _shootSound;
     [SerializeField] private AudioClip _hitSound;
     [SerializeField] private AudioClip _noPlacesMessageSound;
@@ -91,6 +94,11 @@ public class AudioPlayer : MonoBehaviour
     public void PlayBeastJumpSound()
     {
         PlaySound(_beastJumpSound);
+    }
+
+    public void PlaySnakeFireSound()
+    {
+        PlaySound(_snakeFireSound);
     }
 
     private void PlaySound(AudioClip clip)
