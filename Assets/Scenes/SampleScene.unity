@@ -16842,6 +16842,9 @@ MonoBehaviour:
   _musicSource: {fileID: 781229301}
   _transitionSound: {fileID: 0}
   _beastJumpSound: {fileID: 8300000, guid: 05d8d8ebb595a2644ae8885d1a3d5e1e, type: 3}
+  _snakeFireSound: {fileID: 8300000, guid: a177cd3987e68ce459b467f820dae9d6, type: 3}
+  _gameWinSound: {fileID: 8300000, guid: e81d68d0e17a0ef40aace068a2a9101c, type: 3}
+  _gameLossSound: {fileID: 8300000, guid: f79869bf74f0b234189322a8b0899c02, type: 3}
   _shootSound: {fileID: 8300000, guid: bbe9230596b50da4498718a502c07619, type: 3}
   _hitSound: {fileID: 8300000, guid: 2256e6e2987cf7d4abe49c0a0b9e3b76, type: 3}
   _noPlacesMessageSound: {fileID: 8300000, guid: e7daaaccc0c5bfe4a87c38f25ea8f078, type: 3}

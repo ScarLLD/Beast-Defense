@@ -55,8 +55,7 @@ public class PauseMenu : Window
         if (_game.IsPlaying)
         {
             EnableMenu();
-            YG2.PauseGame(true, true, true, false, false);
-            Debug.Log("Включаю паузу");
+            YG2.PauseGame(true, true, false, false, false);
         }
     }
 
@@ -85,6 +84,5 @@ public class PauseMenu : Window
         if (_game.IsPlaying)
             DisableMenu();
         YG2.PauseGame(false, false, false, false, false);
-        Debug.Log("Выключаю паузу");
     }
 }
