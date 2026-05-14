@@ -16840,7 +16840,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _soundSource: {fileID: 346677289}
   _musicSource: {fileID: 781229301}
-  _transitionSound: {fileID: 0}
+  _transitionSound: {fileID: 8300000, guid: d4ee542d9465d394d8b56776ea165cc5, type: 3}
+  _beastDieSound: {fileID: 8300000, guid: 8e52cd6db7bc9494097ce072ef310f8f, type: 3}
+  _snakeDieSound: {fileID: 8300000, guid: cdd53c03c62de604d95f6a4b5c360ebb, type: 3}
   _beastJumpSound: {fileID: 8300000, guid: 05d8d8ebb595a2644ae8885d1a3d5e1e, type: 3}
   _snakeFireSound: {fileID: 8300000, guid: a177cd3987e68ce459b467f820dae9d6, type: 3}
   _gameWinSound: {fileID: 8300000, guid: e81d68d0e17a0ef40aace068a2a9101c, type: 3}
@@ -16858,6 +16860,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 10ea0c6ecdfbe594d85161c221bce875, type: 3}
   - {fileID: 8300000, guid: fecae2a77cef6694caa4dd7624c09ef9, type: 3}
   _game: {fileID: 1614255502}
+  _deathModule: {fileID: 26740340}
   _shop: {fileID: 1878845044}
   _transition: {fileID: 844318620}
   _bulletSpawner: {fileID: 117216348}

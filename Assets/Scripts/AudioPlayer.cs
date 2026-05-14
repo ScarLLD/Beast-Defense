@@ -9,6 +9,8 @@ public class AudioPlayer : MonoBehaviour
 
     [Header("Sounds")]
     [SerializeField] private AudioClip _transitionSound;
+    [SerializeField] private AudioClip _beastDieSound;
+    [SerializeField] private AudioClip _snakeDieSound;
     [SerializeField] private AudioClip _beastJumpSound;
     [SerializeField] private AudioClip _snakeFireSound;
     [SerializeField] private AudioClip _gameWinSound;
@@ -25,10 +27,11 @@ public class AudioPlayer : MonoBehaviour
 
     [Header("Other")]
     [SerializeField] private Game _game;
+    [SerializeField] private DeathModule _deathModule;
     [SerializeField] private SkinShop _shop;
     [SerializeField] private Transition _transition;
     [SerializeField] private BulletSpawner _bulletSpawner;
-    [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessageDisplayer;
+    [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessageDisplayer;    
 
     private void OnEnable()
     {
@@ -41,6 +44,9 @@ public class AudioPlayer : MonoBehaviour
 
         _shop.Purchased += OnPurchasedSkin;
         _shop.Selected += OnSelectedSkin;
+
+        _deathModule.BeastDie += OnBeastDie;
+        _deathModule.SnakeDie += OnSnakeDie;
 
         _transition.Transiting += OnTransiting;
         _bulletSpawner.Shooting += OnShooting;
@@ -133,7 +139,7 @@ public class AudioPlayer : MonoBehaviour
 
     private void OnGameCompleted()
     {
-        //play succes Sound;
+        PlaySound(_gameWinSound);
         StopMusic();
     }
 
@@ -144,13 +150,13 @@ public class AudioPlayer : MonoBehaviour
 
     private void OnGameLoss()
     {
-        //play loss sound;
+        PlaySound(_gameLossSound);
         StopMusic();
     }
 
     private void OnGameLeaved()
     {
-        //play loss sound;
+        PlaySound(_gameLossSound);
         StopMusic();
     }
 
@@ -162,5 +168,15 @@ public class AudioPlayer : MonoBehaviour
     private void OnPurchasedSkin()
     {
         PlaySound(_skinBuySound);
+    }
+
+    private void OnBeastDie()
+    {
+        PlaySound(_beastDieSound);
+    }
+
+    private void OnSnakeDie()
+    {
+        PlaySound(_snakeDieSound);
     }
 }
