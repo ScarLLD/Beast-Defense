@@ -356,8 +356,6 @@ GameObject:
   m_Component:
   - component: {fileID: 26740339}
   - component: {fileID: 26740340}
-  - component: {fileID: 26740342}
-  - component: {fileID: 26740341}
   m_Layer: 0
   m_Name: GameFinisher
   m_TagString: Untagged
@@ -393,35 +391,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 1614255502}
-  _timer: {fileID: 26740342}
+  _timer: {fileID: 1614255506}
   _animator: {fileID: 668936182}
---- !u!114 &26740341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 26740338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 898a1da5dd2c44747880cc70fe8d72d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _leaderboard: {fileID: 427125381440358199}
-  _leaderboardMenu: {fileID: 1514983222}
-  _timer: {fileID: 26740342}
---- !u!114 &26740342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 26740338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5a799bd9b89bf4a966e8b98bb8cb81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &51831306
 GameObject:
   m_ObjectHideFlags: 0
@@ -4091,8 +4062,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scoreText: {fileID: 190090970}
   _recordIdentifier: {fileID: 933888961}
-  _timer: {fileID: 26740342}
-  _scoreReader: {fileID: 26740341}
+  _timer: {fileID: 1614255506}
+  _scoreReader: {fileID: 1614255507}
 --- !u!1 &407307142
 GameObject:
   m_ObjectHideFlags: 0
@@ -13074,8 +13045,8 @@ MonoBehaviour:
   _obstaclePrefab: {fileID: 4161744107708799639, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
   _stretchedObstaclePrefab: {fileID: 1295060935370253680, guid: ca6719bd2b335f349944975a0282fdc9, type: 3}
   _centerPosition: {x: 0, y: -0.5, z: -11.2}
-  _rows: 8
-  _columns: 7
+  _rows: 2
+  _columns: 2
   _cellSpacingX: 0.8
   _cellSpacingZ: 0.7
   _cellHeightOffset: 0.01
@@ -15546,6 +15517,8 @@ GameObject:
   - component: {fileID: 1614255502}
   - component: {fileID: 1614255504}
   - component: {fileID: 1614255503}
+  - component: {fileID: 1614255506}
+  - component: {fileID: 1614255507}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -15634,7 +15607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 1614255502}
-  _timer: {fileID: 26740342}
+  _timer: {fileID: 1614255506}
   _levelViewer: {fileID: 750858112}
   _disabler: {fileID: 1614255501}
   _placeSpawner: {fileID: 1842505877}
@@ -15669,6 +15642,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 1614255502}
+--- !u!114 &1614255506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614255499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5a799bd9b89bf4a966e8b98bb8cb81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1614255507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614255499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 898a1da5dd2c44747880cc70fe8d72d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _leaderboard: {fileID: 427125381440358199}
+  _leaderboardMenu: {fileID: 1514983222}
+  _timer: {fileID: 1614255506}
 --- !u!1 &1620546210
 GameObject:
   m_ObjectHideFlags: 0

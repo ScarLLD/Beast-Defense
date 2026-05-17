@@ -33,10 +33,12 @@ public class ScoreViewer : MonoBehaviour
         Debug.Log(formattedTime);
         Display(formattedTime);
 
-        if (_scoreReader.TryGetScore(out float loadedTime) && loadedTime > time)
+        if (_scoreReader.TryGetScore(out float loadedTime, out bool isEmptyScore) && loadedTime > time || isEmptyScore)
             _recordIdentifier.SetActive(true);
         else
             _recordIdentifier.SetActive(false);
+
+        Debug.Log($"{loadedTime} =? {time}");
     }
 
     private void Display(string text)

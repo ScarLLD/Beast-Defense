@@ -1,5 +1,3 @@
-using System;
-using TMPro;
 using UnityEngine;
 using YG;
 using YG.Utils.LB;
@@ -20,14 +18,12 @@ public class ScoreReader : MonoBehaviour
     private void OnEnable()
     {
         YG2.onGetLeaderboard += OnLeaderboardDataReceived;
-        _leaderboardMenu.Opened += _leaderboard.UpdateLB;
         _timer.Stopped += SetNewScore;
     }
 
     private void OnDisable()
     {
         YG2.onGetLeaderboard -= OnLeaderboardDataReceived;
-        _leaderboardMenu.Opened -= _leaderboard.UpdateLB;
         _timer.Stopped -= SetNewScore;
     }
 
@@ -36,11 +32,16 @@ public class ScoreReader : MonoBehaviour
         if (newScore <= 0)
             return;
 
-        if (TryGetScore(out float loadedScore) && loadedScore > 0 && loadedScore > newScore)
+        if (TryGetScore(out float loadedScore, out bool isEmptyScore) && loadedScore > 0 && loadedScore > newScore)
         {
             YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
-            _leaderboard.UpdateLB();
         }
+        else if (isEmptyScore)
+        {
+            YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
+        }
+
+        _leaderboard.UpdateLB();
     }
 
     private void OnLeaderboardDataReceived(LBData lbData)
@@ -51,15 +52,19 @@ public class ScoreReader : MonoBehaviour
         }
     }
 
-    public bool TryGetScore(out float score)
+    public bool TryGetScore(out float score, out bool isEmptyScore)
     {
+        isEmptyScore = false;
         score = 0;
 
         if (_lbData == null)
+        {
             return false;
+        }
 
         if (_lbData.entries == InfoYG.NO_DATA)
         {
+            isEmptyScore = true;
             return false;
         }
 
