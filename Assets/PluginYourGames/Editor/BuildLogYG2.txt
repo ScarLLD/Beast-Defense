@@ -1,8 +1,3 @@
-<<<<<<< Updated upstream
 ﻿Build path: Z:/Builds
 Build number: 64
-=======
-﻿Build path: D:/WebGame
-Build number: 65
->>>>>>> Stashed changes
 PluginYG version: 2.0091

@@ -393,37 +393,6 @@ MonoBehaviour:
   _game: {fileID: 1614255502}
   _timer: {fileID: 1614255506}
   _animator: {fileID: 668936182}
-<<<<<<< Updated upstream
-=======
-  _audioPlayer: {fileID: 1849475457}
---- !u!114 &26740341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 26740338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 898a1da5dd2c44747880cc70fe8d72d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _leaderboard: {fileID: 427125381440358199}
-  _leaderboardMenu: {fileID: 1514983222}
-  _timer: {fileID: 26740342}
---- !u!114 &26740342
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 26740338}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5a799bd9b89bf4a966e8b98bb8cb81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
->>>>>>> Stashed changes
 --- !u!1 &51831306
 GameObject:
   m_ObjectHideFlags: 0
@@ -5136,15 +5105,13 @@ MonoBehaviour:
   _animator: {fileID: 668936184}
   "_\u0441olors":
   - {fileID: 2100000, guid: e23c611b82215874cb3d1c77e3785156, type: 2}
-  - {fileID: 2100000, guid: 3caf4cca98076694c90a9a82478b554d, type: 2}
   - {fileID: 2100000, guid: 304135f78fc76ef459ea2511cebcb94c, type: 2}
-  - {fileID: 2100000, guid: f3fbc8255d60ebf468789a5b8b3a3146, type: 2}
   - {fileID: 2100000, guid: f0c33f39586e9a2489347c96ad202592, type: 2}
   - {fileID: 2100000, guid: 664dd83077f5cce46bd7a19a90532eac, type: 2}
   - {fileID: 2100000, guid: 7e433d19536e08e4ea679168d5070746, type: 2}
   - {fileID: 2100000, guid: 043543baaa58670418782cb3e9fd2eb4, type: 2}
   - {fileID: 2100000, guid: 4c692737529829e4a81040a9045e7a98, type: 2}
-  _counts: 0800000010000000140000001800000020000000
+  _counts: 080000000c00000010000000140000001800000020000000
 --- !u!114 &529893071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6938,7 +6905,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 668936184}
-  _audioPlayer: {fileID: 1849475457}
   _deathAnimationCurve:
     serializedVersion: 2
     m_Curve:
@@ -8049,7 +8015,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &788773702
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8068,7 +8034,7 @@ RectTransform:
   m_AnchorMin: {x: 0.2898814, y: 0.48700002}
   m_AnchorMax: {x: 0.71044815, y: 0.51232505}
   m_AnchoredPosition: {x: -0.9941406, y: -0.00076293945}
-  m_SizeDelta: {x: 275.735, y: 35.282}
+  m_SizeDelta: {x: 2.5039997, y: -2.533001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &788773703
 MonoBehaviour:
@@ -9541,8 +9507,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _transitionDuration: 0.25
-  _sleepTime: 1
+  _transitionDuration: 0.5
+  _sleepTime: 0.5
   _distanceYOffset: 200
 --- !u!1 &921118303
 GameObject:
@@ -11659,7 +11625,7 @@ MonoBehaviour:
   _boundOffset: 3
   _checkRadius: 4
   _minRandomBeastCount: 3
-  _maxRandomBeastCount: 16
+  _maxRandomBeastCount: 10
 --- !u!114 &1111640603
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12239,7 +12205,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "\u041D\u0435\u0442 \u0434\u043E\u0441\u0442\u0443\u043F\u043D\u044B\u0445
-    \u043C\u0435\u0441\u0442!(("
+    \u043C\u0435\u0441\u0442!"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 435d3076e96efa0498d552dd23fc5895, type: 2}
   m_sharedMaterial: {fileID: -2073899142141566514, guid: 435d3076e96efa0498d552dd23fc5895, type: 2}
@@ -12266,7 +12232,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60.5
+  m_fontSize: 42.45
   m_fontSizeBase: 91.2
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -14241,7 +14207,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _snakeSpawner: {fileID: 437241863}
   _beastSpawner: {fileID: 1441411479}
-  _audioPlayer: {fileID: 0}
   _miniGame: {fileID: 1417510877}
   _gameObjectsParent: {fileID: 2145539250}
   _animator: {fileID: 1417510879}
@@ -14543,7 +14508,6 @@ MonoBehaviour:
   _animator: {fileID: 668936184}
   _deathAnimator: {fileID: 668936182}
   _collector: {fileID: 1111640603}
-  _audioPlayer: {fileID: 1849475457}
 --- !u!54 &1447742557
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -16879,9 +16843,8 @@ MonoBehaviour:
   _transitionSound: {fileID: 8300000, guid: d4ee542d9465d394d8b56776ea165cc5, type: 3}
   _beastDieSound: {fileID: 8300000, guid: 8e52cd6db7bc9494097ce072ef310f8f, type: 3}
   _snakeDieSound: {fileID: 8300000, guid: cdd53c03c62de604d95f6a4b5c360ebb, type: 3}
-  _cloudParticleSound: {fileID: 8300000, guid: 4e71b0e93b216cb48b02c8ca79d2cae5, type: 3}
   _beastJumpSound: {fileID: 8300000, guid: 05d8d8ebb595a2644ae8885d1a3d5e1e, type: 3}
-  _snakeFireSound: {fileID: 8300000, guid: 4e71b0e93b216cb48b02c8ca79d2cae5, type: 3}
+  _snakeFireSound: {fileID: 8300000, guid: a177cd3987e68ce459b467f820dae9d6, type: 3}
   _gameWinSound: {fileID: 8300000, guid: e81d68d0e17a0ef40aace068a2a9101c, type: 3}
   _gameLossSound: {fileID: 8300000, guid: f79869bf74f0b234189322a8b0899c02, type: 3}
   _shootSound: {fileID: 8300000, guid: bbe9230596b50da4498718a502c07619, type: 3}
@@ -16896,9 +16859,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 845f28f9ae11b4b4181d3f627c5c4a1f, type: 3}
   - {fileID: 8300000, guid: 10ea0c6ecdfbe594d85161c221bce875, type: 3}
   - {fileID: 8300000, guid: fecae2a77cef6694caa4dd7624c09ef9, type: 3}
-  _miniGameMusic: {fileID: 8300000, guid: 68483cb8be2e07c429fd9d7eb611da39, type: 3}
   _game: {fileID: 1614255502}
-  _miniGame: {fileID: 1417510877}
   _deathModule: {fileID: 26740340}
   _shop: {fileID: 1878845044}
   _transition: {fileID: 844318620}

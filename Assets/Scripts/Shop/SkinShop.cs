@@ -247,12 +247,6 @@ public class SkinShop : MonoBehaviour
             _wallet.DecreaseMoney(skin.Price);
             SavePurchasedSkin(skinId, skinType);
             Purchased?.Invoke();
-
-            Debug.Log($"Куплен скин: {skin.SkinName} для {skinType}");
-        }
-        else
-        {
-            Debug.Log("Недостаточно монет!");
         }
     }
 
@@ -278,7 +272,6 @@ public class SkinShop : MonoBehaviour
             PlayerPrefs.Save();
 
             Selected?.Invoke();
-            Debug.Log($"Выбран скин: {skinData.GetSkinById(skinId).SkinName} для {skinType}");
         }
     }
 
