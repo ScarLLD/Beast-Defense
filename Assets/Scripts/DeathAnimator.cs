@@ -5,6 +5,7 @@ public class DeathAnimator : MonoBehaviour
 {
     [Header("Animator settings.")]
     [SerializeField] private DOTWeenAnimator _animator;
+    [SerializeField] private AudioPlayer _audioPlayer;
     [SerializeField] private AnimationCurve _deathAnimationCurve;
     [SerializeField] private Particle _cloudParticlePrefab;
     [SerializeField] private float _deathDuration;
@@ -33,6 +34,7 @@ public class DeathAnimator : MonoBehaviour
     {
         _animator.DoScaleDown(transform.gameObject);
         yield return _deathTime;
+        _audioPlayer.PlayCloudParticleSound();
 
         transform.gameObject.SetActive(false);
         var cloudParticle = _pool.GetObject();

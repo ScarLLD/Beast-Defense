@@ -4,6 +4,7 @@ public class MiniGameSequencer : MonoBehaviour
 {
     [SerializeField] private SnakeSpawner _snakeSpawner;
     [SerializeField] private BeastSpawner _beastSpawner;
+    [SerializeField] private AudioPlayer _audioPlayer;
 
     [Header("MiniGameSettings")]
     [SerializeField] private MiniGame _miniGame;

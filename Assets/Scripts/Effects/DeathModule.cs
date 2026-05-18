@@ -7,6 +7,7 @@ public class DeathModule : MonoBehaviour
     [SerializeField] private Game _game;
     [SerializeField] private GameTimer _timer;
     [SerializeField] private DeathAnimator _animator;
+    [SerializeField] private AudioPlayer _audioPlayer;
 
     public event Action BeastDie;
     public event Action SnakeDie;
@@ -30,12 +31,14 @@ public class DeathModule : MonoBehaviour
 
     private IEnumerator KillSnakeRoutine(Transform gameObject)
     {
-        yield return StartCoroutine(DeathRoutine(gameObject, Color.red));
+        _audioPlayer.PlaySnakeDieSound();
+        yield return StartCoroutine(DeathRoutine(gameObject, Color.red)) ;
         SnakeDie?.Invoke();
     }
 
     private IEnumerator KillBeastRoutine(Transform gameObject)
     {
+        _audioPlayer.PlayBeastDieSound();
         yield return StartCoroutine(DeathRoutine(gameObject, Color.white));
         BeastDie?.Invoke();
     }

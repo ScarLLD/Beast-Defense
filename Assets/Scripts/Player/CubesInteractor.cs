@@ -27,7 +27,6 @@ public class CubesInteractor : MonoBehaviour
         else
         {
             _noPlacesMessage.DisplayMessage();
-            Debug.Log("Нет доступных мест для стрельбы.");
         }
     }
 }
