@@ -12,6 +12,7 @@ public class AudioPlayer : MonoBehaviour
     [SerializeField] private AudioClip _snakeDieSound;
     [SerializeField] private AudioClip _cloudParticleSound;
     [SerializeField] private AudioClip _beastJumpSound;
+    [SerializeField] private AudioClip _pickShooterSound;
     [SerializeField] private AudioClip _gameWinSound;
     [SerializeField] private AudioClip _gameLossSound;
     [SerializeField] private AudioClip _shootSound;
@@ -96,6 +97,11 @@ public class AudioPlayer : MonoBehaviour
     public void PlayCloudParticleSound()
     {
         PlaySound(_cloudParticleSound);
+    }
+
+    public void PlayPickShooterSound()
+    {
+        PlaySound(_pickShooterSound);
     }
 
     public void OnButtonClicked()
