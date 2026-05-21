@@ -61,6 +61,8 @@ public class SkinShop : MonoBehaviour
         _buyButton.onClick.AddListener(OnBuyButtonClick);
         _selectButton.onClick.AddListener(OnSelectButtonClick);
         _closePreviewButton.onClick.AddListener(OnClosePreviewButtonClick);
+
+        UpdateItemsUI();
     }
 
     private void OnDisable()
@@ -101,6 +103,23 @@ public class SkinShop : MonoBehaviour
         }
 
         SelectFirstSkin();
+    }
+
+    private void UpdateItemsUI()
+    {
+        foreach (var item in _beastSkinItems)
+        {
+            bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Beast);
+            item.UpdatePurchaseState(isPurchased);
+            item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
+        }
+
+        foreach (var item in _snakeSkinItems)
+        {
+            bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Snake);
+            item.UpdatePurchaseState(isPurchased);
+            item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
+        }
     }
 
     private void ClearContainers()
