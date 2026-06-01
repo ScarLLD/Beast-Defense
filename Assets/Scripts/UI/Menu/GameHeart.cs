@@ -204,7 +204,11 @@ public class GameHeart : MonoBehaviour
             yield break;
         }
 
-        if (_isAnimating) yield break;
+        if (_isAnimating)
+        {
+            while (_isAnimating)
+                yield return null;
+        }
 
         _isAnimating = true;
 
@@ -214,7 +218,7 @@ public class GameHeart : MonoBehaviour
             _changeAnimationCurve
         ));
 
-        yield return new WaitForSeconds(_changeDelay);
+        yield return new WaitForSecondsRealtime(_changeDelay);
 
         _isAnimating = false;
         _isAnimatingHeartChange = false;
@@ -222,6 +226,7 @@ public class GameHeart : MonoBehaviour
         _lastHeartCount = endCount;
         UpdateUI();
     }
+
 
     private IEnumerator AnimateHeartChange(int startCount, int endCount, AnimationCurve curve)
     {

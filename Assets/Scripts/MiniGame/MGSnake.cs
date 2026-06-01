@@ -21,6 +21,7 @@ public class MGSnake : MonoBehaviour
     [SerializeField] private DOTWeenAnimator _animator;
     [SerializeField] private DeathAnimator _deathAnimator;
     [SerializeField] private BeastCollector _collector;
+    [SerializeField] private AudioPlayer _audioPlayer;
 
     private List<GameObject> _bodyParts = new();
     private List<Vector3> _positionsHistory = new();
@@ -42,12 +43,12 @@ public class MGSnake : MonoBehaviour
     {
         if (other.gameObject.TryGetComponent(out MGBeast beast))
         {
-            _collector.IncreaseBeastCount();
-
-            if (_collector.IsBeastsFull)
-                beast.gameObject.SetActive(false);
-            else
+            if (_collector.IsBeastsFull == false)
+            {
+                _audioPlayer.PlayBeastJumpSound();
+                _collector.IncreaseBeastCount();
                 _deathAnimator.KillRoutine(beast.transform, Color.white);
+            }
         }
         else if (other.gameObject.TryGetComponent(out MGCube cube))
         {

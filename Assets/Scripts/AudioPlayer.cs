@@ -10,8 +10,9 @@ public class AudioPlayer : MonoBehaviour
     [SerializeField] private AudioClip _transitionSound;
     [SerializeField] private AudioClip _beastDieSound;
     [SerializeField] private AudioClip _snakeDieSound;
+    [SerializeField] private AudioClip _cloudParticleSound;
     [SerializeField] private AudioClip _beastJumpSound;
-    [SerializeField] private AudioClip _snakeFireSound;
+    [SerializeField] private AudioClip _pickShooterSound;
     [SerializeField] private AudioClip _gameWinSound;
     [SerializeField] private AudioClip _gameLossSound;
     [SerializeField] private AudioClip _shootSound;
@@ -23,14 +24,16 @@ public class AudioPlayer : MonoBehaviour
 
     [Header("Musics")]
     [SerializeField] private List<AudioClip> _musics;
+    [SerializeField] private AudioClip _miniGameMusic;
 
     [Header("Other")]
     [SerializeField] private Game _game;
+    [SerializeField] private MiniGame _miniGame;
     [SerializeField] private DeathModule _deathModule;
     [SerializeField] private SkinShop _shop;
     [SerializeField] private Transition _transition;
     [SerializeField] private BulletSpawner _bulletSpawner;
-    [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessageDisplayer;    
+    [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessageDisplayer;
 
     private void OnEnable()
     {
@@ -41,11 +44,12 @@ public class AudioPlayer : MonoBehaviour
         _game.Loss += OnGameLoss;
         _game.Leaved += OnGameLeaved;
 
+        _miniGame.Started += OnMiniGameStarted;
+        _miniGame.Victory += OnGameCompleted;
+        _miniGame.Defeat += OnGameLoss;
+
         _shop.Purchased += OnPurchasedSkin;
         _shop.Selected += OnSelectedSkin;
-
-        _deathModule.BeastDie += OnBeastDie;
-        _deathModule.SnakeDie += OnSnakeDie;
 
         _transition.Transiting += OnTransiting;
         _bulletSpawner.Shooting += OnShooting;
@@ -62,6 +66,10 @@ public class AudioPlayer : MonoBehaviour
         _game.Loss -= OnGameLoss;
         _game.Leaved -= OnGameLeaved;
 
+        _miniGame.Started -= OnMiniGameStarted;
+        _miniGame.Victory -= OnGameCompleted;
+        _miniGame.Defeat -= OnGameLoss;
+
         _shop.Purchased -= OnPurchasedSkin;
         _shop.Selected -= OnSelectedSkin;
 
@@ -74,6 +82,26 @@ public class AudioPlayer : MonoBehaviour
     public void PlayHitSound()
     {
         PlaySound(_hitSound);
+    }
+
+    public void PlayBeastDieSound()
+    {
+        PlaySound(_beastDieSound);
+    }
+
+    public void PlaySnakeDieSound()
+    {
+        PlaySound(_snakeDieSound);
+    }
+
+    public void PlayCloudParticleSound()
+    {
+        PlaySound(_cloudParticleSound);
+    }
+
+    public void PlayPickShooterSound()
+    {
+        PlaySound(_pickShooterSound);
     }
 
     public void OnButtonClicked()
@@ -101,11 +129,6 @@ public class AudioPlayer : MonoBehaviour
         PlaySound(_beastJumpSound);
     }
 
-    public void PlaySnakeFireSound()
-    {
-        PlaySound(_snakeFireSound);
-    }
-
     private void PlaySound(AudioClip clip)
     {
         _soundSource.PlayOneShot(clip);
@@ -120,6 +143,15 @@ public class AudioPlayer : MonoBehaviour
         _musicSource.Play();
     }
 
+    private void PlayMiniGameMusic()
+    {
+        if (_musicSource.isPlaying)
+            StopMusic();
+
+        _musicSource.clip = _miniGameMusic;
+        _musicSource.Play();
+    }
+
     private void StopMusic()
     {
         _musicSource.Stop();
@@ -128,6 +160,11 @@ public class AudioPlayer : MonoBehaviour
     private void OnGameStarted()
     {
         PlayMusic();
+    }
+
+    private void OnMiniGameStarted()
+    {
+        PlayMiniGameMusic();
     }
 
     private void OnGameRestarted()
@@ -167,15 +204,5 @@ public class AudioPlayer : MonoBehaviour
     private void OnPurchasedSkin()
     {
         PlaySound(_skinBuySound);
-    }
-
-    private void OnBeastDie()
-    {
-        PlaySound(_beastDieSound);
-    }
-
-    private void OnSnakeDie()
-    {
-        PlaySound(_snakeDieSound);
     }
 }

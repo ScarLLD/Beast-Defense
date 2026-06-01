@@ -6,7 +6,6 @@ public class SnakeHead : MonoBehaviour
     [SerializeField] private float _minParticleSpeed = 20f;
     [SerializeField] private float _maxParticleSpeed = 30f;
 
-    private AudioPlayer _audioPlayer;
     private ParticleSystem.MainModule _main;
     private float _originalSpeed;
 
@@ -26,16 +25,6 @@ public class SnakeHead : MonoBehaviour
     private void OnDisable()
     {
         _dragonFiraParticle.Stop();
-    }
-
-    public void Init(AudioPlayer audioPlayer)
-    {
-        _audioPlayer = audioPlayer;
-    }
-
-    public void CallFireSound(AnimationEvent animationEvent)
-    {
-        _audioPlayer.PlaySnakeFireSound();
     }
 
     public void SetDefaultSetting()

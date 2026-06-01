@@ -49,7 +49,7 @@ public class SnakeSpawner : MonoBehaviour
         }
     }
 
-    public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, AudioPlayer audioPlayer, Beast beast)
+    public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
     {
         if (_snake == null)
         {
@@ -57,7 +57,7 @@ public class SnakeSpawner : MonoBehaviour
             ApplyCurrentSkin();
         }
 
-        _snake.InitializeSnake(stacks, splineContainer, deathModule, audioPlayer, beast);
+        _snake.InitializeSnake(stacks, splineContainer, deathModule, beast);
 
         return _snake;
     }

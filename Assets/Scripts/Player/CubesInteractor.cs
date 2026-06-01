@@ -3,6 +3,7 @@ using UnityEngine;
 public class CubesInteractor : MonoBehaviour
 {
     [SerializeField] private RayCreator _ray;
+    [SerializeField] private AudioPlayer _audioPlayer;
     [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessage;
     [SerializeField] private PlaceStorage _placesHolder;
     [SerializeField] private AvailabilityManagement _availabilityManagement;
@@ -21,13 +22,13 @@ public class CubesInteractor : MonoBehaviour
     {
         if (_placesHolder.TryGetPlace(cube, out ShootingPlace shootingPlace, out Vector3 escapePlace))
         {
+            _audioPlayer.PlayPickShooterSound();
             cube.Interect(shootingPlace, escapePlace);
             _availabilityManagement.UpdateAvailability();
         }
         else
         {
             _noPlacesMessage.DisplayMessage();
-            Debug.Log("Нет доступных мест для стрельбы.");
         }
     }
 }

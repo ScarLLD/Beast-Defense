@@ -109,7 +109,6 @@ public class Game : MonoBehaviour
         HasStarted = true;
         HasCompleted = false;
         IsPlaying = true;
-        Debug.Log("Игра началась!");
         ClearRoutine();
     }
 
@@ -122,7 +121,6 @@ public class Game : MonoBehaviour
         Transited?.Invoke();
         HasCompleted = false;
         IsPlaying = true;
-        Debug.Log("Игра продолжается.");
         ClearRoutine();
     }
 
@@ -133,7 +131,6 @@ public class Game : MonoBehaviour
         Completed?.Invoke();
         _transition.SetText(string.Empty);
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color, _transitionDuration));
-        Debug.Log("Игра успешно окончена.");
         ClearRoutine();
     }
 
@@ -150,7 +147,6 @@ public class Game : MonoBehaviour
 
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
         Transited?.Invoke();
-        Debug.Log("Игра покинута!");
         ClearRoutine();
     }
 
@@ -166,7 +162,6 @@ public class Game : MonoBehaviour
 
         yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
         yield return StartCoroutine(_gameHeart.UseHeartRoutine());
-        Debug.Log("Игра покинута!");
         ClearRoutine();
     }
 
@@ -180,7 +175,6 @@ public class Game : MonoBehaviour
         _gameHeart.transform.SetParent(_gameOverMenu.transform);
         _gameHeart.gameObject.SetActive(true);
         yield return StartCoroutine(_gameHeart.UseHeartRoutine());
-        Debug.Log($"Игра проиграна!");
         ClearRoutine();
     }
 
@@ -192,7 +186,6 @@ public class Game : MonoBehaviour
         yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
         Transited?.Invoke();
         IsPlaying = true;
-        Debug.Log("Игра перезапущена!");
         ClearRoutine();
     }
 
