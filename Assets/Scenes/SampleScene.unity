@@ -393,6 +393,7 @@ MonoBehaviour:
   _game: {fileID: 1614255502}
   _timer: {fileID: 1614255506}
   _animator: {fileID: 668936182}
+  _audioPlayer: {fileID: 1849475457}
 --- !u!1 &51831306
 GameObject:
   m_ObjectHideFlags: 0
@@ -5150,6 +5151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _ray: {fileID: 1614255503}
+  _audioPlayer: {fileID: 1849475457}
   _noPlacesMessage: {fileID: 890251931}
   _placesHolder: {fileID: 1923091039}
   _availabilityManagement: {fileID: 529893072}
@@ -6905,6 +6907,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 668936184}
+  _audioPlayer: {fileID: 1849475457}
   _deathAnimationCurve:
     serializedVersion: 2
     m_Curve:
@@ -13045,8 +13048,8 @@ MonoBehaviour:
   _obstaclePrefab: {fileID: 4161744107708799639, guid: 04664c17dc8a5b34a893a38d30f5bab3, type: 3}
   _stretchedObstaclePrefab: {fileID: 1295060935370253680, guid: ca6719bd2b335f349944975a0282fdc9, type: 3}
   _centerPosition: {x: 0, y: -0.5, z: -11.2}
-  _rows: 2
-  _columns: 2
+  _rows: 8
+  _columns: 7
   _cellSpacingX: 0.8
   _cellSpacingZ: 0.7
   _cellHeightOffset: 0.01
@@ -14207,6 +14210,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _snakeSpawner: {fileID: 437241863}
   _beastSpawner: {fileID: 1441411479}
+  _audioPlayer: {fileID: 1849475457}
   _miniGame: {fileID: 1417510877}
   _gameObjectsParent: {fileID: 2145539250}
   _animator: {fileID: 1417510879}
@@ -14508,6 +14512,7 @@ MonoBehaviour:
   _animator: {fileID: 668936184}
   _deathAnimator: {fileID: 668936182}
   _collector: {fileID: 1111640603}
+  _audioPlayer: {fileID: 0}
 --- !u!54 &1447742557
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -15315,7 +15320,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 2fd8029c872490448a0e0a23e8896839, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0e82ef105fc3d4a439244aaf99a51eef, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16843,8 +16848,9 @@ MonoBehaviour:
   _transitionSound: {fileID: 8300000, guid: d4ee542d9465d394d8b56776ea165cc5, type: 3}
   _beastDieSound: {fileID: 8300000, guid: 8e52cd6db7bc9494097ce072ef310f8f, type: 3}
   _snakeDieSound: {fileID: 8300000, guid: cdd53c03c62de604d95f6a4b5c360ebb, type: 3}
+  _cloudParticleSound: {fileID: 0}
   _beastJumpSound: {fileID: 8300000, guid: 05d8d8ebb595a2644ae8885d1a3d5e1e, type: 3}
-  _snakeFireSound: {fileID: 8300000, guid: a177cd3987e68ce459b467f820dae9d6, type: 3}
+  _pickShooterSound: {fileID: 0}
   _gameWinSound: {fileID: 8300000, guid: e81d68d0e17a0ef40aace068a2a9101c, type: 3}
   _gameLossSound: {fileID: 8300000, guid: f79869bf74f0b234189322a8b0899c02, type: 3}
   _shootSound: {fileID: 8300000, guid: bbe9230596b50da4498718a502c07619, type: 3}
@@ -16859,7 +16865,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 845f28f9ae11b4b4181d3f627c5c4a1f, type: 3}
   - {fileID: 8300000, guid: 10ea0c6ecdfbe594d85161c221bce875, type: 3}
   - {fileID: 8300000, guid: fecae2a77cef6694caa4dd7624c09ef9, type: 3}
+  _miniGameMusic: {fileID: 8300000, guid: 68483cb8be2e07c429fd9d7eb611da39, type: 3}
   _game: {fileID: 1614255502}
+  _miniGame: {fileID: 1417510877}
   _deathModule: {fileID: 26740340}
   _shop: {fileID: 1878845044}
   _transition: {fileID: 844318620}

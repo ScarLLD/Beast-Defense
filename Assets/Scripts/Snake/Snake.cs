@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -128,6 +129,8 @@ public class Snake : MonoBehaviour
         if (stacks == null) return;
 
         ClearSegments();
+
+        stacks = UserUtils.ShuffleList(stacks);
 
         _startSegmentsCount = 0;
 
