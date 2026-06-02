@@ -36,7 +36,6 @@ public class LeaderBoardMenu : Window
 
     private IEnumerator OpenLeaderBoardRoutine()
     {
-        _transition.SetText("Загрузка");
         yield return StartCoroutine(_transition.StartTransitionRoutine(_leaderBoardMaterial.color, _transitionDuration));
         EnableMenu();
         Opened?.Invoke();
@@ -55,7 +54,6 @@ public class LeaderBoardMenu : Window
     {
         if (_transition.IsTransiting == false)
         {
-            _transition.SetText("Выход");
             yield return StartCoroutine(_transition.StartBackTransitionRoutine(_leaderBoardMaterial.color, _transitionDuration));
             Closed?.Invoke();
             DisableMenu();

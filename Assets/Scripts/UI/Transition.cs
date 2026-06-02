@@ -11,7 +11,8 @@ public class Transition : MonoBehaviour
     [SerializeField] private float _holdTime;
     [SerializeField] private Transform _sprite;
     [SerializeField] private Image _spriteImage;
-    [SerializeField] private TMP_Text _text;
+    [SerializeField] private TMP_Text _loadingText;
+    [SerializeField] private TMP_Text _exitText;
     [SerializeField] private Canvas _canvas;
 
     private Vector3 _spriteLeftPosition;
@@ -31,11 +32,6 @@ public class Transition : MonoBehaviour
         IsTransiting = false;
         SetSpriteOptions();
         _sleep = new WaitForSeconds(_holdTime);
-    }
-
-    public void SetText(string text)
-    {
-        _text.text = text;
     }
 
     public IEnumerator StartTransitionRoutine(Color color, float transitionDuration)
@@ -64,7 +60,8 @@ public class Transition : MonoBehaviour
 
         _spriteImage.color = color;
         _spriteImage.enabled = true;
-        _text.enabled = true;
+        _loadingText.enabled = true;
+        _exitText.enabled = false;
 
         yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteLeftPosition, _canvas.transform.position, transitionDuration));
         yield return _sleep;
@@ -79,7 +76,8 @@ public class Transition : MonoBehaviour
 
         _spriteImage.color = color;
         _spriteImage.enabled = true;
-        _text.enabled = true;
+        _loadingText.enabled = false;
+        _exitText.enabled = true;
 
         yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position, transitionDuration));
         yield return _sleep;
@@ -102,7 +100,8 @@ public class Transition : MonoBehaviour
         }
         else
         {
-            _text.enabled = false;
+            _loadingText.enabled = false;
+            _exitText.enabled = true;
         }
 
         _transitionCoroutine = null;
@@ -122,7 +121,8 @@ public class Transition : MonoBehaviour
         }
         else
         {
-            _text.enabled = false;
+            _loadingText.enabled = true;
+            _exitText.enabled = false;
         }
 
         _transitionCoroutine = null;
@@ -161,6 +161,7 @@ public class Transition : MonoBehaviour
         _sprite.transform.position = _spriteLeftPosition;
 
         _spriteImage.enabled = false;
-        _text.enabled = false;
+        _loadingText.enabled = true;
+        _exitText.enabled = false;
     }
 }

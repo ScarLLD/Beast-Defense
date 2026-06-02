@@ -102,7 +102,6 @@ public class Game : MonoBehaviour
 
     private IEnumerator BeginRoutine()
     {
-        _transition.SetText("Запуск");
         yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color, _transitionDuration));
         Started?.Invoke();
         yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
@@ -129,7 +128,6 @@ public class Game : MonoBehaviour
         IsPlaying = false;
         HasCompleted = true;
         Completed?.Invoke();
-        _transition.SetText(string.Empty);
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color, _transitionDuration));
         ClearRoutine();
     }
@@ -152,7 +150,6 @@ public class Game : MonoBehaviour
 
     private IEnumerator FastLeaveRoutine()
     {
-        _transition.SetText("Выход");
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
         IsPlaying = false;
         HasCompleted = false;
@@ -170,7 +167,6 @@ public class Game : MonoBehaviour
         IsPlaying = false;
         HasCompleted = false;
         Loss?.Invoke();
-        _transition.SetText(string.Empty);
         yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
         _gameHeart.transform.SetParent(_gameOverMenu.transform);
         _gameHeart.gameObject.SetActive(true);

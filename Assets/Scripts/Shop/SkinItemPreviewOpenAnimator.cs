@@ -27,24 +27,15 @@ public class SkinItemPreviewOpenAnimator : MonoBehaviour
         _previewRectTransform.localScale = _startPreviewScale;
         _canvasGroup.alpha = 0;
 
-        // Отключаем взаимодействие во время анимации
         if (_canvasGroup != null)
             _canvasGroup.interactable = false;
 
-        // Анимация прозрачности: 0 → 1
-        _canvasGroup?.DOFade(1f, _animationDuration / 2)
-            .SetEase(_fadeEase);
+        _canvasGroup?.DOFade(1f, _animationDuration / 2).SetEase(_fadeEase);
 
-        // Анимация позиции: начальная → целевая
-        _previewRectTransform.DOAnchorPos(_targetPreviewPosition, _animationDuration)
-            .SetEase(_positionEase);
+        _previewRectTransform.DOAnchorPos(_targetPreviewPosition, _animationDuration).SetEase(_positionEase);
 
-        // Анимация масштаба: маленький → целевой
-        _previewRectTransform.DOScale(_targetPreviewScale, _animationDuration)
-            .SetEase(_scaleEase)
-            .OnComplete(() =>
+        _previewRectTransform.DOScale(_targetPreviewScale, _animationDuration).SetEase(_scaleEase).OnComplete(() =>
             {
-                // После завершения анимации включаем взаимодействие
                 if (_canvasGroup != null)
                     _canvasGroup.interactable = true;
             });

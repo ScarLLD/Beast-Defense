@@ -13,6 +13,6 @@ public class SliderLevelViewer : MonoBehaviour
 
     public void DisplayText()
     {
-        _sliderLevelViewer.text = $"Уровень {_levelHolder.GetLevelNumber}";
+        _sliderLevelViewer.text = $"{_levelHolder.GetLevelNumber}";
     }
 }

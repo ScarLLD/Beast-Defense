@@ -36,7 +36,6 @@ public class ShopMenu : Window
 
     private IEnumerator OpenShop()
     {
-        _transition.SetText("Загрузка");
         yield return StartCoroutine(_transition.StartTransitionRoutine(_shopMaterial.color, _transitionDuration));
         EnableMenu();
         Opened?.Invoke();
@@ -55,7 +54,6 @@ public class ShopMenu : Window
     {
         if (_transition.IsTransiting == false)
         {
-            _transition.SetText("Выход");
             yield return StartCoroutine(_transition.StartBackTransitionRoutine(_shopMaterial.color, _transitionDuration));
             Closed?.Invoke();
             DisableMenu();
