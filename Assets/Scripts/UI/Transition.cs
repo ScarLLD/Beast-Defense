@@ -77,7 +77,7 @@ public class Transition : MonoBehaviour
         _spriteImage.color = color;
         _spriteImage.enabled = true;
         _loadingText.enabled = false;
-        _exitText.enabled = true;
+        _exitText.enabled = false;
 
         yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(AnimationCurve.EaseInOut(1, 1, 0, 0), _spriteRightPosition, _canvas.transform.position, transitionDuration));
         yield return _sleep;

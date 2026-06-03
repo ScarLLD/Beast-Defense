@@ -300,7 +300,7 @@ namespace YG.LanguageLegacy
 #endif
             else
             {
-                Debug.LogError("The text for translation was not found!");
+                Debug.LogError("The _text for translation was not found!");
                 return null;
             }
 

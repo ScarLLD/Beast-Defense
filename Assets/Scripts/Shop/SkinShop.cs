@@ -1,8 +1,9 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 using System;
+using YG;
 
 public class SkinShop : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class SkinShop : MonoBehaviour
     [SerializeField] private Wallet _wallet;
     [SerializeField] private BeastSpawner _beastSpawner;
     [SerializeField] private SnakeSpawner _snakeSpawner;
+    [SerializeField] private LanguageInitializer _Language;
 
     [Header("UI References")]
     [SerializeField] private Transform _beastSkinsContainer;
@@ -174,18 +176,18 @@ public class SkinShop : MonoBehaviour
         if (skin != null)
         {
             _selectedSkinImage.sprite = skin.Icon;
-            _selectedSkinName.text = skin.SkinName;
-            _selectedSkinTypeText.text = skinType == SkinType.Beast ? "«¬≈–‹" : "«Ã≈ﬂ";
+            _selectedSkinName.text = skin.GetLocalizedName(YG2.lang);
+            _selectedSkinTypeText.text = GetLocalizedType(skinType, YG2.lang);
 
             bool isPurchased = IsSkinPurchased(skinId, skinType) || skin.IsDefault;
             bool isEquipped = IsSkinEquipped(skinId, skinType);
 
             if (skin.IsDefault)
-                _selectedSkinPrice.text = "¡ÂÒÔÎ‡ÚÌÓ";
+                _selectedSkinPrice.text = GetLocalizedFreeText(YG2.lang);
             else if (isPurchased)
-                _selectedSkinPrice.text = " ÛÔÎÂÌÓ";
+                _selectedSkinPrice.text = GetLocalizedPurchasedText(YG2.lang);
             else
-                _selectedSkinPrice.text = $"{skin.Price} ÃÓÌÂÚ";
+                _selectedSkinPrice.text = $"{skin.Price} {GetLocalizedMoneyText(YG2.lang)}";
 
             _buyButton.gameObject.SetActive(!isPurchased);
             _selectButton.gameObject.SetActive(isPurchased && !isEquipped);
@@ -193,7 +195,7 @@ public class SkinShop : MonoBehaviour
             if (isPurchased)
             {
                 _selectButton.interactable = true;
-                _selectButtonText.text = "¬€¡–¿“‹";
+                _selectButtonText.text = GetLocalizedTakeText(YG2.lang);
                 _backgroundImage.color = _greenColor;
             }
             else
@@ -203,13 +205,13 @@ public class SkinShop : MonoBehaviour
                 if (_wallet.CanAfford(skin.Price))
                 {
                     _buyButtonImage.color = Color.white;
-                    _buyButtonText.text = $" ”œ»“‹";
+                    _buyButtonText.text = GetLocalizedBuyText(YG2.lang);
                     _buyButton.interactable = true;
                 }
                 else
                 {
                     _buyButtonImage.color = Color.black;
-                    _buyButtonText.text = $"Õ≈ ’¬¿“¿≈“ ÃŒÕ≈“";
+                    _buyButtonText.text = GetLocalizedNoMoneyText(YG2.lang);
                     _buyButton.interactable = false;
                 }
             }
@@ -368,6 +370,130 @@ public class SkinShop : MonoBehaviour
             {
                 SavePurchasedSkin(skin.SkinId, SkinType.Snake);
             }
+        }
+    }
+
+    public string GetLocalizedType(SkinType skinType, string languageCode)
+    {
+        if (skinType == SkinType.Beast)
+        {
+            switch (languageCode)
+            {
+                case "ru":
+                    return "–ó–≤–µ—Ä—å";
+                case "en":
+                    return "Beast";
+                case "tr":
+                    return "Canavar";
+                default:
+                    return "Beast";
+            }
+        }
+        else if (skinType == SkinType.Snake)
+        {
+            switch (languageCode)
+            {
+                case "ru":
+                    return "–ó–º–µ—è";
+                case "en":
+                    return "Snake";
+                case "tr":
+                    return "Yƒ±lan";
+                default:
+                    return "Snake";
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private string GetLocalizedFreeText(string languageCode)
+    {
+        switch (languageCode)
+        {
+            case "ru":
+                return "–ë–µ—Å–ø–ª–∞—Ç–Ω–æ";
+            case "en":
+                return "Free";
+            case "tr":
+                return "√úcret";
+            default:
+                return "Free";
+        }
+    }
+
+    private string GetLocalizedPurchasedText(string languageCode)
+    {
+        switch (languageCode)
+        {
+            case "ru":
+                return "–ö—É–ø–ª–µ–Ω–æ";
+            case "en":
+                return "Purchased";
+            case "tr":
+                return "Satƒ±n alƒ±ndƒ±";
+            default:
+                return "Purchased";
+        }
+    }
+
+    private string GetLocalizedMoneyText(string languageCode)
+    {
+        switch (languageCode)
+        {
+            case "ru":
+                return "–ú–æ–Ω–µ—Ç";
+            case "en":
+                return "Money";
+            case "tr":
+                return "Para";
+            default:
+                return "Money";
+        }
+    }
+
+    private static string GetLocalizedNoMoneyText(string languageCode)
+    {
+        switch (languageCode)
+        {
+            case "ru":
+                return "–ù–ï –•–í–ê–¢–ê–ï–¢ –ú–û–ù–ï–¢";
+            case "en":
+                return "NOT ENOUGH MONEY";
+            case "tr":
+                return "YETERLƒ∞ BOZUK PARA YOK";
+            default:
+                return "NOT ENOUGH MONEY";
+        }
+    }
+
+    private static string GetLocalizedBuyText(string languageCode)
+    {
+        switch (languageCode)
+        {
+            case "ru":
+                return "–ö–£–ü–ò–¢–¨";
+            case "en":
+                return "BUY";
+            case "tr":
+                return "ALMAK";
+            default:
+                return "BUY";
+        }
+    }
+
+    private static string GetLocalizedTakeText(string languageCode)
+    {
+        switch (languageCode)
+        {
+            case "ru":
+                return "–í–´–ë–†–ê–¢–¨";
+            case "en":
+                return "CHOOSE";
+            case "tr":
+                return "SE√áMEK";
+            default:
+                return "CHOOSE";
         }
     }
 

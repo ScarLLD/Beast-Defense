@@ -9,11 +9,6 @@ public class LanguageInitializer : MonoBehaviour
         YG2.onCorrectLang += On—hangeLang;
     }
 
-    private void Awake()
-    {
-        Debug.Log(YG2.lang);
-    }
-
     private void OnDisable()
     {
         YG2.onCorrectLang -= On—hangeLang;
@@ -21,6 +16,6 @@ public class LanguageInitializer : MonoBehaviour
 
     private static void On—hangeLang(string language)
     {
-        YG2.SwitchLanguage("en");
+        YG2.SwitchLanguage(language);
     }
 }

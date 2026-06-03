@@ -14,38 +14,62 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Skins:
   - SkinId: 1
-    SkinName: "\u041A\u0440\u043E\u043B\u0438\u043A"
+    SkinNameTranslations:
+      ru: "\u0417\u0430\u044F\u0446"
+      en: Bunny
+      tr: "Tav\u015Fan"
     Price: 0
     Icon: {fileID: 21300000, guid: bcae7efdc17738e42a9016da273f06d3, type: 3}
     Model: {fileID: 8400743674289940625, guid: 1b14214240aa1064d91d32dbba69a80c, type: 3}
+    Color: {r: 0, g: 0, b: 0, a: 0}
     IsDefault: 1
   - SkinId: 2
-    SkinName: "\u0421\u043E\u0431\u0430\u043A\u0430"
+    SkinNameTranslations:
+      ru: "\u0421\u043E\u0431\u0430\u043A\u0430"
+      en: Dog
+      tr: "K\xF6pek"
     Price: 5
     Icon: {fileID: 21300000, guid: 51ff2e9a2225c4540930786e83978c05, type: 3}
     Model: {fileID: 1001616797407859506, guid: 6aa34e5a9a84f5e4584a9d1a696542e1, type: 3}
+    Color: {r: 0, g: 0, b: 0, a: 0}
     IsDefault: 0
   - SkinId: 3
-    SkinName: "\u041C\u0435\u0434\u0432\u0435\u0434\u044C"
+    SkinNameTranslations:
+      ru: "\u041C\u0435\u0434\u0432\u0435\u0434\u044C"
+      en: Bear
+      tr: "Ay\u0131"
     Price: 7
     Icon: {fileID: 21300000, guid: 87007bec351bff54d839d443b76f1d1b, type: 3}
     Model: {fileID: 8603692834304374713, guid: 9b090ea0cbdd2ac4e899cd3f5d7955cf, type: 3}
+    Color: {r: 0, g: 0, b: 0, a: 0}
     IsDefault: 0
   - SkinId: 4
-    SkinName: "\u041F\u0435\u0442\u0443\u0445"
+    SkinNameTranslations:
+      ru: "\u041A\u0443\u0440\u0438\u0446\u0430"
+      en: Chicken
+      tr: Tavuk
     Price: 12
     Icon: {fileID: 21300000, guid: 95cdd5d592461a946b2a96c97b4a502f, type: 3}
     Model: {fileID: 1348711493773036177, guid: d48e12b57d6e8354db38b2f199f5014c, type: 3}
+    Color: {r: 0, g: 0, b: 0, a: 0}
     IsDefault: 0
   - SkinId: 5
-    SkinName: "\u041A\u043E\u0448\u043A\u0430"
+    SkinNameTranslations:
+      ru: "\u041A\u043E\u0448\u043A\u0430"
+      en: Cat
+      tr: Kedi
     Price: 15
     Icon: {fileID: 21300000, guid: 7b90824903f59af4980efd53282702ae, type: 3}
     Model: {fileID: 3696115728149168786, guid: 5babb8053d366e646b43757b5a04b368, type: 3}
+    Color: {r: 0, g: 0, b: 0, a: 0}
     IsDefault: 0
   - SkinId: 6
-    SkinName: "\u041E\u043B\u0435\u043D\u044C"
+    SkinNameTranslations:
+      ru: "\u041E\u043B\u0435\u043D\u044C"
+      en: Deer
+      tr: Geyik
     Price: 20
     Icon: {fileID: 21300000, guid: 378142868511bd5498eb04259287dad5, type: 3}
     Model: {fileID: 3968583859538033789, guid: e898b6de91e311843a975bdd6c6e7b20, type: 3}
+    Color: {r: 0, g: 0, b: 0, a: 0}
     IsDefault: 0

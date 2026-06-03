@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using YG;
 
 public class MiniGameSequencer : MonoBehaviour
 {
@@ -12,6 +14,23 @@ public class MiniGameSequencer : MonoBehaviour
     [SerializeField] private MiniGameSequenceAnimator _animator;
     [SerializeField] private MGBeastSpawner _mgBeastSpawner;
     [SerializeField] private MGSnakeSpawner _mgSnakeSpawner;
+    [SerializeField] private Transform _mobileControl;
+    [SerializeField] private Transform _desktopControl;
+
+    private void Awake()
+    {
+        InitializeControlHint();
+    }
+
+    private void InitializeControlHint()
+    {
+        bool deviceIsDesktop = YG2.envir.isDesktop;
+
+        if (deviceIsDesktop)
+            _desktopControl.gameObject.SetActive(true);
+        else
+            _mobileControl.gameObject.SetActive(true);
+    }
 
     private void OnEnable()
     {
