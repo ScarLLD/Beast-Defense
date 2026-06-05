@@ -16,7 +16,6 @@ public class DeathAnimator : MonoBehaviour
 
     private ObjectPool<Particle> _pool;
 
-
     private void Awake()
     {
         _pool = new(_cloudParticlePrefab, transform);

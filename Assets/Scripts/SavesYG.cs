@@ -11,5 +11,8 @@ namespace YG
 
         public string EquippedBeastSkin = "";
         public string EquippedSnakeSkin = "";
+
+        public string PurchasedBeastSkins = "";
+        public string PurchasedSnakeSkins = "";
     }
 }

@@ -53,11 +53,6 @@ public class SkinShop : MonoBehaviour
     public event Action Purchased;
     public event Action Selected;
 
-    private const string EQUIPPED_BEAST_SKIN_KEY = "EquippedBeastSkin";
-    private const string EQUIPPED_SNAKE_SKIN_KEY = "EquippedSnakeSkin";
-    private const string PURCHASED_BEAST_SKINS_KEY = "PurchasedBeastSkins";
-    private const string PURCHASED_SNAKE_SKINS_KEY = "PurchasedSnakeSkins";
-
     private void OnEnable()
     {
         _buyButton.onClick.AddListener(OnBuyButtonClick);
@@ -83,8 +78,15 @@ public class SkinShop : MonoBehaviour
     {
         ClearContainers();
 
-        _equippedBeastSkinId = PlayerPrefs.GetString(EQUIPPED_BEAST_SKIN_KEY, GetDefaultSkinId(_beastSkinData));
-        _equippedSnakeSkinId = PlayerPrefs.GetString(EQUIPPED_SNAKE_SKIN_KEY, GetDefaultSkinId(_snakeSkinData));
+        if (string.IsNullOrEmpty(YG2.saves.EquippedBeastSkin) == false)
+            _equippedBeastSkinId = YG2.saves.EquippedBeastSkin;
+        else
+            _equippedBeastSkinId = GetDefaultSkinId(_beastSkinData);
+
+        if (string.IsNullOrEmpty(YG2.saves.EquippedSnakeSkin) == false)
+            _equippedSnakeSkinId = YG2.saves.EquippedSnakeSkin;
+        else
+            _equippedSnakeSkinId = GetDefaultSkinId(_snakeSkinData);
 
         LoadPurchasedSkins();
 
@@ -227,7 +229,7 @@ public class SkinShop : MonoBehaviour
 
     public bool IsSkinPurchased(string skinId, SkinType skinType)
     {
-        string key = skinType == SkinType.Beast ? PURCHASED_BEAST_SKINS_KEY : PURCHASED_SNAKE_SKINS_KEY;
+        string key = skinType == SkinType.Beast ? YG2.saves.PurchasedBeastSkins : YG2.saves.PurchasedSnakeSkins;
         string purchasedSkins = PlayerPrefs.GetString(key, "");
         SkinData skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
 
@@ -280,18 +282,17 @@ public class SkinShop : MonoBehaviour
             if (skinType == SkinType.Beast)
             {
                 _equippedBeastSkinId = skinId;
-                PlayerPrefs.SetString(EQUIPPED_BEAST_SKIN_KEY, skinId);
+                YG2.saves.EquippedBeastSkin = skinId;
                 _beastSpawner.UpdateSkin(skinId);
             }
             else
             {
                 _equippedSnakeSkinId = skinId;
-                PlayerPrefs.SetString(EQUIPPED_SNAKE_SKIN_KEY, skinId);
+                YG2.saves.EquippedSnakeSkin = skinId;
                 _snakeSpawner.UpdateSkin(skinId);
             }
 
-            PlayerPrefs.Save();
-
+            YG2.SaveProgress();
             Selected?.Invoke();
         }
     }
@@ -343,15 +344,21 @@ public class SkinShop : MonoBehaviour
 
     private void SavePurchasedSkin(string skinId, SkinType skinType)
     {
-        string key = skinType == SkinType.Beast ? PURCHASED_BEAST_SKINS_KEY : PURCHASED_SNAKE_SKINS_KEY;
-        string purchasedSkins = PlayerPrefs.GetString(key, "");
+        string purchasedSkins = skinType == SkinType.Beast
+            ? YG2.saves.PurchasedBeastSkins
+            : YG2.saves.PurchasedSnakeSkins;
 
-        if (!purchasedSkins.Contains(skinId))
-        {
-            purchasedSkins += (string.IsNullOrEmpty(purchasedSkins) ? "" : ",") + skinId;
-            PlayerPrefs.SetString(key, purchasedSkins);
-            PlayerPrefs.Save();
-        }
+        if (!string.IsNullOrEmpty(purchasedSkins) && purchasedSkins.Contains(skinId))
+            return;
+
+        purchasedSkins += string.IsNullOrEmpty(purchasedSkins) ? skinId : $",{skinId}";
+
+        if (skinType == SkinType.Beast)
+            YG2.saves.PurchasedBeastSkins = purchasedSkins;
+        else
+            YG2.saves.PurchasedSnakeSkins = purchasedSkins;
+
+        YG2.SaveProgress();
     }
 
     private void LoadPurchasedSkins()
