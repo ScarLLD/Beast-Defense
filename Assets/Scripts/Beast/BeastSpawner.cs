@@ -1,4 +1,5 @@
 using UnityEngine;
+using YG;
 
 public class BeastSpawner : MonoBehaviour
 {
@@ -10,8 +11,6 @@ public class BeastSpawner : MonoBehaviour
     private string _currentSkinId;
 
     public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
-
-    private const string EQUIPPED_BEAST_SKIN_KEY = "EquippedBeastSkin";
 
     private void Awake()
     {
@@ -25,7 +24,7 @@ public class BeastSpawner : MonoBehaviour
 
     private void LoadCurrentSkin()
     {
-        string savedSkinId = PlayerPrefs.GetString(EQUIPPED_BEAST_SKIN_KEY, "");
+        string savedSkinId = YG2.saves.EquippedBeastSkin;
 
         if (string.IsNullOrEmpty(savedSkinId) == false)
         {
@@ -68,8 +67,8 @@ public class BeastSpawner : MonoBehaviour
             ApplyCurrentSkin();
         }
 
-        PlayerPrefs.SetString(EQUIPPED_BEAST_SKIN_KEY, _currentSkinId);
-        PlayerPrefs.Save();
+        YG2.saves.EquippedBeastSkin = _currentSkinId;
+        YG2.SaveProgress();
     }
 
     private void ApplyCurrentSkin()

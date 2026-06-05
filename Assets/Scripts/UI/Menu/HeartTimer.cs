@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using YG;
 
 public class HeartTimer
 {
@@ -22,10 +23,10 @@ public class HeartTimer
     {
         if (IsInitialized) return;
 
-        _currentHearts = PlayerPrefs.GetInt("HeartCount", MAX_HEARTS);
-        _pendingRestores = PlayerPrefs.GetInt("PendingRestores", 0);
+        _currentHearts = YG2.saves.HeartCount;
+        _pendingRestores = YG2.saves.PendingRestores;
 
-        string restoreTimeString = PlayerPrefs.GetString("NextRestoreTime", "");
+        string restoreTimeString = YG2.saves.NextRestoreTime;
 
         if (!string.IsNullOrEmpty(restoreTimeString))
         {
@@ -259,18 +260,19 @@ public class HeartTimer
 
     private void SaveData()
     {
-        PlayerPrefs.SetInt("HeartCount", _currentHearts);
-        PlayerPrefs.SetInt("PendingRestores", _pendingRestores);
+        YG2.saves.HeartCount = _currentHearts;
+        YG2.saves.PendingRestores = _pendingRestores;
 
         if (_nextRestoreTimeUtc.HasValue)
         {
             string utcString = _nextRestoreTimeUtc.Value.ToString("o");
-            PlayerPrefs.SetString("NextRestoreTime", utcString);
+            YG2.saves.NextRestoreTime = utcString;
         }
         else
         {
-            PlayerPrefs.SetString("NextRestoreTime", "");
+            YG2.saves.NextRestoreTime = "";
         }
-        PlayerPrefs.Save();
+
+        YG2.SaveProgress();
     }
 }

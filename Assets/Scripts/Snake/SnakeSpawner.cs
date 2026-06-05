@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
+using YG;
 
 public class SnakeSpawner : MonoBehaviour
 {
@@ -14,8 +15,6 @@ public class SnakeSpawner : MonoBehaviour
 
     public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
 
-    private const string EQUIPPED_SNAKE_SKIN_KEY = "EquippedSnakeSkin";
-
     private void Awake()
     {
         _transform = transform;
@@ -28,7 +27,7 @@ public class SnakeSpawner : MonoBehaviour
 
     private void LoadCurrentSkin()
     {
-        string savedSkinId = PlayerPrefs.GetString(EQUIPPED_SNAKE_SKIN_KEY, "");
+        string savedSkinId = YG2.saves.EquippedSnakeSkin;
 
         if (string.IsNullOrEmpty(savedSkinId) == false)
         {
@@ -74,8 +73,8 @@ public class SnakeSpawner : MonoBehaviour
             ApplyCurrentSkin();
         }
 
-        PlayerPrefs.SetString(EQUIPPED_SNAKE_SKIN_KEY, _currentSkinId);
-        PlayerPrefs.Save();
+        YG2.saves.EquippedSnakeSkin = _currentSkinId;
+        YG2.SaveProgress();
     }
 
     private void ApplyCurrentSkin()

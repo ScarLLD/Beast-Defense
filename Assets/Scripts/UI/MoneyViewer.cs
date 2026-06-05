@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using YG;
 
 public class MoneyViewer : MonoBehaviour
 {
@@ -20,6 +21,6 @@ public class MoneyViewer : MonoBehaviour
 
     private void DisplayCount()
     {
-        _text.text = _wallet.GetMoneyCount().ToString();
+        _text.text = YG2.saves.Money.ToString();
     }
 }

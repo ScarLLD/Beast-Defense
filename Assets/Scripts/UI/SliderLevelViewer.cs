@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using YG;
 
 public class SliderLevelViewer : MonoBehaviour
 {
@@ -13,6 +14,6 @@ public class SliderLevelViewer : MonoBehaviour
 
     public void DisplayText()
     {
-        _sliderLevelViewer.text = $"{_levelHolder.GetLevelNumber}";
+        _sliderLevelViewer.text = $"{YG2.saves.LevelNumber}";
     }
 }

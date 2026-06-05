@@ -1,18 +1,13 @@
 using System;
 using UnityEngine;
+using YG;
 
 public class Wallet : MonoBehaviour
 {
     [SerializeField] private Adv _adv;
     [SerializeField] private Game _game;
-    [SerializeField] private int _startMoneyCound = 5;
     [SerializeField] private int _victoryRewardCount = 5;
 
-    private const string MONEY_KEY = "PlayerMoney";
-
-    private int _money;
-
-    public int GetMoneyCount() => _money;
     public int GetRewardMoneyCount() => _victoryRewardCount;
 
     public event Action CountChanged;
@@ -31,13 +26,12 @@ public class Wallet : MonoBehaviour
 
     private void Awake()
     {
-        LoadMoney();
         CountChanged?.Invoke();
     }
 
     public bool CanAfford(int count)
-    {        
-        return _money >= count;
+    {
+        return YG2.saves.Money >= count;
     }
 
     public void IncreaseMoney(int count)
@@ -45,8 +39,8 @@ public class Wallet : MonoBehaviour
         if (count < 0)
             return;
 
-        _money += count;
-        SaveMoney();
+        YG2.saves.Money += count;
+        YG2.SaveProgress();
         CountChanged?.Invoke();
     }
 
@@ -55,10 +49,10 @@ public class Wallet : MonoBehaviour
         if (count < 0)
             return;
 
-        if (_money >= count)
+        if (YG2.saves.Money >= count)
         {
-            _money -= count;
-            SaveMoney();
+            YG2.saves.Money -= count;
+            YG2.SaveProgress();
             CountChanged?.Invoke();
         }
     }
@@ -71,16 +65,5 @@ public class Wallet : MonoBehaviour
     private void OnRewardDoubled()
     {
         IncreaseMoney(_victoryRewardCount);
-    }
-
-    private void LoadMoney()
-    {
-        _money = PlayerPrefs.GetInt(MONEY_KEY, _startMoneyCound);
-    }
-
-    private void SaveMoney()
-    {
-        PlayerPrefs.SetInt(MONEY_KEY, _money);
-        PlayerPrefs.Save();
     }
 }
