@@ -14,5 +14,8 @@ namespace YG
 
         public string PurchasedBeastSkins = "";
         public string PurchasedSnakeSkins = "";
+
+        public bool SoundMuted = false;
+        public bool MusicMuted = false;
     }
 }

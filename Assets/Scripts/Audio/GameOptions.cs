@@ -1,4 +1,5 @@
 using UnityEngine;
+using YG;
 
 public class GameOptions : MonoBehaviour
 {
@@ -9,53 +10,31 @@ public class GameOptions : MonoBehaviour
     [SerializeField] private GameObject _musicNegativeIcon;
     [SerializeField] private GameObject _soundNegativeIcon;
 
-    private const string SOUND_MUTED_KEY = "SoundMuted";
-    private const string MUSIC_MUTED_KEY = "MusicMuted";
-
-    private bool isSoundMuted = false;
-    private bool isMusicMuted = false;
-
     private void Awake()
     {
-        LoadSettings();
         ApplyAudioSettings();
-    }
-
-    private void LoadSettings()
-    {
-        isSoundMuted = PlayerPrefs.GetInt(SOUND_MUTED_KEY, 0) == 1;
-        isMusicMuted = PlayerPrefs.GetInt(MUSIC_MUTED_KEY, 0) == 1;
-    }
-
-    private void SaveSettings()
-    {
-        PlayerPrefs.SetInt(SOUND_MUTED_KEY, isSoundMuted ? 1 : 0);
-        PlayerPrefs.SetInt(MUSIC_MUTED_KEY, isMusicMuted ? 1 : 0);
-        PlayerPrefs.Save();
     }
 
     private void ApplyAudioSettings()
     {
-        _soundAudio.mute = isSoundMuted;
-        _musicAudio.mute = isMusicMuted;
+        _soundAudio.mute = YG2.saves.SoundMuted;
+        _musicAudio.mute = YG2.saves.MusicMuted;
 
-        _soundNegativeIcon.SetActive(isSoundMuted);
-        _musicNegativeIcon.SetActive(isMusicMuted);
+        _soundNegativeIcon.SetActive(YG2.saves.SoundMuted);
+        _musicNegativeIcon.SetActive(YG2.saves.MusicMuted);
+        YG2.SaveProgress();
     }
 
     public void ToggleSound()
     {
-        isSoundMuted = !isSoundMuted;
-
+        YG2.saves.SoundMuted = !YG2.saves.SoundMuted;
         ApplyAudioSettings();
-        SaveSettings();
+
     }
 
     public void ToggleMusic()
     {
-        isMusicMuted = !isMusicMuted;
-
+        YG2.saves.MusicMuted = !YG2.saves.MusicMuted;
         ApplyAudioSettings();
-        SaveSettings();
     }
 }

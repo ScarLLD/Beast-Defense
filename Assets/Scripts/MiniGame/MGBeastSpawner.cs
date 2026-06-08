@@ -81,16 +81,10 @@ public class MGBeastSpawner : MonoBehaviour
             if (TrySpawn())
             {
                 spawnedCount++;
-                Debug.Log($"Заспавнен зверь №{spawnedCount} из {_maxBeastCount}");
-            }
-            else
-            {
-                Debug.Log($"Не удалось заспавнить зверя после {_spawnAttempsCount} попыток.");
             }
         }
 
         StopRoutine();
-        Debug.Log($"Завершён спавн. Всего заспавнено: {spawnedCount}");
     }
 
     private bool TrySpawn()
@@ -104,7 +98,6 @@ public class MGBeastSpawner : MonoBehaviour
             if (CheckCollidersNearPoint(spawnPoint))
             {
                 Spawn(spawnPoint);
-                Debug.Log($"Заспавнил зверя. Успешная попытка №{attempts + 1}.");
                 return true;
             }
 

@@ -40,10 +40,4 @@ public class Cube : MonoBehaviour
         if (IsDestroyed == false)
             gameObject.SetActive(false);
     }
-
-    public void Activate()
-    {
-        if (IsDestroyed == false)
-            gameObject.SetActive(true);
-    }
 }
