@@ -22,19 +22,19 @@ public class GameOptions : MonoBehaviour
 
         _soundNegativeIcon.SetActive(YG2.saves.SoundMuted);
         _musicNegativeIcon.SetActive(YG2.saves.MusicMuted);
-        YG2.SaveProgress();
     }
 
     public void ToggleSound()
     {
         YG2.saves.SoundMuted = !YG2.saves.SoundMuted;
         ApplyAudioSettings();
-
+        YG2.SaveProgress();
     }
 
     public void ToggleMusic()
     {
         YG2.saves.MusicMuted = !YG2.saves.MusicMuted;
         ApplyAudioSettings();
+        YG2.SaveProgress();
     }
 }

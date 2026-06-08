@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using System;
 using YG;
+using System.Linq;
 
 public class SkinShop : MonoBehaviour
 {
@@ -229,11 +230,16 @@ public class SkinShop : MonoBehaviour
 
     public bool IsSkinPurchased(string skinId, SkinType skinType)
     {
-        string key = skinType == SkinType.Beast ? YG2.saves.PurchasedBeastSkins : YG2.saves.PurchasedSnakeSkins;
-        string purchasedSkins = PlayerPrefs.GetString(key, "");
-        SkinData skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
+        string list = skinType == SkinType.Beast
+            ? YG2.saves.PurchasedBeastSkins
+            : YG2.saves.PurchasedSnakeSkins;
 
-        return purchasedSkins.Contains(skinId) || skinData.GetSkinById(skinId).IsDefault;
+        SkinData skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
+        bool isDefault = skinData.GetSkinById(skinId)?.IsDefault ?? false;
+
+        bool result = isDefault || (!string.IsNullOrEmpty(list) && list.Split(',').Contains(skinId));
+
+        return result;
     }
 
     private void OnBuyButtonClick()

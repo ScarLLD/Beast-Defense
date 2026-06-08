@@ -18659,7 +18659,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _adv: {fileID: 1040958134}
   _game: {fileID: 1614255502}
-  _startMoneyCound: 5
   _victoryRewardCount: 5
 --- !u!114 &1469608307
 MonoBehaviour:
@@ -21577,7 +21576,7 @@ MonoBehaviour:
   _wallet: {fileID: 1469608306}
   _beastSpawner: {fileID: 1441411479}
   _snakeSpawner: {fileID: 437241863}
-  _Language: {fileID: 0}
+  _Language: {fileID: 1469608307}
   _beastSkinsContainer: {fileID: 1039779642}
   _snakeSkinsContainer: {fileID: 675108267}
   _skinItemPrefab: {fileID: 4271251869485383861, guid: b2697647d0a9bce4786a021950147b38, type: 3}
