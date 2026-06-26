@@ -9,6 +9,7 @@ public abstract class Window : MonoBehaviour
     public bool IsActive { private set; get; }
 
     public static event Action ButtonClicked;
+    public event Action Opened;
 
     protected void SwitchVisible(bool isActive)
     {
@@ -22,6 +23,7 @@ public abstract class Window : MonoBehaviour
     {
         SwitchVisible(true);
         IsActive = true;
+        Opened?.Invoke();
     }
 
     protected void DisableMenu()

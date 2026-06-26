@@ -1,5 +1,7 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
+using YG;
 
 public class MainMenu : Window
 {
@@ -16,6 +18,8 @@ public class MainMenu : Window
     [SerializeField] private Button _shopButton;
     [SerializeField] private Button _leaderboardButton;
     [SerializeField] private Button _miniGameStartButton;
+
+    private bool _isGameReadySent;
 
     private void OnEnable()
     {
@@ -34,6 +38,8 @@ public class MainMenu : Window
 
         _leaderBoardMenu.Opened += DisableMenu;
         _leaderBoardMenu.Closed += EnableMenu;
+
+
     }
 
     private void OnDisable()
@@ -55,9 +61,24 @@ public class MainMenu : Window
         _leaderBoardMenu.Closed -= EnableMenu;
     }
 
-    private void Awake()
+    private async void Awake()
     {
         EnableMenu();
+
+        await Task.Yield();
+
+        SendGameReady();
+    }
+
+    private void SendGameReady()
+    {
+        if (_isGameReadySent)
+            return;
+
+        _isGameReadySent = true;
+
+        YG2.GameReadyAPI();
+        YG2.GameplayStart();
     }
 
     private void OnPlayButtonClick()

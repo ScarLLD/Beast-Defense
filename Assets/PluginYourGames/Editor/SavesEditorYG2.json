@@ -7,16 +7,16 @@
         false,
         false
     ],
-    "idSave": 17,
+    "idSave": 25,
     "Money": 0,
     "LevelNumber": 1,
-    "HeartCount": 0,
-    "PendingRestores": 4,
-    "NextRestoreTime": "2026-06-08T13:59:45.0939626Z",
+    "HeartCount": 3,
+    "PendingRestores": 0,
+    "NextRestoreTime": "",
     "EquippedBeastSkin": "2",
     "EquippedSnakeSkin": "",
     "PurchasedBeastSkins": "1,2",
     "PurchasedSnakeSkins": "1",
     "SoundMuted": false,
-    "MusicMuted": true
+    "MusicMuted": false
 }
