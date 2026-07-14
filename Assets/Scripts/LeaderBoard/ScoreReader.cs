@@ -11,21 +11,21 @@ public class ScoreReader : MonoBehaviour
     private LBData _lbData;
     private float _pendingScore = 0;
 
-    private void Awake()
-    {
-        _leaderboard.UpdateLB();
-    }
 
     private void OnEnable()
     {
         YG2.onGetLeaderboard += OnLeaderboardDataReceived;
-        _timer.Stopped += SetNewScore;
+        if (_timer != null)
+            _timer.Stopped += SetNewScore;
+
+        YG2.GetLeaderboard(_leaderboard.nameLB);
     }
 
     private void OnDisable()
     {
         YG2.onGetLeaderboard -= OnLeaderboardDataReceived;
-        _timer.Stopped -= SetNewScore;
+        if (_timer != null)
+            _timer.Stopped -= SetNewScore;
         _pendingScore = 0;
     }
 
@@ -35,20 +35,23 @@ public class ScoreReader : MonoBehaviour
             return;
 
         if (_lbData == null)
+        {
+            _pendingScore = newScore;
+            YG2.GetLeaderboard(_leaderboard.nameLB);
             return;
+        }
 
+        SubmitScoreInternal(newScore);
+    }
+
+    private void SubmitScoreInternal(float newScore)
+    {
         bool scoreRetrieved = TryGetScore(out float loadedScore, out bool isEmptyScore);
 
         if (scoreRetrieved)
         {
-            if (isEmptyScore)
-            {
+            if (newScore < loadedScore)
                 YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
-            }
-            else if (newScore < loadedScore)
-            {
-                YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
-            }
         }
         else
         {
@@ -60,15 +63,15 @@ public class ScoreReader : MonoBehaviour
 
     private void OnLeaderboardDataReceived(LBData lbData)
     {
-        if (lbData.technoName == _leaderboard.nameLB)
-        {
-            _lbData = lbData;
+        if (lbData.technoName != _leaderboard.nameLB)
+            return;
 
-            if (_pendingScore > 0)
-            {
-                SetNewScore(_pendingScore);
-                _pendingScore = 0;
-            }
+        _lbData = lbData;
+
+        if (_pendingScore > 0)
+        {
+            SubmitScoreInternal(_pendingScore);
+            _pendingScore = 0;
         }
     }
 
@@ -78,9 +81,7 @@ public class ScoreReader : MonoBehaviour
         score = 0;
 
         if (_lbData == null)
-        {
             return false;
-        }
 
         if (_lbData.entries == InfoYG.NO_DATA)
         {
