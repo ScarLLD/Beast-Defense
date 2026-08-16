@@ -16,10 +16,10 @@ namespace YG.Example
 #if EnvirData_yg
             switch (YG2.envir.language)
             {
-                case "Ru":
+                case "ru":
                     textComponent.text = ru;
                     break;
-                case "Tr":
+                case "tr":
                     textComponent.text = tr;
                     break;
                 default:

@@ -11,11 +11,11 @@ namespace YG.LanguageLegacy
         {
             InfoYG.AutoTranslateLangsSettings inf = YG2.infoYG.AutoTranslateLangs;
 
-            if (lang == "Ru" && inf.languages.ru)
+            if (lang == "ru" && inf.languages.ru)
                 return true;
-            if (lang == "En" && inf.languages.en)
+            if (lang == "en" && inf.languages.en)
                 return true;
-            if (lang == "Tr" && inf.languages.tr)
+            if (lang == "tr" && inf.languages.tr)
                 return true;
             if (lang == "az" && inf.languages.az)
                 return true;
@@ -107,9 +107,9 @@ namespace YG.LanguageLegacy
 
         public static string LangName(int i)
         {
-            if (i == 0) return "Ru";
-            else if (i == 1) return "En";
-            else if (i == 2) return "Tr";
+            if (i == 0) return "ru";
+            else if (i == 1) return "en";
+            else if (i == 2) return "tr";
             else if (i == 3) return "az";
             else if (i == 4) return "be";
             else if (i == 5) return "he";

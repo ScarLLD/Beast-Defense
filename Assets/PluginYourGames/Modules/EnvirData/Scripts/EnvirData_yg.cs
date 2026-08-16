@@ -6,8 +6,8 @@
 
         public class EnvirData
         {
-            public string language = "Ru";
-            public string domain = "Ru";
+            public string language = "ru";
+            public string domain = "ru";
             public string deviceType = "desktop";
             public bool isDesktop = true;
             public bool isMobile;

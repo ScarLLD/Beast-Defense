@@ -14,9 +14,9 @@ namespace YG.Utils.Lang
         public static string UnauthorizedTextTranslate(string language)
             => language switch
             {
-                "Ru" => "неавторизованный",
-                "En" => "unauthorized",
-                "Tr" => "yetkisiz",
+                "ru" => "неавторизованный",
+                "en" => "unauthorized",
+                "tr" => "yetkisiz",
                 "az" => "icazəsiz",
                 "be" => "неаўтарызаваны",
                 "et" => "loata",
@@ -44,9 +44,9 @@ namespace YG.Utils.Lang
         public static string IsHiddenTextTranslate(string language)
             => language switch
             {
-                "Ru" => "скрыт",
-                "En" => "is hidden",
-                "Tr" => "gizli",
+                "ru" => "скрыт",
+                "en" => "is hidden",
+                "tr" => "gizli",
                 "az" => "gizlidir",
                 "be" => "схаваны",
                 "et" => "on peidetud",

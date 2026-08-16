@@ -7,7 +7,7 @@ namespace YG
     {
         private const string LANG_KEY = "langYG";
 
-        public static string lang = "Ru";
+        public static string lang = "ru";
         public static Action<string> onSwitchLang;
         public static Action<string> onCorrectLang;
 
@@ -57,7 +57,7 @@ namespace YG
             lang = lang.ToLower();
 
             if (lang == "us" || lang == "as" || lang == "ai")
-                lang = "En";
+                lang = "en";
 
             onCorrectLang?.Invoke(lang);
 

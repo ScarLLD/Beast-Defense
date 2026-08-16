@@ -9,31 +9,31 @@ namespace UI
         {
             return languageCode switch
             {
-                "Ru" => "Змея",
-                "En" => "Snake",
-                "Tr" => "Yılan",
+                "ru" => "Змея",
+                "en" => "Snake",
+                "tr" => "Yılan",
                 _ => "Snake",
             };
         }
 
         public string GetLocalizedBeastType(string languageCode)
         {
-                return languageCode switch
-                {
-                    "Ru" => "Зверь",
-                    "En" => "BeastCore",
-                    "Tr" => "Canavar",
-                    _ => "BeastCore",
-                };
+            return languageCode switch
+            {
+                "ru" => "Зверь",
+                "en" => "BeastCore",
+                "tr" => "Canavar",
+                _ => "BeastCore",
+            };
         }
 
         public string GetLocalizedFreeText(string languageCode)
         {
             return languageCode switch
             {
-                "Ru" => "Бесплатно",
-                "En" => "Free",
-                "Tr" => "Ücret",
+                "ru" => "Бесплатно",
+                "en" => "Free",
+                "tr" => "Ücret",
                 _ => "Free",
             };
         }
@@ -42,9 +42,9 @@ namespace UI
         {
             return languageCode switch
             {
-                "Ru" => "Куплено",
-                "En" => "Purchased",
-                "Tr" => "Satın alındı",
+                "ru" => "Куплено",
+                "en" => "Purchased",
+                "tr" => "Satın alındı",
                 _ => "Purchased",
             };
         }
@@ -53,9 +53,9 @@ namespace UI
         {
             return languageCode switch
             {
-                "Ru" => "Монет",
-                "En" => "Money",
-                "Tr" => "Para",
+                "ru" => "Монет",
+                "en" => "Money",
+                "tr" => "Para",
                 _ => "Money",
             };
         }
@@ -64,9 +64,9 @@ namespace UI
         {
             return languageCode switch
             {
-                "Ru" => "НЕ ХВАТАЕТ МОНЕТ",
-                "En" => "NOT ENOUGH MONEY",
-                "Tr" => "YETERLİ BOZUK PARA YOK",
+                "ru" => "НЕ ХВАТАЕТ МОНЕТ",
+                "en" => "NOT ENOUGH MONEY",
+                "tr" => "YETERLİ BOZUK PARA YOK",
                 _ => "NOT ENOUGH MONEY",
             };
         }
@@ -75,9 +75,9 @@ namespace UI
         {
             return languageCode switch
             {
-                "Ru" => "КУПИТЬ",
-                "En" => "BUY",
-                "Tr" => "ALMAK",
+                "ru" => "КУПИТЬ",
+                "en" => "BUY",
+                "tr" => "ALMAK",
                 _ => "BUY",
             };
         }
@@ -86,9 +86,9 @@ namespace UI
         {
             return languageCode switch
             {
-                "Ru" => "ВЫБРАТЬ",
-                "En" => "CHOOSE",
-                "Tr" => "SEÇMEK",
+                "ru" => "ВЫБРАТЬ",
+                "en" => "CHOOSE",
+                "tr" => "SEÇMEK",
                 _ => "CHOOSE",
             };
         }

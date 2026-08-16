@@ -15,9 +15,9 @@ namespace YG.LanguageLegacy
             if (UtilsLang.LangCheckExist(lang) == false)
             {
                 if (YG2.infoYG.AutoTranslateLangs.languages.en)
-                    YG2.lang = "En";
+                    YG2.lang = "en";
                 else
-                    YG2.lang = "Ru";
+                    YG2.lang = "ru";
             }
         }
     }

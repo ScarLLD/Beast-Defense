@@ -6,8 +6,8 @@ namespace Shop
 {
     [CreateAssetMenu(fileName = "SkinData", menuName = "Game/Skin Data")]
     public class SkinData : ScriptableObject
-    {   
-        public List<Skin> Skins = new ();
+    {
+        public List<Skin> Skins = new();
 
         public SkinData.Skin GetSkinById(string currentSkinId)
         {
@@ -53,9 +53,9 @@ namespace Shop
             {
                 return languageCode switch
                 {
-                    "Ru" => SkinNameTranslations.Ru,
-                    "En" => SkinNameTranslations.En,
-                    "Tr" => SkinNameTranslations.Tr,
+                    "ru" => SkinNameTranslations.Ru,
+                    "en" => SkinNameTranslations.En,
+                    "tr" => SkinNameTranslations.Tr,
                     _ => SkinNameTranslations.En,
                 };
             }

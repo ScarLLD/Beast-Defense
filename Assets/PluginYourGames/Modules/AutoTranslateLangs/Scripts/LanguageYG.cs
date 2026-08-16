@@ -286,7 +286,7 @@ namespace YG.LanguageLegacy
             RunTranslateEmptyFields(countLangAvailable);
         }
 
-        string TranslateGoogle(string translationTo = "En")
+        string TranslateGoogle(string translationTo = "en")
         {
             string text;
 
