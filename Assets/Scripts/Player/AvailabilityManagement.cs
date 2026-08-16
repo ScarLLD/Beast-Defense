@@ -1,101 +1,105 @@
+﻿using Grid;
 using System.Linq;
 using UnityEngine;
 
-public class AvailabilityManagement : MonoBehaviour
+namespace Player
 {
-    [SerializeField] private GridStorage _gridStorage;
-
-    public void UpdateAvailability()
+    public class AvailabilityManagement : MonoBehaviour
     {
-        var cells = _gridStorage.Cells;
+        [SerializeField] private GridStorage _gridStorage;
 
-        for (int i = 0; i < cells.GetLength(0); i++)
+        public void UpdateAvailability()
         {
-            for (int j = 0; j < cells.GetLength(1); j++)
+            var cells = _gridStorage.Cells;
+
+            for (int i = 0; i < cells.GetLength(0); i++)
             {
-                for (int k = 0; k < cells[i, j].Count; k++)
+                for (int j = 0; j < cells.GetLength(1); j++)
                 {
-                    var cell = cells[i, j][k];
-
-                    bool isTopRow = i == cells.GetLength(0) - 1;
-                    bool isLeftEdge = j == 0;
-                    bool isRightEdge = j == cells.GetLength(1) - 1;
-                    bool isBottomEdge = i == 0;
-
-                    bool haveStaticLeft = isLeftEdge == false && cells[i, j - 1].Any(cell => cell.IsStatic);
-                    bool haveStaticRight = isRightEdge == false && cells[i, j + 1].Any(cell => cell.IsStatic);
-                    bool haveStaticBottom = isBottomEdge == false && cells[i - 1, j].Any(cell => cell.IsStatic);
-                    bool haveStaticTop = isTopRow == false && cells[i + 1, j].Any(cell => cell.IsStatic);
-
-                    if (cell.IsStatic && cell.IsOccupied == false)
+                    for (int k = 0; k < cells[i, j].Count; k++)
                     {
-                        bool isAvailable = false;
+                        var cell = cells[i, j][k];
 
-                        if (isTopRow)
-                        {
-                            cell.SetIsTopRow(true);
-                            cell.Cube.ChangeAvailableStatus(true);
-                            continue;
-                        }
+                        bool isTopRow = i == cells.GetLength(0) - 1;
+                        bool isLeftEdge = j == 0;
+                        bool isRightEdge = j == cells.GetLength(1) - 1;
+                        bool isBottomEdge = i == 0;
 
-                        if (isBottomEdge)
-                        {
-                            if (isLeftEdge && (haveStaticTop == false || haveStaticRight == false))
-                                isAvailable = true;
-                            else if (isRightEdge && (haveStaticTop == false || haveStaticLeft == false))
-                                isAvailable = true;
-                            else if (isLeftEdge == false && isRightEdge == false && (haveStaticTop == false || haveStaticLeft == false || haveStaticRight == false))
-                                isAvailable = true;
-                        }
-                        else if (isLeftEdge)
-                        {
-                            if (isTopRow && (haveStaticBottom == false || haveStaticRight == false))
-                                isAvailable = true;
-                            else if (isBottomEdge && (haveStaticTop == false || haveStaticRight == false))
-                                isAvailable = true;
-                            else if (isBottomEdge == false && isTopRow == false && (haveStaticTop == false || haveStaticRight == false || haveStaticBottom == false))
-                                isAvailable = true;
-                        }
-                        else if (isRightEdge)
-                        {
-                            if (isTopRow && (haveStaticBottom == false || haveStaticLeft == false))
-                                isAvailable = true;
-                            else if (isBottomEdge && (haveStaticTop == false || haveStaticLeft == false))
-                                isAvailable = true;
-                            else if (isBottomEdge == false && isTopRow == false && (haveStaticTop == false || haveStaticLeft == false || haveStaticBottom == false))
-                                isAvailable = true;
-                        }
-                        else if (!isLeftEdge && !isRightEdge && !isBottomEdge && (!haveStaticLeft || !haveStaticRight || !haveStaticBottom || !haveStaticTop))
-                        {
-                            isAvailable = true;
-                        }
+                        bool haveStaticLeft = isLeftEdge == false && cells[i, j - 1].Any(cell => cell.IsStatic);
+                        bool haveStaticRight = isRightEdge == false && cells[i, j + 1].Any(cell => cell.IsStatic);
+                        bool haveStaticBottom = isBottomEdge == false && cells[i - 1, j].Any(cell => cell.IsStatic);
+                        bool haveStaticTop = isTopRow == false && cells[i + 1, j].Any(cell => cell.IsStatic);
 
-                        cell.Cube.ChangeAvailableStatus(isAvailable);
-                    }
-                    else if (cell.IsOccupied == false)
-                    {
-                        if (isTopRow == false && k < cells[i + 1, j].Count)
+                        if (cell.IsStatic && cell.IsOccupied == false)
                         {
-                            var topCell = cells[i + 1, j][k];
-                            topCell.TakeCell(cell);
-                        }
+                            bool isAvailable = false;
 
-                        if (isLeftEdge == false && k < cells[i, j - 1].Count)
-                        {
-                            var leftCell = cells[i, j - 1][k];
-                            leftCell.TakeCell(cell);
-                        }
+                            if (isTopRow)
+                            {
+                                cell.SetIsTopRow(true);
+                                cell.Cube.ChangeAvailableStatus(true);
+                                continue;
+                            }
 
-                        if (isRightEdge == false && k < cells[i, j + 1].Count)
-                        {
-                            var rightCell = cells[i, j + 1][k];
-                            rightCell.TakeCell(cell);
-                        }
+                            if (isBottomEdge)
+                            {
+                                if (isLeftEdge && (haveStaticTop == false || haveStaticRight == false))
+                                    isAvailable = true;
+                                else if (isRightEdge && (haveStaticTop == false || haveStaticLeft == false))
+                                    isAvailable = true;
+                                else if (isLeftEdge == false && isRightEdge == false && (haveStaticTop == false || haveStaticLeft == false || haveStaticRight == false))
+                                    isAvailable = true;
+                            }
+                            else if (isLeftEdge)
+                            {
+                                if (isTopRow && (haveStaticBottom == false || haveStaticRight == false))
+                                    isAvailable = true;
+                                else if (isBottomEdge && (haveStaticTop == false || haveStaticRight == false))
+                                    isAvailable = true;
+                                else if (isBottomEdge == false && isTopRow == false && (haveStaticTop == false || haveStaticRight == false || haveStaticBottom == false))
+                                    isAvailable = true;
+                            }
+                            else if (isRightEdge)
+                            {
+                                if (isTopRow && (haveStaticBottom == false || haveStaticLeft == false))
+                                    isAvailable = true;
+                                else if (isBottomEdge && (haveStaticTop == false || haveStaticLeft == false))
+                                    isAvailable = true;
+                                else if (isBottomEdge == false && isTopRow == false && (haveStaticTop == false || haveStaticLeft == false || haveStaticBottom == false))
+                                    isAvailable = true;
+                            }
+                            else if (!isLeftEdge && !isRightEdge && !isBottomEdge && (!haveStaticLeft || !haveStaticRight || !haveStaticBottom || !haveStaticTop))
+                            {
+                                isAvailable = true;
+                            }
 
-                        if (isBottomEdge == false && k < cells[i - 1, j].Count)
+                            cell.Cube.ChangeAvailableStatus(isAvailable);
+                        }
+                        else if (cell.IsOccupied == false)
                         {
-                            var bottomCell = cells[i - 1, j][k];
-                            bottomCell.TakeCell(cell);
+                            if (isTopRow == false && k < cells[i + 1, j].Count)
+                            {
+                                var topCell = cells[i + 1, j][k];
+                                topCell.TakeCell(cell);
+                            }
+
+                            if (isLeftEdge == false && k < cells[i, j - 1].Count)
+                            {
+                                var leftCell = cells[i, j - 1][k];
+                                leftCell.TakeCell(cell);
+                            }
+
+                            if (isRightEdge == false && k < cells[i, j + 1].Count)
+                            {
+                                var rightCell = cells[i, j + 1][k];
+                                rightCell.TakeCell(cell);
+                            }
+
+                            if (isBottomEdge == false && k < cells[i - 1, j].Count)
+                            {
+                                var bottomCell = cells[i - 1, j][k];
+                                bottomCell.TakeCell(cell);
+                            }
                         }
                     }
                 }

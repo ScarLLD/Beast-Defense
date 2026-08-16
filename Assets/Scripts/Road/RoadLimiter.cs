@@ -1,117 +1,121 @@
+﻿using MapGenerator;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(DirectionAnalyzer))]
-public class RoadLimiter : MonoBehaviour
+namespace Road
 {
-    [SerializeField] private float _boundaryMargin = 1f;
-    [SerializeField] private float _radiusBetweenSegments = 1.5f;
-    [SerializeField] private float _endPointMargin = 3f;
-    [SerializeField] private BoundaryMaker _boundaryMaker;
-
-    private DirectionAnalyzer _directionHolder;
-    private float _leftBoundX;
-    private float _rightBoundX;
-    private float _lowerBoundZ;
-    private float _upperBoundZ;
-
-    private void Start()
+    [RequireComponent(typeof(DirectionAnalyzer))]
+    public class RoadLimiter : MonoBehaviour
     {
-        _directionHolder = GetComponent<DirectionAnalyzer>();
+        [SerializeField] private float _boundaryMargin = 1f;
+        [SerializeField] private float _radiusBetweenSegments = 1.5f;
+        [SerializeField] private float _endPointMargin = 3f;
+        [SerializeField] private BoundaryMaker _boundaryMaker;
 
-        if (_boundaryMaker != null)
+        private DirectionAnalyzer _directionHolder;
+        private float _leftBoundX;
+        private float _rightBoundX;
+        private float _lowerBoundZ;
+        private float _upperBoundZ;
+
+        private void Start()
         {
-            UpdateBoundariesFromBoundaryMaker();
-        }
-        else if (_directionHolder != null)
-        {
-            _leftBoundX = _directionHolder.LeftBoundX;
-            _rightBoundX = _directionHolder.RightBoundX;
-            _lowerBoundZ = _directionHolder.LowerBoundZ;
-            _upperBoundZ = _directionHolder.UpperBoundZ;
-        }
-        else
-        {
-            _leftBoundX = -10f;
-            _rightBoundX = 10f;
-            _lowerBoundZ = -10f;
-            _upperBoundZ = 10f;
-        }
-    }
+            _directionHolder = GetComponent<DirectionAnalyzer>();
 
-    public void UpdateBoundariesFromBoundaryMaker()
-    {
-        if (_boundaryMaker == null) return;
-
-        if (_boundaryMaker.TryGetBoundaryLimits(out float minX, out float maxX, out float minZ, out float maxZ))
-        {
-            _leftBoundX = minX;
-            _rightBoundX = maxX;
-            _lowerBoundZ = minZ;
-            _upperBoundZ = maxZ;
-        }
-    }
-
-    public bool IsTooCloseToBoundary(Vector3 point)
-    {
-        return point.x < _leftBoundX + _boundaryMargin ||
-               point.x > _rightBoundX - _boundaryMargin ||
-               point.z > _upperBoundZ - _boundaryMargin ||
-               point.z < _lowerBoundZ + _boundaryMargin;
-    }
-
-    public bool IsEndTooCloseToBoundary(Vector3 point)
-    {
-        return point.x < _leftBoundX + _boundaryMargin * _endPointMargin ||
-               point.x > _rightBoundX - _boundaryMargin * _endPointMargin ||
-               point.z > _upperBoundZ - _boundaryMargin * _endPointMargin ||
-               point.z < _lowerBoundZ + _boundaryMargin * _endPointMargin;
-    }
-
-    public bool IsPositionValid(Vector3 position, List<Vector3> pathPoints)
-    {
-        if (IsTooCloseToBoundary(position))
-        {
-            return false;
-        }
-
-        if (pathPoints != null)
-        {
-            foreach (var point in pathPoints)
+            if (_boundaryMaker != null)
             {
-                if (Vector3.Distance(position, point) < _radiusBetweenSegments)
-                {
-                    return false;
-                }
+                UpdateBoundariesFromBoundaryMaker();
+            }
+            else if (_directionHolder != null)
+            {
+                _leftBoundX = _directionHolder.LeftBoundX;
+                _rightBoundX = _directionHolder.RightBoundX;
+                _lowerBoundZ = _directionHolder.LowerBoundZ;
+                _upperBoundZ = _directionHolder.UpperBoundZ;
+            }
+            else
+            {
+                _leftBoundX = -10f;
+                _rightBoundX = 10f;
+                _lowerBoundZ = -10f;
+                _upperBoundZ = 10f;
             }
         }
 
-        return true;
-    }
+        public void UpdateBoundariesFromBoundaryMaker()
+        {
+            if (_boundaryMaker == null) return;
 
-    public void SetBoundaries(float leftX, float rightX, float lowerZ, float upperZ)
-    {
-        _leftBoundX = leftX;
-        _rightBoundX = rightX;
-        _lowerBoundZ = lowerZ;
-        _upperBoundZ = upperZ;
-    }
+            if (_boundaryMaker.TryGetBoundaryLimits(out float minX, out float maxX, out float minZ, out float maxZ))
+            {
+                _leftBoundX = minX;
+                _rightBoundX = maxX;
+                _lowerBoundZ = minZ;
+                _upperBoundZ = maxZ;
+            }
+        }
 
-    private void OnDrawGizmosSelected()
-    {
-        if (!Application.isPlaying) return;
+        public bool IsTooCloseToBoundary(Vector3 point)
+        {
+            return point.x < _leftBoundX + _boundaryMargin ||
+                   point.x > _rightBoundX - _boundaryMargin ||
+                   point.z > _upperBoundZ - _boundaryMargin ||
+                   point.z < _lowerBoundZ + _boundaryMargin;
+        }
 
-        Gizmos.color = Color.yellow;
+        public bool IsEndTooCloseToBoundary(Vector3 point)
+        {
+            return point.x < _leftBoundX + _boundaryMargin * _endPointMargin ||
+                   point.x > _rightBoundX - _boundaryMargin * _endPointMargin ||
+                   point.z > _upperBoundZ - _boundaryMargin * _endPointMargin ||
+                   point.z < _lowerBoundZ + _boundaryMargin * _endPointMargin;
+        }
 
-        Vector3 topLeft = new Vector3(_leftBoundX + _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
-        Vector3 topRight = new Vector3(_rightBoundX - _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
-        Gizmos.DrawLine(topLeft, topRight);
+        public bool IsPositionValid(Vector3 position, List<Vector3> pathPoints)
+        {
+            if (IsTooCloseToBoundary(position))
+            {
+                return false;
+            }
 
-        Vector3 bottomLeft = new Vector3(_leftBoundX + _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
-        Vector3 bottomRight = new Vector3(_rightBoundX - _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
-        Gizmos.DrawLine(bottomLeft, bottomRight);
+            if (pathPoints != null)
+            {
+                foreach (var point in pathPoints)
+                {
+                    if (Vector3.Distance(position, point) < _radiusBetweenSegments)
+                    {
+                        return false;
+                    }
+                }
+            }
 
-        Gizmos.DrawLine(topLeft, bottomLeft);
-        Gizmos.DrawLine(topRight, bottomRight);
+            return true;
+        }
+
+        public void SetBoundaries(float leftX, float rightX, float lowerZ, float upperZ)
+        {
+            _leftBoundX = leftX;
+            _rightBoundX = rightX;
+            _lowerBoundZ = lowerZ;
+            _upperBoundZ = upperZ;
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!Application.isPlaying) return;
+
+            Gizmos.color = Color.yellow;
+
+            Vector3 topLeft = new(_leftBoundX + _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
+            Vector3 topRight = new(_rightBoundX - _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
+            Gizmos.DrawLine(topLeft, topRight);
+
+            Vector3 bottomLeft = new(_leftBoundX + _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
+            Vector3 bottomRight = new(_rightBoundX - _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
+            Gizmos.DrawLine(bottomLeft, bottomRight);
+
+            Gizmos.DrawLine(topLeft, bottomLeft);
+            Gizmos.DrawLine(topRight, bottomRight);
+        }
     }
 }

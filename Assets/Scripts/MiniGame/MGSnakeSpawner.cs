@@ -1,57 +1,59 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class MGSnakeSpawner : MonoBehaviour
+namespace MiniGameCore
 {
-    [SerializeField] private MiniGame _miniGame;
-
-    [Header("SpawnRoutine settings")]
-    [SerializeField] private GameObject _snakePrefab;
-    [SerializeField] private MGSnake _snake;
-    [SerializeField] private Vector3 _spawnPoint;
-
-    private Vector3 _modelSpawnPoint = new Vector3(0f, -1.25f, 0f);
-    private GameObject _snakeModel;
-
-    private void OnEnable()
+    public class MGSnakeSpawner : MonoBehaviour
     {
-        _miniGame.Started += SpawnRoutine;
-    }
+        [SerializeField] private MiniGame _miniGame;
 
-    private void OnDisable()
-    {
-        _miniGame.Started -= SpawnRoutine;
-    }
+        [Header("SpawnRoutine settings")]
+        [SerializeField] private GameObject _snakePrefab;
+        [SerializeField] private MGSnake _snake;
+        [SerializeField] private Vector3 _spawnPoint;
 
-    public void InitializeSkin(GameObject snakePrefab, Color color)
-    {
-        _snakePrefab = snakePrefab;
-        _snake.SetBodyColor(color);
-    }
+        private Vector3 _modelSpawnPoint = new(0f, -1.25f, 0f);
+        private GameObject _snakeModel;
 
-    public void SpawnRoutine()
-    {
-        ResetSettings();
-        Spawn();
-
-        _snake.ResetSettings();
-        _snake.StartMove();
-    }
-
-    private void Spawn()
-    {
-        if (_snakeModel != null)
+        private void OnEnable()
         {
-            Destroy(_snakeModel);
-            _snakeModel = null;
+            _miniGame.Started += SpawnRoutine;
         }
 
-        _snakeModel = Instantiate(_snakePrefab, _snake.transform);
-        _snakeModel.transform.localPosition = _modelSpawnPoint;
-    }
+        private void OnDisable()
+        {
+            _miniGame.Started -= SpawnRoutine;
+        }
 
-    private void ResetSettings()
-    {
-        _snake.transform.position = _spawnPoint;
-        _snake.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+        public void InitializeSkin(GameObject snakePrefab, Color color)
+        {
+            _snakePrefab = snakePrefab;
+            _snake.SetBodyColor(color);
+        }
+
+        public void SpawnRoutine()
+        {
+            ResetSettings();
+            Spawn();
+
+            _snake.ResetSettings();
+            _snake.StartMove();
+        }
+
+        private void Spawn()
+        {
+            if (_snakeModel != null)
+            {
+                Destroy(_snakeModel);
+                _snakeModel = null;
+            }
+
+            _snakeModel = Instantiate(_snakePrefab, _snake.transform);
+            _snakeModel.transform.localPosition = _modelSpawnPoint;
+        }
+
+        private void ResetSettings()
+        {
+            _snake.transform.SetPositionAndRotation(_spawnPoint, Quaternion.LookRotation(Vector3.forward));
+        }
     }
 }

@@ -1,198 +1,205 @@
+﻿using LifeCycle;
+using Menu;
+using MiniGameCore;
 using System;
 using System.Collections;
+using UI;
 using UnityEngine;
 
-public class Game : MonoBehaviour
+namespace MapGenerator
 {
-    [SerializeField] private Transition _transition;
-    [SerializeField] private Transform _canvasTransform;
-    [SerializeField] private GameOverMenu _gameOverMenu;
-    [SerializeField] private VictoryMenu _victoryMenu;
-    [SerializeField] private MainMenu _mainMenu;
-
-    [Header("Transition Colors")]
-    [SerializeField] private Material _goodMaterial;
-    [SerializeField] private Material _badMaterial;
-
-    [Header("Other settings")]
-    [SerializeField] private float _transitionDuration = 0.75f;
-    [SerializeField] private MiniGame _miniGame;
-    [SerializeField] private DeathModule _deathModule;
-    [SerializeField] private GameHeart _gameHeart;
-
-    private Coroutine _currentCoroutine;
-
-    public event Action Started;
-    public event Action Continued;
-    public event Action Loss;
-    public event Action Completed;
-    public event Action Restarted;
-    public event Action Leaved;
-    public event Action Transited;
-
-    public bool HasCompleted { get; private set; }
-    public bool HasStarted { get; private set; }
-    public bool IsPause { get; private set; } = false;
-    public bool IsPlaying { get; private set; } = false;
-
-    private void OnEnable()
+    public class Game : MonoBehaviour
     {
-        _deathModule.SnakeDie += Complete;
-    }
+        [SerializeField] private Transition _transition;
+        [SerializeField] private Transform _canvasTransform;
+        [SerializeField] private GameOverMenu _gameOverMenu;
+        [SerializeField] private VictoryMenu _victoryMenu;
+        [SerializeField] private MainMenu _mainMenu;
 
-    private void OnDisable()
-    {
-        _deathModule.SnakeDie -= Complete;
-    }
+        [Header("Transition Colors")]
+        [SerializeField] private Material _goodMaterial;
+        [SerializeField] private Material _badMaterial;
 
-    private void OnApplicationQuit()
-    {
-        if (IsPlaying)
-            _gameHeart.TryDecreaseCount();
-    }
+        [Header("Other settings")]
+        [SerializeField] private float _transitionDuration = 0.75f;
+        [SerializeField] private MiniGame _miniGame;
+        [SerializeField] private DeathModule _deathModule;
+        [SerializeField] private GameHeart _gameHeart;
 
-    public void Begin()
-    {
-        if (_transition.IsTransiting == false && _gameHeart.IsPossibleDecrease == true)
-            StartRoutine(BeginRoutine());
-    }
+        private Coroutine _currentCoroutine;
 
-    public void Continue()
-    {
-        StartRoutine(ContinueRoutine());
-    }
+        public event Action Started;
+        public event Action Continued;
+        public event Action Loss;
+        public event Action Completed;
+        public event Action Restarted;
+        public event Action Leaved;
+        public event Action Transited;
 
-    public void Over()
-    {
-        StartRoutine(OverRoutine());
-    }
+        public bool HasCompleted { get; private set; }
+        public bool HasStarted { get; private set; }
+        public bool IsPause { get; private set; } = false;
+        public bool IsPlaying { get; private set; } = false;
 
-    public void Restart()
-    {
-        if (_transition.IsTransiting == false)
-            StartRoutine(RestartRoutine());
-    }
-
-    public void Complete()
-    {
-        StartRoutine(CompleteRoutine());
-    }
-
-    public void Leave()
-    {
-        StartRoutine(LeaveRoutine());
-    }
-
-    public void FastLeave()
-    {
-        StartRoutine(FastLeaveRoutine());
-    }
-
-    public void StopTime()
-    {
-        Time.timeScale = 0f;
-        IsPause = true;
-    }
-
-    public void ContinueTime()
-    {
-        Time.timeScale = 1f;
-        IsPause = false;
-    }
-
-    private IEnumerator BeginRoutine()
-    {
-        yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color, _transitionDuration));
-        Started?.Invoke();
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
-        HasStarted = true;
-        HasCompleted = false;
-        IsPlaying = true;
-        ClearRoutine();
-    }
-
-    private IEnumerator ContinueRoutine()
-    {
-        Continued?.Invoke();
-        _gameHeart.transform.SetParent(_mainMenu.transform);
-        _gameHeart.gameObject.SetActive(false);
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
-        Transited?.Invoke();
-        HasCompleted = false;
-        IsPlaying = true;
-        ClearRoutine();
-    }
-
-    private IEnumerator CompleteRoutine()
-    {
-        IsPlaying = false;
-        HasCompleted = true;
-        Completed?.Invoke();
-        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color, _transitionDuration));
-        ClearRoutine();
-    }
-
-    private IEnumerator LeaveRoutine()
-    {
-        IsPlaying = false;
-        Leaved?.Invoke();
-
-        if (_miniGame.IsActive == true)
+        private void OnEnable()
         {
-            _gameHeart.transform.SetParent(_mainMenu.transform);
-            _gameHeart.gameObject.SetActive(false);
+            _deathModule.SnakeDie += Complete;
         }
 
-        yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
-        Transited?.Invoke();
-        ClearRoutine();
-    }
+        private void OnDisable()
+        {
+            _deathModule.SnakeDie -= Complete;
+        }
 
-    private IEnumerator FastLeaveRoutine()
-    {
-        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
-        IsPlaying = false;
-        HasCompleted = false;
-        Leaved?.Invoke();
+        private void OnApplicationQuit()
+        {
+            if (IsPlaying)
+                _gameHeart.TryDecreaseCount();
+        }
 
-        _gameHeart.transform.SetParent(_mainMenu.transform);
+        public void Begin()
+        {
+            if (_transition.IsTransiting == false && _gameHeart.IsPossibleDecrease == true)
+                StartRoutine(BeginRoutine());
+        }
 
-        yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
-        yield return StartCoroutine(_gameHeart.UseHeartRoutine());
-        ClearRoutine();
-    }
+        public void Continue()
+        {
+            StartRoutine(ContinueRoutine());
+        }
 
-    private IEnumerator OverRoutine()
-    {
-        IsPlaying = false;
-        HasCompleted = false;
-        Loss?.Invoke();
-        yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
-        _gameHeart.transform.SetParent(_gameOverMenu.transform);
-        _gameHeart.gameObject.SetActive(true);
-        yield return StartCoroutine(_gameHeart.UseHeartRoutine());
-        ClearRoutine();
-    }
+        public void Over()
+        {
+            StartRoutine(OverRoutine());
+        }
 
-    private IEnumerator RestartRoutine()
-    {
-        Restarted.Invoke();
-        _gameHeart.transform.SetParent(_mainMenu.transform);
-        _gameHeart.gameObject.SetActive(false);
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
-        Transited?.Invoke();
-        IsPlaying = true;
-        ClearRoutine();
-    }
+        public void Restart()
+        {
+            if (_transition.IsTransiting == false)
+                StartRoutine(RestartRoutine());
+        }
 
-    private void StartRoutine(IEnumerator routine)
-    {
-        _currentCoroutine ??= StartCoroutine(routine);
-    }
+        public void Complete()
+        {
+            StartRoutine(CompleteRoutine());
+        }
 
-    private void ClearRoutine()
-    {
-        if (_currentCoroutine != null)
-            _currentCoroutine = null;
+        public void Leave()
+        {
+            StartRoutine(LeaveRoutine());
+        }
+
+        public void FastLeave()
+        {
+            StartRoutine(FastLeaveRoutine());
+        }
+
+        public void StopTime()
+        {
+            Time.timeScale = 0f;
+            IsPause = true;
+        }
+
+        public void ContinueTime()
+        {
+            Time.timeScale = 1f;
+            IsPause = false;
+        }
+
+        private IEnumerator BeginRoutine()
+        {
+            yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color, _transitionDuration));
+            Started?.Invoke();
+            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+            HasStarted = true;
+            HasCompleted = false;
+            IsPlaying = true;
+            ClearRoutine();
+        }
+
+        private IEnumerator ContinueRoutine()
+        {
+            Continued?.Invoke();
+            _gameHeart.transform.SetParent(_mainMenu.transform);
+            _gameHeart.gameObject.SetActive(false);
+            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+            Transited?.Invoke();
+            HasCompleted = false;
+            IsPlaying = true;
+            ClearRoutine();
+        }
+
+        private IEnumerator CompleteRoutine()
+        {
+            IsPlaying = false;
+            HasCompleted = true;
+            Completed?.Invoke();
+            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color, _transitionDuration));
+            ClearRoutine();
+        }
+
+        private IEnumerator LeaveRoutine()
+        {
+            IsPlaying = false;
+            Leaved?.Invoke();
+
+            if (_miniGame.IsActive == true)
+            {
+                _gameHeart.transform.SetParent(_mainMenu.transform);
+                _gameHeart.gameObject.SetActive(false);
+            }
+
+            yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
+            Transited?.Invoke();
+            ClearRoutine();
+        }
+
+        private IEnumerator FastLeaveRoutine()
+        {
+            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
+            IsPlaying = false;
+            HasCompleted = false;
+            Leaved?.Invoke();
+
+            _gameHeart.transform.SetParent(_mainMenu.transform);
+
+            yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
+            yield return StartCoroutine(_gameHeart.UseHeartRoutine());
+            ClearRoutine();
+        }
+
+        private IEnumerator OverRoutine()
+        {
+            IsPlaying = false;
+            HasCompleted = false;
+            Loss?.Invoke();
+            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
+            _gameHeart.transform.SetParent(_gameOverMenu.transform);
+            _gameHeart.gameObject.SetActive(true);
+            yield return StartCoroutine(_gameHeart.UseHeartRoutine());
+            ClearRoutine();
+        }
+
+        private IEnumerator RestartRoutine()
+        {
+            Restarted.Invoke();
+            _gameHeart.transform.SetParent(_mainMenu.transform);
+            _gameHeart.gameObject.SetActive(false);
+            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+            Transited?.Invoke();
+            IsPlaying = true;
+            ClearRoutine();
+        }
+
+        private void StartRoutine(IEnumerator routine)
+        {
+            _currentCoroutine ??= StartCoroutine(routine);
+        }
+
+        private void ClearRoutine()
+        {
+            if (_currentCoroutine != null)
+                _currentCoroutine = null;
+        }
     }
 }

@@ -1,13 +1,16 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class CubeStack : MonoBehaviour
+namespace CubeCore
 {
-    public int Count { get; private set; }
-    public Material Material { get; private set; }
-
-    public void Init(Material material, int count)
+    public class CubeStack : MonoBehaviour
     {
-        Count = count;
-        Material = material;
+        public int Count { get; private set; }
+        public Material Material { get; private set; }
+
+        public void Init(Material material, int count)
+        {
+            Count = count;
+            Material = material;
+        }
     }
 }

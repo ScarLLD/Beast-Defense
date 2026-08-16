@@ -1,24 +1,27 @@
+﻿using MapGenerator;
 using UnityEngine;
 
-public class PlayMenu : Window
+namespace Menu
 {
-    [SerializeField] private Game _game;
-
-    private void OnEnable()
+    public class PlayMenu : Window
     {
-        _game.Started += EnableMenu;
-        _game.Leaved += DisableMenu;
-    }
+        [SerializeField] private Game _game;
 
-    private void OnDisable()
-    {        
-        _game.Started -= EnableMenu;
-        _game.Leaved += DisableMenu;
-    }
+        private void OnEnable()
+        {
+            _game.Started += EnableMenu;
+            _game.Leaved += DisableMenu;
+        }
 
-    private void Awake()
-    {
-        DisableMenu();
-    }
+        private void OnDisable()
+        {
+            _game.Started -= EnableMenu;
+            _game.Leaved += DisableMenu;
+        }
 
+        private void Awake()
+        {
+            DisableMenu();
+        }
+    }
 }

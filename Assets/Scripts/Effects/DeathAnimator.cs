@@ -1,0 +1,58 @@
+﻿using MiniGameCore;
+using Options;
+using Pool;
+using System.Collections;
+using UnityEngine;
+
+namespace Effects
+{
+    public class DeathAnimator : MonoBehaviour
+    {
+        [Header("Animator settings.")]
+        [SerializeField] private DOTWeenAnimator _animator;
+        [SerializeField] private AudioPlayer _audioPlayer;
+        [SerializeField] private AnimationCurve _deathAnimationCurve;
+        [SerializeField] private ParticleData _cloudParticlePrefab;
+        [SerializeField] private float _deathDuration;
+        [SerializeField] private float _deathDelay;
+
+        private WaitForSeconds _deathTime;
+        private WaitForSeconds _delayTime;
+
+        private ObjectPool<ParticleData> _pool;
+
+        private void Awake()
+        {
+            _pool = new (_cloudParticlePrefab, transform);
+
+            _deathTime = new WaitForSeconds(_animator.GetDuration);
+            _delayTime = new WaitForSeconds(_cloudParticlePrefab.GetDuration + _deathDelay);
+        }
+
+        public void KillRoutine(Transform gameObject, Color color)
+        {
+            StartCoroutine(DeathRoutine(gameObject, color));
+        }
+
+        public IEnumerator DeathRoutine(Transform transform, Color color)
+        {
+            _animator.DoScaleDown(transform.gameObject);
+            yield return _deathTime;
+            _audioPlayer.PlayCloudParticleSound();
+
+            transform.gameObject.SetActive(false);
+            var cloudParticle = _pool.GetObject();
+            cloudParticle.SetColor(color);
+            cloudParticle.transform.position = transform.position;
+
+            yield return _delayTime;
+
+            ClearRoutine();
+        }
+
+        private void ClearRoutine()
+        {
+            StopAllCoroutines();
+        }
+    }
+}

@@ -1,94 +1,76 @@
+﻿using Shop;
 using UnityEngine;
 using YG;
 
-public class BeastSpawner : MonoBehaviour
+namespace BeastCore
 {
-    [SerializeField] private Beast _beastPrefab;
-    [SerializeField] private SkinData _skinData;
-
-    private Beast _beast;
-    private Transform _transform;
-    private string _currentSkinId;
-
-    public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
-
-    private void Awake()
+    public class BeastSpawner : MonoBehaviour
     {
-        _transform = transform;
-    }
+        [SerializeField] private Beast _beastPrefab;
+        [SerializeField] private SkinData _skinData;
 
-    private void Start()
-    {
-        LoadCurrentSkin();
-    }
+        private Beast _beast;
+        private string _currentSkinId;
 
-    private void LoadCurrentSkin()
-    {
-        string savedSkinId = YG2.saves.EquippedBeastSkin;
+        public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
 
-        if (string.IsNullOrEmpty(savedSkinId) == false)
+        private void Start()
         {
-            var skin = _skinData.GetSkinById(savedSkinId);
-
-            if (skin != null)
-            {
-                _currentSkinId = savedSkinId;
-            }
-            else
-            {
-                _currentSkinId = _skinData.GetDefaultSkinId();
-            }
+            LoadCurrentSkin();
         }
-        else
+
+        private void LoadCurrentSkin()
         {
-            _currentSkinId = _skinData.GetDefaultSkinId();
+            string savedSkinId = YG2.saves.EquippedBeastSkin;
+            bool isSkinMissing = string.IsNullOrEmpty(savedSkinId) || _skinData.GetSkinById(savedSkinId) == null;
+            _currentSkinId = isSkinMissing ? _skinData.GetDefaultSkinId() : savedSkinId;
         }
-    }
 
-    public Beast Spawn()
-    {
-        if (_beast == null)
-            _beast = Instantiate(_beastPrefab, _transform);
-
-        ApplyCurrentSkin();
-
-        return _beast;
-    }
-
-    public void UpdateSkin(string skinId)
-    {
-        if (_currentSkinId == skinId)
-            return;
-
-        _currentSkinId = skinId;
-
-        if (_beast != null)
+        public Beast Spawn()
         {
+            if (_beast == null)
+                _beast = Instantiate(_beastPrefab, transform);
+
             ApplyCurrentSkin();
+
+            return _beast;
         }
 
-        YG2.saves.EquippedBeastSkin = _currentSkinId;
-        YG2.SaveProgress();
-    }
-
-    private void ApplyCurrentSkin()
-    {
-        var skin = _skinData.GetSkinById(_currentSkinId);
-
-        if (skin != null && skin.Model != null)
+        public void UpdateSkin(string skinId)
         {
-            ApplySkinModel(skin.Model);
-        }
-    }
+            if (_currentSkinId == skinId)
+                return;
 
-    private void ApplySkinModel(GameObject skinModelPrefab)
-    {
-        foreach (Transform child in _beast.transform)
+            _currentSkinId = skinId;
+
+            if (_beast != null)
+            {
+                ApplyCurrentSkin();
+            }
+
+            YG2.saves.EquippedBeastSkin = _currentSkinId;
+            YG2.SaveProgress();
+        }
+
+        private void ApplyCurrentSkin()
         {
-            Destroy(child.gameObject);
+            var skin = _skinData.GetSkinById(_currentSkinId);
+
+            if (skin != null && skin.Model != null)
+            {
+                ApplySkinModel(skin.Model);
+            }
         }
 
-        var model = Instantiate(skinModelPrefab, _beast.transform);
-        model.name = "beastModel";
+        private void ApplySkinModel(GameObject skinModelPrefab)
+        {
+            foreach (Transform child in _beast.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            var model = Instantiate(skinModelPrefab, _beast.transform);
+            model.name = "beastModel";
+        }
     }
 }

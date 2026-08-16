@@ -1,11 +1,14 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class ShootingPlace : MonoBehaviour
+namespace MapGenerator
 {
-    public bool IsEmpty { get; private set; } = true;
-
-    public void ChangeEmptyStatus(bool isEmpty)
+    public class ShootingPlace : MonoBehaviour
     {
-        IsEmpty = isEmpty;
+        public bool IsEmpty { get; private set; } = true;
+
+        public void ChangeEmptyStatus(bool isEmpty)
+        {
+            IsEmpty = isEmpty;
+        }
     }
 }

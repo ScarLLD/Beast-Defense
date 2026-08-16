@@ -1,373 +1,379 @@
-﻿using System;
+﻿using BeastCore;
+using Core;
+using CubeCore;
+using LifeCycle;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 
-[RequireComponent(typeof(SnakeSpeedControl))]
-public class Snake : MonoBehaviour
+namespace SnakeCore
 {
-    [Header("Snake Settings")]
-    [SerializeField] private Animator _animator;
-    [SerializeField] private SnakeHead _head;
-    [SerializeField] private Transform _modelContainer;
-    [SerializeField] private float _moveSpeed = 2f;
-    [SerializeField] private float _moveBackSpeed = 20f;
-    [SerializeField] private float _segmentDistance = 1.15f;
-    [SerializeField] private float _segmentRollback = 1.5f;
-    [SerializeField] private float _headRollback = 1.5f;
-
-    [SerializeField] private float _startSplinePosition = 0;
-
-    [Header("Prefabs")]
-    [SerializeField] private SnakeSegment _segmentPrefab;
-
-    [Header("Recoil Settings")]
-    [SerializeField] private float _recoilDuration = 0.3f;
-    [SerializeField] private AnimationCurve _recoilCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-
-    private readonly List<SnakeSegment> _savedSegments = new();
-    private readonly List<SnakeSegment> _playableSegments = new();
-    private readonly Queue<SnakeSegment> _recoilQueue = new();
-    private int _startSegmentsCount;
-    private float _splinePosition;
-    private float _splineLength;
-    private SplineContainer _splineContainer;
-    private SnakeSpeedControl _speedControl;
-    private DeathModule _deathModule;
-    private Vector3 _initialHeadSize;
-    private Beast _beast;
-    private Coroutine _movementCoroutine;
-    private Coroutine _recoilCoroutine;
-    private bool _isRecoiling = false;
-
-    public float MoveSpeed { get; private set; }
-    public float BaseSpeed { get; private set; }
-    public float NormalizedPosition { get; private set; }
-    public Transform ModelContainer => _modelContainer;
-
-    public event Action<float, float> SegmentsCountChanged;
-
-    private void Awake()
+    [RequireComponent(typeof(SnakeSpeedControl))]
+    public class Snake : MonoBehaviour
     {
-        _initialHeadSize = _head.transform.localScale;
-        _speedControl = GetComponent<SnakeSpeedControl>();
-    }
+        private readonly List<SnakeSegment> _savedSegments = new ();
+        private readonly List<SnakeSegment> _playableSegments = new ();
+        private readonly Queue<SnakeSegment> _recoilQueue = new ();
 
-    public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
-    {
-        _beast = beast;
-        _deathModule = deathModule;
-        MoveSpeed = _moveSpeed;
-        BaseSpeed = _moveSpeed;
-        _splineContainer = splineContainer;
-        _splineLength = _splineContainer.Spline.GetLength();
+        [Header("Snake Settings")]
+        [SerializeField] private Animator _animator;
+        [SerializeField] private SnakeHead _head;
+        [SerializeField] private Transform _modelContainer;
+        [SerializeField] private float _moveSpeed = 2f;
+        [SerializeField] private float _moveBackSpeed = 20f;
+        [SerializeField] private float _segmentDistance = 1.15f;
+        [SerializeField] private float _segmentRollback = 1.5f;
+        [SerializeField] private float _headRollback = 1.5f;
 
-        CreateSegmentsFromStacks(stacks);
+        [SerializeField] private float _startSplinePosition = 0;
 
-        SetDefaultSetting();
-    }
+        [Header("Prefabs")]
+        [SerializeField] private SnakeSegment _segmentPrefab;
 
-    public void StartMove()
-    {
-        _animator.enabled = true;
-        _speedControl.StartControl();
-        _movementCoroutine = StartCoroutine(SnakeMovement());
-    }
+        [Header("Recoil Settings")]
+        [SerializeField] private float _recoilDuration = 0.3f;
+        [SerializeField] private AnimationCurve _recoilCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
 
-    public void DestroySegment(SnakeSegment segmentToDestroy)
-    {
-        if (segmentToDestroy == null || !_playableSegments.Contains(segmentToDestroy)) return;
+        private int _startSegmentsCount;
+        private float _splinePosition;
+        private float _splineLength;
+        private SplineContainer _splineContainer;
+        private SnakeSpeedControl _speedControl;
+        private DeathModule _deathModule;
+        private Vector3 _initialHeadSize;
+        private Beast _beast;
+        private Coroutine _movementCoroutine;
+        private Coroutine _recoilCoroutine;
+        private bool _isRecoiling = false;
 
-        _recoilQueue.Enqueue(segmentToDestroy);
+        public event Action<float, float> SegmentsCountChanged;
 
-        if (_isRecoiling == false)
-            StartCoroutine(ProcessRecoilQueue());
-    }
+        public float MoveSpeed { get; private set; }
+        public float BaseSpeed { get; private set; }
+        public float NormalizedPosition { get; private set; }
+        public Transform ModelContainer => _modelContainer;
 
-    public void ChangeSpeed(float newSpeed)
-    {
-        MoveSpeed = newSpeed;
-    }
-
-    public IEnumerator GetBackToStart()
-    {
-        bool isWork = true;
-
-        while (isWork && _splinePosition > 0)
+        private void Awake()
         {
-            if (_recoilCoroutine == null)
-            {
-                _splinePosition -= _moveBackSpeed * (NormalizedPosition + 1) * Time.deltaTime;
-                UpdateHeadPosition();
-                UpdateSegmentsPosition();
-            }
-
-            yield return null;
-        }
-    }
-
-    public void SetDefaultSetting()
-    {
-        Cleanup();
-
-        MoveSpeed = _moveSpeed;
-        _animator.Rebind();
-        _animator.StopPlayback();
-
-        _head.enabled = false;
-        _head.SetDefaultSetting();
-        _head.transform.localScale = _initialHeadSize;
-        PlaceOnSpline(_head.transform, _splinePosition);
-
-        _splinePosition = _startSplinePosition;
-    }
-
-    public void CreateSegmentsFromStacks(List<CubeStack> stacks)
-    {
-        if (stacks == null) return;
-
-        ClearSegments();
-
-        stacks = UserUtils.ShuffleList(stacks);
-
-        _startSegmentsCount = 0;
-
-        foreach (var stack in stacks)
-        {
-            if (stack == null) continue;
-
-            int segmentsCount = stack.Count / 4;
-            for (int i = 0; i < segmentsCount; i++)
-            {
-                var segment = Instantiate(_segmentPrefab, transform);
-                segment.Init(stack.Material, this);
-                segment.SetActiveSegment(false);
-                _savedSegments.Add(segment);
-                _startSegmentsCount++;
-            }
+            _initialHeadSize = _head.transform.localScale;
+            _speedControl = GetComponent<SnakeSpeedControl>();
         }
 
-        foreach (var segment in _savedSegments)
+        public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
         {
-            _playableSegments.Add(segment);
+            _beast = beast;
+            _deathModule = deathModule;
+            MoveSpeed = _moveSpeed;
+            BaseSpeed = _moveSpeed;
+            _splineContainer = splineContainer;
+            _splineLength = _splineContainer.Spline.GetLength();
+
+            CreateSegmentsFromStacks(stacks);
+
+            SetDefaultSetting();
         }
 
-        SegmentsCountChanged?.Invoke(_savedSegments.Count, _startSegmentsCount);
-    }
-
-    private void ClearSegments()
-    {
-        ClearPlayableSegments();
-        ClearSavedSegments();
-    }
-
-    private void ClearSavedSegments()
-    {
-        if (_savedSegments.Count > 0)
+        public void StartMove()
         {
-            foreach (var segment in _savedSegments)
-            {
-                Destroy(segment.gameObject);
-            }
-
-            _savedSegments.Clear();
+            _animator.enabled = true;
+            _speedControl.StartControl();
+            _movementCoroutine = StartCoroutine(SnakeMovement());
         }
-    }
 
-    private void ClearPlayableSegments()
-    {
-        if (_playableSegments.Count > 0)
+        public void DestroySegment(SnakeSegment segmentToDestroy)
         {
-            foreach (var segment in _playableSegments)
-            {
-                Destroy(segment.gameObject);
-            }
+            if (segmentToDestroy == null || !_playableSegments.Contains(segmentToDestroy)) return;
 
-            _playableSegments.Clear();
-        }
-    }
+            _recoilQueue.Enqueue(segmentToDestroy);
 
-    private IEnumerator SnakeMovement()
-    {
-        while (_playableSegments.Count > 0 && MoveSpeed != 0)
-        {
             if (_isRecoiling == false)
-            {
-                _splinePosition += MoveSpeed * Time.deltaTime;
-                UpdateHeadPosition();
-                UpdateSegmentsPosition();
+                StartCoroutine(ProcessRecoilQueue());
+        }
 
-                if ((_head.IsPlaying == false || _beast.IsMoving == false)
-                    && _beast.TryApproachNotify(NormalizedPosition))
+        public void ChangeSpeed(float newSpeed)
+        {
+            MoveSpeed = newSpeed;
+        }
+
+        public IEnumerator GetBackToStart()
+        {
+            bool isWork = true;
+
+            while (isWork && _splinePosition > 0)
+            {
+                if (_recoilCoroutine == null)
                 {
-                    OpenMouth();
+                    _splinePosition -= _moveBackSpeed * (NormalizedPosition + 1) * Time.deltaTime;
+                    UpdateHeadPosition();
+                    UpdateSegmentsPosition();
+                }
+
+                yield return null;
+            }
+        }
+
+        public void SetDefaultSetting()
+        {
+            Cleanup();
+
+            MoveSpeed = _moveSpeed;
+            _animator.Rebind();
+            _animator.StopPlayback();
+
+            _head.enabled = false;
+            _head.SetDefaultSetting();
+            _head.transform.localScale = _initialHeadSize;
+            PlaceOnSpline(_head.transform, _splinePosition);
+
+            _splinePosition = _startSplinePosition;
+        }
+
+        public void CreateSegmentsFromStacks(List<CubeStack> stacks)
+        {
+            if (stacks == null) return;
+
+            ClearSegments();
+
+            stacks = UserUtils.ShuffleList(stacks);
+
+            _startSegmentsCount = 0;
+
+            foreach (var stack in stacks)
+            {
+                if (stack == null) continue;
+
+                int segmentsCount = stack.Count / 4;
+                for (int i = 0; i < segmentsCount; i++)
+                {
+                    var segment = Instantiate(_segmentPrefab, transform);
+                    segment.Init(stack.Material, this);
+                    segment.SetActiveSegment(false);
+                    _savedSegments.Add(segment);
+                    _startSegmentsCount++;
                 }
             }
 
-            yield return null;
-        }
-
-        if (_playableSegments.Count == 0)
-        {
-            _deathModule.KillSnake(_head.transform);
-            _animator.Rebind();
-            _animator.StopPlayback();
-            _head.enabled = false;
-        }
-        else if (MoveSpeed == 0)
-        {
-            _deathModule.KillBeast(_beast.transform);
-            _animator.Rebind();
-            _animator.enabled = false;
-            _head.enabled = false;
-        }
-    }
-
-    private void OpenMouth()
-    {
-        _head.ChangeParticleSpeed(MoveSpeed);
-        _animator.SetTrigger("isMouthOpen");
-    }
-
-    private void UpdateHeadPosition()
-    {
-        bool shouldBeActive = _splinePosition - _headRollback > 0f;
-        _head.gameObject.SetActive(shouldBeActive);
-
-        PlaceOnSpline(_head.transform, _splinePosition - _headRollback);
-        NormalizedPosition = _splineLength > 0 ?
-            Mathf.Clamp01(_splinePosition / _splineLength) : 0f;
-    }
-
-    private void UpdateSegmentsPosition()
-    {
-        float splinePosition = _splinePosition - _segmentDistance - _segmentRollback;
-        int activeSegments = 0;
-
-        for (int i = 0; i < _playableSegments.Count; i++)
-        {
-            var segment = _playableSegments[i];
-            if (segment == null) continue;
-
-            bool shouldBeActive = splinePosition > 0f;
-            segment.SetActiveSegment(shouldBeActive);
-
-            if (shouldBeActive)
+            foreach (var segment in _savedSegments)
             {
-                PlaceOnSpline(segment.transform, splinePosition);
-                activeSegments++;
+                _playableSegments.Add(segment);
             }
 
-            splinePosition -= _segmentDistance;
-        }
-    }
-
-    private void PlaceOnSpline(Transform target, float distance)
-    {
-        if (_splineContainer == null) return;
-
-        float t = Mathf.Clamp01(distance / _splineLength);
-        _splineContainer.Evaluate(t, out var position, out var tangent, out var up);
-        position.y += transform.localScale.y;
-
-        Vector3 safeTangent = (Vector3)tangent;
-        Vector3 safeUp = (Vector3)up;
-
-        if (safeTangent == Vector3.zero) safeTangent = Vector3.forward;
-        if (safeUp == Vector3.zero) safeUp = Vector3.up;
-
-        target.SetPositionAndRotation(position, Quaternion.LookRotation(safeTangent, safeUp));
-    }
-
-    private IEnumerator ProcessRecoilQueue()
-    {
-        _isRecoiling = true;
-
-        while (_recoilQueue.Count > 0)
-        {
-            var segmentToDestroy = _recoilQueue.Dequeue();
-            if (segmentToDestroy == null || !_playableSegments.Contains(segmentToDestroy)) continue;
-
-            yield return _recoilCoroutine = StartCoroutine(PerformRecoil(segmentToDestroy));
+            SegmentsCountChanged?.Invoke(_savedSegments.Count, _startSegmentsCount);
         }
 
-        _isRecoiling = false;
-    }
-
-    private IEnumerator PerformRecoil(SnakeSegment segmentToDestroy)
-    {
-        int targetIndex = _playableSegments.IndexOf(segmentToDestroy);
-        if (targetIndex == -1) yield break;
-
-        var segmentsToRecoil = new SnakeSegment[targetIndex];
-        for (int i = 0; i < targetIndex; i++)
+        private void ClearSegments()
         {
-            segmentsToRecoil[i] = _playableSegments[i];
+            ClearPlayableSegments();
+            ClearSavedSegments();
         }
 
-        float startHeadPosition = _splinePosition;
-        float targetHeadPosition = _splinePosition - _segmentDistance;
-
-        var startPosition = new float[segmentsToRecoil.Length];
-        var targetPosition = new float[segmentsToRecoil.Length];
-
-        for (int i = 0; i < segmentsToRecoil.Length; i++)
-
+        private void ClearSavedSegments()
         {
-            startPosition[i] = _splinePosition - _segmentDistance - _segmentRollback - (_segmentDistance * i);
-            targetPosition[i] = startPosition[i] - _segmentDistance;
+            if (_savedSegments.Count > 0)
+            {
+                foreach (var segment in _savedSegments)
+                {
+                    Destroy(segment.gameObject);
+                }
+
+                _savedSegments.Clear();
+            }
         }
 
-        float timer = 0f;
-
-        while (timer < _recoilDuration)
+        private void ClearPlayableSegments()
         {
-            timer += Time.deltaTime;
-            float t = timer / _recoilDuration;
-            float smoothT = _recoilCurve.Evaluate(t);
+            if (_playableSegments.Count > 0)
+            {
+                foreach (var segment in _playableSegments)
+                {
+                    Destroy(segment.gameObject);
+                }
 
-            _splinePosition = Mathf.Lerp(startHeadPosition, targetHeadPosition, smoothT);
+                _playableSegments.Clear();
+            }
+        }
 
-            UpdateHeadPosition();
+        private IEnumerator SnakeMovement()
+        {
+            while (_playableSegments.Count > 0 && MoveSpeed != 0)
+            {
+                if (_isRecoiling == false)
+                {
+                    _splinePosition += MoveSpeed * Time.deltaTime;
+                    UpdateHeadPosition();
+                    UpdateSegmentsPosition();
+
+                    if ((_head.IsPlaying == false || _beast.IsMoving == false)
+                        && _beast.TryApproachNotify(NormalizedPosition))
+                    {
+                        OpenMouth();
+                    }
+                }
+
+                yield return null;
+            }
+
+            if (_playableSegments.Count == 0)
+            {
+                _deathModule.KillSnake(_head.transform);
+                _animator.Rebind();
+                _animator.StopPlayback();
+                _head.enabled = false;
+            }
+            else if (MoveSpeed == 0)
+            {
+                _deathModule.KillBeast(_beast.transform);
+                _animator.Rebind();
+                _animator.enabled = false;
+                _head.enabled = false;
+            }
+        }
+
+        private void OpenMouth()
+        {
+            _head.ChangeParticleSpeed(MoveSpeed);
+            _animator.SetTrigger("isMouthOpen");
+        }
+
+        private void UpdateHeadPosition()
+        {
+            bool shouldBeActive = _splinePosition - _headRollback > 0f;
+            _head.gameObject.SetActive(shouldBeActive);
+
+            PlaceOnSpline(_head.transform, _splinePosition - _headRollback);
+            NormalizedPosition = _splineLength > 0 ?
+                Mathf.Clamp01(_splinePosition / _splineLength) : 0f;
+        }
+
+        private void UpdateSegmentsPosition()
+        {
+            float splinePosition = _splinePosition - _segmentDistance - _segmentRollback;
+            int activeSegments = 0;
+
+            for (int i = 0; i < _playableSegments.Count; i++)
+            {
+                var segment = _playableSegments[i];
+                if (segment == null) continue;
+
+                bool shouldBeActive = splinePosition > 0f;
+                segment.SetActiveSegment(shouldBeActive);
+
+                if (shouldBeActive)
+                {
+                    PlaceOnSpline(segment.transform, splinePosition);
+                    activeSegments++;
+                }
+
+                splinePosition -= _segmentDistance;
+            }
+        }
+
+        private void PlaceOnSpline(Transform target, float distance)
+        {
+            if (_splineContainer == null) return;
+
+            float t = Mathf.Clamp01(distance / _splineLength);
+            _splineContainer.Evaluate(t, out var position, out var tangent, out var up);
+            position.y += transform.localScale.y;
+
+            Vector3 safeTangent = (Vector3)tangent;
+            Vector3 safeUp = (Vector3)up;
+
+            if (safeTangent == Vector3.zero) safeTangent = Vector3.forward;
+            if (safeUp == Vector3.zero) safeUp = Vector3.up;
+
+            target.SetPositionAndRotation(position, Quaternion.LookRotation(safeTangent, safeUp));
+        }
+
+        private IEnumerator ProcessRecoilQueue()
+        {
+            _isRecoiling = true;
+
+            while (_recoilQueue.Count > 0)
+            {
+                var segmentToDestroy = _recoilQueue.Dequeue();
+                if (segmentToDestroy == null || !_playableSegments.Contains(segmentToDestroy)) continue;
+
+                yield return _recoilCoroutine = StartCoroutine(PerformRecoil(segmentToDestroy));
+            }
+
+            _isRecoiling = false;
+        }
+
+        private IEnumerator PerformRecoil(SnakeSegment segmentToDestroy)
+        {
+            int targetIndex = _playableSegments.IndexOf(segmentToDestroy);
+            if (targetIndex == -1) yield break;
+
+            var segmentsToRecoil = new SnakeSegment[targetIndex];
+            for (int i = 0; i < targetIndex; i++)
+            {
+                segmentsToRecoil[i] = _playableSegments[i];
+            }
+
+            float startHeadPosition = _splinePosition;
+            float targetHeadPosition = _splinePosition - _segmentDistance;
+
+            var startPosition = new float[segmentsToRecoil.Length];
+            var targetPosition = new float[segmentsToRecoil.Length];
 
             for (int i = 0; i < segmentsToRecoil.Length; i++)
             {
-                if (segmentsToRecoil[i] != null)
-                {
-                    float dist = Mathf.Lerp(startPosition[i], targetPosition[i], smoothT);
-                    PlaceOnSpline(segmentsToRecoil[i].transform, dist);
-
-                }
+                startPosition[i] = _splinePosition - _segmentDistance - _segmentRollback - (_segmentDistance * i);
+                targetPosition[i] = startPosition[i] - _segmentDistance;
             }
 
-            yield return null;
+            float timer = 0f;
+
+            while (timer < _recoilDuration)
+            {
+                timer += Time.deltaTime;
+                float t = timer / _recoilDuration;
+                float smoothT = _recoilCurve.Evaluate(t);
+
+                _splinePosition = Mathf.Lerp(startHeadPosition, targetHeadPosition, smoothT);
+
+                UpdateHeadPosition();
+
+                for (int i = 0; i < segmentsToRecoil.Length; i++)
+                {
+                    if (segmentsToRecoil[i] != null)
+                    {
+                        float dist = Mathf.Lerp(startPosition[i], targetPosition[i], smoothT);
+                        PlaceOnSpline(segmentsToRecoil[i].transform, dist);
+                    }
+                }
+
+                yield return null;
+            }
+
+            _splinePosition = targetHeadPosition;
+
+            UpdateHeadPosition();
+
+            if (segmentToDestroy.gameObject != null)
+            {
+                _playableSegments.Remove(segmentToDestroy);
+                segmentToDestroy.gameObject.SetActive(false);
+            }
+
+            SegmentsCountChanged?.Invoke(_playableSegments.Count, _startSegmentsCount);
+            UpdateSegmentsPosition();
+
+            _recoilCoroutine = null;
         }
 
-        _splinePosition = targetHeadPosition;
-
-        UpdateHeadPosition();
-
-        if (segmentToDestroy.gameObject != null)
+        private void Cleanup()
         {
-            _playableSegments.Remove(segmentToDestroy);
-            segmentToDestroy.gameObject.SetActive(false);
+            if (_movementCoroutine != null)
+            {
+                StopCoroutine(_movementCoroutine);
+                _movementCoroutine = null;
+            }
+
+            _recoilQueue.Clear();
         }
-
-        SegmentsCountChanged?.Invoke(_playableSegments.Count, _startSegmentsCount);
-        UpdateSegmentsPosition();
-
-        _recoilCoroutine = null;
-    }
-
-    private void Cleanup()
-    {
-        if (_movementCoroutine != null)
-        {
-            StopCoroutine(_movementCoroutine);
-            _movementCoroutine = null;
-        }
-
-        _recoilQueue.Clear();
     }
 }

@@ -1,63 +1,66 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-public class Adv : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private Transition _transition;
-    [SerializeField] private string _skipLevelID = "Skip";
-    [SerializeField] private string _increaseHeartID = "Heart";
-    [SerializeField] private string _doubleRewardID = "Double";
-
-    [SerializeField] private Button _beginButton;
-
-    public event Action HeartIncreased;
-    public event Action LevelRegenerated;
-    public event Action WinRewardDoubled;
-
-    private void OnEnable()
+    public class Adv : MonoBehaviour
     {
-        _beginButton.onClick.AddListener(ShowInterstitialAdv);
-    }
+        [SerializeField] private Transition _transition;
+        [SerializeField] private string _skipLevelID = "Skip";
+        [SerializeField] private string _increaseHeartID = "Heart";
+        [SerializeField] private string _doubleRewardID = "Double";
 
-    private void OnDisable()
-    {
-        _beginButton.onClick.RemoveListener(ShowInterstitialAdv);
-    }
+        [SerializeField] private Button _beginButton;
 
-    public void IncreaseGameHeartAdvShow()
-    {
-        YG2.RewardedAdvShow(_increaseHeartID, () =>
+        public event Action HeartIncreased;
+        public event Action LevelRegenerated;
+        public event Action WinRewardDoubled;
+
+        private void OnEnable()
         {
-            HeartIncreased?.Invoke();
-        });
-    }
+            _beginButton.onClick.AddListener(ShowInterstitialAdv);
+        }
 
-    public void RegenerateLevelAdvShow()
-    {
-        if (_transition.IsTransiting == false)
+        private void OnDisable()
         {
-            YG2.RewardedAdvShow(_skipLevelID, () =>
+            _beginButton.onClick.RemoveListener(ShowInterstitialAdv);
+        }
+
+        public void IncreaseGameHeartAdvShow()
+        {
+            YG2.RewardedAdvShow(_increaseHeartID, () =>
             {
-                LevelRegenerated?.Invoke();
+                HeartIncreased?.Invoke();
             });
         }
-    }
 
-    public void DoubleRewardAdvShow()
-    {
-        if (_transition.IsTransiting == false)
+        public void RegenerateLevelAdvShow()
         {
-            YG2.RewardedAdvShow(_doubleRewardID, () =>
+            if (_transition.IsTransiting == false)
             {
-                WinRewardDoubled?.Invoke();
-            });
+                YG2.RewardedAdvShow(_skipLevelID, () =>
+                {
+                    LevelRegenerated?.Invoke();
+                });
+            }
         }
-    }
 
-    private void ShowInterstitialAdv()
-    {
-        YG2.InterstitialAdvShow();
+        public void DoubleRewardAdvShow()
+        {
+            if (_transition.IsTransiting == false)
+            {
+                YG2.RewardedAdvShow(_doubleRewardID, () =>
+                {
+                    WinRewardDoubled?.Invoke();
+                });
+            }
+        }
+
+        private void ShowInterstitialAdv()
+        {
+            YG2.InterstitialAdvShow();
+        }
     }
 }

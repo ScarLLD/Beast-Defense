@@ -1,103 +1,126 @@
+﻿using LifeCycle;
+using Menu;
 using UnityEngine;
+using UnityEngine.UI;
 using YG;
 using YG.Utils.LB;
 
-public class ScoreReader : MonoBehaviour
+namespace LeaderBoard
 {
-    [SerializeField] private LeaderboardYG _leaderboard;
-    [SerializeField] private LeaderBoardMenu _leaderboardMenu;
-    [SerializeField] private GameTimer _timer;
-
-    private LBData _lbData;
-    private float _pendingScore = 0;
-
-
-    private void OnEnable()
+    public class ScoreReader : MonoBehaviour
     {
-        YG2.onGetLeaderboard += OnLeaderboardDataReceived;
-        if (_timer != null)
-            _timer.Stopped += SetNewScore;
+        [SerializeField] private Text _scoreText;
+        [SerializeField] private GameObject _recordIdentifier;
+        [SerializeField] private GameTimer _timer;
+        [SerializeField] private LeaderboardYG _leaderboard;
+        [SerializeField] private LeaderBoardMenu _leaderboardMenu;
 
-        YG2.GetLeaderboard(_leaderboard.nameLB);
-    }
+        private LBData _lbData;
+        private float _pendingScore = 0;
 
-    private void OnDisable()
-    {
-        YG2.onGetLeaderboard -= OnLeaderboardDataReceived;
-        if (_timer != null)
-            _timer.Stopped -= SetNewScore;
-        _pendingScore = 0;
-    }
-
-    private void SetNewScore(float newScore)
-    {
-        if (newScore <= 0)
-            return;
-
-        if (_lbData == null)
+        private void OnEnable()
         {
-            _pendingScore = newScore;
+            YG2.onGetLeaderboard += OnLeaderboardDataReceived;
+            _timer.Stopped += OnTimerStopped;
+
             YG2.GetLeaderboard(_leaderboard.nameLB);
-            return;
         }
 
-        SubmitScoreInternal(newScore);
-    }
-
-    private void SubmitScoreInternal(float newScore)
-    {
-        bool scoreRetrieved = TryGetScore(out float loadedScore, out bool isEmptyScore);
-
-        if (scoreRetrieved)
+        private void OnDisable()
         {
-            if (newScore < loadedScore)
-                YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
-        }
-        else
-        {
-            YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
-        }
-
-        _leaderboard.UpdateLB();
-    }
-
-    private void OnLeaderboardDataReceived(LBData lbData)
-    {
-        if (lbData.technoName != _leaderboard.nameLB)
-            return;
-
-        _lbData = lbData;
-
-        if (_pendingScore > 0)
-        {
-            SubmitScoreInternal(_pendingScore);
+            YG2.onGetLeaderboard -= OnLeaderboardDataReceived;
+            _timer.Stopped -= OnTimerStopped;
             _pendingScore = 0;
         }
-    }
 
-    public bool TryGetScore(out float score, out bool isEmptyScore)
-    {
-        isEmptyScore = false;
-        score = 0;
-
-        if (_lbData == null)
-            return false;
-
-        if (_lbData.entries == InfoYG.NO_DATA)
+        private void OnTimerStopped(float time)
         {
-            isEmptyScore = true;
-            return false;
+            int totalSeconds = (int)time;
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
+
+            float fractionalPart = time - totalSeconds;
+            int hundredthsOfSecond = (int)(fractionalPart * 100);
+
+            string formattedTime = $"{minutes}:{seconds}.{hundredthsOfSecond}";
+
+            _scoreText.text = formattedTime;
+
+            if (TryGetScore(out float loadedTime, out bool isEmptyScore))
+                _recordIdentifier.SetActive(loadedTime > time || isEmptyScore);
+            else
+                _recordIdentifier.SetActive(false);
+
+            SetNewScore(time);
         }
 
-        foreach (var player in _lbData.players)
+        private void SetNewScore(float newScore)
         {
-            if (player.uniqueID == YG2.player.id)
+            if (newScore <= 0) return;
+
+            if (_lbData == null)
             {
-                score = player.score / 1000f;
-                return true;
+                _pendingScore = newScore;
+                YG2.GetLeaderboard(_leaderboard.nameLB);
+                return;
+            }
+
+            SubmitScoreInternal(newScore);
+        }
+
+        private void SubmitScoreInternal(float newScore)
+        {
+            bool scoreRetrieved = TryGetScore(out float loadedScore, out _);
+
+            if (scoreRetrieved)
+            {
+                if (newScore < loadedScore)
+                    YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
+            }
+            else
+            {
+                YG2.SetLBTimeConvert(_leaderboard.nameLB, newScore);
+            }
+
+            _leaderboard.UpdateLB();
+        }
+
+        private void OnLeaderboardDataReceived(LBData lbData)
+        {
+            if (lbData.technoName != _leaderboard.nameLB) return;
+
+            _lbData = lbData;
+
+            if (_pendingScore > 0)
+            {
+                SubmitScoreInternal(_pendingScore);
+                _pendingScore = 0;
             }
         }
 
-        return false;
+        public bool TryGetScore(out float score, out bool isEmptyScore)
+        {
+            isEmptyScore = false;
+            score = 0;
+
+            if (_lbData == null) return false;
+
+            if (_lbData.entries == InfoYG.NO_DATA)
+            {
+                isEmptyScore = true;
+                return false;
+            }
+
+            foreach (var player in _lbData.players)
+            {
+                if (player.uniqueID == YG2.player.id)
+                {
+                    score = player.score / 1000f;
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

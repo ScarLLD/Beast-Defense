@@ -1,43 +1,48 @@
+﻿using SnakeCore;
 using UnityEngine;
 
-public class Cube : MonoBehaviour
+namespace CubeCore
 {
-    private MeshRenderer _meshRenderer;
-    private SnakeSegment _snakeSegment;
-
-    public bool IsDestroyed { get; private set; } = false;
-
-    public Material Material => _meshRenderer.material;
-
-    private void Awake()
+    public class Cube : MonoBehaviour
     {
-        _meshRenderer = GetComponent<MeshRenderer>();
-    }
+        private MeshRenderer _meshRenderer;
+        private SnakeSegment _snakeSegment;
 
-    public void Init(Material material)
-    {
-        _meshRenderer.material = material;
-        gameObject.SetActive(false);
-    }
+        public bool IsDestroyed { get; private set; } = false;
 
-    public void InitSegment(SnakeSegment snakeSegment)
-    {
-        _snakeSegment = snakeSegment;
-    }
+        public Material Material => _meshRenderer.material;
 
-    public void Hit()
-    {
-        if (IsDestroyed == false)
+        private void Awake()
         {
+            _meshRenderer = GetComponent<MeshRenderer>();
+        }
+
+        public void Init(Material material)
+        {
+            _meshRenderer.material = material;
+            gameObject.SetActive(false);
+        }
+
+        public void InitSegment(SnakeSegment snakeSegment)
+        {
+            _snakeSegment = snakeSegment;
+        }
+
+        public void Hit()
+        {
+            if (IsDestroyed == true)
+                return;
+
             Deactivate();
             IsDestroyed = true;
             _snakeSegment.TryDestroy();
-        }
-    }
 
-    public void Deactivate()
-    {
-        if (IsDestroyed == false)
-            gameObject.SetActive(false);
+        }
+
+        public void Deactivate()
+        {
+            if (IsDestroyed == false)
+                gameObject.SetActive(false);
+        }
     }
 }

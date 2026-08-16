@@ -1,50 +1,53 @@
-using System;
+п»їusing System;
 using UnityEngine;
 
-public class MiniGame : MonoBehaviour
+namespace MiniGameCore
 {
-    [SerializeField] private BeastCollector _collector;
-    [SerializeField] private MGSnake _snake;
-
-    public bool IsActive { get; private set; } = false;
-
-    public event Action Started;
-    public event Action Defeat;
-    public event Action Victory;
-
-    private void OnEnable()
+    public class MiniGame : MonoBehaviour
     {
-        _snake.Died += DefeatGame;
-    }
+        [SerializeField] private BeastCollector _collector;
+        [SerializeField] private MGSnake _snake;
 
-    private void OnDisable()
-    {
-        _snake.Died -= DefeatGame;
-    }
+        public event Action Started;
+        public event Action Defeat;
+        public event Action Victory;
 
-    public void ResetSettings()
-    {
-        _collector.ResetSettings();
-    }
+        public bool IsActive { get; private set; } = false;        
 
-    public void StartGame()
-    {
-        IsActive = true;
-        Started?.Invoke();
-        Debug.Log("Мини-игра началась.");
-    }
+        private void OnEnable()
+        {
+            _snake.Died += DefeatGame;
+        }
 
-    public void VictoryGame()
-    {
-        IsActive = false;
-        Victory?.Invoke();
-        Debug.Log("Мини-игра пройдена.");
-    }
+        private void OnDisable()
+        {
+            _snake.Died -= DefeatGame;
+        }
 
-    public void DefeatGame()
-    {
-        IsActive = false;
-        Defeat?.Invoke();
-        Debug.Log("Мини-игра проиграна.");
+        public void ResetSettings()
+        {
+            _collector.ResetSettings();
+        }
+
+        public void StartGame()
+        {
+            IsActive = true;
+            Started?.Invoke();
+            Debug.Log("РњРёРЅРё-РёРіСЂР° РЅР°С‡Р°Р»Р°СЃСЊ.");
+        }
+
+        public void VictoryGame()
+        {
+            IsActive = false;
+            Victory?.Invoke();
+            Debug.Log("РњРёРЅРё-РёРіСЂР° РїСЂРѕР№РґРµРЅР°.");
+        }
+
+        public void DefeatGame()
+        {
+            IsActive = false;
+            Defeat?.Invoke();
+            Debug.Log("РњРёРЅРё-РёРіСЂР° РїСЂРѕРёРіСЂР°РЅР°.");
+        }
     }
 }

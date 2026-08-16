@@ -1,72 +1,78 @@
+﻿using BeastCore;
+using Options;
+using SnakeCore;
 using UnityEngine;
 using YG;
 
-public class MiniGameSequencer : MonoBehaviour
+namespace MiniGameCore
 {
-    [SerializeField] private SnakeSpawner _snakeSpawner;
-    [SerializeField] private BeastSpawner _beastSpawner;
-    [SerializeField] private AudioPlayer _audioPlayer;
-
-    [Header("MiniGameSettings")]
-    [SerializeField] private MiniGame _miniGame;
-    [SerializeField] private GameObject _gameObjectsParent;
-    [SerializeField] private MiniGameSequenceAnimator _animator;
-    [SerializeField] private MGBeastSpawner _mgBeastSpawner;
-    [SerializeField] private MGSnakeSpawner _mgSnakeSpawner;
-    [SerializeField] private Transform _mobileControl;
-    [SerializeField] private Transform _desktopControl;
-
-    private void Awake()
+    public class MiniGameSequencer : MonoBehaviour
     {
-        InitializeControlHint();
-    }
+        [SerializeField] private SnakeSpawner _snakeSpawner;
+        [SerializeField] private BeastSpawner _beastSpawner;
+        [SerializeField] private AudioPlayer _audioPlayer;
 
-    private void InitializeControlHint()
-    {
-        bool deviceIsDesktop = YG2.envir.isDesktop;
+        [Header("MiniGameSettings")]
+        [SerializeField] private MiniGame _miniGame;
+        [SerializeField] private GameObject _gameObjectsParent;
+        [SerializeField] private MiniGameSequenceAnimator _animator;
+        [SerializeField] private MGBeastSpawner _mgBeastSpawner;
+        [SerializeField] private MGSnakeSpawner _mgSnakeSpawner;
+        [SerializeField] private Transform _mobileControl;
+        [SerializeField] private Transform _desktopControl;
 
-        if (deviceIsDesktop)
-            _desktopControl.gameObject.SetActive(true);
-        else
-            _mobileControl.gameObject.SetActive(true);
-    }
+        private void Awake()
+        {
+            InitializeControlHint();
+        }
 
-    private void OnEnable()
-    {
-        _miniGame.Victory += Close;
-        _miniGame.Defeat += Close;
-    }
+        private void InitializeControlHint()
+        {
+            bool deviceIsDesktop = YG2.envir.isDesktop;
 
-    private void OnDisable()
-    {
-        _miniGame.Victory -= Close;
-        _miniGame.Defeat -= Close;
-    }
+            if (deviceIsDesktop)
+                _desktopControl.gameObject.SetActive(true);
+            else
+                _mobileControl.gameObject.SetActive(true);
+        }
 
-    public void Launch()
-    {
-        InitializeSkins();
-        _gameObjectsParent.SetActive(true);
+        private void OnEnable()
+        {
+            _miniGame.Victory += Close;
+            _miniGame.Defeat += Close;
+        }
 
-        _animator.StartAnimation();
-        _miniGame.ResetSettings();
-        _miniGame.StartGame();
-    }
+        private void OnDisable()
+        {
+            _miniGame.Victory -= Close;
+            _miniGame.Defeat -= Close;
+        }
 
-    private void Close()
-    {
-        _animator.CloseAnimation();
-    }
+        public void Launch()
+        {
+            InitializeSkins();
+            _gameObjectsParent.SetActive(true);
 
-    private void InitializeSkins()
-    {
-        var _snakeSkin = _snakeSpawner.GetCurrentSkin;
-        var _beastSkin = _beastSpawner.GetCurrentSkin;
+            _animator.StartAnimation();
+            _miniGame.ResetSettings();
+            _miniGame.StartGame();
+        }
 
-        if (_beastSkin != null)
-            _mgBeastSpawner.InitializeSkin(_beastSkin.Model);
+        private void Close()
+        {
+            _animator.CloseAnimation();
+        }
 
-        if (_snakeSkin != null)
-            _mgSnakeSpawner.InitializeSkin(_snakeSkin.Model, _snakeSkin.Color);
+        private void InitializeSkins()
+        {
+            var snakeSkin = _snakeSpawner.GetCurrentSkin;
+            var beastSkin = _beastSpawner.GetCurrentSkin;
+
+            if (beastSkin != null)
+                _mgBeastSpawner.InitializeSkin(beastSkin.Model);
+
+            if (snakeSkin != null)
+                _mgSnakeSpawner.InitializeSkin(snakeSkin.Model, snakeSkin.Color);
+        }
     }
 }

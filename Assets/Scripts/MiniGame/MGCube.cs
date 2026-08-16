@@ -1,11 +1,14 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class MGCube : MonoBehaviour
+namespace MiniGameCore
 {
-    [SerializeField] private Material _material;
-
-    public void SetColor(Color color)
+    public class MGCube : MonoBehaviour
     {
-        _material.color = color;
+        [SerializeField] private Material _material;
+
+        public void SetColor(Color color)
+        {
+            _material.color = color;
+        }
     }
 }

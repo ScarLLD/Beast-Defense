@@ -1,26 +1,29 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using YG;
 
-public class MoneyViewer : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private Wallet _wallet;
-    [SerializeField] private TMP_Text _text;
-
-    private void OnEnable()
+    public class MoneyViewer : MonoBehaviour
     {
-        _wallet.CountChanged += DisplayCount;
+        [SerializeField] private Wallet _wallet;
+        [SerializeField] private TMP_Text _text;
 
-        DisplayCount();
-    }
+        private void OnEnable()
+        {
+            _wallet.CountChanged += DisplayCount;
 
-    private void OnDisable()
-    {
-        _wallet.CountChanged -= DisplayCount;
-    }
+            DisplayCount();
+        }
 
-    private void DisplayCount()
-    {
-        _text.text = YG2.saves.Money.ToString();
+        private void OnDisable()
+        {
+            _wallet.CountChanged -= DisplayCount;
+        }
+
+        private void DisplayCount()
+        {
+            _text.text = YG2.saves.Money.ToString();
+        }
     }
 }

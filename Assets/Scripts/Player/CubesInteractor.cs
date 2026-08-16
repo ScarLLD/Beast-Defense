@@ -1,34 +1,40 @@
+﻿using MapGenerator;
+using Options;
+using UI;
 using UnityEngine;
 
-public class CubesInteractor : MonoBehaviour
+namespace Player
 {
-    [SerializeField] private RayCreator _ray;
-    [SerializeField] private AudioPlayer _audioPlayer;
-    [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessage;
-    [SerializeField] private PlaceStorage _placesHolder;
-    [SerializeField] private AvailabilityManagement _availabilityManagement;
-
-    private void OnEnable()
+    public class CubesInteractor : MonoBehaviour
     {
-        _ray.Clicked += TryGetMove;
-    }
+        [SerializeField] private RayCreator _ray;
+        [SerializeField] private AudioPlayer _audioPlayer;
+        [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessage;
+        [SerializeField] private PlaceStorage _placesHolder;
+        [SerializeField] private AvailabilityManagement _availabilityManagement;
 
-    private void OnDisable()
-    {
-        _ray.Clicked -= TryGetMove;
-    }
-
-    private void TryGetMove(PlayerCube cube)
-    {
-        if (_placesHolder.TryGetPlace(cube, out ShootingPlace shootingPlace, out Vector3 escapePlace))
+        private void OnEnable()
         {
-            _audioPlayer.PlayPickShooterSound();
-            cube.Interect(shootingPlace, escapePlace);
-            _availabilityManagement.UpdateAvailability();
+            _ray.Clicked += TryGetMove;
         }
-        else
+
+        private void OnDisable()
         {
-            _noPlacesMessage.DisplayMessage();
+            _ray.Clicked -= TryGetMove;
+        }
+
+        private void TryGetMove(PlayerCube cube)
+        {
+            if (_placesHolder.TryGetPlace(cube, out ShootingPlace shootingPlace, out Vector3 escapePlace))
+            {
+                _audioPlayer.PlayPickShooterSound();
+                cube.Interect(shootingPlace, escapePlace);
+                _availabilityManagement.UpdateAvailability();
+            }
+            else
+            {
+                _noPlacesMessage.DisplayMessage();
+            }
         }
     }
 }

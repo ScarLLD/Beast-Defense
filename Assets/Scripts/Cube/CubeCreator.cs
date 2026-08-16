@@ -1,43 +1,51 @@
+Ôªøusing BulletCore;
+using Grid;
+using MiniGameCore;
+using Player;
+using Road;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeCreator : MonoBehaviour
+namespace CubeCore
 {
-    [SerializeField] private GridStorage _gridStorage;
-    [SerializeField] private PlayerCube _cubePrefab;
-    [SerializeField] private DOTWeenAnimator _animator;
-
-    private Transform _transform;
-
-    [SerializeField]
-    private List<Material> _Òolors = new();
-
-    [SerializeField]
-    private List<int> _counts = new();
-
-    private readonly List<PlayerCube> _cubes = new();
-    private readonly List<GridCell> _cells = new();
-
-    private void Awake()
+    public class CubeCreator : MonoBehaviour
     {
-        _transform = transform;
-    }
+        private readonly List<PlayerCube> _cubes = new ();
+        private readonly List<GridCell> _cells = new ();
 
-    public bool TryCreate(CubeStorage cubeStorage, BulletSpawner bulletSpawner, TargetStorage targetStorage)
-    {
-        if (_gridStorage.GridCount > 0)
+        [SerializeField] private GridStorage _gridStorage;
+        [SerializeField] private PlayerCube _cubePrefab;
+        [SerializeField] private DOTWeenAnimator _animator;
+
+        private Transform _transform;
+
+        [SerializeField]
+        private List<Material> _—Åolors = new ();
+
+        [SerializeField]
+        private List<int> _counts = new ();
+
+        private void Awake()
         {
-            int gridCount = _gridStorage.GridCount;
+            _transform = transform;
+        }
 
-            if (gridCount == 0)
+        public bool TryCreate(CubeStorage cubeStorage, BulletSpawner bulletSpawner, TargetStorage targetStorage)
+        {
+            int gridCount = _gridStorage.GridCount;            
+
+            if (gridCount <= 0)
+            {
+                Debug.Log("–ù–µ —É–¥–∞–ª–æ—Å—å —Å–≥–µ–Ω–µ—Ä–∏—Ä–æ–≤–∞—Ç—å –∫—É–±—ã.");
                 return false;
+            }
 
             cubeStorage.Clear();
 
             for (int i = 0; i < gridCount; i++)
             {
                 int count = _counts[Random.Range(0, _counts.Count)];
-                Material material = _Òolors[Random.Range(0, _Òolors.Count)];
+                Material material = _—Åolors[Random.Range(0, _—Åolors.Count)];
 
                 if (_gridStorage.TryGet(i, out GridCell gridCell) && gridCell.IsOccupied == false)
                 {
@@ -57,33 +65,30 @@ public class CubeCreator : MonoBehaviour
             return true;
         }
 
-        Debug.Log("ÕÂ Û‰‡ÎÓÒ¸ Ò„ÂÌÂËÓ‚‡Ú¸ ÍÛ·˚.");
-        return false;
-    }
-
-    public void Respawn()
-    {
-        foreach (PlayerCube playerCube in _cubes)
+        public void Respawn()
         {
-            if (playerCube.isActiveAndEnabled == false)
-                playerCube.gameObject.SetActive(true);
+            foreach (PlayerCube playerCube in _cubes)
+            {
+                if (playerCube.isActiveAndEnabled == false)
+                    playerCube.gameObject.SetActive(true);
 
-            playerCube.SetDefaultSettings();
+                playerCube.SetDefaultSettings();
+            }
+
+            foreach (GridCell cell in _cells)
+            {
+                cell.SetDefaultSettings();
+            }
         }
 
-        foreach (GridCell cell in _cells)
+        public void Terminate()
         {
-            cell.SetDefaultSettings();
-        }
-    }
+            foreach (var cube in _cubes)
+            {
+                Destroy(cube.gameObject);
+            }
 
-    public void Terminate()
-    {
-        foreach (var cube in _cubes)
-        {
-            Destroy(cube.gameObject);
+            _cubes.Clear();
         }
-
-        _cubes.Clear();
     }
 }

@@ -19,7 +19,7 @@ namespace YG
             [HeaderYG("Environment Data", 5)]
 #endif
             public YG2.Device device;
-            public string language = "ru";
+            public string language = "Ru";
 
             [HeaderYG(Langs.advSimHeader, 5)]
 #if RU_YG2

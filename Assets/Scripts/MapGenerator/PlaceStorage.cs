@@ -1,61 +1,65 @@
+﻿using Player;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class PlaceStorage : MonoBehaviour
+namespace MapGenerator
 {
-    [SerializeField] private List<Vector3> _escapePlaces;
-
-    private List<ShootingPlace> _shootingPlaces;
-
-    private void Awake()
+    public class PlaceStorage : MonoBehaviour
     {
-        _shootingPlaces = new List<ShootingPlace>();
-    }
+        [SerializeField] private List<Vector3> _escapePlaces;
 
-    public void Clear()
-    {
-        foreach (var place in _shootingPlaces)
+        private List<ShootingPlace> _shootingPlaces;
+
+        private void Awake()
         {
-            Destroy(place.gameObject);
+            _shootingPlaces = new List<ShootingPlace>();
         }
 
-        _shootingPlaces.Clear();
-    }
-
-    public bool TryGetPlace(PlayerCube cube, out ShootingPlace shootingPlace, out Vector3 escapePlace)
-    {
-        escapePlace = Vector3.zero;
-
-        shootingPlace = _shootingPlaces
-            .OrderBy(place => Vector3.Distance(place.transform.position, cube.transform.position))
-            .FirstOrDefault(place => place.IsEmpty == true);
-
-        if (shootingPlace != null)
+        public void Clear()
         {
-            shootingPlace.ChangeEmptyStatus(false);
-            var tempShootingPlace = shootingPlace;
-
-            escapePlace = _escapePlaces
-                .OrderBy(place => Vector3.Distance(place, tempShootingPlace.transform.position))
-                .FirstOrDefault();
-        }
-
-        return shootingPlace != null && escapePlace != null;
-    }
-
-    public void PutPlace(ShootingPlace place)
-    {
-        _shootingPlaces.Add(place);
-    }
-
-    public void SetDefaultSettings()
-    {
-        if (_shootingPlaces.Count > 0)
-        {
-            foreach (ShootingPlace place in _shootingPlaces)
+            foreach (var place in _shootingPlaces)
             {
-                place.ChangeEmptyStatus(true);
+                Destroy(place.gameObject);
+            }
+
+            _shootingPlaces.Clear();
+        }
+
+        public bool TryGetPlace(PlayerCube cube, out ShootingPlace shootingPlace, out Vector3 escapePlace)
+        {
+            escapePlace = Vector3.zero;
+
+            shootingPlace = _shootingPlaces
+                .OrderBy(place => Vector3.Distance(place.transform.position, cube.transform.position))
+                .FirstOrDefault(place => place.IsEmpty == true);
+
+            if (shootingPlace != null)
+            {
+                shootingPlace.ChangeEmptyStatus(false);
+                var tempShootingPlace = shootingPlace;
+
+                escapePlace = _escapePlaces
+                    .OrderBy(place => Vector3.Distance(place, tempShootingPlace.transform.position))
+                    .FirstOrDefault();
+            }
+
+            return shootingPlace != null && escapePlace != null;
+        }
+
+        public void PutPlace(ShootingPlace place)
+        {
+            _shootingPlaces.Add(place);
+        }
+
+        public void SetDefaultSettings()
+        {
+            if (_shootingPlaces.Count > 0)
+            {
+                foreach (ShootingPlace place in _shootingPlaces)
+                {
+                    place.ChangeEmptyStatus(true);
+                }
             }
         }
     }

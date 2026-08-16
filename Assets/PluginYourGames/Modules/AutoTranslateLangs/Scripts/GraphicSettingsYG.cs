@@ -71,21 +71,21 @@ namespace YG.LanguageLegacy
         {
             switch (lang)
             {
-                case "ru":
+                case "Ru":
                     labelText.text = ru[QualitySettings.GetQualityLevel()];
                     SwithFont(info.fonts.ru);
                     FontSizeCorrect(info.fontsSizeCorrect.ru);
                     for (int i = 0; i < ru.Length; i++)
                         dropdown.options[i].text = ru[i];
                     break;
-                case "tr":
+                case "Tr":
                     labelText.text = tr[QualitySettings.GetQualityLevel()];
                     SwithFont(info.fonts.tr);
                     FontSizeCorrect(info.fontsSizeCorrect.tr);
                     for (int i = 0; i < tr.Length; i++)
                         dropdown.options[i].text = tr[i];
                     break;
-                case "en":
+                case "En":
                     labelText.text = en[QualitySettings.GetQualityLevel()];
                     SwithFont(info.fonts.en);
                     FontSizeCorrect(info.fontsSizeCorrect.en);

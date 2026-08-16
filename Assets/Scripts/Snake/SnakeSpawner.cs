@@ -1,102 +1,110 @@
+﻿using BeastCore;
+using CubeCore;
+using LifeCycle;
+using Road;
+using Shop;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 using YG;
 
-public class SnakeSpawner : MonoBehaviour
+namespace SnakeCore
 {
-    [SerializeField] private Snake _snakePrefab;
-    [SerializeField] private SkinData _skinData;
-    [SerializeField] private TargetStorage _targetStorage;
-
-    private Snake _snake;
-    private Transform _transform;
-    private string _currentSkinId;
-
-    public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
-
-    private void Awake()
+    public class SnakeSpawner : MonoBehaviour
     {
-        _transform = transform;
-    }
+        [SerializeField] private Snake _snakePrefab;
+        [SerializeField] private SkinData _skinData;
+        [SerializeField] private TargetStorage _targetStorage;
 
-    private void Start()
-    {
-        LoadCurrentSkin();
-    }
+        private Snake _snake;
+        private Transform _transform;
+        private string _currentSkinId;
 
-    private void LoadCurrentSkin()
-    {
-        string savedSkinId = YG2.saves.EquippedSnakeSkin;
+        public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
 
-        if (string.IsNullOrEmpty(savedSkinId) == false)
+        private void Awake()
         {
-            var skin = _skinData.GetSkinById(savedSkinId);
+            _transform = transform;
+        }
 
-            if (skin != null)
+        private void Start()
+        {
+            LoadCurrentSkin();
+        }
+
+        private void LoadCurrentSkin()
+        {
+            string savedSkinId = YG2.saves.EquippedSnakeSkin;
+
+            if (string.IsNullOrEmpty(savedSkinId) == false)
             {
-                _currentSkinId = savedSkinId;
+                var skin = _skinData.GetSkinById(savedSkinId);
+
+                if (skin != null)
+                {
+                    _currentSkinId = savedSkinId;
+                }
+                else
+                {
+                    _currentSkinId = _skinData.GetDefaultSkinId();
+                }
             }
             else
             {
                 _currentSkinId = _skinData.GetDefaultSkinId();
             }
         }
-        else
+
+        public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
         {
-            _currentSkinId = _skinData.GetDefaultSkinId();
-        }
-    }
+            if (_snake == null)
+            {
+                _snake = Instantiate(_snakePrefab, _transform);
+                ApplyCurrentSkin();
+            }
 
-    public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
-    {
-        if (_snake == null)
-        {
-            _snake = Instantiate(_snakePrefab, _transform);
-            ApplyCurrentSkin();
-        }
+            _snake.InitializeSnake(stacks, splineContainer, deathModule, beast);
 
-        _snake.InitializeSnake(stacks, splineContainer, deathModule, beast);
-
-        return _snake;
-    }
-
-    public void UpdateSkin(string skinId)
-    {
-        if (_currentSkinId == skinId)
-            return;
-
-        _currentSkinId = skinId;
-
-        if (_snake != null)
-        {
-            ApplyCurrentSkin();
+            return _snake;
         }
 
-        YG2.saves.EquippedSnakeSkin = _currentSkinId;
-        YG2.SaveProgress();
-    }
-
-    private void ApplyCurrentSkin()
-    {
-        var skin = _skinData.GetSkinById(_currentSkinId);
-
-        if (skin != null && skin.Model != null)
+        public void UpdateSkin(string skinId)
         {
-            ApplySkinModel(skin.Model);
-        }
-    }
+            if (_currentSkinId == skinId)
+                return;
 
-    private void ApplySkinModel(GameObject skinModelPrefab)
-    {
-        Transform modelContainer = _snake.ModelContainer;
+            _currentSkinId = skinId;
 
-        foreach (Transform child in modelContainer)
-        {
-            Destroy(child.gameObject);
+            if (_snake != null)
+            {
+                ApplyCurrentSkin();
+            }
+
+            YG2.saves.EquippedSnakeSkin = _currentSkinId;
+            YG2.SaveProgress();
         }
 
-        var model = Instantiate(skinModelPrefab, modelContainer);
-        model.name = "snakeModel";
+        private void ApplyCurrentSkin()
+        {
+            var skin = _skinData.GetSkinById(_currentSkinId);
+
+            if (skin != null && skin.Model != null)
+            {
+                ApplySkinModel(skin.Model);
+            }
+        }
+
+        private void ApplySkinModel(GameObject skinModelPrefab)
+        {
+            Transform modelContainer = _snake.ModelContainer;
+
+            foreach (Transform child in modelContainer)
+            {
+                Destroy(child.gameObject);
+            }
+
+            var model = Instantiate(skinModelPrefab, modelContainer);
+            model.name = "snakeModel";
+        }
     }
 }

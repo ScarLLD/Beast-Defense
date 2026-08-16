@@ -104,9 +104,9 @@ namespace YG
             {
                 noData = YG2.lang switch
                 {
-                    "ru" => "Нет данных",
-                    "en" => "No data",
-                    "tr" => "Veri yok",
+                    "Ru" => "Нет данных",
+                    "En" => "No data",
+                    "Tr" => "Veri yok",
                     _ => string.Empty,
                 };
             }

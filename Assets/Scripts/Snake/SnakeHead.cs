@@ -1,39 +1,42 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class SnakeHead : MonoBehaviour
+namespace SnakeCore
 {
-    [SerializeField] private ParticleSystem _dragonFiraParticle;
-    [SerializeField] private float _minParticleSpeed = 20f;
-    [SerializeField] private float _maxParticleSpeed = 30f;
-
-    private ParticleSystem.MainModule _main;
-    private float _originalSpeed;
-
-    public bool IsPlaying => _dragonFiraParticle.isPlaying;
-
-    private void Awake()
+    public class SnakeHead : MonoBehaviour
     {
-        _main = _dragonFiraParticle.main;
-        _originalSpeed = _main.startSpeed.constant;
-    }
+        [SerializeField] private ParticleSystem _dragonFiraParticle;
+        [SerializeField] private float _minParticleSpeed = 20f;
+        [SerializeField] private float _maxParticleSpeed = 30f;
 
-    private void OnEnable()
-    {
-        _dragonFiraParticle.Play();
-    }
+        private ParticleSystem.MainModule _main;
+        private float _originalSpeed;
 
-    private void OnDisable()
-    {
-        _dragonFiraParticle.Stop();
-    }
+        public bool IsPlaying => _dragonFiraParticle.isPlaying;
 
-    public void SetDefaultSetting()
-    {
-        _main.startSpeed = _originalSpeed;
-    }
+        private void Awake()
+        {
+            _main = _dragonFiraParticle.main;
+            _originalSpeed = _main.startSpeed.constant;
+        }
 
-    public void ChangeParticleSpeed(float snakeSpeed)
-    {
-        _main.startSpeed = Mathf.Clamp(_originalSpeed * snakeSpeed, _minParticleSpeed, _maxParticleSpeed);
+        private void OnEnable()
+        {
+            _dragonFiraParticle.Play();
+        }
+
+        private void OnDisable()
+        {
+            _dragonFiraParticle.Stop();
+        }
+
+        public void SetDefaultSetting()
+        {
+            _main.startSpeed = _originalSpeed;
+        }
+
+        public void ChangeParticleSpeed(float snakeSpeed)
+        {
+            _main.startSpeed = Mathf.Clamp(_originalSpeed * snakeSpeed, _minParticleSpeed, _maxParticleSpeed);
+        }
     }
 }

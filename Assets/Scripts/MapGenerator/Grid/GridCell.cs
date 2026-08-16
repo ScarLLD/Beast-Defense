@@ -1,64 +1,69 @@
+п»їusing MapGenerator;
+using Player;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridCell : MonoBehaviour
+namespace Grid
 {
-    private List<GridCell> _availableCells;
-    public PlayerCube Cube { get; private set; }
-    public Obstracle Obstacle { get; private set; }
-
-    public bool IsStatic { get; private set; }
-    public bool IsTopRow { get; private set; }
-    public bool IsOccupied => Obstacle != null;
-    public IReadOnlyList<GridCell> AvailableCells => _availableCells;
-
-    private void Awake()
+    public class GridCell : MonoBehaviour
     {
-        _availableCells = new List<GridCell>();
+        private List<GridCell> _availableCells;
+        public PlayerCube Cube { get; private set; }
+        public Obstracle Obstacle { get; private set; }
 
-        SetDefaultSettings();
-    }
+        public bool IsStatic { get; private set; }
+        public bool IsTopRow { get; private set; }
+        public bool IsOccupied => Obstacle != null;
+        public IReadOnlyList<GridCell> AvailableCells => _availableCells;
 
-    public void SetDefaultSettings()
-    {
-        IsStatic = true;
-        IsTopRow = false;
+        private void Awake()
+        {
+            _availableCells = new List<GridCell>();
 
-        _availableCells.Clear();
-    }
+            SetDefaultSettings();
+        }
 
-    public void ChangeStaticStatus(bool isStatic)
-    {
-        IsStatic = isStatic;
-    }
+        public void SetDefaultSettings()
+        {
+            IsStatic = true;
+            IsTopRow = false;
 
-    public void SetIsTopRow(bool isTopRow)
-    {
-        IsTopRow = isTopRow;
-    }
+            _availableCells.Clear();
+        }
 
-    public void TakeCell(GridCell cell)
-    {
-        if (cell == null)
-            throw new ArgumentNullException(nameof(cell), $"cell не может быть null.");
+        public void ChangeStaticStatus(bool isStatic)
+        {
+            IsStatic = isStatic;
+        }
 
-        _availableCells.Add(cell);
-    }
+        public void SetIsTopRow(bool isTopRow)
+        {
+            IsTopRow = isTopRow;
+        }
 
-    public void InitCube(PlayerCube cube)
-    {
-        if (cube == null)
-            throw new ArgumentNullException(nameof(cube), $"cube не может быть null.");
+        public void TakeCell(GridCell cell)
+        {
+            if (cell == null)
+                throw new ArgumentNullException(nameof(cell), $"cell РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ null.");
 
-        Cube = cube;
-    }
+            _availableCells.Add(cell);
+        }
 
-    public void InitObstacle(Obstracle obstacle)
-    {
-        if (obstacle == null)
-            throw new ArgumentNullException(nameof(obstacle), $"obstacle не может быть null.");
+        public void InitCube(PlayerCube cube)
+        {
+            if (cube == null)
+                throw new ArgumentNullException(nameof(cube), $"cube РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ null.");
 
-        Obstacle = obstacle;
+            Cube = cube;
+        }
+
+        public void InitObstacle(Obstracle obstacle)
+        {
+            if (obstacle == null)
+                throw new ArgumentNullException(nameof(obstacle), $"obstacle РЅРµ РјРѕР¶РµС‚ Р±С‹С‚СЊ null.");
+
+            Obstacle = obstacle;
+        }
     }
 }

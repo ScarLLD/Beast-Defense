@@ -1,2 +1,6 @@
-using UnityEngine;
-public class Obstracle : MonoBehaviour { }
+﻿using UnityEngine;
+
+namespace MapGenerator
+{
+    public class Obstracle : MonoBehaviour { }
+}

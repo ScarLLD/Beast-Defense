@@ -1,54 +1,59 @@
+﻿using Player;
+using SnakeCore;
 using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Shooter))]
-public class TargetRadar : MonoBehaviour
+namespace Road
 {
-    private Shooter _shooter;
-    private TargetStorage _targetStorage;
-    private Coroutine _scanCoroutine;
-
-    private void Awake()
+    [RequireComponent(typeof(Shooter))]
+    public class TargetRadar : MonoBehaviour
     {
-        _shooter = GetComponent<Shooter>();
-    }
+        private Shooter _shooter;
+        private TargetStorage _targetStorage;
+        private Coroutine _scanCoroutine;
 
-    public void Init(TargetStorage targetStorage)
-    {
-        _targetStorage = targetStorage;
-    }
-
-    public void StartScanning(Color color)
-    {
-        _scanCoroutine ??= StartCoroutine(ScanRoutine(color));
-    }
-
-    public void TurnOff()
-    {
-        if (_scanCoroutine != null)
+        private void Awake()
         {
-            StopCoroutine( _scanCoroutine );
-            _scanCoroutine = null;
+            _shooter = GetComponent<Shooter>();
         }
-    }
 
-    private IEnumerator ScanRoutine(Color color)
-    {
-        int bulletsPerSegment = _shooter.BulletCount / 4;
-
-        _shooter.SetInitialRotation();
-
-        while (_shooter.BulletCount > 0)
+        public void Init(TargetStorage targetStorage)
         {
-            if (bulletsPerSegment > 0 && _targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
+            _targetStorage = targetStorage;
+        }
+
+        public void StartScanning(Color color)
+        {
+            _scanCoroutine ??= StartCoroutine(ScanRoutine(color));
+        }
+
+        public void TurnOff()
+        {
+            if (_scanCoroutine != null)
             {
-                _shooter.AddTarget(snakeSegment);
-                bulletsPerSegment--;
+                StopCoroutine(_scanCoroutine);
+                _scanCoroutine = null;
+            }
+        }
+
+        private IEnumerator ScanRoutine(Color color)
+        {
+            int bulletsPerSegment = _shooter.BulletCount / 4;
+
+            _shooter.SetInitialRotation();
+
+            while (_shooter.BulletCount > 0)
+            {
+                if (bulletsPerSegment > 0 && _targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
+                {
+                    _shooter.AddTarget(snakeSegment);
+                    bulletsPerSegment--;
+                }
+
+                yield return new WaitForSeconds(0.1f);
             }
 
-            yield return new WaitForSeconds(0.1f);
+            _scanCoroutine = null;
         }
-
-        _scanCoroutine = null;
     }
 }

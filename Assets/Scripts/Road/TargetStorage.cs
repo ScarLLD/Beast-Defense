@@ -1,44 +1,48 @@
+﻿using SnakeCore;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class TargetStorage : MonoBehaviour
+namespace Road
 {
-    private List<SnakeSegment> _segments;
-
-    private void Awake()
+    public class TargetStorage : MonoBehaviour
     {
-        _segments = new List<SnakeSegment>();
-    }
+        private List<SnakeSegment> _segments;
 
-    public void AddTarget(SnakeSegment segment)
-    {
-        _segments.Add(segment);
-    }
-
-    public bool TryGetTarget(Color color, out SnakeSegment snakeSegment)
-    {
-        snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrectColor(color) && segment.IsTarget == false);
-
-        if (snakeSegment != null)
+        private void Awake()
         {
-            snakeSegment.SetIsTarget(true);
-            return true;
+            _segments = new List<SnakeSegment>();
         }
 
-        return false;
-    }
-
-    public void Cleanup()
-    {
-        if (_segments != null && _segments.Count > 0)
+        public void AddTarget(SnakeSegment segment)
         {
-            foreach (var segment in _segments)
+            _segments.Add(segment);
+        }
+
+        public bool TryGetTarget(Color color, out SnakeSegment snakeSegment)
+        {
+            snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrectColor(color) && segment.IsTarget == false);
+
+            if (snakeSegment != null)
             {
-                segment.SetIsTarget(false);
+                snakeSegment.SetIsTarget(true);
+                return true;
             }
 
-            _segments.Clear();
+            return false;
+        }
+
+        public void Cleanup()
+        {
+            if (_segments != null && _segments.Count > 0)
+            {
+                foreach (var segment in _segments)
+                {
+                    segment.SetIsTarget(false);
+                }
+
+                _segments.Clear();
+            }
         }
     }
 }

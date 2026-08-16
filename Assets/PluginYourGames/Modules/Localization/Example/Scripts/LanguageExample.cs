@@ -28,10 +28,10 @@ namespace YG.Example
         {
             switch (lang)
             {
-                case "ru":
+                case "Ru":
                     textComponent.text = ru;
                     break;
-                case "tr":
+                case "Tr":
                     textComponent.text = tr;
                     break;
                 default:

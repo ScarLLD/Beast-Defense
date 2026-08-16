@@ -1,39 +1,42 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Window : MonoBehaviour
+namespace Menu
 {
-    [SerializeField] protected List<GameObject> menu = new();
-
-    public bool IsActive { private set; get; }
-
-    public static event Action ButtonClicked;
-    public event Action Opened;
-
-    protected void SwitchVisible(bool isActive)
+    public abstract class Window : MonoBehaviour
     {
-        foreach (GameObject gameObject in menu)
+        [SerializeField] protected List<GameObject> menu = new ();
+
+        public static event Action ButtonClicked;
+        public event Action Opened;
+
+        public bool IsActive { get; private set; }
+
+        protected void SwitchVisible(bool isActive)
         {
-            gameObject.SetActive(isActive);
+            foreach (GameObject gameObject in menu)
+            {
+                gameObject.SetActive(isActive);
+            }
         }
-    }
 
-    protected void EnableMenu()
-    {
-        SwitchVisible(true);
-        IsActive = true;
-        Opened?.Invoke();
-    }
+        protected void EnableMenu()
+        {
+            SwitchVisible(true);
+            IsActive = true;
+            Opened?.Invoke();
+        }
 
-    protected void DisableMenu()
-    {
-        SwitchVisible(false);
-        IsActive = false;
-    }
+        protected void DisableMenu()
+        {
+            SwitchVisible(false);
+            IsActive = false;
+        }
 
-    protected void CallClickEvent()
-    {
-        ButtonClicked?.Invoke();
+        protected void CallClickEvent()
+        {
+            ButtonClicked?.Invoke();
+        }
     }
 }

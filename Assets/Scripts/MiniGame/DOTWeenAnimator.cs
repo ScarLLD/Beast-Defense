@@ -1,27 +1,30 @@
+﻿using DG.Tweening;
 using UnityEngine;
-using DG.Tweening;
 
-public class DOTWeenAnimator : MonoBehaviour
+namespace MiniGameCore
 {
-    private float _scaleDuration = 0.5f;
-
-    public float GetDuration => _scaleDuration;
-
-    public void DoScaleUp(GameObject gameObject)
+    public class DOTWeenAnimator : MonoBehaviour
     {
-        if (gameObject == null)
-            return;
+        private readonly float _scaleDuration = 0.5f;
 
-        gameObject.transform.localScale = Vector3.zero;
-        gameObject.transform.DOScale(Vector3.one, _scaleDuration).SetEase(Ease.OutBack);
-    }
+        public float GetDuration => _scaleDuration;
 
-    public void DoScaleDown(GameObject gameObject)
-    {
-        if (gameObject == null)
-            return;
-            
-        gameObject.transform.localScale = Vector3.one;
-        gameObject.transform.DOScale(Vector3.zero, _scaleDuration).SetEase(Ease.InCubic);
+        public void DoScaleUp(GameObject gameObject)
+        {
+            if (gameObject == null)
+                return;
+
+            gameObject.transform.localScale = Vector3.zero;
+            gameObject.transform.DOScale(Vector3.one, _scaleDuration).SetEase(Ease.OutBack);
+        }
+
+        public void DoScaleDown(GameObject gameObject)
+        {
+            if (gameObject == null)
+                return;
+
+            gameObject.transform.localScale = Vector3.one;
+            gameObject.transform.DOScale(Vector3.zero, _scaleDuration).SetEase(Ease.InCubic);
+        }
     }
 }

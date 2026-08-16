@@ -1,29 +1,33 @@
+﻿using Player;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeStorage : MonoBehaviour
+namespace CubeCore
 {
-    private readonly List<PlayerCube> _cubes = new();
-
-    public void Add(PlayerCube cube)
+    public class CubeStorage : MonoBehaviour
     {
-        _cubes.Add(cube);
-    }
+        private readonly List<PlayerCube> _cubes = new();
 
-    public List<CubeStack> GetStacks()
-    {
-        List<CubeStack> cubeStacks = new();
-
-        foreach (var cube in _cubes)
+        public void Add(PlayerCube cube)
         {
-            cubeStacks.Add(cube.GetStack);
+            _cubes.Add(cube);
         }
 
-        return cubeStacks;
-    }
+        public List<CubeStack> GetStacks()
+        {
+            List<CubeStack> cubeStacks = new();
 
-    public void Clear()
-    {
-        _cubes.Clear();
+            foreach (var cube in _cubes)
+            {
+                cubeStacks.Add(cube.GetStack);
+            }
+
+            return cubeStacks;
+        }
+
+        public void Clear()
+        {
+            _cubes.Clear();
+        }
     }
 }

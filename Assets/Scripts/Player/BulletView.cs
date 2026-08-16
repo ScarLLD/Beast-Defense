@@ -1,39 +1,42 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(PlayerCube))]
-public class BulletView : MonoBehaviour
+namespace Player
 {
-    [SerializeField] private TMP_Text _text;
-    [SerializeField] private Shooter _shooter;
-
-    private PlayerCube _cube;
-
-    private void Awake()
+    [RequireComponent(typeof(PlayerCube))]
+    public class BulletView : MonoBehaviour
     {
-        _cube = GetComponent<PlayerCube>();
-    }
+        [SerializeField] private TMP_Text _text;
+        [SerializeField] private Shooter _shooter;
 
-    private void OnEnable()
-    {
-        _shooter.BulletsCountChanged += DisplayBullets;
-    }
+        private PlayerCube _cube;
 
-    private void OnDisable()
-    {
-        _shooter.BulletsCountChanged -= DisplayBullets;
-    }
+        private void Awake()
+        {
+            _cube = GetComponent<PlayerCube>();
+        }
 
-    public void DisplayBullets()
-    {
-        if (_cube.IsAvailable == true || _cube.HasClicked)
-            _text.text = _shooter.BulletCount.ToString();
-        else
-            SetEmpty();
-    }
+        private void OnEnable()
+        {
+            _shooter.BulletsCountChanged += DisplayBullets;
+        }
 
-    public void SetEmpty()
-    {
-        _text.text = string.Empty;
+        private void OnDisable()
+        {
+            _shooter.BulletsCountChanged -= DisplayBullets;
+        }
+
+        public void DisplayBullets()
+        {
+            if (_cube.IsAvailable == true || _cube.HasClicked)
+                _text.text = _shooter.BulletCount.ToString();
+            else
+                SetEmpty();
+        }
+
+        public void SetEmpty()
+        {
+            _text.text = string.Empty;
+        }
     }
 }

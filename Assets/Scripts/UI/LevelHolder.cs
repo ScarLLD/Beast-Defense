@@ -1,23 +1,27 @@
+﻿using MapGenerator;
 using UnityEngine;
 using YG;
 
-public class LevelHolder : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private Game _game;
-
-    private void OnEnable()
+    public class LevelHolder : MonoBehaviour
     {
-        _game.Completed += IncreaseLevel;
-    }
+        [SerializeField] private Game _game;
 
-    private void OnDisable()
-    {
-        _game.Completed -= IncreaseLevel;
-    }
+        private void OnEnable()
+        {
+            _game.Completed += IncreaseLevel;
+        }
 
-    public void IncreaseLevel()
-    {
-        YG2.saves.LevelNumber++;
-        YG2.SaveProgress();
+        private void OnDisable()
+        {
+            _game.Completed -= IncreaseLevel;
+        }
+
+        public void IncreaseLevel()
+        {
+            YG2.saves.LevelNumber++;
+            YG2.SaveProgress();
+        }
     }
 }

@@ -1,30 +1,34 @@
+﻿using SnakeCore;
 using UnityEngine;
 
-[RequireComponent(typeof(TargetStorage))]
-public class TargetDetector : MonoBehaviour
+namespace Road
 {
-    private TargetStorage _targetsStorage;
-    private Collider _collider;
-
-    private void Awake()
+    [RequireComponent(typeof(TargetStorage))]
+    public class TargetDetector : MonoBehaviour
     {
-        _targetsStorage = GetComponent<TargetStorage>();
-        _collider = GetComponent<Collider>();
-        _collider.isTrigger = false;
-    }
+        private TargetStorage _targetsStorage;
+        private Collider _collider;
 
-    public void EnableTrigger()
-    {
-        _collider.isTrigger = true;
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        var segment = other.gameObject.GetComponent<SnakeSegment>();
-
-        if (segment)
+        private void Awake()
         {
-            _targetsStorage.AddTarget(segment);
+            _targetsStorage = GetComponent<TargetStorage>();
+            _collider = GetComponent<Collider>();
+            _collider.isTrigger = false;
+        }
+
+        public void EnableTrigger()
+        {
+            _collider.isTrigger = true;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            var segment = other.gameObject.GetComponent<SnakeSegment>();
+
+            if (segment)
+            {
+                _targetsStorage.AddTarget(segment);
+            }
         }
     }
 }

@@ -1,46 +1,56 @@
+﻿using CubeCore;
+using Effects;
+using Options;
+using Pool;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletSpawner : MonoBehaviour
+namespace BulletCore
 {
-    [SerializeField] private ParticleCreator _particleCreator;
-    [SerializeField] private Bullet _bulletPrefab;
-    [SerializeField] private Transform _container;
-    [SerializeField] private AudioPlayer _audioPlayer;
-
-    private List<Bullet> _bullets;
-
-    private ObjectPool<Bullet> _pool;
-
-    public event Action Shooting;
-
-    private void Awake()
+    public class BulletSpawner : MonoBehaviour
     {
-        _pool = new ObjectPool<Bullet>(_bulletPrefab, _container);
-        _bullets = new List<Bullet>();
-    }
+        [SerializeField] private ParticleCreator _particleCreator;
+        [SerializeField] private Bullet _bulletPrefab;
+        [SerializeField] private Transform _container;
+        [SerializeField] private AudioPlayer _audioPlayer;
 
-    public void SpawnBullet(Vector3 spawnPosition, Cube cube)
-    {
-        Bullet bullet = _pool.GetObject();
+        private List<Bullet> _bullets;
 
-        if (_bullets.Contains(bullet) == false)
-            _bullets.Add(bullet);
+        private ObjectPool<Bullet> _pool;
 
-        bullet.transform.position = spawnPosition;
-        bullet.Init(_particleCreator, _audioPlayer);
-        bullet.InitTarget(cube);
+        public event Action Shooting;
 
-        Shooting.Invoke();
-    }
-
-    public void Cleanup()
-    {
-        foreach (Bullet bullet in _bullets)
+        private void Awake()
         {
-            if (bullet.gameObject.activeInHierarchy == true)
-                bullet.StopMove();
+            _pool = new ObjectPool<Bullet>(_bulletPrefab, _container);
+            _bullets = new List<Bullet>();
+        }
+
+        public void SpawnBullet(Vector3 spawnPosition, Cube cube)
+        {
+            if (cube == null)
+                throw new ArgumentException("cube не может быть null.", nameof(cube));
+
+            Bullet bullet = _pool.GetObject();
+
+            if (_bullets.Contains(bullet) == false)
+                _bullets.Add(bullet);
+
+            bullet.transform.position = spawnPosition;
+            bullet.Init(_particleCreator, _audioPlayer);
+            bullet.InitTarget(cube);
+
+            Shooting?.Invoke();
+        }
+
+        public void Cleanup()
+        {
+            foreach (Bullet bullet in _bullets)
+            {
+                if (bullet.gameObject.activeInHierarchy == true)
+                    bullet.StopMove();
+            }
         }
     }
 }

@@ -1,53 +1,58 @@
+﻿using SnakeCore;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SmoothBarSlider : MonoBehaviour
+namespace UI
 {
-    [SerializeField] private float _speed;
-    [SerializeField] private Slider _slider;
-
-    private readonly float _maxSliderValue = 1;
-    private Snake _snake;
-
-    private void Awake()
+    public class SmoothBarSlider : MonoBehaviour
     {
-        _slider.gameObject.SetActive(false);
-    }
+        private readonly float _maxSliderValue = 1;
 
-    public void Init(Snake snake)
-    {
-        if (_snake == null)
+        [SerializeField] private float _speed;
+        [SerializeField] private Slider _slider;
+
+        private Snake _snake;
+
+        private void Awake()
         {
-            _snake = snake;
-            _snake.SegmentsCountChanged += OnCountChanged;
+            _slider.gameObject.SetActive(false);
         }
 
-        _slider.gameObject.SetActive(true);
-        SetDefaultValue();
-    }
+        public void Init(Snake snake)
+        {
+            if (_snake == null)
+            {
+                _snake = snake;
+                _snake.SegmentsCountChanged += OnCountChanged;
+            }
 
-    private void OnEnable()
-    {
-        if (_snake != null)
-            _snake.SegmentsCountChanged += OnCountChanged;
-    }
+            _slider.gameObject.SetActive(true);
+            SetDefaultValue();
+        }
 
-    private void OnDisable()
-    {
-        if (_snake != null)
-            _snake.SegmentsCountChanged -= OnCountChanged;
-    }
+        private void OnEnable()
+        {
+            if (_snake != null)
+                _snake.SegmentsCountChanged += OnCountChanged;
+        }
 
-    private void OnCountChanged(float currentCount, float maxCount)
-    {
-        _slider.value = 1 - (currentCount / maxCount);
-    }
+        private void OnDisable()
+        {
+            if (_snake != null)
+                _snake.SegmentsCountChanged -= OnCountChanged;
+        }
 
-    private void SetDefaultValue()
-    {
-        _slider.maxValue = _maxSliderValue;
-        _slider.minValue = 0;
+        private void OnCountChanged(float currentCount, float maxCount)
+        {
+            _slider.value = 1 - (currentCount / maxCount);
+        }
 
-        _slider.value = _slider.minValue;
+        private void SetDefaultValue()
+        {
+            _slider.maxValue = _maxSliderValue;
+            _slider.minValue = 0;
+
+            _slider.value = _slider.minValue;
+        }
     }
 }

@@ -1,34 +1,37 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
-public class PlayerCubeAnimator : MonoBehaviour
+namespace Player
 {
-    private Animator _animator;
-
-    private void Awake()
+    [RequireComponent(typeof(Animator))]
+    public class PlayerCubeAnimator : MonoBehaviour
     {
-        _animator = GetComponent<Animator>();
-    }
+        private Animator _animator;
 
-    public void ResetSettings()
-    {
-        SetWalkBool(false);
-        _animator.Rebind();
-        _animator.Update(0f);
-    }
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+        }
 
-    public void EnableAnimator(bool value)
-    {
-        _animator.enabled = value;
-    }
+        public void ResetSettings()
+        {
+            SetWalkBool(false);
+            _animator.Rebind();
+            _animator.Update(0f);
+        }
 
-    public void SetAvailableTrigger()
-    {
-        _animator.SetTrigger("isAvailable");
-    }
+        public void EnableAnimator(bool value)
+        {
+            _animator.enabled = value;
+        }
 
-    public void SetWalkBool(bool value)
-    {
-        _animator.SetBool("isWalk", value);
+        public void SetAvailableTrigger()
+        {
+            _animator.SetTrigger("isAvailable");
+        }
+
+        public void SetWalkBool(bool value)
+        {
+            _animator.SetBool("isWalk", value);
+        }
     }
 }

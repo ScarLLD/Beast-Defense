@@ -1,29 +1,32 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameObjectsDisabler : MonoBehaviour
+namespace MapGenerator
 {
-    [SerializeField] private Game _game;
-    [SerializeField] private GameObject _objectsParent;
-
-    private void OnEnable()
+    public class GameObjectsDisabler : MonoBehaviour
     {
-        _game.Leaved += DisableObjects;
-    }
+        [SerializeField] private Game _game;
+        [SerializeField] private GameObject _objectsParent;
 
-    private void OnDisable()
-    {
-        _game.Leaved -= DisableObjects;
-    }
+        private void OnEnable()
+        {
+            _game.Leaved += DisableObjects;
+        }
 
-    public void DisableObjects()
-    {
-        _objectsParent.SetActive(false);
-    }
+        private void OnDisable()
+        {
+            _game.Leaved -= DisableObjects;
+        }
 
-    public void EnableObjects()
-    {
-        _objectsParent.SetActive(true);
+        public void DisableObjects()
+        {
+            _objectsParent.SetActive(false);
+        }
+
+        public void EnableObjects()
+        {
+            _objectsParent.SetActive(true);
+        }
     }
 }

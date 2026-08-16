@@ -1,29 +1,32 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
-public class BeastAnimator : MonoBehaviour
+namespace BeastCore
 {
-    private Animator _animator;
-
-    private void Awake()
+    [RequireComponent(typeof(Animator))]
+    public class BeastAnimator : MonoBehaviour
     {
-        _animator = GetComponent<Animator>();
-    }
+        private Animator _animator;
 
-    public void ResetSettings()
-    {        
-        SetWalkBool(false);
-        _animator.Rebind();
-        _animator.Update(0f);
-    }
+        private void Awake()
+        {
+            _animator = GetComponent<Animator>();
+        }
 
-    public void EnableAnimator(bool value)
-    {
-        _animator.enabled = value;
-    }
+        public void ResetSettings()
+        {
+            SetWalkBool(false);
+            _animator.Rebind();
+            _animator.Update(0f);
+        }
 
-    public void SetWalkBool(bool value)
-    {
-        _animator.SetBool("isWalk", value);
+        public void EnableAnimator(bool value)
+        {
+            _animator.enabled = value;
+        }
+
+        public void SetWalkBool(bool value)
+        {
+            _animator.SetBool("isWalk", value);
+        }
     }
 }

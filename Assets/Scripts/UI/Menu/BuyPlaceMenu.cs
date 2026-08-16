@@ -1,113 +1,119 @@
+﻿using LifeCycle;
+using MapGenerator;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BuyPlaceMenu : Window
+namespace Menu
 {
-    [SerializeField] private Game _game;
-    [SerializeField] private Wallet _wallet;
-    [SerializeField] private DeathModule _deathModule;
-    [SerializeField] private PlaceSpawner _placeSpawner;
-    [SerializeField] private int _placePrice = 2;
-    [SerializeField] private TMP_Text _placePriceText;
-    [SerializeField] private Button _buyButton;
-    [SerializeField] private Button _exitButton;
-    [SerializeField] private Image _buyButtonImage;
-    [SerializeField] private Image _buyButtonIconImage;
-
-    private Color _notEnoughMoneyColor = Color.red;
-    private Color _enoughMoneyColor = Color.green;
-    private readonly float _notEnoughMoneyAlpha = 0.4f;
-    private readonly float _enoughMoneyAlpha = 1f;
-
-    private void Awake()
+    public class BuyPlaceMenu : Window
     {
-        DisableMenu();
-    }
+        private readonly float _notEnoughMoneyAlpha = 0.4f;
+        private readonly float _enoughMoneyAlpha = 1f;
 
-    private void OnEnable()
-    {
-        _deathModule.BeastDie += OnBeastDieClick;
-        _wallet.CountChanged += SetCurrentPriceView;
+        [SerializeField] private Game _game;
+        [SerializeField] private Wallet _wallet;
+        [SerializeField] private DeathModule _deathModule;
+        [SerializeField] private PlaceSpawner _placeSpawner;
+        [SerializeField] private int _placePrice = 2;
+        [SerializeField] private TMP_Text _placePriceText;
+        [SerializeField] private Button _buyButton;
+        [SerializeField] private Button _exitButton;
+        [SerializeField] private Image _buyButtonImage;
+        [SerializeField] private Image _buyButtonIconImage;
 
-        _buyButton.onClick.AddListener(OnBuyButtonClick);
-        _exitButton.onClick.AddListener(OnExitButtonClick);
-    }
+        private Color _notEnoughMoneyColor = Color.red;
+        private Color _enoughMoneyColor = Color.green;        
 
-    private void OnDisable()
-    {
-        _deathModule.BeastDie -= OnBeastDieClick;
-        _wallet.CountChanged -= SetCurrentPriceView;
-
-        _buyButton.onClick.RemoveListener(OnBuyButtonClick);
-        _exitButton.onClick.RemoveListener(OnExitButtonClick);
-    }
-
-    private void OnBeastDieClick()
-    {
-        if (_placeSpawner.PlacesIncreased)
+        private void Awake()
         {
+            DisableMenu();
+        }
+
+        private void OnEnable()
+        {
+            _deathModule.BeastDie += OnBeastDieClick;
+            _wallet.CountChanged += SetCurrentPriceView;
+
+            _buyButton.onClick.AddListener(OnBuyButtonClick);
+            _exitButton.onClick.AddListener(OnExitButtonClick);
+        }
+
+        private void OnDisable()
+        {
+            _deathModule.BeastDie -= OnBeastDieClick;
+            _wallet.CountChanged -= SetCurrentPriceView;
+
+            _buyButton.onClick.RemoveListener(OnBuyButtonClick);
+            _exitButton.onClick.RemoveListener(OnExitButtonClick);
+        }
+
+        private void OnBeastDieClick()
+        {
+            if (_placeSpawner.PlacesIncreased)
+            {
+                _game.Over();
+            }
+            else
+            {
+                EnableMenu();
+                _game.StopTime();
+            }
+        }
+
+        private void OnBuyButtonClick()
+        {
+            CallClickEvent();
+
+            _game.ContinueTime();
+            _game.Restart();
+            _wallet.DecreaseMoney(_placePrice);
+            _placeSpawner.IncreasePlace();
+            DisableMenu();
+        }
+
+        private void OnExitButtonClick()
+        {
+            CallClickEvent();
+
+            _game.ContinueTime();
             _game.Over();
-        }
-        else
-        {
-            EnableMenu();
-            _game.StopTime();
+            DisableMenu();
         }
 
-    }
-
-    private void OnBuyButtonClick()
-    {
-        CallClickEvent();
-
-        _game.ContinueTime();
-        _game.Restart();
-        _wallet.DecreaseMoney(_placePrice);
-        _placeSpawner.IncreasePlace();
-        DisableMenu();
-    }
-
-    private void OnExitButtonClick()
-    {
-        CallClickEvent();
-
-        _game.ContinueTime();
-        _game.Over();
-        DisableMenu();
-    }
-
-    private void SetCurrentPriceView()
-    {
-        _placePriceText.text = _placePrice.ToString();
-
-        if (_wallet.CanAfford(_placePrice))
+        private void SetCurrentPriceView()
         {
-            _placePriceText.color = _enoughMoneyColor;
-            _buyButton.interactable = true;
+            _placePriceText.text = _placePrice.ToString();
 
-            Color buttonColor = _buyButtonImage.color;
-            buttonColor.a = _enoughMoneyAlpha;
-            _buyButtonImage.color = buttonColor;
+            if (_wallet.CanAfford(_placePrice))
+            {
+                _placePriceText.color = _enoughMoneyColor;
+                _buyButton.interactable = true;
 
-            Color iconColor = _buyButtonIconImage.color;
-            iconColor.a = _enoughMoneyAlpha;
-            _buyButtonIconImage.color = iconColor;
+                Color buttonColor = _buyButtonImage.color;
+                buttonColor.a = _enoughMoneyAlpha;
+                _buyButtonImage.color = buttonColor;
 
-        }
-        else
-        {
-            _placePriceText.color = _notEnoughMoneyColor;
-            _buyButton.interactable = false;
+                Color iconColor = _buyButtonIconImage.color;
+                iconColor.a = _enoughMoneyAlpha;
+                _buyButtonIconImage.color = iconColor;
 
-            Color buttonColor = _buyButtonImage.color;
-            buttonColor.a = _notEnoughMoneyAlpha;
-            _buyButtonImage.color = buttonColor;
+            }
+            else
+            {
+                _placePriceText.color = _notEnoughMoneyColor;
+                _buyButton.interactable = false;
 
-            Color iconColor = _buyButtonIconImage.color;
-            iconColor.a = _notEnoughMoneyAlpha;
-            _buyButtonIconImage.color = iconColor;
+                Color buttonColor = _buyButtonImage.color;
+                buttonColor.a = _notEnoughMoneyAlpha;
+                _buyButtonImage.color = buttonColor;
 
+                Color iconColor = _buyButtonIconImage.color;
+                iconColor.a = _notEnoughMoneyAlpha;
+                _buyButtonIconImage.color = iconColor;
+
+            }
         }
     }
 }

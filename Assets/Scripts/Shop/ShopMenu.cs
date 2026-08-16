@@ -1,63 +1,68 @@
+﻿using Menu;
 using System;
 using System.Collections;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShopMenu : Window
+namespace Shop
 {
-    [SerializeField] private Transition _transition;
-    [SerializeField] private float _transitionDuration = 0.4f;
-    [SerializeField] private Material _shopMaterial;
-    [SerializeField] private Button _exitButton;
-
-    public event Action Opened;
-    public event Action Closed;
-
-    private void Awake()
+    public class ShopMenu : Window
     {
-        DisableMenu();
-    }
+        [SerializeField] private Transition _transition;
+        [SerializeField] private float _transitionDuration = 0.4f;
+        [SerializeField] private Material _shopMaterial;
+        [SerializeField] private Button _exitButton;
 
-    private void OnEnable()
-    {
-        _exitButton.onClick.AddListener(OnExitButtonClick);
-    }
+        public new event Action Opened;
+        public event Action Closed;
 
-    private void OnDisable()
-    {
-        _exitButton.onClick.RemoveListener(OnExitButtonClick);
-    }
-
-    public void Open()
-    {
-        if (_transition.IsTransiting == false)
-            StartCoroutine(OpenShop());
-    }
-
-    private IEnumerator OpenShop()
-    {
-        yield return StartCoroutine(_transition.StartTransitionRoutine(_shopMaterial.color, _transitionDuration));
-        EnableMenu();
-        Opened?.Invoke();
-        yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
-    }
-
-    private void OnExitButtonClick()
-    {
-        CallClickEvent();
-
-        if (_transition.IsTransiting == false)
-            StartCoroutine(CloseShopRoutine());
-    }
-
-    private IEnumerator CloseShopRoutine()
-    {
-        if (_transition.IsTransiting == false)
+        private void Awake()
         {
-            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_shopMaterial.color, _transitionDuration));
-            Closed?.Invoke();
             DisableMenu();
-            yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
+        }
+
+        private void OnEnable()
+        {
+            _exitButton.onClick.AddListener(OnExitButtonClick);
+        }
+
+        private void OnDisable()
+        {
+            _exitButton.onClick.RemoveListener(OnExitButtonClick);
+        }
+
+        public void Open()
+        {
+            if (_transition.IsTransiting == false)
+                StartCoroutine(OpenShop());
+        }
+
+        private IEnumerator OpenShop()
+        {
+            yield return StartCoroutine(_transition.StartTransitionRoutine(_shopMaterial.color, _transitionDuration));
+            EnableMenu();
+            Opened?.Invoke();
+            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+        }
+
+        private void OnExitButtonClick()
+        {
+            CallClickEvent();
+
+            if (_transition.IsTransiting == false)
+                StartCoroutine(CloseShopRoutine());
+        }
+
+        private IEnumerator CloseShopRoutine()
+        {
+            if (_transition.IsTransiting == false)
+            {
+                yield return StartCoroutine(_transition.StartBackTransitionRoutine(_shopMaterial.color, _transitionDuration));
+                Closed?.Invoke();
+                DisableMenu();
+                yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
+            }
         }
     }
 }

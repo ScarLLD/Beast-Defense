@@ -1,30 +1,33 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-[RequireComponent(typeof(TrailRenderer))]
-public class BulletTrail : MonoBehaviour
+namespace BulletCore
 {
-    private TrailRenderer _trailRenderer;
-
-    private void Awake()
+    [RequireComponent(typeof(TrailRenderer))]
+    public class BulletTrail : MonoBehaviour
     {
-        _trailRenderer = GetComponent<TrailRenderer>();
-    }
+        private TrailRenderer _trailRenderer;
 
-    private void OnEnable()
-    {
-        ResetTrail();
-    }
+        private void Awake()
+        {
+            _trailRenderer = GetComponent<TrailRenderer>();
+        }
 
-    private void OnDisable()
-    {
-        ResetTrail();
-    }
+        private void OnEnable()
+        {
+            ResetTrail();
+        }
 
-    public void ResetTrail()
-    {
-        if (_trailRenderer != null)
-        {            
-            _trailRenderer.Clear();
+        private void OnDisable()
+        {
+            ResetTrail();
+        }
+
+        public void ResetTrail()
+        {
+            if (_trailRenderer != null)
+            {
+                _trailRenderer.Clear();
+            }
         }
     }
 }

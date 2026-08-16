@@ -1,43 +1,46 @@
+﻿using Grid;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
-public class RoadFinder : MonoBehaviour
+namespace CubeCore
 {
-    public List<GridCell> FindShortestPath(GridCell startCell)
+    public class RoadFinder
     {
-        var visited = new HashSet<GridCell>();
-        var queue = new Queue<List<GridCell>>();
-        var initialPath = new List<GridCell> { startCell };
-        queue.Enqueue(initialPath);
-
-        while (queue.Count > 0)
+        public List<GridCell> FindShortestPath(GridCell startCell)
         {
-            var currentPath = queue.Dequeue();
-            var lastCell = currentPath.Last();
+            var visited = new HashSet<GridCell>();
+            var queue = new Queue<List<GridCell>>();
+            var initialPath = new List<GridCell> { startCell };
+            queue.Enqueue(initialPath);
 
-            if (lastCell.IsTopRow)
+            while (queue.Count > 0)
             {
-                return currentPath;
-            }
+                var currentPath = queue.Dequeue();
+                var lastCell = currentPath.Last();
 
-            foreach (var neighbor in lastCell.AvailableCells)
-            {
-                if (visited.Contains(neighbor) == false)
+                if (lastCell.IsTopRow)
                 {
-                    visited.Add(neighbor);
-                    var newPath = new List<GridCell>(currentPath) { neighbor };
-                    queue.Enqueue(newPath);
+                    return currentPath;
+                }
+
+                foreach (var neighbor in lastCell.AvailableCells)
+                {
+                    if (visited.Contains(neighbor) == false)
+                    {
+                        visited.Add(neighbor);
+                        var newPath = new List<GridCell>(currentPath) { neighbor };
+                        queue.Enqueue(newPath);
+                    }
                 }
             }
+
+            return null;
         }
 
-        return null;
-    }
-
-    public GridCell GetOptimalNextCell(GridCell currentCell)
-    {
-        var shortestPath = FindShortestPath(currentCell);
-        return shortestPath?.Count > 1 ? shortestPath[1] : null;
+        public GridCell GetOptimalNextCell(GridCell currentCell)
+        {
+            var shortestPath = FindShortestPath(currentCell);
+            return shortestPath?.Count > 1 ? shortestPath[1] : null;
+        }
     }
 }

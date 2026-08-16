@@ -1,88 +1,93 @@
+﻿using MapGenerator;
+using Options;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-public class PauseMenu : Window
+namespace Menu
 {
-    [SerializeField] private Game _game;
-    [SerializeField] private GameOptions _gameOptions;
-
-    [Header("Buttons")]
-    [SerializeField] private Button _pauseButton;
-    [SerializeField] private Button _closePauseButton;
-    [SerializeField] private Button _restartButton;
-    [SerializeField] private Button _exitButton;
-    [SerializeField] private Button _musicButton;
-    [SerializeField] private Button _soundButton;
-
-    private void OnEnable()
+    public class PauseMenu : Window
     {
-        _pauseButton.onClick.AddListener(OnPauseButtonClick);
-        _closePauseButton.onClick.AddListener(OnClosePauseButtonClick);
-        _restartButton.onClick.AddListener(OnRestartButtonClick);
-        _exitButton.onClick.AddListener(OnExitButtonClick);
+        [SerializeField] private Game _game;
+        [SerializeField] private GameOptions _gameOptions;
 
-        _musicButton.onClick.AddListener(_gameOptions.ToggleMusic);
-        _soundButton.onClick.AddListener(_gameOptions.ToggleSound);
-    }
+        [Header("Buttons")]
+        [SerializeField] private Button _pauseButton;
+        [SerializeField] private Button _closePauseButton;
+        [SerializeField] private Button _restartButton;
+        [SerializeField] private Button _exitButton;
+        [SerializeField] private Button _musicButton;
+        [SerializeField] private Button _soundButton;
 
-    private void OnDisable()
-    {
-        _pauseButton.onClick.RemoveListener(OnPauseButtonClick);
-        _closePauseButton.onClick.RemoveListener(OnClosePauseButtonClick);
-        _restartButton.onClick.RemoveListener(OnRestartButtonClick);
-        _exitButton.onClick.RemoveListener(OnExitButtonClick);
-
-        _musicButton.onClick.RemoveListener(_gameOptions.ToggleMusic);
-        _soundButton.onClick.RemoveListener(_gameOptions.ToggleSound);
-    }
-
-    private void Awake()
-    {
-        DisableMenu();
-    }
-
-    private void OnApplicationFocus(bool focus)
-    {
-        if (focus)
-            OnClosePauseButtonClick();
-    }
-
-    private void OnPauseButtonClick()
-    {
-        CallClickEvent();
-
-        if (_game.IsPlaying)
+        private void OnEnable()
         {
-            EnableMenu();
-            YG2.PauseGame(true, true, false, false, false);
+            _pauseButton.onClick.AddListener(OnPauseButtonClick);
+            _closePauseButton.onClick.AddListener(OnClosePauseButtonClick);
+            _restartButton.onClick.AddListener(OnRestartButtonClick);
+            _exitButton.onClick.AddListener(OnExitButtonClick);
+
+            _musicButton.onClick.AddListener(_gameOptions.ToggleMusic);
+            _soundButton.onClick.AddListener(_gameOptions.ToggleSound);
         }
-    }
 
-    private void OnRestartButtonClick()
-    {
-        CallClickEvent();
+        private void OnDisable()
+        {
+            _pauseButton.onClick.RemoveListener(OnPauseButtonClick);
+            _closePauseButton.onClick.RemoveListener(OnClosePauseButtonClick);
+            _restartButton.onClick.RemoveListener(OnRestartButtonClick);
+            _exitButton.onClick.RemoveListener(OnExitButtonClick);
 
-        DisableMenu();
-        YG2.PauseGame(false);
-        _game.Restart();
-    }
+            _musicButton.onClick.RemoveListener(_gameOptions.ToggleMusic);
+            _soundButton.onClick.RemoveListener(_gameOptions.ToggleSound);
+        }
 
-    private void OnExitButtonClick()
-    {
-        CallClickEvent();
-
-        DisableMenu();
-        YG2.PauseGame(false);
-        _game.FastLeave();
-    }
-
-    private void OnClosePauseButtonClick()
-    {
-        CallClickEvent();
-
-        if (_game.IsPlaying)
+        private void Awake()
+        {
             DisableMenu();
-        YG2.PauseGame(false, false, false, false, false);
+        }
+
+        private void OnApplicationFocus(bool focus)
+        {
+            if (focus)
+                OnClosePauseButtonClick();
+        }
+
+        private void OnPauseButtonClick()
+        {
+            CallClickEvent();
+
+            if (_game.IsPlaying)
+            {
+                EnableMenu();
+                YG2.PauseGame(true, true, false, false, false);
+            }
+        }
+
+        private void OnRestartButtonClick()
+        {
+            CallClickEvent();
+
+            DisableMenu();
+            YG2.PauseGame(false);
+            _game.Restart();
+        }
+
+        private void OnExitButtonClick()
+        {
+            CallClickEvent();
+
+            DisableMenu();
+            YG2.PauseGame(false);
+            _game.FastLeave();
+        }
+
+        private void OnClosePauseButtonClick()
+        {
+            CallClickEvent();
+
+            if (_game.IsPlaying)
+                DisableMenu();
+            YG2.PauseGame(false, false, false, false, false);
+        }
     }
 }

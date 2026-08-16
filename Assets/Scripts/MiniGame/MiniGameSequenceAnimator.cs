@@ -1,57 +1,60 @@
+п»їusing System;
 using DG.Tweening;
-using System;
 using UnityEngine;
 
-public class MiniGameSequenceAnimator : MonoBehaviour
+namespace MiniGameCore
 {
-    [SerializeField] private GameObject _walls;
-    [SerializeField] private GameObject _platform;
-    [SerializeField] private GameObject _snake;
-    [SerializeField] private float _duration;
-
-    public event Action Closed;
-
-    public void StartAnimation()
+    public class MiniGameSequenceAnimator : MonoBehaviour
     {
-        if (_platform == null || _snake == null)
+        [SerializeField] private GameObject _walls;
+        [SerializeField] private GameObject _platform;
+        [SerializeField] private GameObject _snake;
+        [SerializeField] private float _duration;
+
+        public event Action Closed;
+
+        public void StartAnimation()
         {
-            Debug.LogError("Один или несколько объектов не назначены в инспекторе!");
-            return;
+            if (_platform == null || _snake == null)
+            {
+                Debug.LogError("РћРґРёРЅ РёР»Рё РЅРµСЃРєРѕР»СЊРєРѕ РѕР±СЉРµРєС‚РѕРІ РЅРµ РЅР°Р·РЅР°С‡РµРЅС‹ РІ РёРЅСЃРїРµРєС‚РѕСЂРµ!");
+                return;
+            }
+
+            _walls.SetActive(false);
+
+            _platform.transform.localScale = Vector3.zero;
+            _snake.transform.localScale = Vector3.zero;
+
+            _platform.transform.DOScale(Vector3.one, _duration)
+                .SetEase(Ease.OutBack);
+
+            _snake.transform.DOScale(Vector3.one, _duration)
+                .SetDelay(0.2f)
+                .SetEase(Ease.OutBack);
+
+            Invoke(nameof(ActivateWalls), _duration);
         }
 
-        _walls.SetActive(false);
-
-        _platform.transform.localScale = Vector3.zero;
-        _snake.transform.localScale = Vector3.zero;
-
-        _platform.transform.DOScale(Vector3.one, _duration)
-            .SetEase(Ease.OutBack);
-
-        _snake.transform.DOScale(Vector3.one, _duration)
-            .SetDelay(0.2f)
-            .SetEase(Ease.OutBack);
-
-        Invoke("ActivateWalls", _duration);
-    }
-
-    private void ActivateWalls()
-    {
-        _walls.SetActive(true);
-    }
-
-    public void CloseAnimation()
-    {
-        if (_platform == null || _snake == null)
+        private void ActivateWalls()
         {
-            Debug.LogError("Один или несколько объектов не назначены в инспекторе!");
-            return;
+            _walls.SetActive(true);
         }
 
-        _walls.SetActive(false);
+        public void CloseAnimation()
+        {
+            if (_platform == null || _snake == null)
+            {
+                Debug.LogError("РћРґРёРЅ РёР»Рё РЅРµСЃРєРѕР»СЊРєРѕ РѕР±СЉРµРєС‚РѕРІ РЅРµ РЅР°Р·РЅР°С‡РµРЅС‹ РІ РёРЅСЃРїРµРєС‚РѕСЂРµ!");
+                return;
+            }
 
-        _platform.transform.DOScale(Vector3.zero, _duration).SetEase(Ease.OutBack);
-        _snake.transform.DOScale(Vector3.zero, _duration).SetDelay(0.2f).SetEase(Ease.OutBack);
+            _walls.SetActive(false);
 
-        Closed?.Invoke();
+            _platform.transform.DOScale(Vector3.zero, _duration).SetEase(Ease.OutBack);
+            _snake.transform.DOScale(Vector3.zero, _duration).SetDelay(0.2f).SetEase(Ease.OutBack);
+
+            Closed?.Invoke();
+        }
     }
 }

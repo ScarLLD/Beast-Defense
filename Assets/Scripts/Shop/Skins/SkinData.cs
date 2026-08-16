@@ -1,65 +1,64 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "SkinData", menuName = "Game/Skin Data")]
-public class SkinData : ScriptableObject
+namespace Shop
 {
-    [Serializable]
-    public class Skin
-    {
-        public string SkinId;
+    [CreateAssetMenu(fileName = "SkinData", menuName = "Game/Skin Data")]
+    public class SkinData : ScriptableObject
+    {   
+        public List<Skin> Skins = new ();
+
+        public SkinData.Skin GetSkinById(string currentSkinId)
+        {
+            return Skins.Find(skin => skin.SkinId == currentSkinId);
+        }
+
+        public string GetDefaultSkinId()
+        {
+            foreach (var skin in Skins)
+            {
+                if (skin.IsDefault)
+                    return skin.SkinId;
+            }
+
+            if (Skins.Count > 0)
+                return Skins[0].SkinId;
+
+            return string.Empty;
+        }
 
         [Serializable]
-        public class LocalizedName
+        public class Skin
         {
-            public string ru;
-            public string en;
-            public string tr;
-           
-        }
-        public LocalizedName SkinNameTranslations;
+            public string SkinId;
 
-        public int Price;
-        public Sprite Icon;
-        public GameObject Model;
-        public Color Color;
-        public bool IsDefault = false;
-
-        public string GetLocalizedName(string languageCode)
-        {
-            switch (languageCode)
+            [Serializable]
+            public class LocalizedName
             {
-                case "ru": 
-                    return SkinNameTranslations.ru;
-                case "en": 
-                    return SkinNameTranslations.en;
-                case "tr": 
-                    return SkinNameTranslations.tr;
-                default: 
-                    return SkinNameTranslations.en;
+                public string Ru;
+                public string En;
+                public string Tr;
+            }
+
+            public LocalizedName SkinNameTranslations;
+
+            public int Price;
+            public Sprite Icon;
+            public GameObject Model;
+            public Color Color;
+            public bool IsDefault = false;
+
+            public string GetLocalizedName(string languageCode)
+            {
+                return languageCode switch
+                {
+                    "Ru" => SkinNameTranslations.Ru,
+                    "En" => SkinNameTranslations.En,
+                    "Tr" => SkinNameTranslations.Tr,
+                    _ => SkinNameTranslations.En,
+                };
             }
         }
-    }
-
-    public List<Skin> Skins = new();
-
-    public SkinData.Skin GetSkinById(string currentSkinId)
-    {
-        return Skins.Find(skin => skin.SkinId == currentSkinId);
-    }
-
-    public string GetDefaultSkinId()
-    {
-        foreach (var skin in Skins)
-        {
-            if (skin.IsDefault)
-                return skin.SkinId;
-        }
-
-        if (Skins.Count > 0)
-            return Skins[0].SkinId;
-
-        return "";
     }
 }

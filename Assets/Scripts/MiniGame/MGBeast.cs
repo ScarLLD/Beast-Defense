@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 
-public class MGBeast : MonoBehaviour
+namespace MiniGameCore
 {
+    public class MGBeast : MonoBehaviour { }
 }

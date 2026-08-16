@@ -1,124 +1,128 @@
+﻿using MapGenerator;
+using MiniGameCore;
+using Shop;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-public class MainMenu : Window
+namespace Menu
 {
-    [SerializeField] private ShopMenu _shop;
-    [SerializeField] private Game _game;
-    [SerializeField] private MiniGame _miniGame;
-    [SerializeField] private MiniGameSequenceAnimator _miniGameSequenceAnimator;
-    [SerializeField] private LeaderBoardMenu _leaderBoardMenu;
-    [SerializeField] private IncreaseHeartMenu _increaseHeartMenu;
-    [SerializeField] private ShopMenu _shopMenu;
-    [SerializeField] private GameHeart _gameHeart;
-
-    [SerializeField] private Button _playButton;
-    [SerializeField] private Button _shopButton;
-    [SerializeField] private Button _leaderboardButton;
-    [SerializeField] private Button _miniGameStartButton;
-
-    private bool _isGameReadySent;
-
-    private void OnEnable()
+    public class MainMenu : Window
     {
-        _playButton.onClick.AddListener(OnPlayButtonClick);
-        _shopButton.onClick.AddListener(OnShopButtonClick);
-        _leaderboardButton.onClick.AddListener(OnLeaderBoardButtonClick);
+        [SerializeField] private ShopMenu _shop;
+        [SerializeField] private Game _game;
+        [SerializeField] private MiniGame _miniGame;
+        [SerializeField] private MiniGameSequenceAnimator _miniGameSequenceAnimator;
+        [SerializeField] private LeaderBoardMenu _leaderBoardMenu;
+        [SerializeField] private IncreaseHeartMenu _increaseHeartMenu;
+        [SerializeField] private ShopMenu _shopMenu;
+        [SerializeField] private GameHeart _gameHeart;
 
-        _game.Started += DisableMenu;
-        _game.Leaved += OnGameLeaved;
+        [SerializeField] private Button _playButton;
+        [SerializeField] private Button _shopButton;
+        [SerializeField] private Button _leaderboardButton;
+        [SerializeField] private Button _miniGameStartButton;
 
-        _miniGameStartButton.onClick.AddListener(DisableMenu);
-        _miniGameSequenceAnimator.Closed += EnableMenu;
+        private bool _isGameReadySent;
 
-        _shop.Opened += DisableMenu;
-        _shop.Closed += EnableMenu;
+        private void OnEnable()
+        {
+            _playButton.onClick.AddListener(OnPlayButtonClick);
+            _shopButton.onClick.AddListener(OnShopButtonClick);
+            _leaderboardButton.onClick.AddListener(OnLeaderBoardButtonClick);
 
-        _leaderBoardMenu.Opened += DisableMenu;
-        _leaderBoardMenu.Closed += EnableMenu;
+            _game.Started += DisableMenu;
+            _game.Leaved += OnGameLeaved;
 
+            _miniGameStartButton.onClick.AddListener(DisableMenu);
+            _miniGameSequenceAnimator.Closed += EnableMenu;
 
-    }
+            _shop.Opened += DisableMenu;
+            _shop.Closed += EnableMenu;
 
-    private void OnDisable()
-    {
-        _playButton.onClick.RemoveListener(OnPlayButtonClick);
-        _shopButton.onClick.RemoveListener(OnShopButtonClick);
-        _leaderboardButton.onClick.RemoveListener(OnLeaderBoardButtonClick);
+            _leaderBoardMenu.Opened += DisableMenu;
+            _leaderBoardMenu.Closed += EnableMenu;
+        }
 
-        _game.Started -= DisableMenu;
-        _game.Leaved -= OnGameLeaved;
+        private void OnDisable()
+        {
+            _playButton.onClick.RemoveListener(OnPlayButtonClick);
+            _shopButton.onClick.RemoveListener(OnShopButtonClick);
+            _leaderboardButton.onClick.RemoveListener(OnLeaderBoardButtonClick);
 
-        _miniGameStartButton.onClick.RemoveListener(DisableMenu);
-        _miniGameSequenceAnimator.Closed -= EnableMenu;
+            _game.Started -= DisableMenu;
+            _game.Leaved -= OnGameLeaved;
 
-        _shop.Opened -= DisableMenu;
-        _shop.Closed -= EnableMenu;
+            _miniGameStartButton.onClick.RemoveListener(DisableMenu);
+            _miniGameSequenceAnimator.Closed -= EnableMenu;
 
-        _leaderBoardMenu.Opened -= DisableMenu;
-        _leaderBoardMenu.Closed -= EnableMenu;
-    }
+            _shop.Opened -= DisableMenu;
+            _shop.Closed -= EnableMenu;
 
-    private async void Awake()
-    {
-        EnableMenu();
+            _leaderBoardMenu.Opened -= DisableMenu;
+            _leaderBoardMenu.Closed -= EnableMenu;
+        }
 
-        await Task.Yield();
-
-        SendGameReady();
-    }
-
-    private void SendGameReady()
-    {
-        if (_isGameReadySent)
-            return;
-
-        _isGameReadySent = true;
-
-        YG2.GameReadyAPI();
-        YG2.GameplayStart();
-    }
-
-    private void OnPlayButtonClick()
-    {
-        CallClickEvent();
-
-        if (_increaseHeartMenu.IsActive)
-            return;
-
-        if (_gameHeart.IsPossibleDecrease)
-            _game.Begin();
-        else
-            _gameHeart.PlayShakeAnimation();
-    }
-
-    private void OnShopButtonClick()
-    {
-        CallClickEvent();
-
-        if (_increaseHeartMenu.IsActive)
-            return;
-
-        _shopMenu.Open();
-    }
-
-    private void OnLeaderBoardButtonClick()
-    {
-        CallClickEvent();
-
-        if (_increaseHeartMenu.IsActive)
-            return;
-
-        _leaderBoardMenu.Open();
-    }
-
-    private void OnGameLeaved()
-    {
-        if (_miniGame.IsActive == false)
+        private async void Awake()
         {
             EnableMenu();
+
+            await Task.Yield();
+
+            SendGameReady();
+        }
+
+        private void SendGameReady()
+        {
+            if (_isGameReadySent)
+                return;
+
+            _isGameReadySent = true;
+
+            YG2.GameReadyAPI();
+            YG2.GameplayStart();
+        }
+
+        private void OnPlayButtonClick()
+        {
+            CallClickEvent();
+
+            if (_increaseHeartMenu.IsActive)
+                return;
+
+            if (_gameHeart.IsPossibleDecrease)
+                _game.Begin();
+            else
+                _gameHeart.PlayShakeAnimation();
+        }
+
+        private void OnShopButtonClick()
+        {
+            CallClickEvent();
+
+            if (_increaseHeartMenu.IsActive)
+                return;
+
+            _shopMenu.Open();
+        }
+
+        private void OnLeaderBoardButtonClick()
+        {
+            CallClickEvent();
+
+            if (_increaseHeartMenu.IsActive)
+                return;
+
+            _leaderBoardMenu.Open();
+        }
+
+        private void OnGameLeaved()
+        {
+            if (_miniGame.IsActive == false)
+            {
+                EnableMenu();
+            }
         }
     }
 }

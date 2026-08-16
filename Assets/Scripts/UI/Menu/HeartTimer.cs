@@ -1,278 +1,281 @@
-using System;
+﻿using System;
 using UnityEngine;
 using YG;
 
-public class HeartTimer
+namespace Menu
 {
-    private const int MAX_HEARTS = 3;
-    private const int RESTORE_TIME_SECONDS = 900;
-
-    public event Action OnHeartsChanged;
-
-    private int _currentHearts;
-    private int _pendingRestores = 0;
-    private DateTime? _nextRestoreTimeUtc;
-    private bool _isRestoring = false;
-
-    public bool IsInitialized { get; private set; }
-    public int CurrentHearts => _currentHearts;
-    public int MaxHearts => MAX_HEARTS;
-    public bool HasAvailableHearts => _currentHearts > 0;
-
-    public void Initialize()
+    public class HeartTimer
     {
-        if (IsInitialized) return;
+        private const int MAX_HEARTS = 3;
+        private const int RESTORE_TIME_SECONDS = 900;
 
-        _currentHearts = YG2.saves.HeartCount;
-        _pendingRestores = YG2.saves.PendingRestores;
+        public event Action OnHeartsChanged;
 
-        string restoreTimeString = YG2.saves.NextRestoreTime;
+        private int _currentHearts;
+        private int _pendingRestores = 0;
+        private DateTime? _nextRestoreTimeUtc;
+        private bool _isRestoring = false;
 
-        if (!string.IsNullOrEmpty(restoreTimeString))
+        public bool IsInitialized { get; private set; }
+        public int CurrentHearts => _currentHearts;
+        public int MaxHearts => MAX_HEARTS;
+        public bool HasAvailableHearts => _currentHearts > 0;
+
+        public void Initialize()
         {
-            if (DateTime.TryParse(restoreTimeString, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime parsedTime))
+            if (IsInitialized) return;
+
+            _currentHearts = YG2.saves.HeartCount;
+            _pendingRestores = YG2.saves.PendingRestores;
+
+            string restoreTimeString = YG2.saves.NextRestoreTime;
+
+            if (!string.IsNullOrEmpty(restoreTimeString))
             {
-                _nextRestoreTimeUtc = parsedTime.ToUniversalTime();
+                if (DateTime.TryParse(restoreTimeString, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime parsedTime))
+                {
+                    _nextRestoreTimeUtc = parsedTime.ToUniversalTime();
+                }
+                else
+                {
+                    _nextRestoreTimeUtc = null;
+                }
             }
             else
             {
                 _nextRestoreTimeUtc = null;
             }
-        }
-        else
-        {
-            _nextRestoreTimeUtc = null;
-        }
 
-        ValidateData();
+            ValidateData();
 
-        ProcessOfflineRestores();
+            ProcessOfflineRestores();
 
-        IsInitialized = true;
-        SaveData();
-        OnHeartsChanged?.Invoke();
-    }
-
-    public string GetTimerText()
-    {
-        if (_currentHearts >= MAX_HEARTS)
-        {
-            return string.Empty;
+            IsInitialized = true;
+            SaveData();
+            OnHeartsChanged?.Invoke();
         }
 
-        if (!_isRestoring || _nextRestoreTimeUtc == null)
+        public string GetTimerText()
         {
-            return string.Empty;
+            if (_currentHearts >= MAX_HEARTS)
+            {
+                return string.Empty;
+            }
+
+            if (!_isRestoring || _nextRestoreTimeUtc == null)
+            {
+                return string.Empty;
+            }
+
+            TimeSpan timeRemaining = _nextRestoreTimeUtc.Value - DateTime.UtcNow;
+
+            if (timeRemaining <= TimeSpan.Zero)
+            {
+                return "00:00";
+            }
+
+            if (timeRemaining.TotalHours >= 1)
+            {
+                return $"{timeRemaining:h\\:mm\\:ss}";
+            }
+
+            return $"{timeRemaining:mm\\:ss}";
         }
 
-        TimeSpan timeRemaining = _nextRestoreTimeUtc.Value - DateTime.UtcNow;
-
-        if (timeRemaining <= TimeSpan.Zero)
+        public float GetFillAmount()
         {
-            return "00:00";
+            return (float)_currentHearts / MAX_HEARTS;
         }
 
-        if (timeRemaining.TotalHours >= 1)
+        public void UpdateTimer()
         {
-            return $"{timeRemaining:h\\:mm\\:ss}";
+            if (!_isRestoring || _nextRestoreTimeUtc == null) return;
+
+            DateTime nowUtc = DateTime.UtcNow;
+
+            if (nowUtc >= _nextRestoreTimeUtc.Value)
+            {
+                CompleteRestore();
+            }
         }
 
-        return $"{timeRemaining:mm\\:ss}";
-    }
-
-    public float GetFillAmount()
-    {
-        return (float)_currentHearts / MAX_HEARTS;
-    }
-
-    public void UpdateTimer()
-    {
-        if (!_isRestoring || _nextRestoreTimeUtc == null) return;
-
-        DateTime nowUtc = DateTime.UtcNow;
-
-        if (nowUtc >= _nextRestoreTimeUtc.Value)
+        public bool TryUseHeart()
         {
-            CompleteRestore();
-        }
-    }
+            if (_currentHearts <= 0) return false;
 
-    public bool TryUseHeart()
-    {
-        if (_currentHearts <= 0) return false;
+            _currentHearts--;
+            _pendingRestores++;
 
-        _currentHearts--;
-        _pendingRestores++;
+            if (!_isRestoring)
+            {
+                StartNextRestore();
+            }
 
-        if (!_isRestoring)
-        {
-            StartNextRestore();
+            SaveData();
+            OnHeartsChanged?.Invoke();
+            return true;
         }
 
-        SaveData();
-        OnHeartsChanged?.Invoke();
-        return true;
-    }
-
-    public void SetCurrentHearts(int newCount)
-    {
-        _currentHearts = Mathf.Clamp(newCount, 0, MAX_HEARTS);
-        SaveData();
-        OnHeartsChanged?.Invoke();
-    }
-
-    private void ValidateData()
-    {
-        _currentHearts = Mathf.Clamp(_currentHearts, 0, MAX_HEARTS);
-
-        if (_currentHearts > MAX_HEARTS)
+        public void SetCurrentHearts(int newCount)
         {
-            _currentHearts = MAX_HEARTS;
-            _pendingRestores = 0;
-            _isRestoring = false;
-            _nextRestoreTimeUtc = null;
+            _currentHearts = Mathf.Clamp(newCount, 0, MAX_HEARTS);
+            SaveData();
+            OnHeartsChanged?.Invoke();
         }
 
-        if (_currentHearts == MAX_HEARTS)
+        private void ValidateData()
         {
-            _pendingRestores = 0;
-            _isRestoring = false;
-            _nextRestoreTimeUtc = null;
+            _currentHearts = Mathf.Clamp(_currentHearts, 0, MAX_HEARTS);
+
+            if (_currentHearts > MAX_HEARTS)
+            {
+                _currentHearts = MAX_HEARTS;
+                _pendingRestores = 0;
+                _isRestoring = false;
+                _nextRestoreTimeUtc = null;
+            }
+
+            if (_currentHearts == MAX_HEARTS)
+            {
+                _pendingRestores = 0;
+                _isRestoring = false;
+                _nextRestoreTimeUtc = null;
+            }
+
+            int maxPending = MAX_HEARTS - _currentHearts;
+
+            if (_pendingRestores > maxPending)
+            {
+                _pendingRestores = maxPending;
+            }
         }
 
-        int maxPending = MAX_HEARTS - _currentHearts;
-        if (_pendingRestores > maxPending)
+        private void ProcessOfflineRestores()
         {
-            _pendingRestores = maxPending;
+            if (!_nextRestoreTimeUtc.HasValue || _pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
+            {
+                return;
+            }
+
+            DateTime nowUtc = DateTime.UtcNow;
+
+            if (nowUtc < _nextRestoreTimeUtc.Value)
+            {
+                _isRestoring = true;
+                return;
+            }
+
+            TimeSpan timePassed = nowUtc - _nextRestoreTimeUtc.Value;
+
+            if (timePassed.TotalSeconds < RESTORE_TIME_SECONDS)
+            {
+                CompleteSingleRestore();
+
+                if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
+                {
+                    StartNextRestore();
+                }
+                return;
+            }
+
+            int fullRestores = (int)(timePassed.TotalSeconds / RESTORE_TIME_SECONDS);
+            int heartsToAdd = Mathf.Min(fullRestores, _pendingRestores);
+
+            if (heartsToAdd > 0)
+            {
+                _currentHearts += heartsToAdd;
+                _pendingRestores -= heartsToAdd;
+
+                if (_currentHearts > MAX_HEARTS) _currentHearts = MAX_HEARTS;
+                if (_pendingRestores < 0) _pendingRestores = 0;
+
+                double remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
+
+                if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
+                {
+                    _nextRestoreTimeUtc = nowUtc.AddSeconds(RESTORE_TIME_SECONDS - remainingSeconds);
+                    _isRestoring = true;
+                }
+                else
+                {
+                    _nextRestoreTimeUtc = null;
+                    _isRestoring = false;
+                }
+
+                OnHeartsChanged?.Invoke();
+            }
+            else
+            {
+                double remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
+                _nextRestoreTimeUtc = nowUtc.AddSeconds(RESTORE_TIME_SECONDS - remainingSeconds);
+                _isRestoring = true;
+            }
         }
-    }
 
-    private void ProcessOfflineRestores()
-    {
-        if (!_nextRestoreTimeUtc.HasValue || _pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
+        private void CompleteSingleRestore()
         {
-            return;
+            if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS) return;
+
+            _currentHearts++;
+            _pendingRestores--;
+
+            if (_currentHearts > MAX_HEARTS) _currentHearts = MAX_HEARTS;
+            if (_pendingRestores < 0) _pendingRestores = 0;
         }
 
-        DateTime nowUtc = DateTime.UtcNow;
-
-        if (nowUtc < _nextRestoreTimeUtc.Value)
+        private void StartNextRestore()
         {
+            if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
+            {
+                _isRestoring = false;
+                _nextRestoreTimeUtc = null;
+                SaveData();
+                return;
+            }
+
             _isRestoring = true;
-            return;
+            _nextRestoreTimeUtc = DateTime.UtcNow.AddSeconds(RESTORE_TIME_SECONDS);
+
+            SaveData();
         }
 
-        TimeSpan timePassed = nowUtc - _nextRestoreTimeUtc.Value;
-
-        if (timePassed.TotalSeconds < RESTORE_TIME_SECONDS)
+        private void CompleteRestore()
         {
-            CompleteSingleRestore();
+            if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS) return;
+
+            _currentHearts++;
+            _pendingRestores--;
 
             if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
             {
                 StartNextRestore();
             }
-            return;
+            else
+            {
+                _isRestoring = false;
+                _nextRestoreTimeUtc = null;
+            }
+
+            SaveData();
+            OnHeartsChanged?.Invoke();
         }
 
-        int fullRestores = (int)(timePassed.TotalSeconds / RESTORE_TIME_SECONDS);
-        int heartsToAdd = Mathf.Min(fullRestores, _pendingRestores);
-
-        if (heartsToAdd > 0)
+        private void SaveData()
         {
-            _currentHearts += heartsToAdd;
-            _pendingRestores -= heartsToAdd;
+            YG2.saves.HeartCount = _currentHearts;
+            YG2.saves.PendingRestores = _pendingRestores;
 
-            if (_currentHearts > MAX_HEARTS) _currentHearts = MAX_HEARTS;
-            if (_pendingRestores < 0) _pendingRestores = 0;
-
-            double remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
-
-            if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
+            if (_nextRestoreTimeUtc.HasValue)
             {
-                _nextRestoreTimeUtc = nowUtc.AddSeconds(RESTORE_TIME_SECONDS - remainingSeconds);
-                _isRestoring = true;
+                string utcString = _nextRestoreTimeUtc.Value.ToString("o");
+                YG2.saves.NextRestoreTime = utcString;
             }
             else
             {
-                _nextRestoreTimeUtc = null;
-                _isRestoring = false;
+                YG2.saves.NextRestoreTime = string.Empty;
             }
 
-            OnHeartsChanged?.Invoke();
+            YG2.SaveProgress();
         }
-        else
-        {
-            double remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
-            _nextRestoreTimeUtc = nowUtc.AddSeconds(RESTORE_TIME_SECONDS - remainingSeconds);
-            _isRestoring = true;
-        }
-    }
-
-    private void CompleteSingleRestore()
-    {
-        if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS) return;
-
-        _currentHearts++;
-        _pendingRestores--;
-
-        if (_currentHearts > MAX_HEARTS) _currentHearts = MAX_HEARTS;
-        if (_pendingRestores < 0) _pendingRestores = 0;
-    }
-
-
-    private void StartNextRestore()
-    {
-        if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
-        {
-            _isRestoring = false;
-            _nextRestoreTimeUtc = null;
-            SaveData();
-            return;
-        }
-
-        _isRestoring = true;
-        _nextRestoreTimeUtc = DateTime.UtcNow.AddSeconds(RESTORE_TIME_SECONDS);
-
-        SaveData();
-    }
-
-    private void CompleteRestore()
-    {
-        if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS) return;
-
-        _currentHearts++;
-        _pendingRestores--;
-
-        if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
-        {
-            StartNextRestore();
-        }
-        else
-        {
-            _isRestoring = false;
-            _nextRestoreTimeUtc = null;
-        }
-
-        SaveData();
-        OnHeartsChanged?.Invoke();
-    }
-
-    private void SaveData()
-    {
-        YG2.saves.HeartCount = _currentHearts;
-        YG2.saves.PendingRestores = _pendingRestores;
-
-        if (_nextRestoreTimeUtc.HasValue)
-        {
-            string utcString = _nextRestoreTimeUtc.Value.ToString("o");
-            YG2.saves.NextRestoreTime = utcString;
-        }
-        else
-        {
-            YG2.saves.NextRestoreTime = "";
-        }
-
-        YG2.SaveProgress();
     }
 }

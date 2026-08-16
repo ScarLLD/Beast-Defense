@@ -1,230 +1,235 @@
+﻿using Effects;
+using Options;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
-public class MGSnake : MonoBehaviour
+namespace MiniGameCore
 {
-    [Header("Movement Settings")]
-    [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _steerSpeed = 180f;
-    [SerializeField] private int _gap = 10;
-
-    [Header("Body Settings")]
-    [SerializeField] private GameObject _bodyContainer;
-    [SerializeField] private MGCube _bodyPrefab;
-    [SerializeField] private float _growInterval = 3f;
-    [SerializeField] private float _tailPullback = 0.5f;
-
-    [Header("Other")]
-    [SerializeField] private DOTWeenAnimator _animator;
-    [SerializeField] private DeathAnimator _deathAnimator;
-    [SerializeField] private BeastCollector _collector;
-    [SerializeField] private AudioPlayer _audioPlayer;
-
-    private List<GameObject> _bodyParts = new();
-    private List<Vector3> _positionsHistory = new();
-    private float _steerDirection;
-    private Rigidbody _rb;
-    private Coroutine _movementCoroutine;
-    private Coroutine _growCoroutine;
-    private bool _isMove;
-
-    public event Action Died;
-
-    private void Awake()
+    [RequireComponent(typeof(Rigidbody))]
+    public class MGSnake : MonoBehaviour
     {
-        _rb = GetComponent<Rigidbody>();
-        _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
-    }
+        [Header("Movement Settings")]
+        [SerializeField] private float _moveSpeed = 5f;
+        [SerializeField] private float _steerSpeed = 180f;
+        [SerializeField] private int _gap = 10;
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.TryGetComponent(out MGBeast beast))
+        [Header("Body Settings")]
+        [SerializeField] private GameObject _bodyContainer;
+        [SerializeField] private MGCube _bodyPrefab;
+        [SerializeField] private float _growInterval = 3f;
+        [SerializeField] private float _tailPullback = 0.5f;
+
+        [Header("Other")]
+        [SerializeField] private DOTWeenAnimator _animator;
+        [SerializeField] private DeathAnimator _deathAnimator;
+        [SerializeField] private BeastCollector _collector;
+        [SerializeField] private AudioPlayer _audioPlayer;
+
+        private readonly List<GameObject> _bodyParts = new ();
+        private readonly List<Vector3> _positionsHistory = new ();
+        private float _steerDirection;
+        private Rigidbody _rb;
+        private Coroutine _movementCoroutine;
+        private Coroutine _growCoroutine;
+        private bool _isMove;
+
+        public event Action Died;
+
+        private void Awake()
         {
-            if (_collector.IsBeastsFull == false)
-            {
-                _audioPlayer.PlayBeastJumpSound();
-                _collector.IncreaseBeastCount();
-                _deathAnimator.KillRoutine(beast.transform, Color.white);
-            }
+            _rb = GetComponent<Rigidbody>();
+            _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
         }
-        else if (other.gameObject.TryGetComponent(out MGCube cube))
+
+        private void OnTriggerEnter(Collider other)
         {
-            Die();
-        }
-    }
-
-    public void ResetSettings()
-    {
-        StopAllCoroutines();
-        _isMove = false;
-        ClearBody();
-        _positionsHistory.Clear();
-    }
-
-    public void SetBodyColor(Color color)
-    {
-        _bodyPrefab.SetColor(color);
-    }
-
-    public void StartMove()
-    {
-        _isMove = true;
-
-        if (_growCoroutine != null)
-            StopCoroutine(_growCoroutine);
-        _growCoroutine = StartCoroutine(GrowSnakeRoutine());
-
-        if (_movementCoroutine != null)
-            StopCoroutine(_movementCoroutine);
-        _movementCoroutine = StartCoroutine(MovementRoutine());
-
-        _rb.velocity = transform.forward * _moveSpeed;
-    }
-
-    public void Die()
-    {
-        _isMove = false;
-
-        StopCoroutine(_growCoroutine);
-        StopCoroutine(_movementCoroutine);
-
-        _rb.velocity = Vector3.zero;
-
-        ClearBody();
-        Died?.Invoke();
-    }
-
-    private IEnumerator MovementRoutine()
-    {
-        Debug.Log("MovementRoutine started. IsMove: " + _isMove);
-
-        while (_isMove)
-        {
-            yield return new WaitForFixedUpdate();
-
-            Vector3 moveDirection = transform.forward * _moveSpeed;
-            _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
-
-            if (Application.isEditor || !Application.isMobilePlatform)
+            if (other.gameObject.TryGetComponent(out MGBeast beast))
             {
-                _steerDirection = Input.GetAxis("Horizontal");
-            }
-            else if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-                float screenCenter = Screen.width * 0.5f;
-
-                if (touch.position.x < screenCenter)
+                if (_collector.IsBeastsFull == false)
                 {
-                    _steerDirection = -1f;
-                }
-                else
-                {
-                    _steerDirection = 1f;
+                    _audioPlayer.PlayBeastJumpSound();
+                    _collector.IncreaseBeastCount();
+                    _deathAnimator.KillRoutine(beast.transform, Color.white);
                 }
             }
             else
             {
-                _steerDirection = 0f;
+                Die();
             }
-
-            Quaternion turnRotation = Quaternion.Euler(0f, _steerDirection * _steerSpeed * Time.fixedDeltaTime, 0f);
-            _rb.MoveRotation(_rb.rotation * turnRotation);
-
-            _positionsHistory.Insert(0, transform.position);
-
-            MoveBodyParts();
         }
-    }
 
-    private void MoveBodyParts()
-    {
-        int index = 0;
-        foreach (var body in _bodyParts)
+        public void ResetSettings()
         {
-            if (body == null) continue;
+            StopAllCoroutines();
+            _isMove = false;
+            ClearBody();
+            _positionsHistory.Clear();
+        }
 
-            int historyIndex = (index + 1) * _gap;
-            int pullbackIndex = Mathf.FloorToInt(historyIndex + _tailPullback);
+        public void SetBodyColor(Color color)
+        {
+            _bodyPrefab.SetColor(color);
+        }
 
-            if (pullbackIndex < _positionsHistory.Count)
+        public void StartMove()
+        {
+            _isMove = true;
+
+            if (_growCoroutine != null)
+                StopCoroutine(_growCoroutine);
+            _growCoroutine = StartCoroutine(GrowSnakeRoutine());
+
+            if (_movementCoroutine != null)
+                StopCoroutine(_movementCoroutine);
+            _movementCoroutine = StartCoroutine(MovementRoutine());
+
+            _rb.velocity = transform.forward * _moveSpeed;
+        }
+
+        public void Die()
+        {
+            _isMove = false;
+
+            StopCoroutine(_growCoroutine);
+            StopCoroutine(_movementCoroutine);
+
+            _rb.velocity = Vector3.zero;
+
+            ClearBody();
+            Died?.Invoke();
+        }
+
+        private IEnumerator MovementRoutine()
+        {
+            Debug.Log("MovementRoutine started. IsMove: " + _isMove);
+
+            while (_isMove)
             {
-                Vector3 targetPoint = _positionsHistory[pullbackIndex];
-                body.transform.position = targetPoint;
+                yield return new WaitForFixedUpdate();
 
-                if (pullbackIndex + 1 < _positionsHistory.Count)
+                Vector3 moveDirection = transform.forward * _moveSpeed;
+                _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
+
+                if (Application.isEditor || !Application.isMobilePlatform)
                 {
-                    Vector3 nextPoint = _positionsHistory[pullbackIndex + 1];
-                    Vector3 direction = nextPoint - targetPoint;
-                    if (direction.magnitude > 0.001f)
+                    _steerDirection = Input.GetAxis("Horizontal");
+                }
+                else if (Input.touchCount > 0)
+                {
+                    Touch touch = Input.GetTouch(0);
+                    float screenCenter = Screen.width * 0.5f;
+
+                    if (touch.position.x < screenCenter)
                     {
-                        body.transform.rotation = Quaternion.LookRotation(direction);
+                        _steerDirection = -1f;
+                    }
+                    else
+                    {
+                        _steerDirection = 1f;
                     }
                 }
+                else
+                {
+                    _steerDirection = 0f;
+                }
+
+                Quaternion turnRotation = Quaternion.Euler(0f, _steerDirection * _steerSpeed * Time.fixedDeltaTime, 0f);
+                _rb.MoveRotation(_rb.rotation * turnRotation);
+
+                _positionsHistory.Insert(0, transform.position);
+
+                MoveBodyParts();
             }
-            else if (_positionsHistory.Count > 0)
+        }
+
+        private void MoveBodyParts()
+        {
+            int index = 0;
+            foreach (var body in _bodyParts)
             {
-                Vector3 targetPoint = _positionsHistory[_positionsHistory.Count - 1];
-                body.transform.position = targetPoint;
+                if (body == null) continue;
+
+                int historyIndex = (index + 1) * _gap;
+                int pullbackIndex = Mathf.FloorToInt(historyIndex + _tailPullback);
+
+                if (pullbackIndex < _positionsHistory.Count)
+                {
+                    Vector3 targetPoint = _positionsHistory[pullbackIndex];
+                    body.transform.position = targetPoint;
+
+                    if (pullbackIndex + 1 < _positionsHistory.Count)
+                    {
+                        Vector3 nextPoint = _positionsHistory[pullbackIndex + 1];
+                        Vector3 direction = nextPoint - targetPoint;
+                        if (direction.magnitude > 0.001f)
+                        {
+                            body.transform.rotation = Quaternion.LookRotation(direction);
+                        }
+                    }
+                }
+                else if (_positionsHistory.Count > 0)
+                {
+                    Vector3 targetPoint = _positionsHistory[^1];
+                    body.transform.position = targetPoint;
+                }
+
+                index++;
+            }
+        }
+
+        private IEnumerator GrowSnakeRoutine()
+        {
+            Debug.Log("GrowSnakeRoutine started. Body count: " + _bodyParts.Count);
+
+            while (_isMove)
+            {
+                yield return new WaitForSeconds(_growInterval);
+                GrowSnake();
+            }
+        }
+
+        private void GrowSnake()
+        {
+            if (!_isMove) return;
+
+            Vector3 spawnPosition;
+            Quaternion spawnRotation;
+
+            if (_bodyParts.Count > 0 && _bodyParts[^1] != null)
+            {
+                GameObject lastSegment = _bodyParts[^1];
+                spawnPosition = lastSegment.transform.position - lastSegment.transform.forward * 1.5f;
+                spawnRotation = lastSegment.transform.rotation;
+            }
+            else
+            {
+                spawnPosition = transform.position - transform.forward * 2f;
+                spawnRotation = transform.rotation;
             }
 
-            index++;
+            spawnPosition.y = transform.position.y;
+
+            GameObject body = Instantiate(_bodyPrefab.gameObject, spawnPosition, spawnRotation);
+            body.transform.parent = _bodyContainer.transform;
+            _bodyParts.Add(body);
+
+            if (_animator != null && body != null)
+            {
+                _animator.DoScaleUp(body);
+            }
         }
-    }
 
-    private IEnumerator GrowSnakeRoutine()
-    {
-        Debug.Log("GrowSnakeRoutine started. Body count: " + _bodyParts.Count);
-
-        while (_isMove)
+        private void ClearBody()
         {
-            yield return new WaitForSeconds(_growInterval);
-            GrowSnake();
+            foreach (var bodyPart in _bodyParts)
+            {
+                if (bodyPart != null)
+                    Destroy(bodyPart);
+            }
+
+            _bodyParts.Clear();
         }
-    }
-
-    private void GrowSnake()
-    {
-        if (!_isMove) return;
-
-        Vector3 spawnPosition;
-        Quaternion spawnRotation = transform.rotation;
-
-        if (_bodyParts.Count > 0 && _bodyParts[_bodyParts.Count - 1] != null)
-        {
-            GameObject lastSegment = _bodyParts[_bodyParts.Count - 1];
-            spawnPosition = lastSegment.transform.position - lastSegment.transform.forward * 1.5f;
-            spawnRotation = lastSegment.transform.rotation;
-        }
-        else
-        {
-            spawnPosition = transform.position - transform.forward * 2f;
-            spawnRotation = transform.rotation;
-        }
-
-        spawnPosition.y = transform.position.y;
-
-        GameObject body = Instantiate(_bodyPrefab.gameObject, spawnPosition, spawnRotation);
-        body.transform.parent = _bodyContainer.transform;
-        _bodyParts.Add(body);
-
-        if (_animator != null && body != null)
-        {
-            _animator.DoScaleUp(body);
-        }
-    }
-
-    private void ClearBody()
-    {
-        foreach (var bodyPart in _bodyParts)
-        {
-            if (bodyPart != null)
-                Destroy(bodyPart.gameObject);
-        }
-
-        _bodyParts.Clear();
     }
 }

@@ -1,110 +1,115 @@
+﻿using MapGenerator;
 using TMPro;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class VictoryMenu : Window
+namespace Menu
 {
-    [SerializeField] private Adv _adv;
-    [SerializeField] private Wallet _wallet;
-    [SerializeField] private Game _game;
-    [SerializeField] private Image _iconImage;
-    [SerializeField] private TMP_Text _totalRewardText;
-    [SerializeField] private TMP_Text _doubleRewardText;
-    [SerializeField] private TMP_Text _doubleRewardMultipleText;
-
-    [SerializeField] private Button _advDoubleRewardButton;
-    [SerializeField] private Button _continueButton;
-    [SerializeField] private Button _exitButton;
-
-    private float _advButtonAlphaPressedColor = 0.5f;
-    private int _rewardMultiple = 2;
-
-    private void Awake()
+    public class VictoryMenu : Window
     {
-        DisableMenu();
-    }
+        [SerializeField] private Adv _adv;
+        [SerializeField] private Wallet _wallet;
+        [SerializeField] private Game _game;
+        [SerializeField] private Image _iconImage;
+        [SerializeField] private TMP_Text _totalRewardText;
+        [SerializeField] private TMP_Text _doubleRewardText;
+        [SerializeField] private TMP_Text _doubleRewardMultipleText;
 
-    private void OnEnable()
-    {
-        _game.Completed += OnGameCompleted;
-        _game.Transited += DisableMenu;
+        [SerializeField] private Button _advDoubleRewardButton;
+        [SerializeField] private Button _continueButton;
+        [SerializeField] private Button _exitButton;
 
-        _adv.WinRewardDoubled += DisplayNewRaward;
+        private readonly float _advButtonAlphaPressedColor = 0.5f;
+        private readonly int _rewardMultiple = 2;
 
-        _advDoubleRewardButton.onClick.AddListener(OnDoubleRewardButtonClick);
-        _continueButton.onClick.AddListener(OnContinuedButtonClick);
-        _exitButton.onClick.AddListener(OnExitButtonClick);
-    }
+        private void Awake()
+        {
+            DisableMenu();
+        }
 
-    private void OnDisable()
-    {
-        _game.Completed -= OnGameCompleted;
-        _game.Transited -= DisableMenu;
+        private void OnEnable()
+        {
+            _game.Completed += OnGameCompleted;
+            _game.Transited += DisableMenu;
 
-        _adv.WinRewardDoubled -= DisplayNewRaward;
+            _adv.WinRewardDoubled += DisplayNewRaward;
 
-        _advDoubleRewardButton.onClick.RemoveListener(OnDoubleRewardButtonClick);
-        _continueButton.onClick.RemoveListener(OnContinuedButtonClick);
-        _exitButton.onClick.RemoveListener(OnExitButtonClick);
-    }
+            _advDoubleRewardButton.onClick.AddListener(OnDoubleRewardButtonClick);
+            _continueButton.onClick.AddListener(OnContinuedButtonClick);
+            _exitButton.onClick.AddListener(OnExitButtonClick);
+        }
 
-    private void EnableAdvButton()
-    {
-        _advDoubleRewardButton.interactable = true;
+        private void OnDisable()
+        {
+            _game.Completed -= OnGameCompleted;
+            _game.Transited -= DisableMenu;
 
-        Color iconColor = _iconImage.color;
-        iconColor.a = 1f;
-        _iconImage.color = iconColor;
+            _adv.WinRewardDoubled -= DisplayNewRaward;
 
-        _doubleRewardText.alpha = 1f;
-        _doubleRewardMultipleText.alpha = 1f;
-    }
+            _advDoubleRewardButton.onClick.RemoveListener(OnDoubleRewardButtonClick);
+            _continueButton.onClick.RemoveListener(OnContinuedButtonClick);
+            _exitButton.onClick.RemoveListener(OnExitButtonClick);
+        }
 
-    private void DisableAdvButton()
-    {
-        _advDoubleRewardButton.interactable = false;
+        private void EnableAdvButton()
+        {
+            _advDoubleRewardButton.interactable = true;
 
-        Color iconColor = _iconImage.color;
-        iconColor.a = _advButtonAlphaPressedColor;
-        _iconImage.color = iconColor;
+            Color iconColor = _iconImage.color;
+            iconColor.a = 1f;
+            _iconImage.color = iconColor;
 
-        _doubleRewardText.alpha = _advButtonAlphaPressedColor;
-        _doubleRewardMultipleText.alpha = _advButtonAlphaPressedColor;
-    }
+            _doubleRewardText.alpha = 1f;
+            _doubleRewardMultipleText.alpha = 1f;
+        }
 
-    private void OnDoubleRewardButtonClick()
-    {
-        CallClickEvent();
+        private void DisableAdvButton()
+        {
+            _advDoubleRewardButton.interactable = false;
 
-        _adv.DoubleRewardAdvShow();
-        DisableAdvButton();
-    }
+            Color iconColor = _iconImage.color;
+            iconColor.a = _advButtonAlphaPressedColor;
+            _iconImage.color = iconColor;
 
-    private void DisplayNewRaward()
-    {
-        _totalRewardText.text = $"+{_wallet.GetRewardMoneyCount() * _rewardMultiple}";
-        _totalRewardText.color = Color.yellow;
-    }
+            _doubleRewardText.alpha = _advButtonAlphaPressedColor;
+            _doubleRewardMultipleText.alpha = _advButtonAlphaPressedColor;
+        }
 
-    private void OnGameCompleted()
-    {
-        EnableAdvButton();
-        EnableMenu();
-        _totalRewardText.color = Color.green;
-        _totalRewardText.text = $"+{_wallet.GetRewardMoneyCount()}";
-    }
+        private void OnDoubleRewardButtonClick()
+        {
+            CallClickEvent();
 
-    private void OnContinuedButtonClick()
-    {
-        CallClickEvent();
+            _adv.DoubleRewardAdvShow();
+            DisableAdvButton();
+        }
 
-        _game.Continue();
-    }
+        private void DisplayNewRaward()
+        {
+            _totalRewardText.text = $"+{_wallet.RewardMoneyCount * _rewardMultiple}";
+            _totalRewardText.color = Color.yellow;
+        }
 
-    private void OnExitButtonClick()
-    {
-        CallClickEvent();
+        private void OnGameCompleted()
+        {
+            EnableAdvButton();
+            EnableMenu();
+            _totalRewardText.color = Color.green;
+            _totalRewardText.text = $"+{_wallet.RewardMoneyCount}";
+        }
 
-        _game.Leave();
+        private void OnContinuedButtonClick()
+        {
+            CallClickEvent();
+
+            _game.Continue();
+        }
+
+        private void OnExitButtonClick()
+        {
+            CallClickEvent();
+
+            _game.Leave();
+        }
     }
 }

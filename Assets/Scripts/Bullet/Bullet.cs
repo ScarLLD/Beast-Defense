@@ -1,70 +1,76 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
+using CubeCore;
+using Options;
+using Effects;
 
-[RequireComponent(typeof(Rigidbody))]
-public class Bullet : MonoBehaviour
+namespace BulletCore
 {
-    [SerializeField] private float _speed = 45f;
-    [SerializeField] private float _arrivalThreshold = 0.7f;
-    [SerializeField] private BulletTrail _bulletTrail;
-
-    private ParticleCreator _particleCreator;
-    private AudioPlayer _audioPlayer;
-    private Transform _transform;
-    private Rigidbody _rigidbody;
-    private Coroutine _moveCoroutine;
-    private bool _isMove;
-
-    private void Awake()
+    [RequireComponent(typeof(Rigidbody))]
+    public class Bullet : MonoBehaviour
     {
-        _transform = transform;
-        _rigidbody = GetComponent<Rigidbody>();
-    }
+        [SerializeField] private float _speed = 45f;
+        [SerializeField] private float _arrivalThreshold = 0.7f;
+        [SerializeField] private BulletTrail _bulletTrail;
 
-    public void StopMove()
-    {
-        _isMove = false;
-    }
+        private ParticleCreator _particleCreator;
+        private AudioPlayer _audioPlayer;
+        private Transform _transform;
+        private Rigidbody _rigidbody;
+        private Coroutine _moveCoroutine;
+        private bool _isMove;
 
-    public void Init(ParticleCreator creator, AudioPlayer audioPlayer)
-    {
-        _particleCreator = creator;
-        _audioPlayer = audioPlayer;
-    }
-
-    public void InitTarget(Cube cube)
-    {
-        if (_moveCoroutine != null)
-            StopCoroutine(_moveCoroutine);
-
-        _bulletTrail.ResetTrail();
-        _moveCoroutine = StartCoroutine(MoveToTarget(cube));
-    }
-
-    private IEnumerator MoveToTarget(Cube cube)
-    {
-        _isMove = true;
-
-        while (_isMove && cube != null && cube.isActiveAndEnabled == true)
+        private void Awake()
         {
-            Vector3 direction = (cube.transform.position - _transform.position).normalized;
-            _rigidbody.velocity = direction * _speed;
-
-            if ((cube.transform.position - _transform.position).magnitude < _arrivalThreshold)
-            {
-                if (_particleCreator != null)
-                    _particleCreator.Create(cube);
-
-                _isMove = false;
-                cube.Hit();
-                _audioPlayer.PlayHitSound();
-            }
-
-            yield return null;
+            _transform = transform;
+            _rigidbody = GetComponent<Rigidbody>();
         }
 
-        _rigidbody.velocity = Vector3.zero;
-        _moveCoroutine = null;
-        gameObject.SetActive(false);
+        public void StopMove()
+        {
+            _isMove = false;
+        }
+
+        public void Init(ParticleCreator creator, AudioPlayer audioPlayer)
+        {
+            _particleCreator = creator;
+            _audioPlayer = audioPlayer;
+        }
+
+        public void InitTarget(Cube cube)
+        {
+            if (_moveCoroutine != null)
+                StopCoroutine(_moveCoroutine);
+
+            _bulletTrail.ResetTrail();
+            _moveCoroutine = StartCoroutine(MoveToTarget(cube));
+        }
+
+        private IEnumerator MoveToTarget(Cube cube)
+        {
+            _isMove = true;
+
+            while (_isMove && cube != null && cube.isActiveAndEnabled == true)
+            {
+                Vector3 direction = (cube.transform.position - _transform.position).normalized;
+                _rigidbody.velocity = direction * _speed;
+
+                if ((cube.transform.position - _transform.position).magnitude < _arrivalThreshold)
+                {
+                    if (_particleCreator != null)
+                        _particleCreator.Create(cube);
+
+                    _isMove = false;
+                    cube.Hit();
+                    _audioPlayer.PlayHitSound();
+                }
+
+                yield return null;
+            }
+
+            _rigidbody.velocity = Vector3.zero;
+            _moveCoroutine = null;
+            gameObject.SetActive(false);
+        }
     }
 }

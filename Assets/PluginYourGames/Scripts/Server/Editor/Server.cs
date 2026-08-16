@@ -12,7 +12,7 @@ namespace YG.EditorScr
     {
         public const string LOAD_COMPLETE_KEY = "PluginYG_LoadServerComplete";
         private const string URL_KEY = "PluginYG_URLCloudInfo";
-        private const string STANDART_URL = "https://max-games.ru/public/pluginYG2/data.json";
+        private const string STANDART_URL = "https://max-games.Ru/public/pluginYG2/data.json";
         private const string TEST_URL = "";
         private const int MAX_REDIRECTS = 3;
 

@@ -1,71 +1,76 @@
+﻿using MiniGameCore;
+using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class IncreaseHeartMenu : Window
+namespace Menu
 {
-    [SerializeField] private Adv _adv;
-    [SerializeField] private MiniGame _miniGame;
-    [SerializeField] private MiniGameSequencer _sequencer;
-    [SerializeField] private GameHeart _gameHeart;
-    [SerializeField] private Button _AdvButton;
-    [SerializeField] private Button _miniGameButton;
-    [SerializeField] private Button _closeMenuButton;
-
-    private void Awake()
+    public class IncreaseHeartMenu : Window
     {
-        DisableMenu();
-    }
+        [SerializeField] private Adv _adv;
+        [SerializeField] private MiniGame _miniGame;
+        [SerializeField] private MiniGameSequencer _sequencer;
+        [SerializeField] private GameHeart _gameHeart;
+        [SerializeField] private Button _AdvButton;
+        [SerializeField] private Button _miniGameButton;
+        [SerializeField] private Button _closeMenuButton;
 
-    private void OnEnable()
-    {
-        _gameHeart.Devastated += OnGameHeartDevastated;
-        _miniGame.Started += OnMiniGameStarted;
+        private void Awake()
+        {
+            DisableMenu();
+        }
 
-        _miniGameButton.onClick.AddListener(OnMiniGameButtonClick);
-        _AdvButton.onClick.AddListener(OnAdvButtonClick);
-        _closeMenuButton.onClick.AddListener(OnCloseMenuButtonClick);
-    }
+        private void OnEnable()
+        {
+            _gameHeart.Devastated += OnGameHeartDevastated;
+            _miniGame.Started += OnMiniGameStarted;
 
-    private void OnDisable()
-    {
-        _gameHeart.Devastated -= OnGameHeartDevastated;
-        _miniGame.Started -= OnMiniGameStarted;
+            _miniGameButton.onClick.AddListener(OnMiniGameButtonClick);
+            _AdvButton.onClick.AddListener(OnAdvButtonClick);
+            _closeMenuButton.onClick.AddListener(OnCloseMenuButtonClick);
+        }
 
-        _miniGameButton.onClick.RemoveListener(OnMiniGameButtonClick);
-        _AdvButton.onClick.RemoveListener(OnAdvButtonClick);
-        _closeMenuButton.onClick.RemoveListener(OnCloseMenuButtonClick);
-    }
+        private void OnDisable()
+        {
+            _gameHeart.Devastated -= OnGameHeartDevastated;
+            _miniGame.Started -= OnMiniGameStarted;
 
-    private void OnMiniGameStarted()
-    {
-        DisableMenu();
-    }
+            _miniGameButton.onClick.RemoveListener(OnMiniGameButtonClick);
+            _AdvButton.onClick.RemoveListener(OnAdvButtonClick);
+            _closeMenuButton.onClick.RemoveListener(OnCloseMenuButtonClick);
+        }
 
-    private void OnGameHeartDevastated()
-    {
-        EnableMenu();
-    }
+        private void OnMiniGameStarted()
+        {
+            DisableMenu();
+        }
 
-    private void OnAdvButtonClick()
-    {
-        CallClickEvent();
+        private void OnGameHeartDevastated()
+        {
+            EnableMenu();
+        }
 
-        _adv.IncreaseGameHeartAdvShow();
-        DisableMenu();
-    }
+        private void OnAdvButtonClick()
+        {
+            CallClickEvent();
 
-    private void OnMiniGameButtonClick()
-    {
-        CallClickEvent();
+            _adv.IncreaseGameHeartAdvShow();
+            DisableMenu();
+        }
 
-        _sequencer.Launch();
-        DisableMenu();
-    }
+        private void OnMiniGameButtonClick()
+        {
+            CallClickEvent();
 
-    private void OnCloseMenuButtonClick()
-    {
-        CallClickEvent();
+            _sequencer.Launch();
+            DisableMenu();
+        }
 
-        DisableMenu();
+        private void OnCloseMenuButtonClick()
+        {
+            CallClickEvent();
+
+            DisableMenu();
+        }
     }
 }
