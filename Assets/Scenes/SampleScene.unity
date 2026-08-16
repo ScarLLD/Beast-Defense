@@ -16448,29 +16448,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _customBoundaryPoints: []
   _manualSegments:
-  - StartPoint: {fileID: 0}
-    EndPoint: {fileID: 0}
+  - StartPoint: {fileID: 1557685881}
+    EndPoint: {fileID: 1428251429}
+    Side: 2
+    SpawnMinOffset: 0.3
+    SpawnMaxOffset: 0.7
+  - StartPoint: {fileID: 1840620603}
+    EndPoint: {fileID: 424602009}
+    Side: 2
+    SpawnMinOffset: 0.3
+    SpawnMaxOffset: 0.7
+  - StartPoint: {fileID: 853286261}
+    EndPoint: {fileID: 810034871}
     Side: 0
     SpawnMinOffset: 0.3
     SpawnMaxOffset: 0.7
-  - StartPoint: {fileID: 0}
-    EndPoint: {fileID: 0}
-    Side: 0
+  - StartPoint: {fileID: 184612341}
+    EndPoint: {fileID: 1338620913}
+    Side: 1
     SpawnMinOffset: 0.3
     SpawnMaxOffset: 0.7
-  - StartPoint: {fileID: 0}
-    EndPoint: {fileID: 0}
-    Side: 0
-    SpawnMinOffset: 0.3
-    SpawnMaxOffset: 0.7
-  - StartPoint: {fileID: 0}
-    EndPoint: {fileID: 0}
-    Side: 0
-    SpawnMinOffset: 0.3
-    SpawnMaxOffset: 0.7
-  - StartPoint: {fileID: 0}
-    EndPoint: {fileID: 0}
-    Side: 0
+  - StartPoint: {fileID: 492038181}
+    EndPoint: {fileID: 2107332993}
+    Side: 3
     SpawnMinOffset: 0.3
     SpawnMaxOffset: 0.7
   _lineWidth: 0.1

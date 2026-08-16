@@ -94,16 +94,10 @@ namespace BeastCore
         public bool TryApproachNotify(float snakeSplinePosition)
         {
             if (_currentSplinePosition - snakeSplinePosition >= _escapeThreshold)
-            {
-                Debug.Log(1);
                 return false;
-            }
 
             if (_targetPercentages.Count <= 0)
-            {
-                Debug.Log(2);
                 return false;
-            }
 
             if (_moveCoroutine != null)
             {

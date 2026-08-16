@@ -146,11 +146,7 @@ namespace Road
                 _road.Clear();
                 InitializeStartingPointAndDirection();
 
-                Debug.Log("Debug");
-
                 if (_spawnPoint == Vector3.zero) continue;
-
-                Debug.Log("Debug2");
 
                 if (GenerateRoad() && _road.Count >= _minPathSegments)
                 {
