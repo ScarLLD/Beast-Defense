@@ -21,7 +21,7 @@ namespace Game.Scripts.Road
 
         public bool TryGetTarget(Color color, out SnakeSegment snakeSegment)
         {
-            snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrectColor(color) && segment.IsTarget == false);
+            snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrentColor(color) && segment.IsTarget == false);
 
             if (snakeSegment != null)
             {

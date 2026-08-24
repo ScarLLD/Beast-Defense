@@ -55,7 +55,7 @@ namespace Game.Scripts.Player
             transform.rotation = _initialRotation;
         }
 
-        public void SetDafaultSettings()
+        public void ResetSettings()
         {
             if (_shootCoroutine != null)
             {

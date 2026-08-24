@@ -34,20 +34,20 @@ namespace Game.Scripts.MiniGameCore
 
         private void OnEnable()
         {
-            _miniGame.Started += StartRoutine;
-            _miniGame.Defeat += ResetSettings;
+            _miniGame.Started += OnMiniGameStarted;
+            _miniGame.Defeated += OnMiniGameDefeated;
         }
 
         private void OnDisable()
         {
-            _miniGame.Started -= StartRoutine;
-            _miniGame.Defeat -= ResetSettings;
+            _miniGame.Started -= OnMiniGameStarted;
+            _miniGame.Defeated -= OnMiniGameDefeated;
         }
 
         private void Awake()
         {
-            _pool = new (_beastPrefab, transform);
-            _beasts = new ();
+            _pool = new(_beastPrefab, transform);
+            _beasts = new();
             _bounds = new Bounds(_spawnPlatform.position, _spawnPlatform.localScale);
             _sleepTime = new WaitForSeconds(_spawnDelay);
             _tempColliders = new Collider[_maxCollidersCount];
@@ -71,7 +71,7 @@ namespace Game.Scripts.MiniGameCore
             return randomPoint;
         }
 
-        private void StartRoutine()
+        private void OnMiniGameStarted()
         {
             ResetSettings();
             _coroutine ??= StartCoroutine(SpawnRoutine());
@@ -163,6 +163,11 @@ namespace Game.Scripts.MiniGameCore
             }
 
             _beasts.Clear();
+        }
+
+        private void OnMiniGameDefeated()
+        {
+            ResetSettings();
         }
 
         private void RandomizeMaxBeastCount()

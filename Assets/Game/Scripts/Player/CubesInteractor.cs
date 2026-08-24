@@ -15,20 +15,20 @@ namespace Game.Scripts.Player
 
         private void OnEnable()
         {
-            _ray.Clicked += TryGetMove;
+            _ray.Clicked += OnRayClicked;
         }
 
         private void OnDisable()
         {
-            _ray.Clicked -= TryGetMove;
+            _ray.Clicked -= OnRayClicked;
         }
 
-        private void TryGetMove(PlayerCube cube)
+        private void OnRayClicked(PlayerCube cube)
         {
             if (_placesHolder.TryGetPlace(cube, out ShootingPlace shootingPlace, out Vector3 escapePlace))
             {
                 _audioPlayer.PlayPickShooterSound();
-                cube.Interect(shootingPlace, escapePlace);
+                cube.Interact(shootingPlace, escapePlace);
                 _availabilityManagement.UpdateAvailability();
             }
             else

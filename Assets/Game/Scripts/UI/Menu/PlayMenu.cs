@@ -6,21 +6,21 @@ namespace Game.Scripts.UI.Menu
     {
         [SerializeField] private MapGenerator.Game _game;
 
+        private void Awake()
+        {
+            DisableMenu();
+        }
+
         private void OnEnable()
         {
-            _game.Started += EnableMenu;
-            _game.Leaved += DisableMenu;
+            _game.Started += OnGameStarted;
+            _game.Leaved += OnGameLeaved;
         }
 
         private void OnDisable()
         {
-            _game.Started -= EnableMenu;
-            _game.Leaved += DisableMenu;
-        }
-
-        private void Awake()
-        {
-            DisableMenu();
+            _game.Started -= OnGameStarted;
+            _game.Leaved -= OnGameLeaved;
         }
     }
 }

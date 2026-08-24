@@ -12,8 +12,8 @@ namespace Game.Scripts.MapGenerator.Grid
     {
         [SerializeField] private PlayerCube _cubePrefab;
         [SerializeField] private GridCell _cellPrefab;
-        [SerializeField] private Obstracle _obstaclePrefab;
-        [SerializeField] private Obstracle _stretchedObstaclePrefab;
+        [SerializeField] private Obstacle _obstaclePrefab;
+        [SerializeField] private Obstacle _stretchedObstaclePrefab;
 
         [SerializeField] private Vector3 _centerPosition;
         [SerializeField] private int _rows = 7;
@@ -32,7 +32,7 @@ namespace Game.Scripts.MapGenerator.Grid
         [SerializeField] private CubeCreator _cubeCreator;
         [SerializeField] private BoundaryMaker _boundaryMaker;
 
-        private List<Obstracle> _obstacles;
+        private List<Obstacle> _obstacles;
         private GridCell[,] _cellGrid;
         private bool[,] _obstacleMap;
         private Vector3[,] _cellPositions;
@@ -44,7 +44,7 @@ namespace Game.Scripts.MapGenerator.Grid
 
         private void Awake()
         {
-            _obstacles = new List<Obstracle>();
+            _obstacles = new List<Obstacle>();
         }
 
         private void Start()
@@ -169,7 +169,7 @@ namespace Game.Scripts.MapGenerator.Grid
             if (cell == null) return;
 
             Transform parent = _obstaclesContainer != null ? _obstaclesContainer : transform;
-            Obstracle obstacle = Instantiate(_obstaclePrefab, parent);
+            Obstacle obstacle = Instantiate(_obstaclePrefab, parent);
 
             obstacle.transform.position = cell.transform.position;
             obstacle.transform.position += Vector3.up * obstacle.transform.localScale.y;
@@ -227,7 +227,7 @@ namespace Game.Scripts.MapGenerator.Grid
             Vector3 centerPosition = (startPos + endPos) / 2f;
             centerPosition.y = startPos.y + _stretchedObstaclePrefab.transform.localScale.y;
 
-            Obstracle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
+            Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
 
             float distance = Vector3.Distance(startPos, endPos);
             Vector3 scale = obstacle.transform.localScale;
@@ -244,7 +244,7 @@ namespace Game.Scripts.MapGenerator.Grid
             Vector3 centerPosition = (startPos + endPos) / 2f;
             centerPosition.y = startPos.y + _stretchedObstaclePrefab.transform.localScale.y;
 
-            Obstracle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
+            Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
 
             float distance = Vector3.Distance(startPos, endPos);
             Vector3 scale = obstacle.transform.localScale;

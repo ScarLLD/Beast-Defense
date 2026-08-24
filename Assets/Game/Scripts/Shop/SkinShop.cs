@@ -24,7 +24,7 @@ namespace Game.Scripts.Shop
         [SerializeField] private Wallet _wallet;
         [SerializeField] private BeastSpawner _beastSpawner;
         [SerializeField] private SnakeSpawner _snakeSpawner;
-        [SerializeField] private LanguageInitializer _Language;
+        [SerializeField] private LanguageInitializer _language;
         [SerializeField] private InterfaceLocalization _localization;
 
         [Header("UI References")]

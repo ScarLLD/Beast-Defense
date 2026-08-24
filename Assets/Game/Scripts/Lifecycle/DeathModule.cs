@@ -13,8 +13,8 @@ namespace Game.Scripts.LifeCycle
         [SerializeField] private DeathAnimator _animator;
         [SerializeField] private AudioPlayer _audioPlayer;
 
-        public event Action BeastDie;
-        public event Action SnakeDie;
+        public event Action BeastDied;
+        public event Action SnakeDied;
 
         public void KillSnake(Transform gameObject)
         {
@@ -37,14 +37,14 @@ namespace Game.Scripts.LifeCycle
         {
             _audioPlayer.PlaySnakeDieSound();
             yield return StartCoroutine(DeathRoutine(gameObject, Color.red));
-            SnakeDie?.Invoke();
+            SnakeDied?.Invoke();
         }
 
         private IEnumerator KillBeastRoutine(Transform gameObject)
         {
             _audioPlayer.PlayBeastDieSound();
             yield return StartCoroutine(DeathRoutine(gameObject, Color.white));
-            BeastDie?.Invoke();
+            BeastDied?.Invoke();
         }
     }
 }

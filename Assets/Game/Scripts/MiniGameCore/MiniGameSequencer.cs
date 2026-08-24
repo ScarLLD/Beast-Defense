@@ -38,14 +38,14 @@ namespace Game.Scripts.MiniGameCore
 
         private void OnEnable()
         {
-            _miniGame.Victory += Close;
-            _miniGame.Defeat += Close;
+            _miniGame.Won += Close;
+            _miniGame.Defeated += Close;
         }
 
         private void OnDisable()
         {
-            _miniGame.Victory -= Close;
-            _miniGame.Defeat -= Close;
+            _miniGame.Won -= Close;
+            _miniGame.Defeated -= Close;
         }
 
         public void Launch()

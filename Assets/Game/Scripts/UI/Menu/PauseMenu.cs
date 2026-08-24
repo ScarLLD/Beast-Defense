@@ -18,6 +18,11 @@ namespace Game.Scripts.UI.Menu
         [SerializeField] private Button _musicButton;
         [SerializeField] private Button _soundButton;
 
+        private void Awake()
+        {
+            DisableMenu();
+        }
+
         private void OnEnable()
         {
             _pauseButton.onClick.AddListener(OnPauseButtonClick);
@@ -38,11 +43,6 @@ namespace Game.Scripts.UI.Menu
 
             _musicButton.onClick.RemoveListener(_gameOptions.ToggleMusic);
             _soundButton.onClick.RemoveListener(_gameOptions.ToggleSound);
-        }
-
-        private void Awake()
-        {
-            DisableMenu();
         }
 
         private void OnApplicationFocus(bool focus)

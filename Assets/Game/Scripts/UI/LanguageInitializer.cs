@@ -8,17 +8,17 @@ namespace Game.Scripts.UI
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
-            YG2.onCorrectLang += OnСhangeLang;
+            YG2.onCorrectLang += OnChangeLanguage;
         }
 
-        private static void OnСhangeLang(string language)
+        private static void OnChangeLanguage(string language)
         {
             YG2.SwitchLanguage(language);
         }
 
         private void OnDisable()
         {
-            YG2.onCorrectLang -= OnСhangeLang;
+            YG2.onCorrectLang -= OnChangeLanguage;
         }
     }
 }

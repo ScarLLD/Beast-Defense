@@ -9,7 +9,7 @@ namespace Game.Scripts.UI.Menu
         private const int MAX_HEARTS = 3;
         private const int RESTORE_TIME_SECONDS = 900;
 
-        public event Action OnHeartsChanged;
+        public event Action HeartsChanged;
 
         private int _currentHearts;
         private int _pendingRestores = 0;
@@ -52,7 +52,7 @@ namespace Game.Scripts.UI.Menu
 
             IsInitialized = true;
             SaveData();
-            OnHeartsChanged?.Invoke();
+            HeartsChanged?.Invoke();
         }
 
         public string GetTimerText()
@@ -112,7 +112,7 @@ namespace Game.Scripts.UI.Menu
             }
 
             SaveData();
-            OnHeartsChanged?.Invoke();
+            HeartsChanged?.Invoke();
             return true;
         }
 
@@ -120,7 +120,7 @@ namespace Game.Scripts.UI.Menu
         {
             _currentHearts = Mathf.Clamp(newCount, 0, MAX_HEARTS);
             SaveData();
-            OnHeartsChanged?.Invoke();
+            HeartsChanged?.Invoke();
         }
 
         private void ValidateData()
@@ -202,7 +202,7 @@ namespace Game.Scripts.UI.Menu
                     _isRestoring = false;
                 }
 
-                OnHeartsChanged?.Invoke();
+                HeartsChanged?.Invoke();
             }
             else
             {
@@ -257,12 +257,12 @@ namespace Game.Scripts.UI.Menu
             }
 
             SaveData();
-            OnHeartsChanged?.Invoke();
+            HeartsChanged?.Invoke();
         }
 
         private void SaveData()
         {
-            YG.YG2.saves.HeartCount = _currentHearts;
+            YG2.saves.HeartCount = _currentHearts;
             YG2.saves.PendingRestores = _pendingRestores;
 
             if (_nextRestoreTimeUtc.HasValue)

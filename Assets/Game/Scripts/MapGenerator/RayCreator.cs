@@ -31,7 +31,7 @@ namespace Game.Scripts.MapGenerator
             _game.Restarted += EnableRay;
             _game.Continued += EnableRay;
             _game.Completed += DisableRay;
-            _game.Loss += DisableRay;
+            _game.Lost += DisableRay;
         }
 
         private void OnDisable()
@@ -40,7 +40,7 @@ namespace Game.Scripts.MapGenerator
             _game.Restarted -= EnableRay;
             _game.Continued -= EnableRay;
             _game.Completed -= DisableRay;
-            _game.Loss -= DisableRay;
+            _game.Lost -= DisableRay;
         }
 
         private void EnableRay()

@@ -35,7 +35,7 @@ namespace Game.Scripts.CubeCore
 
             Deactivate();
             IsDestroyed = true;
-            _snakeSegment.TryDestroy();
+            _snakeSegment.NotifyDeath();
 
         }
 

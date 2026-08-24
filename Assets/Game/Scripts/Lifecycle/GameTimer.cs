@@ -5,27 +5,27 @@ namespace Game.Scripts.LifeCycle
 {
     public class GameTimer : MonoBehaviour
     {
-        private float startTime;
-        private float elapsedTime = 0;
+        private float _startTime;
+        private float _elapsedTime = 0;
 
         public event Action<float> Stopped;
 
         public void StartTimer()
         {
-            startTime = Time.time;
-            elapsedTime = 0;
+            _startTime = Time.time;
+            _elapsedTime = 0;
         }
 
         public void StopTimer(bool isVictory)
         {
-            elapsedTime = Time.time - startTime;
+            _elapsedTime = Time.time - _startTime;
 
             if (isVictory)
             {
-                int minutes = Mathf.FloorToInt(elapsedTime / 60);
-                float seconds = elapsedTime % 60;
+                int minutes = Mathf.FloorToInt(_elapsedTime / 60);
+                float seconds = _elapsedTime % 60;
 
-                Stopped?.Invoke(elapsedTime);
+                Stopped?.Invoke(_elapsedTime);
             }
         }
     }

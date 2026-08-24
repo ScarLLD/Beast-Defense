@@ -32,8 +32,8 @@ namespace Game.Scripts.UI.Menu
 
         private void OnEnable()
         {
-            _deathModule.BeastDie += OnBeastDieClick;
-            _wallet.CountChanged += SetCurrentPriceView;
+            _deathModule.BeastDied += OnBeastDied;
+            _wallet.CountChanged += OnWalletMoneyCountChanged;
 
             _buyButton.onClick.AddListener(OnBuyButtonClick);
             _exitButton.onClick.AddListener(OnExitButtonClick);
@@ -41,14 +41,14 @@ namespace Game.Scripts.UI.Menu
 
         private void OnDisable()
         {
-            _deathModule.BeastDie -= OnBeastDieClick;
-            _wallet.CountChanged -= SetCurrentPriceView;
+            _deathModule.BeastDied -= OnBeastDied;
+            _wallet.CountChanged -= OnWalletMoneyCountChanged;
 
             _buyButton.onClick.RemoveListener(OnBuyButtonClick);
             _exitButton.onClick.RemoveListener(OnExitButtonClick);
         }
 
-        private void OnBeastDieClick()
+        private void OnBeastDied()
         {
             if (_placeSpawner.PlacesIncreased)
             {
@@ -81,7 +81,7 @@ namespace Game.Scripts.UI.Menu
             DisableMenu();
         }
 
-        private void SetCurrentPriceView()
+        private void OnWalletMoneyCountChanged()
         {
             _placePriceText.text = _placePrice.ToString();
 

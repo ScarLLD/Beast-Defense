@@ -11,7 +11,7 @@ namespace Game.Scripts.UI.Menu
     {
         [SerializeField] private ShopMenu _shop;
         [SerializeField] private MapGenerator.Game _game;
-        [SerializeField] private MiniGameCore.MiniGame _miniGame;
+        [SerializeField] private MiniGame _miniGame;
         [SerializeField] private MiniGameSequenceAnimator _miniGameSequenceAnimator;
         [SerializeField] private LeaderBoardMenu _leaderBoardMenu;
         [SerializeField] private IncreaseHeartMenu _increaseHeartMenu;
@@ -31,17 +31,17 @@ namespace Game.Scripts.UI.Menu
             _shopButton.onClick.AddListener(OnShopButtonClick);
             _leaderboardButton.onClick.AddListener(OnLeaderBoardButtonClick);
 
-            _game.Started += DisableMenu;
+            _game.Started += OnGameStarted;
             _game.Leaved += OnGameLeaved;
 
-            _miniGameStartButton.onClick.AddListener(DisableMenu);
-            _miniGameSequenceAnimator.Closed += EnableMenu;
+            _miniGameStartButton.onClick.AddListener(OnMiniGameStarted);
+            _miniGameSequenceAnimator.Closed += OnMiniGameLeaved;
 
-            _shop.Opened += DisableMenu;
-            _shop.Closed += EnableMenu;
+            _shop.Opened += OnShopOpened;
+            _shop.Closed += OnShopClosed;
 
-            _leaderBoardMenu.Opened += DisableMenu;
-            _leaderBoardMenu.Closed += EnableMenu;
+            _leaderBoardMenu.Opened += OnLeaderBoardOpened;
+            _leaderBoardMenu.Closed += OnLeaderBoardClosed;
         }
 
         private void OnDisable()
@@ -50,17 +50,17 @@ namespace Game.Scripts.UI.Menu
             _shopButton.onClick.RemoveListener(OnShopButtonClick);
             _leaderboardButton.onClick.RemoveListener(OnLeaderBoardButtonClick);
 
-            _game.Started -= DisableMenu;
+            _game.Started -= OnGameStarted;
             _game.Leaved -= OnGameLeaved;
 
-            _miniGameStartButton.onClick.RemoveListener(DisableMenu);
-            _miniGameSequenceAnimator.Closed -= EnableMenu;
+            _miniGameStartButton.onClick.RemoveListener(OnMiniGameStarted);
+            _miniGameSequenceAnimator.Closed -= OnMiniGameLeaved;
 
-            _shop.Opened -= DisableMenu;
-            _shop.Closed -= EnableMenu;
+            _shop.Opened -= OnShopOpened;
+            _shop.Closed -= OnShopClosed;
 
-            _leaderBoardMenu.Opened -= DisableMenu;
-            _leaderBoardMenu.Closed -= EnableMenu;
+            _leaderBoardMenu.Opened -= OnLeaderBoardOpened;
+            _leaderBoardMenu.Closed -= OnLeaderBoardClosed;
         }
 
         private async void Awake()
@@ -114,14 +114,6 @@ namespace Game.Scripts.UI.Menu
                 return;
 
             _leaderBoardMenu.Open();
-        }
-
-        private void OnGameLeaved()
-        {
-            if (_miniGame.IsActive == false)
-            {
-                EnableMenu();
-            }
-        }
+        }  
     }
 }

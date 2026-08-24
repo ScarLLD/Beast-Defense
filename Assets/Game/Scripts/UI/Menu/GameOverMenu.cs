@@ -19,12 +19,17 @@ namespace Game.Scripts.UI.Menu
         [SerializeField] private Button _exitButton;
 
         [Header("Mini-Game")]
-        [SerializeField] private Button _miniGameStartButton;                
+        [SerializeField] private Button _miniGameStartButton;
+
+        private void Awake()
+        {
+            DisableMenu();
+        }
 
         private void OnEnable()
         {
-            _game.Loss += OnGameLoss;
-            _game.Transited += DisableMenu;
+            _game.Lost += OnGameLost;
+            _game.Transited += OnGameTransited;
 
             _advRegenerateLevelButton.onClick.AddListener(OnRegenerateButtonCLick);
             _restartButton.onClick.AddListener(OnRestartButtonClick);
@@ -36,28 +41,25 @@ namespace Game.Scripts.UI.Menu
                 EnableAdvButton();
         }
 
+        private void OnDisable()
+        {
+            _game.Lost -= OnGameLost;
+            _game.Transited -= OnGameTransited;
+
+            _advRegenerateLevelButton.onClick.RemoveListener(OnRegenerateButtonCLick);
+            _restartButton.onClick.RemoveListener(OnRestartButtonClick);
+            _exitButton.onClick.RemoveListener(OnExitButtonClick);
+
+            _miniGameStartButton.onClick.RemoveListener(OnMiniGameStartButtonClick);
+        }
+
         private void OnMiniGameStartButtonClick()
         {
             if (IsActive)
                 _game.Leave();
         }
 
-        private void OnDisable()
-        {
-            _game.Loss -= OnGameLoss;
-            _game.Transited -= DisableMenu;
-
-            _advRegenerateLevelButton.onClick.RemoveListener(OnRegenerateButtonCLick);
-            _restartButton.onClick.RemoveListener(OnRestartButtonClick);
-            _exitButton.onClick.RemoveListener(OnExitButtonClick);
-        }
-
-        private void Awake()
-        {
-            DisableMenu();
-        }
-
-        private void OnGameLoss()
+        private void OnGameLost()
         {
             EnableMenu();
             EnableAdvButton();

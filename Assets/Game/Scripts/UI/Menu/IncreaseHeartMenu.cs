@@ -7,10 +7,10 @@ namespace Game.Scripts.UI.Menu
     public class IncreaseHeartMenu : Window
     {
         [SerializeField] private Adv _adv;
-        [SerializeField] private MiniGameCore.MiniGame _miniGame;
+        [SerializeField] private MiniGame _miniGame;
         [SerializeField] private MiniGameSequencer _sequencer;
         [SerializeField] private GameHeart _gameHeart;
-        [SerializeField] private Button _AdvButton;
+        [SerializeField] private Button _advButton;
         [SerializeField] private Button _miniGameButton;
         [SerializeField] private Button _closeMenuButton;
 
@@ -25,7 +25,7 @@ namespace Game.Scripts.UI.Menu
             _miniGame.Started += OnMiniGameStarted;
 
             _miniGameButton.onClick.AddListener(OnMiniGameButtonClick);
-            _AdvButton.onClick.AddListener(OnAdvButtonClick);
+            _advButton.onClick.AddListener(OnAdvButtonClick);
             _closeMenuButton.onClick.AddListener(OnCloseMenuButtonClick);
         }
 
@@ -35,14 +35,10 @@ namespace Game.Scripts.UI.Menu
             _miniGame.Started -= OnMiniGameStarted;
 
             _miniGameButton.onClick.RemoveListener(OnMiniGameButtonClick);
-            _AdvButton.onClick.RemoveListener(OnAdvButtonClick);
+            _advButton.onClick.RemoveListener(OnAdvButtonClick);
             _closeMenuButton.onClick.RemoveListener(OnCloseMenuButtonClick);
         }
 
-        private void OnMiniGameStarted()
-        {
-            DisableMenu();
-        }
 
         private void OnGameHeartDevastated()
         {

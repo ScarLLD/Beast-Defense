@@ -40,7 +40,7 @@ namespace Game.Scripts.UI.Menu
         {
             _animator = GetComponent<Animator>();
             _heartTimer = new HeartTimer();
-            _heartTimer.OnHeartsChanged += OnHeartsChanged;
+            _heartTimer.HeartsChanged += OnHeartsChanged;
         }
 
         private void Start()
@@ -64,7 +64,7 @@ namespace Game.Scripts.UI.Menu
             StartHeartUpdateCoroutine();
 
             _adv.HeartIncreased += OnHeartIncreased;
-            _miniGame.Victory += OnHeartIncreased;
+            _miniGame.Won += OnHeartIncreased;
         }
 
         private void OnDisable()
@@ -74,14 +74,14 @@ namespace Game.Scripts.UI.Menu
             _heartUpdateCoroutine = null;
 
             _adv.HeartIncreased -= OnHeartIncreased;
-            _miniGame.Victory -= OnHeartIncreased;
+            _miniGame.Won -= OnHeartIncreased;
         }
 
         private void OnDestroy()
         {
             if (_heartTimer != null)
             {
-                _heartTimer.OnHeartsChanged -= OnHeartsChanged;
+                _heartTimer.HeartsChanged -= OnHeartsChanged;
             }
         }
 
@@ -121,7 +121,7 @@ namespace Game.Scripts.UI.Menu
             _isAnimating = false;
         }
 
-        public void TryDecreaseCount()
+        public void DecreaseCount()
         {
             _heartTimer.TryUseHeart();
         }

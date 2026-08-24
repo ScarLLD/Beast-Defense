@@ -49,12 +49,12 @@ namespace Game.Scripts.Options
             _game.Restarted += OnGameRestarted;
             _game.Continued += OnGameContinued;
             _game.Completed += OnGameCompleted;
-            _game.Loss += OnGameLoss;
+            _game.Lost += OnGameLoss;
             _game.Leaved += OnGameLeaved;
 
             _miniGame.Started += OnMiniGameStarted;
-            _miniGame.Victory += OnGameCompleted;
-            _miniGame.Defeat += OnGameLoss;
+            _miniGame.Won += OnGameCompleted;
+            _miniGame.Defeated += OnGameLoss;
 
             _shop.Purchased += OnPurchasedSkin;
             _shop.Selected += OnSelectedSkin;
@@ -71,12 +71,12 @@ namespace Game.Scripts.Options
             _game.Restarted -= OnGameRestarted;
             _game.Continued -= OnGameContinued;
             _game.Completed -= OnGameCompleted;
-            _game.Loss -= OnGameLoss;
+            _game.Lost -= OnGameLoss;
             _game.Leaved -= OnGameLeaved;
 
             _miniGame.Started -= OnMiniGameStarted;
-            _miniGame.Victory -= OnGameCompleted;
-            _miniGame.Defeat -= OnGameLoss;
+            _miniGame.Won -= OnGameCompleted;
+            _miniGame.Defeated -= OnGameLoss;
 
             _shop.Purchased -= OnPurchasedSkin;
             _shop.Selected -= OnSelectedSkin;

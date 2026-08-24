@@ -20,7 +20,7 @@ namespace Game.Scripts.CubeCore
         private Transform _transform;
 
         [SerializeField]
-        private List<Material> _сolors = new();
+        private List<Material> _colors = new();
 
         [SerializeField]
         private List<int> _counts = new();
@@ -42,7 +42,7 @@ namespace Game.Scripts.CubeCore
             for (int i = 0; i < gridCount; i++)
             {
                 int count = _counts[Random.Range(0, _counts.Count)];
-                Material material = _сolors[Random.Range(0, _сolors.Count)];
+                Material material = _colors[Random.Range(0, _colors.Count)];
 
                 if (_gridStorage.TryGet(i, out GridCell gridCell) && gridCell.IsOccupied == false)
                 {

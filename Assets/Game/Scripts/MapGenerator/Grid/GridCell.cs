@@ -9,7 +9,7 @@ namespace Game.Scripts.MapGenerator.Grid
     {
         private List<GridCell> _availableCells;
         public PlayerCube Cube { get; private set; }
-        public Obstracle Obstacle { get; private set; }
+        public Obstacle Obstacle { get; private set; }
 
         public bool IsStatic { get; private set; }
         public bool IsTopRow { get; private set; }
@@ -57,7 +57,7 @@ namespace Game.Scripts.MapGenerator.Grid
             Cube = cube;
         }
 
-        public void InitObstacle(Obstracle obstacle)
+        public void InitObstacle(Obstacle obstacle)
         {
             if (obstacle == null)
                 throw new ArgumentNullException(nameof(obstacle), $"obstacle не может быть null.");

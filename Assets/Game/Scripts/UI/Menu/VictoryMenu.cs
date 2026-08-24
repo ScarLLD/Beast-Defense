@@ -29,9 +29,9 @@ namespace Game.Scripts.UI.Menu
         private void OnEnable()
         {
             _game.Completed += OnGameCompleted;
-            _game.Transited += DisableMenu;
+            _game.Transited += OnGameTransited;
 
-            _adv.WinRewardDoubled += DisplayNewRaward;
+            _adv.WinRewardDoubled += OnWinRewardDoubled;
 
             _advDoubleRewardButton.onClick.AddListener(OnDoubleRewardButtonClick);
             _continueButton.onClick.AddListener(OnContinuedButtonClick);
@@ -41,9 +41,9 @@ namespace Game.Scripts.UI.Menu
         private void OnDisable()
         {
             _game.Completed -= OnGameCompleted;
-            _game.Transited -= DisableMenu;
+            _game.Transited -= OnGameTransited;
 
-            _adv.WinRewardDoubled -= DisplayNewRaward;
+            _adv.WinRewardDoubled -= OnWinRewardDoubled;
 
             _advDoubleRewardButton.onClick.RemoveListener(OnDoubleRewardButtonClick);
             _continueButton.onClick.RemoveListener(OnContinuedButtonClick);
@@ -82,7 +82,7 @@ namespace Game.Scripts.UI.Menu
             DisableAdvButton();
         }
 
-        private void DisplayNewRaward()
+        private void OnWinRewardDoubled()
         {
             _totalRewardText.text = $"+{_wallet.RewardMoneyCount * _rewardMultiple}";
             _totalRewardText.color = Color.yellow;

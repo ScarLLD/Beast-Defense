@@ -36,7 +36,7 @@ namespace Game.Scripts.SnakeCore
             IsTarget = isTarget;
         }
 
-        public bool IsCurrectColor(Color color)
+        public bool IsCurrentColor(Color color)
         {
             return Material != null && Material.color == color;
         }
@@ -70,7 +70,7 @@ namespace Game.Scripts.SnakeCore
             return false;
         }
 
-        public void TryDestroy()
+        public void NotifyDeath()
         {
             if (_snake == null)
                 return;

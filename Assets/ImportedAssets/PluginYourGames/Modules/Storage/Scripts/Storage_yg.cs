@@ -245,7 +245,7 @@ namespace YG.Insides
                 {
                     if (cloudDataState == DataState.Broken)
                         Message("Load Cloud Broken! But we tried to restore and load cloud saves. Local saves are disabled.");
-                    else Message("Load Cloud Complete! Local saves are disabled.");
+                    else Message("Load Cloud OnGameComplete! Local saves are disabled.");
 
                     YG2.saves = cloudData;
                 }
@@ -275,24 +275,24 @@ namespace YG.Insides
             {
                 if (cloudData.idSave >= localData.idSave)
                 {
-                    Message($"Load Cloud Complete! ID Cloud Save: {cloudData.idSave}, ID Local Save: {localData.idSave}");
+                    Message($"Load Cloud OnGameComplete! ID Cloud Save: {cloudData.idSave}, ID Local Save: {localData.idSave}");
                     YG2.saves = cloudData;
                 }
                 else
                 {
-                    Message($"Load Local Complete! ID Cloud Save: {cloudData.idSave}, ID Local Save: {localData.idSave}");
+                    Message($"Load Local OnGameComplete! ID Cloud Save: {cloudData.idSave}, ID Local Save: {localData.idSave}");
                     YG2.saves = localData;
                 }
             }
             else if (cloudDataState == DataState.Exist)
             {
                 YG2.saves = cloudData;
-                Message("Load Cloud Complete! Local Skins - " + localDataState);
+                Message("Load Cloud OnGameComplete! Local Skins - " + localDataState);
             }
             else if (localDataState == DataState.Exist)
             {
                 YG2.saves = localData;
-                Message("Load Local Complete! Cloud Skins - " + cloudDataState);
+                Message("Load Local OnGameComplete! Cloud Skins - " + cloudDataState);
             }
             else if (cloudDataState == DataState.Broken ||
                 (cloudDataState == DataState.Broken && localDataState == DataState.Broken))

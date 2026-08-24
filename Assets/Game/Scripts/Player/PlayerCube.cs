@@ -84,7 +84,7 @@ namespace Game.Scripts.Player
             _shooter.BulletsCountChanged -= OnBulletsDecreased;
         }
 
-        public void Interect(ShootingPlace shootingPlace, Vector3 escapePlace)
+        public void Interact(ShootingPlace shootingPlace, Vector3 escapePlace)
         {
             HasClicked = true;
             IsAvailable = false;
@@ -107,7 +107,7 @@ namespace Game.Scripts.Player
             _cubeAnimator.EnableAnimator(false);
 
             _radar.TurnOff();
-            _shooter.SetDafaultSettings();
+            _shooter.ResetSettings();
             _mover.SetDefaultSetting();
             _bulletView.SetEmpty();
 

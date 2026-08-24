@@ -30,7 +30,7 @@ namespace Game.Scripts.MapGenerator
 
         public event Action Started;
         public event Action Continued;
-        public event Action Loss;
+        public event Action Lost;
         public event Action Completed;
         public event Action Restarted;
         public event Action Leaved;
@@ -43,18 +43,18 @@ namespace Game.Scripts.MapGenerator
 
         private void OnEnable()
         {
-            _deathModule.SnakeDie += Complete;
+            _deathModule.SnakeDied += OnGameComplete;
         }
 
         private void OnDisable()
         {
-            _deathModule.SnakeDie -= Complete;
+            _deathModule.SnakeDied -= OnGameComplete;
         }
 
         private void OnApplicationQuit()
         {
             if (IsPlaying)
-                _gameHeart.TryDecreaseCount();
+                _gameHeart.DecreaseCount();
         }
 
         public void Begin()
@@ -79,7 +79,7 @@ namespace Game.Scripts.MapGenerator
                 StartRoutine(RestartRoutine());
         }
 
-        public void Complete()
+        public void OnGameComplete()
         {
             StartRoutine(CompleteRoutine());
         }
@@ -172,7 +172,7 @@ namespace Game.Scripts.MapGenerator
         {
             IsPlaying = false;
             HasCompleted = false;
-            Loss?.Invoke();
+            Lost?.Invoke();
             yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
             _gameHeart.transform.SetParent(_gameOverMenu.transform);
             _gameHeart.gameObject.SetActive(true);

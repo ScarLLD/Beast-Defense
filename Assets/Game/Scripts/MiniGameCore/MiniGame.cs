@@ -9,8 +9,8 @@ namespace Game.Scripts.MiniGameCore
         [SerializeField] private MGSnake _snake;
 
         public event Action Started;
-        public event Action Defeat;
-        public event Action Victory;
+        public event Action Defeated;
+        public event Action Won;
 
         public bool IsActive { get; private set; } = false;
 
@@ -38,13 +38,13 @@ namespace Game.Scripts.MiniGameCore
         public void VictoryGame()
         {
             IsActive = false;
-            Victory?.Invoke();
+            Won?.Invoke();
         }
 
         public void DefeatGame()
         {
             IsActive = false;
-            Defeat?.Invoke();
+            Defeated?.Invoke();
         }
     }
 }
