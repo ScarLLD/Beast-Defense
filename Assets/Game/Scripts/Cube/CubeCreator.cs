@@ -35,10 +35,7 @@ namespace Game.Scripts.CubeCore
             int gridCount = _gridStorage.GridCount;
 
             if (gridCount <= 0)
-            {
-                Debug.Log("Не удалось сгенерировать кубы.");
                 return false;
-            }
 
             cubeStorage.Clear();
 
@@ -49,7 +46,10 @@ namespace Game.Scripts.CubeCore
 
                 if (_gridStorage.TryGet(i, out GridCell gridCell) && gridCell.IsOccupied == false)
                 {
-                    Vector3 spawnPoint = new(gridCell.transform.position.x, gridCell.transform.position.y + _cubePrefab.transform.localScale.y / 2, gridCell.transform.position.z);
+                    Vector3 spawnPoint =
+                        new(gridCell.transform.position.x,
+                        gridCell.transform.position.y + _cubePrefab.transform.localScale.y / 2,
+                        gridCell.transform.position.z);
 
                     PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, _transform);
                     playerCube.Init(gridCell, material, count, bulletSpawner, targetStorage);

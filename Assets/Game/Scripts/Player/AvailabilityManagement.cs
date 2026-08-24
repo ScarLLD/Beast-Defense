@@ -47,7 +47,8 @@ namespace Game.Scripts.Player
                                     isAvailable = true;
                                 else if (isRightEdge && (haveStaticTop == false || haveStaticLeft == false))
                                     isAvailable = true;
-                                else if (isLeftEdge == false && isRightEdge == false && (haveStaticTop == false || haveStaticLeft == false || haveStaticRight == false))
+                                else if (isLeftEdge == false && isRightEdge == false 
+                                    && (haveStaticTop == false || haveStaticLeft == false || haveStaticRight == false))
                                     isAvailable = true;
                             }
                             else if (isLeftEdge)
@@ -56,7 +57,8 @@ namespace Game.Scripts.Player
                                     isAvailable = true;
                                 else if (isBottomEdge && (haveStaticTop == false || haveStaticRight == false))
                                     isAvailable = true;
-                                else if (isBottomEdge == false && isTopRow == false && (haveStaticTop == false || haveStaticRight == false || haveStaticBottom == false))
+                                else if (isBottomEdge == false && isTopRow == false 
+                                    && (haveStaticTop == false || haveStaticRight == false || haveStaticBottom == false))
                                     isAvailable = true;
                             }
                             else if (isRightEdge)
@@ -65,10 +67,12 @@ namespace Game.Scripts.Player
                                     isAvailable = true;
                                 else if (isBottomEdge && (haveStaticTop == false || haveStaticLeft == false))
                                     isAvailable = true;
-                                else if (isBottomEdge == false && isTopRow == false && (haveStaticTop == false || haveStaticLeft == false || haveStaticBottom == false))
+                                else if (isBottomEdge == false && isTopRow == false
+                                    && (haveStaticTop == false || haveStaticLeft == false || haveStaticBottom == false))
                                     isAvailable = true;
                             }
-                            else if (!isLeftEdge && !isRightEdge && !isBottomEdge && (!haveStaticLeft || !haveStaticRight || !haveStaticBottom || !haveStaticTop))
+                            else if (!isLeftEdge && !isRightEdge && !isBottomEdge
+                                && (!haveStaticLeft || !haveStaticRight || !haveStaticBottom || !haveStaticTop))
                             {
                                 isAvailable = true;
                             }

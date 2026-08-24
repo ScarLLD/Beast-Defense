@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using Game.Scripts.Shop;
 
 namespace Game.Scripts.UI
 {

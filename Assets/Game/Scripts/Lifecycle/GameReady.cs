@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using YG;
 
 namespace Game.Scripts.LifeCycle
 {

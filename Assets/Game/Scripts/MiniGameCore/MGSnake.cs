@@ -103,8 +103,6 @@ namespace Game.Scripts.MiniGameCore
 
         private IEnumerator MovementRoutine()
         {
-            Debug.Log("MovementRoutine started. IsMove: " + _isMove);
-
             while (_isMove)
             {
                 yield return new WaitForFixedUpdate();
@@ -181,8 +179,6 @@ namespace Game.Scripts.MiniGameCore
 
         private IEnumerator GrowSnakeRoutine()
         {
-            Debug.Log("GrowSnakeRoutine started. Body count: " + _bodyParts.Count);
-
             while (_isMove)
             {
                 yield return new WaitForSeconds(_growInterval);

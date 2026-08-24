@@ -12,7 +12,7 @@ namespace Game.Scripts.MiniGameCore
         public event Action Defeat;
         public event Action Victory;
 
-        public bool IsActive { get; private set; } = false;        
+        public bool IsActive { get; private set; } = false;
 
         private void OnEnable()
         {
@@ -33,21 +33,18 @@ namespace Game.Scripts.MiniGameCore
         {
             IsActive = true;
             Started?.Invoke();
-            Debug.Log("Мини-игра началась.");
         }
 
         public void VictoryGame()
         {
             IsActive = false;
             Victory?.Invoke();
-            Debug.Log("Мини-игра пройдена.");
         }
 
         public void DefeatGame()
         {
             IsActive = false;
             Defeat?.Invoke();
-            Debug.Log("Мини-игра проиграна.");
         }
     }
 }
