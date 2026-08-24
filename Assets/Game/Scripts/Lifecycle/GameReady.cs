@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using YG;
 
-namespace LifeCycle
+namespace Game.Scripts.LifeCycle
 {
     public class GameReady : MonoBehaviour { }
 }

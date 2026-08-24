@@ -1,9 +1,9 @@
-﻿using MapGenerator;
-using Options;
-using UI;
+﻿using Game.Scripts.MapGenerator;
+using Game.Scripts.Options;
+using Game.Scripts.UI;
 using UnityEngine;
 
-namespace Player
+namespace Game.Scripts.Player
 {
     public class CubesInteractor : MonoBehaviour
     {

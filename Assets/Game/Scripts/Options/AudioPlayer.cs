@@ -1,15 +1,13 @@
-﻿using BulletCore;
-using Core;
-using LifeCycle;
-using MapGenerator;
-using Menu;
-using MiniGameCore;
-using Shop;
+﻿using Game.Scripts.BulletCore;
+using Game.Scripts.UserCore;
+using Game.Scripts.LifeCycle;
+using Game.Scripts.UI.Menu;
+using Game.Scripts.Shop;
 using System.Collections.Generic;
-using UI;
+using Game.Scripts.UI;
 using UnityEngine;
 
-namespace Options
+namespace Game.Scripts.Options
 {
     public class AudioPlayer : MonoBehaviour
     {
@@ -37,8 +35,8 @@ namespace Options
         [SerializeField] private AudioClip _miniGameMusic;
 
         [Header("Other")]
-        [SerializeField] private Game _game;
-        [SerializeField] private MiniGame _miniGame;
+        [SerializeField] private MapGenerator.Game _game;
+        [SerializeField] private MiniGameCore.MiniGame _miniGame;
         [SerializeField] private DeathModule _deathModule;
         [SerializeField] private SkinShop _shop;
         [SerializeField] private Transition _transition;

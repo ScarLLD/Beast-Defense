@@ -1,12 +1,12 @@
-﻿using BulletCore;
-using CubeCore;
-using SnakeCore;
+﻿using Game.Scripts.BulletCore;
+using Game.Scripts.CubeCore;
+using Game.Scripts.SnakeCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Player
+namespace Game.Scripts.Player
 {
     [RequireComponent(typeof(Animator))]
     public class Shooter : MonoBehaviour

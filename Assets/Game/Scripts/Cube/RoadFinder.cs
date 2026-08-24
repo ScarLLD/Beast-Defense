@@ -1,8 +1,8 @@
-﻿using Grid;
+﻿using Game.Scripts.MapGenerator.Grid;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CubeCore
+namespace Game.Scripts.CubeCore
 {
     public class RoadFinder
     {

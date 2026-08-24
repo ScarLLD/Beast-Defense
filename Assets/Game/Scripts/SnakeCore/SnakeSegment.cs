@@ -1,8 +1,8 @@
-﻿using CubeCore;
+﻿using Game.Scripts.CubeCore;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SnakeCore
+namespace Game.Scripts.SnakeCore
 {
     public class SnakeSegment : MonoBehaviour
     {

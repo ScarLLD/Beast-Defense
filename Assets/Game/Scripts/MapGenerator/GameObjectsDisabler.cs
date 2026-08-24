@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace MapGenerator
+namespace Game.Scripts.MapGenerator
 {
     public class GameObjectsDisabler : MonoBehaviour
     {

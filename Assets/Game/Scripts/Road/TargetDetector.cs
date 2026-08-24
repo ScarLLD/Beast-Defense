@@ -1,7 +1,7 @@
-﻿using SnakeCore;
+﻿using Game.Scripts.SnakeCore;
 using UnityEngine;
 
-namespace Road
+namespace Game.Scripts.Road
 {
     [RequireComponent(typeof(TargetStorage))]
     public class TargetDetector : MonoBehaviour

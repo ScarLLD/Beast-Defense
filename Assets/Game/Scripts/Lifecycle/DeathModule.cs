@@ -1,15 +1,14 @@
-﻿using Effects;
-using MapGenerator;
-using Options;
+﻿using Game.Scripts.Effects;
+using Game.Scripts.Options;
 using System;
 using System.Collections;
 using UnityEngine;
 
-namespace LifeCycle
+namespace Game.Scripts.LifeCycle
 {
     public class DeathModule : MonoBehaviour
     {
-        [SerializeField] private Game _game;
+        [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private GameTimer _timer;
         [SerializeField] private DeathAnimator _animator;
         [SerializeField] private AudioPlayer _audioPlayer;

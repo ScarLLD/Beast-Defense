@@ -1,10 +1,10 @@
-﻿using MiniGameCore;
-using Options;
-using Pool;
+﻿using Game.Scripts.MiniGameCore;
+using Game.Scripts.Options;
+using Game.Scripts.Pool;
 using System.Collections;
 using UnityEngine;
 
-namespace Effects
+namespace Game.Scripts.Effects
 {
     public class DeathAnimator : MonoBehaviour
     {
@@ -23,7 +23,7 @@ namespace Effects
 
         private void Awake()
         {
-            _pool = new (_cloudParticlePrefab, transform);
+            _pool = new(_cloudParticlePrefab, transform);
 
             _deathTime = new WaitForSeconds(_animator.GetDuration);
             _delayTime = new WaitForSeconds(_cloudParticlePrefab.GetDuration + _deathDelay);

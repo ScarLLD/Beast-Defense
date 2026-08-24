@@ -1,10 +1,9 @@
-﻿using MapGenerator;
-using Player;
+﻿using Game.Scripts.Player;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Grid
+namespace Game.Scripts.MapGenerator.Grid
 {
     public class GridCell : MonoBehaviour
     {

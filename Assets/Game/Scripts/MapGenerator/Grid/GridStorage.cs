@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Grid
+namespace Game.Scripts.MapGenerator.Grid
 {
     public class GridStorage : MonoBehaviour
     {

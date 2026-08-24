@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Player
+namespace Game.Scripts.Player
 {
     [RequireComponent(typeof(PlayerCube))]
     public class BulletView : MonoBehaviour

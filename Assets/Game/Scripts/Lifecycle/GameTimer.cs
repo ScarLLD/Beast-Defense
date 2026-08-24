@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace LifeCycle
+namespace Game.Scripts.LifeCycle
 {
     public class GameTimer : MonoBehaviour
     {

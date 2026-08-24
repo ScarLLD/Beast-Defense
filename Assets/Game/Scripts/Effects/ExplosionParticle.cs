@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Effects
+namespace Game.Scripts.Effects
 {
     public class ExplosionParticle : MonoBehaviour
     {

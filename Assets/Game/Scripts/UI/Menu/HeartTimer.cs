@@ -2,7 +2,7 @@
 using UnityEngine;
 using YG;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class HeartTimer
     {
@@ -262,7 +262,7 @@ namespace Menu
 
         private void SaveData()
         {
-            YG2.saves.HeartCount = _currentHearts;
+            YG.YG2.saves.HeartCount = _currentHearts;
             YG2.saves.PendingRestores = _pendingRestores;
 
             if (_nextRestoreTimeUtc.HasValue)

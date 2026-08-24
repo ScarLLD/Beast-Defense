@@ -1,11 +1,11 @@
-﻿using CubeCore;
-using Grid;
-using MapGenerator;
+﻿using Game.Scripts.CubeCore;
+using Game.Scripts.MapGenerator.Grid;
+using Game.Scripts.MapGenerator;
 using System;
 using System.Collections;
 using UnityEngine;
 
-namespace Player
+namespace Game.Scripts.Player
 {
     public class CubeMover : MonoBehaviour
     {

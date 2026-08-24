@@ -1,11 +1,11 @@
-﻿using Effects;
-using Options;
+﻿using Game.Scripts.Effects;
+using Game.Scripts.Options;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MiniGameCore
+namespace Game.Scripts.MiniGameCore
 {
     [RequireComponent(typeof(Rigidbody))]
     public class MGSnake : MonoBehaviour

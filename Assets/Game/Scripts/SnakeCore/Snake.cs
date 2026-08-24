@@ -1,14 +1,14 @@
-﻿using BeastCore;
-using Core;
-using CubeCore;
-using LifeCycle;
+﻿using Game.Scripts.BeastCore;
+using Game.Scripts.UserCore;
+using Game.Scripts.CubeCore;
+using Game.Scripts.LifeCycle;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace SnakeCore
+namespace Game.Scripts.SnakeCore
 {
     [RequireComponent(typeof(SnakeSpeedControl))]
     public class Snake : MonoBehaviour

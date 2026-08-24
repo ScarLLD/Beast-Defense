@@ -1,11 +1,11 @@
-﻿using Menu;
+﻿using Game.Scripts.UI.Menu;
+using Game.Scripts.UI;
 using System;
 using System.Collections;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Shop
+namespace Game.Scripts.Shop
 {
     public class ShopMenu : Window
     {

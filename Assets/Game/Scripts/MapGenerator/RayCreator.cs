@@ -1,10 +1,10 @@
-﻿using Menu;
-using Player;
+﻿using Game.Scripts.UI.Menu;
+using Game.Scripts.Player;
 using System;
 using System.Collections;
 using UnityEngine;
 
-namespace MapGenerator
+namespace Game.Scripts.MapGenerator
 {
     public class RayCreator : MonoBehaviour
     {
@@ -68,7 +68,7 @@ namespace MapGenerator
             {
                 if (_game.IsPause == false && _game.IsPlaying == true)
                 {
-                    Ray ray = new ();
+                    Ray ray = new();
                     bool hasInput = false;
 
                     if (Input.GetMouseButtonDown(0))

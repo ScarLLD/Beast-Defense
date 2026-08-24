@@ -1,9 +1,9 @@
-﻿using SnakeCore;
+﻿using Game.Scripts.SnakeCore;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Road
+namespace Game.Scripts.Road
 {
     public class TargetStorage : MonoBehaviour
     {

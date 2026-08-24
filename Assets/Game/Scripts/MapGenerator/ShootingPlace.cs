@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace MapGenerator
+namespace Game.Scripts.MapGenerator
 {
     public class ShootingPlace : MonoBehaviour
     {

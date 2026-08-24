@@ -1,8 +1,8 @@
-﻿using Player;
+﻿using Game.Scripts.Player;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CubeCore
+namespace Game.Scripts.CubeCore
 {
     public class CubeStorage : MonoBehaviour
     {

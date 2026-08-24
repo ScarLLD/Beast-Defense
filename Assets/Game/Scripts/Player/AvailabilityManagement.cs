@@ -1,8 +1,8 @@
-﻿using Grid;
+﻿using Game.Scripts.MapGenerator.Grid;
 using System.Linq;
 using UnityEngine;
 
-namespace Player
+namespace Game.Scripts.Player
 {
     public class AvailabilityManagement : MonoBehaviour
     {

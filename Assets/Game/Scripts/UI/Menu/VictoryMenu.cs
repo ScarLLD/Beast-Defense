@@ -1,16 +1,14 @@
-﻿using MapGenerator;
-using TMPro;
-using UI;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class VictoryMenu : Window
     {
         [SerializeField] private Adv _adv;
         [SerializeField] private Wallet _wallet;
-        [SerializeField] private Game _game;
+        [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private Image _iconImage;
         [SerializeField] private TMP_Text _totalRewardText;
         [SerializeField] private TMP_Text _doubleRewardText;

@@ -1,14 +1,13 @@
-﻿using MiniGameCore;
-using UI;
+﻿using Game.Scripts.MiniGameCore;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class IncreaseHeartMenu : Window
     {
         [SerializeField] private Adv _adv;
-        [SerializeField] private MiniGame _miniGame;
+        [SerializeField] private MiniGameCore.MiniGame _miniGame;
         [SerializeField] private MiniGameSequencer _sequencer;
         [SerializeField] private GameHeart _gameHeart;
         [SerializeField] private Button _AdvButton;

@@ -1,9 +1,9 @@
-﻿using Player;
+﻿using Game.Scripts.Player;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace MapGenerator
+namespace Game.Scripts.MapGenerator
 {
     public class PlaceStorage : MonoBehaviour
     {

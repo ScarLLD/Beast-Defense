@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace Game.Scripts.UI
 {
     public class Transition : MonoBehaviour
     {

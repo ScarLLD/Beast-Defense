@@ -1,18 +1,17 @@
-﻿using MapGenerator;
-using MiniGameCore;
-using Shop;
+﻿using Game.Scripts.MiniGameCore;
+using Game.Scripts.Shop;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class MainMenu : Window
     {
         [SerializeField] private ShopMenu _shop;
-        [SerializeField] private Game _game;
-        [SerializeField] private MiniGame _miniGame;
+        [SerializeField] private MapGenerator.Game _game;
+        [SerializeField] private MiniGameCore.MiniGame _miniGame;
         [SerializeField] private MiniGameSequenceAnimator _miniGameSequenceAnimator;
         [SerializeField] private LeaderBoardMenu _leaderBoardMenu;
         [SerializeField] private IncreaseHeartMenu _increaseHeartMenu;

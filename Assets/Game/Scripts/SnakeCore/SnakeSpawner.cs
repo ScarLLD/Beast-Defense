@@ -1,14 +1,14 @@
-﻿using BeastCore;
-using CubeCore;
-using LifeCycle;
-using Road;
-using Shop;
+﻿using Game.Scripts.BeastCore;
+using Game.Scripts.CubeCore;
+using Game.Scripts.LifeCycle;
+using Game.Scripts.Road;
+using Game.Scripts.Shop.Skins;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 using YG;
 
-namespace SnakeCore
+namespace Game.Scripts.SnakeCore
 {
     public class SnakeSpawner : MonoBehaviour
     {

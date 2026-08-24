@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public abstract class Window : MonoBehaviour
     {

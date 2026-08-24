@@ -1,13 +1,13 @@
-﻿using BulletCore;
-using CubeCore;
-using Grid;
-using MapGenerator;
-using Road;
+﻿using Game.Scripts.BulletCore;
+using Game.Scripts.CubeCore;
+using Game.Scripts.MapGenerator.Grid;
+using Game.Scripts.MapGenerator;
+using Game.Scripts.Road;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Player
+namespace Game.Scripts.Player
 {
     [RequireComponent(typeof(CubeMover))]
     [RequireComponent(typeof(TargetRadar))]
@@ -167,8 +167,8 @@ namespace Player
 
         private void SetHalfSizeTransform()
         {
-            _transform.localScale = new (_defaultScale.x, _defaultScale.y / 2, _defaultScale.z);
-            _transform.position = new (_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4, _defaultPosition.z);
+            _transform.localScale = new(_defaultScale.x, _defaultScale.y / 2, _defaultScale.z);
+            _transform.position = new(_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4, _defaultPosition.z);
 
             _meshRenderer.transform.localPosition = Vector3.zero;
         }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SnakeCore
+namespace Game.Scripts.SnakeCore
 {
     public class SnakeHead : MonoBehaviour
     {

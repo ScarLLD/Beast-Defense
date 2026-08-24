@@ -1,8 +1,8 @@
-﻿using Shop;
+﻿using Game.Scripts.Shop.Skins;
 using UnityEngine;
 using YG;
 
-namespace BeastCore
+namespace Game.Scripts.BeastCore
 {
     public class BeastSpawner : MonoBehaviour
     {

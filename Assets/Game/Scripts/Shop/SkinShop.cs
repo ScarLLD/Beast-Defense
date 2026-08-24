@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using UnityEngine.UI;
-using BeastCore;
-using Effects;
-using SnakeCore;
+using Game.Scripts.BeastCore;
+using Game.Scripts.Effects;
+using Game.Scripts.SnakeCore;
+using Game.Scripts.UI;
 using TMPro;
-using UI;
 using YG;
+using Game.Scripts.Shop.Skins;
 
-namespace Shop
+namespace Game.Scripts.Shop
 {
     public class SkinShop : MonoBehaviour
     {
-        private readonly List<SkinItemUI> _beastSkinItems = new ();
-        private readonly List<SkinItemUI> _snakeSkinItems = new ();
+        private readonly List<SkinItemUI> _beastSkinItems = new();
+        private readonly List<SkinItemUI> _snakeSkinItems = new();
 
-        [Header("Data")]
+        [Header("Skins")]
         [SerializeField] private SkinData _beastSkinData;
         [SerializeField] private SkinData _snakeSkinData;
         [SerializeField] private Wallet _wallet;
@@ -50,8 +51,8 @@ namespace Shop
         [SerializeField] private TMP_Text _buyButtonText;
         [SerializeField] private TMP_Text _selectButtonText;
 
-        private Color _greenColor = new (0.004f, 0.78f, 0.57f);
-        private Color _redColor = new (1f, 0.3f, 0.25f);
+        private Color _greenColor = new(0.004f, 0.78f, 0.57f);
+        private Color _redColor = new(1f, 0.3f, 0.25f);
 
         private string _selectedSkinId;
         private SkinType _selectedSkinType;

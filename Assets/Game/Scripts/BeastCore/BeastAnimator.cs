@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BeastCore
+namespace Game.Scripts.BeastCore
 {
     [RequireComponent(typeof(Animator))]
     public class BeastAnimator : MonoBehaviour

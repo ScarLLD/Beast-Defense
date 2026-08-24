@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace CubeCore
+namespace Game.Scripts.CubeCore
 {
     public class CubeStack : MonoBehaviour
     {

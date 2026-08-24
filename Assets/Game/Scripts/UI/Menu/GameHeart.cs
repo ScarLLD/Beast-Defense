@@ -1,12 +1,11 @@
-﻿using MiniGameCore;
+﻿using Game.Scripts.MiniGameCore;
 using System;
 using System.Collections;
 using TMPro;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class GameHeart : MonoBehaviour
     {

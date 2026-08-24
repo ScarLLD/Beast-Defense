@@ -1,9 +1,9 @@
-﻿using Player;
-using SnakeCore;
+﻿using Game.Scripts.Player;
+using Game.Scripts.SnakeCore;
 using System.Collections;
 using UnityEngine;
 
-namespace Road
+namespace Game.Scripts.Road
 {
     [RequireComponent(typeof(Shooter))]
     public class TargetRadar : MonoBehaviour

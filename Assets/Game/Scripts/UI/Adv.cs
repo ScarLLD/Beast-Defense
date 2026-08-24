@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-namespace UI
+namespace Game.Scripts.UI
 {
     public class Adv : MonoBehaviour
     {

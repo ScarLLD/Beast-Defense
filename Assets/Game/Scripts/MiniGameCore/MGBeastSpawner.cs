@@ -1,10 +1,10 @@
-﻿using BeastCore;
-using Pool;
+﻿using Game.Scripts.BeastCore;
+using Game.Scripts.Pool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MiniGameCore
+namespace Game.Scripts.MiniGameCore
 {
     public class MGBeastSpawner : MonoBehaviour
     {

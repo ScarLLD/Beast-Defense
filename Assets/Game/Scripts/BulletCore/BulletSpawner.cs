@@ -1,12 +1,12 @@
-﻿using CubeCore;
-using Effects;
-using Options;
-using Pool;
+﻿using Game.Scripts.CubeCore;
+using Game.Scripts.Effects;
+using Game.Scripts.Options;
+using Game.Scripts.Pool;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BulletCore
+namespace Game.Scripts.BulletCore
 {
     public class BulletSpawner : MonoBehaviour
     {

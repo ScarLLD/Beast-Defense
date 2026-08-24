@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Player
+namespace Game.Scripts.Player
 {
     [RequireComponent(typeof(Animator))]
     public class PlayerCubeAnimator : MonoBehaviour

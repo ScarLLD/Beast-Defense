@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Shop
+namespace Game.Scripts.Shop.Skins
 {
-    [CreateAssetMenu(fileName = "SkinData", menuName = "Game/Skin Data")]
+    [CreateAssetMenu(fileName = "SkinData", menuName = "Game/Skin Skins")]
     public class SkinData : ScriptableObject
     {
         public List<Skin> Skins = new();

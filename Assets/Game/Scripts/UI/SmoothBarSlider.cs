@@ -1,8 +1,8 @@
-﻿using SnakeCore;
+﻿using Game.Scripts.SnakeCore;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace UI
+namespace Game.Scripts.UI
 {
     public class SmoothBarSlider : MonoBehaviour
     {

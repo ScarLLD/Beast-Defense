@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace MiniGameCore
+namespace Game.Scripts.MiniGameCore
 {
     public class MiniGame : MonoBehaviour
     {

@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using CubeCore;
-using Pool;
+﻿using Game.Scripts.Pool;
+using Game.Scripts.CubeCore;
+using UnityEngine;
 
-namespace Effects
+namespace Game.Scripts.Effects
 {
     public class ParticleCreator : MonoBehaviour
     {

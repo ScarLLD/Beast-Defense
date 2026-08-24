@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace BulletCore
+namespace Game.Scripts.BulletCore
 {
     [RequireComponent(typeof(TrailRenderer))]
     public class BulletTrail : MonoBehaviour

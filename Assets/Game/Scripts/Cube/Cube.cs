@@ -1,7 +1,7 @@
-﻿using SnakeCore;
+﻿using Game.Scripts.SnakeCore;
 using UnityEngine;
 
-namespace CubeCore
+namespace Game.Scripts.CubeCore
 {
     public class Cube : MonoBehaviour
     {

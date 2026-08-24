@@ -1,17 +1,17 @@
-﻿using BulletCore;
-using Grid;
-using MiniGameCore;
-using Player;
-using Road;
+﻿using Game.Scripts.BulletCore;
+using Game.Scripts.MapGenerator.Grid;
+using Game.Scripts.MiniGameCore;
+using Game.Scripts.Player;
+using Game.Scripts.Road;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CubeCore
+namespace Game.Scripts.CubeCore
 {
     public class CubeCreator : MonoBehaviour
     {
-        private readonly List<PlayerCube> _cubes = new ();
-        private readonly List<GridCell> _cells = new ();
+        private readonly List<PlayerCube> _cubes = new();
+        private readonly List<GridCell> _cells = new();
 
         [SerializeField] private GridStorage _gridStorage;
         [SerializeField] private PlayerCube _cubePrefab;
@@ -20,10 +20,10 @@ namespace CubeCore
         private Transform _transform;
 
         [SerializeField]
-        private List<Material> _сolors = new ();
+        private List<Material> _сolors = new();
 
         [SerializeField]
-        private List<int> _counts = new ();
+        private List<int> _counts = new();
 
         private void Awake()
         {
@@ -32,7 +32,7 @@ namespace CubeCore
 
         public bool TryCreate(CubeStorage cubeStorage, BulletSpawner bulletSpawner, TargetStorage targetStorage)
         {
-            int gridCount = _gridStorage.GridCount;            
+            int gridCount = _gridStorage.GridCount;
 
             if (gridCount <= 0)
             {

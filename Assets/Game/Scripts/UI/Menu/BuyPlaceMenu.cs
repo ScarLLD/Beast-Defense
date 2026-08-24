@@ -1,18 +1,17 @@
-﻿using LifeCycle;
-using MapGenerator;
+﻿using Game.Scripts.LifeCycle;
+using Game.Scripts.MapGenerator;
 using TMPro;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class BuyPlaceMenu : Window
     {
         private readonly float _notEnoughMoneyAlpha = 0.4f;
         private readonly float _enoughMoneyAlpha = 1f;
 
-        [SerializeField] private Game _game;
+        [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private DeathModule _deathModule;
         [SerializeField] private PlaceSpawner _placeSpawner;
@@ -24,7 +23,7 @@ namespace Menu
         [SerializeField] private Image _buyButtonIconImage;
 
         private Color _notEnoughMoneyColor = Color.red;
-        private Color _enoughMoneyColor = Color.green;        
+        private Color _enoughMoneyColor = Color.green;
 
         private void Awake()
         {

@@ -1,12 +1,12 @@
-﻿using LifeCycle;
-using Menu;
-using MiniGameCore;
+﻿using Game.Scripts.LifeCycle;
+using Game.Scripts.UI.Menu;
+using Game.Scripts.UI;
+using Game.Scripts.MiniGameCore;
 using System;
 using System.Collections;
-using UI;
 using UnityEngine;
 
-namespace MapGenerator
+namespace Game.Scripts.MapGenerator
 {
     public class Game : MonoBehaviour
     {

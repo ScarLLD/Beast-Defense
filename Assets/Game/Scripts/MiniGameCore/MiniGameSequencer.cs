@@ -1,10 +1,10 @@
-﻿using BeastCore;
-using Options;
-using SnakeCore;
+﻿using Game.Scripts.BeastCore;
+using Game.Scripts.Options;
+using Game.Scripts.SnakeCore;
 using UnityEngine;
 using YG;
 
-namespace MiniGameCore
+namespace Game.Scripts.MiniGameCore
 {
     public class MiniGameSequencer : MonoBehaviour
     {

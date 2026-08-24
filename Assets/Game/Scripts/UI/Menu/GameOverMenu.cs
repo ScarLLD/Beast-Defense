@@ -1,16 +1,14 @@
-﻿using MapGenerator;
-using TMPro;
-using UI;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class GameOverMenu : Window
     {
         private readonly float _advButtonAlphaPressedColor = 0.5f;
 
-        [SerializeField] private Game _game;
+        [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private Adv _adv;
         [SerializeField] private GameHeart _gameHeart;
         [SerializeField] private IncreaseHeartMenu _increaseHeartMenu;

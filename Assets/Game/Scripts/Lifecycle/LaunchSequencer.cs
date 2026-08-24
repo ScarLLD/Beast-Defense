@@ -1,23 +1,23 @@
-﻿using BeastCore;
-using BulletCore;
-using CubeCore;
-using Grid;
-using MapGenerator;
-using Options;
-using Player;
-using Road;
-using SnakeCore;
+﻿using Game.Scripts.BeastCore;
+using Game.Scripts.BulletCore;
+using Game.Scripts.CubeCore;
+using Game.Scripts.Options;
+using Game.Scripts.MapGenerator.Grid;
+using Game.Scripts.MapGenerator;
+using Game.Scripts.Player;
+using Game.Scripts.Road;
+using Game.Scripts.SnakeCore;
+using Game.Scripts.UI;
 using System.Collections;
 using System.Collections.Generic;
-using UI;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace LifeCycle
+namespace Game.Scripts.LifeCycle
 {
     public class LaunchSequencer : MonoBehaviour
     {
-        [SerializeField] private Game _game;
+        [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private GameTimer _timer;
         [SerializeField] private SliderLevelViewer _levelViewer;
         [SerializeField] private GameObjectsDisabler _disabler;
@@ -180,7 +180,7 @@ namespace LifeCycle
         }
 
         private bool TryGenerateLevel()
-        {      
+        {
             bool success = _gridCreator.TryCreate()
                 && _placeSpawner.TryGeneratePlaces()
                 && _cubeCreator.TryCreate(_cubeStorage, _bulletSpawner, _targetStorage)

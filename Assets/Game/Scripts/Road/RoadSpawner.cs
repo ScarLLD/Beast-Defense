@@ -1,8 +1,8 @@
-﻿using MapGenerator;
+﻿using Game.Scripts.MapGenerator;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Road
+namespace Game.Scripts.Road
 {
     [RequireComponent(typeof(DirectionAnalyzer), typeof(RoadLimiter))]
     public class RoadSpawner : MonoBehaviour

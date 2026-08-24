@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using YG;
 
-namespace Options
+namespace Game.Scripts.Options
 {
     public class GameOptions : MonoBehaviour
     {

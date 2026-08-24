@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-namespace MiniGameCore
+namespace Game.Scripts.MiniGameCore
 {
     public class DOTWeenAnimator : MonoBehaviour
     {

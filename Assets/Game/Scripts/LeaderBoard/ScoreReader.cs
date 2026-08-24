@@ -1,11 +1,11 @@
-﻿using LifeCycle;
-using Menu;
+﻿using Game.Scripts.LifeCycle;
+using Game.Scripts.UI.Menu;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
 using YG.Utils.LB;
 
-namespace LeaderBoard
+namespace Game.Scripts.LeaderBoard
 {
     public class ScoreReader : MonoBehaviour
     {

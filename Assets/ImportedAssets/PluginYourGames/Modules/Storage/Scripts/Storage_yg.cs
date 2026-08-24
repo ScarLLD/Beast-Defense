@@ -287,18 +287,18 @@ namespace YG.Insides
             else if (cloudDataState == DataState.Exist)
             {
                 YG2.saves = cloudData;
-                Message("Load Cloud Complete! Local Data - " + localDataState);
+                Message("Load Cloud Complete! Local Skins - " + localDataState);
             }
             else if (localDataState == DataState.Exist)
             {
                 YG2.saves = localData;
-                Message("Load Local Complete! Cloud Data - " + cloudDataState);
+                Message("Load Local Complete! Cloud Skins - " + cloudDataState);
             }
             else if (cloudDataState == DataState.Broken ||
                 (cloudDataState == DataState.Broken && localDataState == DataState.Broken))
             {
                 Message("Local Saves - " + localDataState);
-                Message("Cloud Saves - Broken! Data Recovering...");
+                Message("Cloud Saves - Broken! Skins Recovering...");
                 YG2.SetDefaultSaves();
 #if NJSON_STORAGE_YG2
                 YG2.saves = JsonConvert.DeserializeObject<SavesYG>(data);
@@ -310,7 +310,7 @@ namespace YG.Insides
             else if (localDataState == DataState.Broken)
             {
                 Message("Cloud Saves - " + cloudDataState);
-                Message("Local Saves - Broken! Data Recovering...");
+                Message("Local Saves - Broken! Skins Recovering...");
                 YG2.SetDefaultSaves();
 #if NJSON_STORAGE_YG2
                 YG2.saves = JsonConvert.DeserializeObject<SavesYG>(LocalStorage.GetKey(STORAGE_KEY));

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
-namespace Effects
+namespace Game.Scripts.Effects
 {
     [RequireComponent(typeof(ParticleSystem))]
     public class ParticleData : MonoBehaviour

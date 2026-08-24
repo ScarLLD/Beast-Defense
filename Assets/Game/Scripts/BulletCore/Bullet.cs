@@ -1,10 +1,10 @@
-﻿using System.Collections;
+﻿using Game.Scripts.CubeCore;
+using Game.Scripts.Options;
+using Game.Scripts.Effects;
+using System.Collections;
 using UnityEngine;
-using CubeCore;
-using Options;
-using Effects;
 
-namespace BulletCore
+namespace Game.Scripts.BulletCore
 {
     [RequireComponent(typeof(Rigidbody))]
     public class Bullet : MonoBehaviour

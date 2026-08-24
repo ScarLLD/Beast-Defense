@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using Shop;
+using Game.Scripts.Shop;
 
-namespace UI
+namespace Game.Scripts.UI
 {
     public class InterfaceLocalization : MonoBehaviour
     {

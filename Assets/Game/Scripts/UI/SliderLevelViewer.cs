@@ -2,7 +2,7 @@
 using UnityEngine;
 using YG;
 
-namespace UI
+namespace Game.Scripts.UI
 {
     public class SliderLevelViewer : MonoBehaviour
     {

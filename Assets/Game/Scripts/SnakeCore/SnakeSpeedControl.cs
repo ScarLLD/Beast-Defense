@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace SnakeCore
+namespace Game.Scripts.SnakeCore
 {
     [RequireComponent(typeof(Snake))]
     public class SnakeSpeedControl : MonoBehaviour

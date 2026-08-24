@@ -3,7 +3,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace Road
+namespace Game.Scripts.Road
 {
     public class SplineVisualizer : MonoBehaviour
     {

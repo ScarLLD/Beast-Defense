@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections;
-using UI;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class LeaderBoardMenu : Window
     {

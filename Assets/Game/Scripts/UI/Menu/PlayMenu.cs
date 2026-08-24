@@ -1,11 +1,10 @@
-﻿using MapGenerator;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class PlayMenu : Window
     {
-        [SerializeField] private Game _game;
+        [SerializeField] private MapGenerator.Game _game;
 
         private void OnEnable()
         {

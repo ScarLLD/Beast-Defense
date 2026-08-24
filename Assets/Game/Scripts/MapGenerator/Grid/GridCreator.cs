@@ -1,13 +1,12 @@
-﻿using Core;
-using CubeCore;
-using MapGenerator;
-using Player;
+﻿using Game.Scripts.UserCore;
+using Game.Scripts.CubeCore;
+using Game.Scripts.Player;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Grid
+namespace Game.Scripts.MapGenerator.Grid
 {
     public class GridCreator : MonoBehaviour
     {

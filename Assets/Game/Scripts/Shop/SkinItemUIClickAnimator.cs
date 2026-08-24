@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-namespace Shop
+namespace Game.Scripts.Shop
 {
     public class SkinItemUIClickAnimator : MonoBehaviour
     {

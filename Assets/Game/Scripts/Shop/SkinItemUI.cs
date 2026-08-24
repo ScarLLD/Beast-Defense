@@ -1,10 +1,11 @@
 ﻿using TMPro;
-using UI;
+using Game.Scripts.Shop.Skins;
+using Game.Scripts.UI;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine;
 
-namespace Shop
+namespace Game.Scripts.Shop
 {
     [RequireComponent(typeof(RectTransform), typeof(SkinItemUIClickAnimator))]
     public class SkinItemUI : MonoBehaviour, IPointerClickHandler

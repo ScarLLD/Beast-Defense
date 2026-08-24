@@ -1,14 +1,13 @@
-﻿using MapGenerator;
-using Options;
+﻿using Game.Scripts.Options;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
 
-namespace Menu
+namespace Game.Scripts.UI.Menu
 {
     public class PauseMenu : Window
     {
-        [SerializeField] private Game _game;
+        [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private GameOptions _gameOptions;
 
         [Header("Buttons")]

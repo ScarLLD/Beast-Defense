@@ -1,4 +1,4 @@
-﻿using Options;
+﻿using Game.Scripts.Options;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace BeastCore
+namespace Game.Scripts.BeastCore
 {
     [RequireComponent(typeof(BeastAnimator))]
     public class Beast : MonoBehaviour

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace MiniGameCore
+namespace Game.Scripts.MiniGameCore
 {
     public class BeastCollector : MonoBehaviour
     {

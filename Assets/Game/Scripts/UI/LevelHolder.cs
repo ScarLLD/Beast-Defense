@@ -1,12 +1,12 @@
-﻿using MapGenerator;
+﻿using Game.Scripts.MapGenerator;
 using UnityEngine;
 using YG;
 
-namespace UI
+namespace Game.Scripts.UI
 {
     public class LevelHolder : MonoBehaviour
     {
-        [SerializeField] private Game _game;
+        [SerializeField] private MapGenerator.Game _game;
 
         private void OnEnable()
         {
