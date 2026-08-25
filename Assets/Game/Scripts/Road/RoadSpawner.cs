@@ -8,6 +8,8 @@ namespace Game.Scripts.Road
     public class RoadSpawner : MonoBehaviour
     {
         private readonly List<Vector3> _road = new();
+        private readonly int _segmentsGenerateMaxAttemptsCount = 500;
+        private readonly int _roadGenerateMaxAttemptsCount = 200;
 
         [SerializeField] private GameObject _stumpPrefab;
         [SerializeField] private BoundaryMaker _boundaryMaker;
@@ -104,7 +106,7 @@ namespace Game.Scripts.Road
             int safetyCounter = 0;
             bool startedFromTop = IsPointNearTopBoundary(_spawnPoint);
 
-            while (_road.Count < _maxPathSegments && safetyCounter++ < 500)
+            while (_road.Count < _maxPathSegments && safetyCounter++ < _segmentsGenerateMaxAttemptsCount)
             {
                 if (TryMoveForward(ref currentPosition, currentDirection))
                 {
@@ -139,9 +141,8 @@ namespace Game.Scripts.Road
         private bool GenerateValidRoad()
         {
             int attempts = 0;
-            int maxAttempts = 200;
 
-            while (attempts++ < maxAttempts)
+            while (attempts++ < _roadGenerateMaxAttemptsCount)
             {
                 _road.Clear();
                 InitializeStartingPointAndDirection();

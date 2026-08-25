@@ -4,9 +4,14 @@ using UnityEngine;
 
 namespace Game.Scripts.Player
 {
-    public class AvailabilityManagement : MonoBehaviour
+    public class AvailabilityManagement
     {
-        [SerializeField] private GridStorage _gridStorage;
+        private GridStorage _gridStorage;
+
+        public void Init(GridStorage gridStorage)
+        {
+            _gridStorage = gridStorage;
+        }
 
         public void UpdateAvailability()
         {

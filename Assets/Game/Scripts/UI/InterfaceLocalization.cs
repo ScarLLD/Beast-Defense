@@ -1,8 +1,6 @@
-﻿using UnityEngine;
-
-namespace Game.Scripts.UI
+﻿namespace Game.Scripts.UI
 {
-    public class InterfaceLocalization : MonoBehaviour
+    public class InterfaceLocalization
     {
         public string GetLocalizedSnakeType(string languageCode)
         {

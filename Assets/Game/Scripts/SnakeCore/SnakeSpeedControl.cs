@@ -13,6 +13,7 @@ namespace Game.Scripts.SnakeCore
         private SpeedState _currentState = SpeedState.Normal;
 
         [SerializeField] private float _transitionDuration = 1f;
+        [SerializeField] private float _sleepTime = 0.1f;
 
         [Header("Speed Multipliers")]
         [SerializeField] private float _slowedMultiplier = 0.5f;
@@ -24,6 +25,8 @@ namespace Game.Scripts.SnakeCore
         [SerializeField] private float _deepSlowedDistance = 0.75f;
         [SerializeField] private float _finalSlowdownDistance = 0.9f;
         [SerializeField] private float _stopDistance = 0.99f;
+
+        private WaitForSeconds _sleep;
 
         private enum SpeedState
         {
@@ -37,6 +40,7 @@ namespace Game.Scripts.SnakeCore
         private void Awake()
         {
             _snake = GetComponent<Snake>();
+            _sleep = new WaitForSeconds(_sleepTime);
         }
 
         private void OnEnable()
@@ -127,7 +131,7 @@ namespace Game.Scripts.SnakeCore
                         break;
                 }
 
-                yield return new WaitForSeconds(0.1f);
+                yield return _sleep;
             }
 
             _controlCoroutine = null;
@@ -271,6 +275,6 @@ namespace Game.Scripts.SnakeCore
 
             _snake.ChangeSpeed(targetSpeed);
             _transitionCoroutine = null;
-        }        
+        }
     }
 }

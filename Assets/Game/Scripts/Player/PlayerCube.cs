@@ -16,6 +16,8 @@ namespace Game.Scripts.Player
     [RequireComponent(typeof(Animator))]
     public class PlayerCube : MonoBehaviour
     {
+        private readonly int _bulletsPerSegment = 4;
+
         [SerializeField] private float _moveSpeed = 10f;
         [SerializeField] private float _scaleChangerSpeed = 3f;
         [SerializeField] private float _outlineActive = 4.4f;
@@ -59,8 +61,8 @@ namespace Game.Scripts.Player
             _gridCell = cell;
 
             _meshRenderer.material = material;
-            _shooter.Init(bulletSpawner, count);
-            _radar.Init(targetStorage);
+            _shooter.Init(bulletSpawner, count, _bulletsPerSegment);
+            _radar.Init(targetStorage, _bulletsPerSegment);
             _mover.Init(_moveSpeed);
             _stack.Init(material, count);
 

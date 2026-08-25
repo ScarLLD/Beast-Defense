@@ -32,34 +32,42 @@ namespace Game.Scripts.UI.Menu
 
         public void Open()
         {
-            if (_transition.IsTransiting == false)
+            if (!_transition.IsTransiting)
                 StartCoroutine(OpenLeaderBoardRoutine());
         }
 
         private IEnumerator OpenLeaderBoardRoutine()
         {
-            yield return StartCoroutine(_transition.StartTransitionRoutine(_leaderBoardMaterial.color, _transitionDuration));
+            _transition.StartTransition(_leaderBoardMaterial.color, _transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             EnableMenu();
             Opened?.Invoke();
-            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+
+            _transition.ContinueTransition(_transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
         }
 
         private void OnExitButtonClick()
         {
             CallClickEvent();
 
-            if (_transition.IsTransiting == false)
+            if (!_transition.IsTransiting)
                 StartCoroutine(CloseLeaderBoardRoutine());
         }
 
         private IEnumerator CloseLeaderBoardRoutine()
         {
-            if (_transition.IsTransiting == false)
+            if (!_transition.IsTransiting)
             {
-                yield return StartCoroutine(_transition.StartBackTransitionRoutine(_leaderBoardMaterial.color, _transitionDuration));
+                _transition.StartBackTransition(_leaderBoardMaterial.color, _transitionDuration);
+                yield return new WaitUntil(() => !_transition.IsTransiting);
+
                 Closed?.Invoke();
                 DisableMenu();
-                yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
+
+                _transition.ContinueBackTransition(_transitionDuration);
+                yield return new WaitUntil(() => !_transition.IsTransiting);
             }
         }
     }

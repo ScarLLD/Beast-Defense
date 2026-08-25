@@ -17,20 +17,23 @@ namespace Game.Scripts.UI.Menu
 
         [Header("Анимации")]
         [SerializeField] private float _changeDuration = 0.5f;
-        [SerializeField] private float _changeDelay = 0.2f;
+        [SerializeField] private float _afterAnimateDelay = 0.2f;
 
         [Header("Другое")]
         [SerializeField] private Adv _adv;
         [SerializeField] private MiniGame _miniGame;
 
+        private WaitForSecondsRealtime _updateUISleep;
+        private WaitForSeconds _afterAnimateSleep;
         private HeartTimer _heartTimer;
         private Animator _animator;
         private Coroutine _timerCoroutine;
         private Coroutine _heartUpdateCoroutine;
         private bool _isAnimating = false;
         private bool _isAnimatingHeartChange = false;
-        private int _lastHeartCount = 0;
         private bool _isFirstUpdate = true;
+        private int _lastHeartCount = 0;
+        private float _updateUIDelay = 1f;
 
         public event Action Devastated;
 
@@ -41,6 +44,9 @@ namespace Game.Scripts.UI.Menu
             _animator = GetComponent<Animator>();
             _heartTimer = new HeartTimer();
             _heartTimer.HeartsChanged += OnHeartsChanged;
+
+            _updateUISleep = new WaitForSecondsRealtime(_updateUIDelay);
+            _afterAnimateSleep = new WaitForSeconds(_afterAnimateDelay);
         }
 
         private void Start()
@@ -116,7 +122,7 @@ namespace Game.Scripts.UI.Menu
                 _heartTimer.CurrentHearts,
                 _changeAnimationCurve));
 
-            yield return new WaitForSeconds(_changeDelay);
+            yield return _afterAnimateSleep;
 
             _isAnimating = false;
         }
@@ -195,7 +201,7 @@ namespace Game.Scripts.UI.Menu
             while (true)
             {
                 UpdateTimerText();
-                yield return new WaitForSeconds(1f);
+                yield return _updateUISleep;
             }
         }
 
@@ -221,7 +227,7 @@ namespace Game.Scripts.UI.Menu
                 endCount,
                 _changeAnimationCurve));
 
-            yield return new WaitForSecondsRealtime(_changeDelay);
+            yield return new WaitForSecondsRealtime(_afterAnimateDelay);
 
             _isAnimating = false;
             _isAnimatingHeartChange = false;

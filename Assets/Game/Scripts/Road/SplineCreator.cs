@@ -7,6 +7,9 @@ namespace Game.Scripts.Road
 {
     public class SplineCreator : MonoBehaviour
     {
+        private readonly int _pointsCount = 3;
+        private readonly float _divider = 4f;
+
         [SerializeField] private float _tangentLength = 0.3f;
         [SerializeField] private float _cornerRadius = 3f;
         [SerializeField] private float _cornerSmoothness = 0.75f;
@@ -20,7 +23,7 @@ namespace Game.Scripts.Road
             if (roadPoints == null || roadPoints.Count < 2)
                 return false;
 
-            GameObject splineObject = new ("Spline");
+            GameObject splineObject = new("Spline");
             splineObject.transform.position = Vector3.zero;
             splineObject.transform.parent = transform;
 
@@ -35,7 +38,7 @@ namespace Game.Scripts.Road
 
             for (int i = 0; i < processedPoints.Count; i++)
             {
-                BezierKnot knot = new (processedPoints[i]);
+                BezierKnot knot = new(processedPoints[i]);
 
                 if (i > 0 && i < processedPoints.Count - 1)
                 {
@@ -86,7 +89,7 @@ namespace Game.Scripts.Road
 
         private List<int> FindCorners(List<Vector3> points)
         {
-            List<int> corners = new ();
+            List<int> corners = new();
 
             for (int i = 1; i < points.Count - 1; i++)
             {
@@ -109,7 +112,7 @@ namespace Game.Scripts.Road
             if (cornerIndices.Count == 0)
                 return originalPoints;
 
-            List<Vector3> result = new ();
+            List<Vector3> result = new();
 
             for (int i = 0; i < originalPoints.Count; i++)
             {
@@ -135,9 +138,9 @@ namespace Game.Scripts.Road
                         result.Add(startPoint);
                     }
 
-                    for (int j = 1; j <= 3; j++)
+                    for (int j = 1; j <= _pointsCount; j++)
                     {
-                        float t = j / 4f;
+                        float t = j / _divider;
 
                         Vector3 point1 = Vector3.Lerp(startPoint, cornerPoint, t);
                         Vector3 point2 = Vector3.Lerp(cornerPoint, endPoint, t);
@@ -184,7 +187,7 @@ namespace Game.Scripts.Road
             if (points.Count < 4 || _subdivisions <= 0)
                 return points;
 
-            List<Vector3> smoothed = new ()
+            List<Vector3> smoothed = new()
             {
                 points[0],
             };

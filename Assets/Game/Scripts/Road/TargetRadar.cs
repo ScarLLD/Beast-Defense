@@ -8,18 +8,25 @@ namespace Game.Scripts.Road
     [RequireComponent(typeof(Shooter))]
     public class TargetRadar : MonoBehaviour
     {
+        private readonly float _targetingDelay = 0.1f;
+
+        private int _bulletPerTarget;
         private Shooter _shooter;
         private TargetStorage _targetStorage;
         private Coroutine _scanCoroutine;
+        private WaitForSeconds _targetSleep;
 
         private void Awake()
         {
             _shooter = GetComponent<Shooter>();
+
+            _targetSleep = new WaitForSeconds(_targetingDelay);
         }
 
-        public void Init(TargetStorage targetStorage)
+        public void Init(TargetStorage targetStorage, int bulletPerTarget)
         {
             _targetStorage = targetStorage;
+            _bulletPerTarget = bulletPerTarget;
         }
 
         public void StartScanning(Color color)
@@ -38,7 +45,7 @@ namespace Game.Scripts.Road
 
         private IEnumerator ScanRoutine(Color color)
         {
-            int bulletsPerSegment = _shooter.BulletCount / 4;
+            int bulletsPerSegment = _shooter.BulletCount / _bulletPerTarget;
 
             _shooter.SetInitialRotation();
 
@@ -50,7 +57,7 @@ namespace Game.Scripts.Road
                     bulletsPerSegment--;
                 }
 
-                yield return new WaitForSeconds(0.1f);
+                yield return _targetSleep;
             }
 
             _scanCoroutine = null;

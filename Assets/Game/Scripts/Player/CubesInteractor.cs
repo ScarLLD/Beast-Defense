@@ -11,7 +11,8 @@ namespace Game.Scripts.Player
         [SerializeField] private AudioPlayer _audioPlayer;
         [SerializeField] private NoPlacesMessageDisplayer _noPlacesMessage;
         [SerializeField] private PlaceStorage _placesHolder;
-        [SerializeField] private AvailabilityManagement _availabilityManagement;
+
+        private AvailabilityManagement _availabilityManagement;
 
         private void OnEnable()
         {
@@ -23,8 +24,16 @@ namespace Game.Scripts.Player
             _ray.Clicked -= OnRayClicked;
         }
 
+        public void Init(AvailabilityManagement availabilityManagement)
+        {
+            _availabilityManagement = availabilityManagement;
+        }
+
         private void OnRayClicked(PlayerCube cube)
         {
+            if (_availabilityManagement == null)
+                return;
+
             if (_placesHolder.TryGetPlace(cube, out ShootingPlace shootingPlace, out Vector3 escapePlace))
             {
                 _audioPlayer.PlayPickShooterSound();

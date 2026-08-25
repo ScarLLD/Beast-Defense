@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using System.Collections;
-using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,149 +16,118 @@ namespace Game.Scripts.UI
         [SerializeField] private TMP_Text _loadingText;
         [SerializeField] private Canvas _canvas;
 
-        private Vector3 _spriteLeftPosition;
-        private Vector3 _spriteRightPosition;
-        private WaitForSeconds _sleep;
+        private Vector3 _leftPos;
+        private Vector3 _rightPos;
 
-        private Coroutine _transitionCoroutine;
-        private Coroutine _moveCoroutine;
+        private Tween _currentTween;
+        private bool _isTransiting;
 
+        public bool IsTransiting => _isTransiting;
         public event Action Transiting;
         public event Action BackTransited;
 
-        public bool IsTransiting { get; private set; }
-
         private void Awake()
         {
-            IsTransiting = false;
             SetSpriteOptions();
-            _sleep = new WaitForSeconds(_holdTime);
+            _isTransiting = false;
         }
 
-        public IEnumerator StartTransitionRoutine(Color color, float transitionDuration)
-        {
-            yield return _transitionCoroutine ??= StartCoroutine(LeftToCenterTransitionRoutine(color, transitionDuration));
+        private void SetSpriteOptions()
+        {            
+            float offset = Camera.main.pixelWidth * 3f;
+            Vector3 center = _canvas.transform.position;
+
+            _leftPos = new Vector3(center.x - offset, center.y, center.z);
+            _rightPos = new Vector3(center.x + offset, center.y, center.z);
+
+            _sprite.localPosition = _leftPos;
+            _spriteImage.enabled = false;
+            _loadingText.enabled = true;
         }
 
-        public IEnumerator StartBackTransitionRoutine(Color color, float transitionDuration)
+        public void StartTransition(Color color, float duration)
         {
-            yield return _transitionCoroutine ??= StartCoroutine(RightToCenterTransitionRoutine(color, transitionDuration));
-        }
-
-        public IEnumerator ContinueTransitionRoutine(float transitionDuration)
-        {
-            yield return _transitionCoroutine ??= StartCoroutine(CenterToRightTransitionRoutine(transitionDuration));
-        }
-
-        public IEnumerator ContinueBackTransitionRoutine(float transitionDuration)
-        {
-            yield return _transitionCoroutine ??= StartCoroutine(CenterToLeftTransitionRoutine(transitionDuration));
-        }
-
-        private IEnumerator LeftToCenterTransitionRoutine(Color color, float transitionDuration)
-        {
-            IsTransiting = true;
+            if (_isTransiting) return;
 
             _spriteImage.color = color;
             _spriteImage.enabled = true;
             _loadingText.enabled = true;
 
-            yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(_canvas.transform.position, transitionDuration));
-            yield return _sleep;
+            _isTransiting = true;
+            Transiting?.Invoke();
 
-            _transitionCoroutine = null;
-            IsTransiting = false;
+            KillCurrentTween();
+            _currentTween = _sprite.DOMoveX(_canvas.transform.position.x, duration)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    _isTransiting = false;
+                });
         }
 
-        private IEnumerator RightToCenterTransitionRoutine(Color color, float transitionDuration)
+        public void StartBackTransition(Color color, float duration)
         {
-            IsTransiting = true;
+            if (_isTransiting) return;
 
             _spriteImage.color = color;
             _spriteImage.enabled = true;
             _loadingText.enabled = false;
 
-            yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(_canvas.transform.position, transitionDuration));
-            yield return _sleep;
-
-            _transitionCoroutine = null;
-            BackTransited?.Invoke();
-            IsTransiting = false;
-        }
-
-        private IEnumerator CenterToLeftTransitionRoutine(float transitionDuration)
-        {
-            IsTransiting = true;
-
-            if (_spriteImage.enabled == true)
-            {
-                yield return _sleep;
-                yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(_spriteLeftPosition, transitionDuration));
-
-                _spriteImage.enabled = false;
-            }
-            else
-            {
-                _loadingText.enabled = false;
-            }
-
-            _transitionCoroutine = null;
-            IsTransiting = false;
-        }
-
-        private IEnumerator CenterToRightTransitionRoutine(float transitionDuration)
-        {
-            IsTransiting = true;
-
-            if (_spriteImage.enabled == true)
-            {
-                yield return _sleep;
-                yield return _moveCoroutine ??= StartCoroutine(TransitionRoutine(_spriteRightPosition, transitionDuration));
-
-                _spriteImage.enabled = false;
-            }
-            else
-            {
-                _loadingText.enabled = true;
-            }
-
-            _transitionCoroutine = null;
-            IsTransiting = false;
-        }
-
-        private IEnumerator TransitionRoutine(Vector3 targetPosition, float transitionDuration)
-        {
-            float timer = 0;
-
+            _isTransiting = true;
             Transiting?.Invoke();
 
-            while (timer < transitionDuration)
-            {
-                timer += Time.deltaTime;
-                _sprite.DOMoveX(targetPosition.x, transitionDuration);
+            KillCurrentTween();
+            _currentTween = _sprite.DOMoveX(_canvas.transform.position.x, duration)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    _isTransiting = false;
+                    BackTransited?.Invoke();
+                });
+        }
+        
+        public void ContinueTransition(float duration)
+        {
+            if (_isTransiting) return;
 
-                yield return null;
-            }
+            _isTransiting = true;
+            Transiting?.Invoke();
 
-            _moveCoroutine = null;
+            // Сначала ждём holdTime, потом двигаем
+            StartCoroutine(HoldAndMove(_rightPos, duration));
         }
 
-        private void SetSpriteOptions()
+        public void ContinueBackTransition(float duration)
         {
-            _spriteLeftPosition =
-                new (_canvas.transform.position.x - Camera.main.pixelWidth * 3,
-                _canvas.transform.position.y,
-                _canvas.transform.position.z);
+            if (_isTransiting) return;
 
-            _spriteRightPosition =
-                new (_canvas.transform.position.x + Camera.main.pixelWidth * 3,
-                _canvas.transform.position.y,
-                _canvas.transform.position.z);
+            _isTransiting = true;
+            Transiting?.Invoke();
 
-            _sprite.transform.position = _spriteLeftPosition;
+            StartCoroutine(HoldAndMove(_leftPos, duration));
+        }
 
-            _spriteImage.enabled = false;
-            _loadingText.enabled = true;
+        private IEnumerator HoldAndMove(Vector3 targetPosition, float duration)
+        {
+            yield return new WaitForSeconds(_holdTime);
+
+            KillCurrentTween();
+            _currentTween = _sprite.DOMoveX(targetPosition.x, duration)
+                .SetEase(Ease.OutQuad)
+                .OnComplete(() =>
+                {
+                    _isTransiting = false;
+                    if (targetPosition == _rightPos)
+                        _loadingText.enabled = true;
+                    else
+                        _spriteImage.enabled = false;
+                });
+        }
+
+        private void KillCurrentTween()
+        {
+            if (_currentTween != null && _currentTween.IsActive())
+                _currentTween.Kill();
         }
     }
 }

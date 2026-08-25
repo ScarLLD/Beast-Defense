@@ -22,5 +22,9 @@ namespace Game.Scripts.UI.Menu
             _game.Started -= OnGameStarted;
             _game.Leaved -= OnGameLeaved;
         }
+
+        private void OnGameStarted() => EnableMenu();
+
+        private void OnGameLeaved() => DisableMenu();
     }
 }

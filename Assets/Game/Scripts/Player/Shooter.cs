@@ -21,6 +21,7 @@ namespace Game.Scripts.Player
 
         private int _initialBulletCount;
         private int _bulletCount;
+        private int _bulletPerTarget;
         private Quaternion _initialRotation;
 
         public event Action BulletsCountChanged;
@@ -34,11 +35,12 @@ namespace Game.Scripts.Player
             _sleepTime = new WaitForSeconds(_timeBetweenShoot);
         }
 
-        public void Init(BulletSpawner bulletSpawner, int bulletCount)
+        public void Init(BulletSpawner bulletSpawner, int bulletCount, int bulletPerTarget)
         {
             _bulletSpawner = bulletSpawner;
             _initialBulletCount = bulletCount;
             _bulletCount = _initialBulletCount;
+            _bulletPerTarget = bulletPerTarget;
             _initialRotation = transform.rotation;
         }
 
@@ -80,7 +82,7 @@ namespace Game.Scripts.Player
                     SnakeSegment segment = _targets.Dequeue();
                     int spawnedBullet = 0;
 
-                    while (segment.TryGetCube(out Cube cube) && spawnedBullet < 4)
+                    while (segment.TryGetCube(out Cube cube) && spawnedBullet < _bulletPerTarget)
                     {
                         spawnedBullet++;
                         transform.LookAt(segment.transform.position);

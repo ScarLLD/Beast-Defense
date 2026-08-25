@@ -29,6 +29,7 @@ namespace Game.Scripts.LifeCycle
         [SerializeField] private BeastSpawner _beastSpawner;
         [SerializeField] private BulletSpawner _bulletSpawner;
         [SerializeField] private GridCreator _gridCreator;
+        [SerializeField] private GridStorage _gridStorage;
         [SerializeField] private SplineCreator _splineCreator;
         [SerializeField] private CubeCreator _cubeCreator;
 
@@ -43,14 +44,23 @@ namespace Game.Scripts.LifeCycle
         [SerializeField] private TargetDetector _detector;
         [SerializeField] private SmoothBarSlider _slider;
         [SerializeField] private DeathModule _deathModule;
-        [SerializeField] private AvailabilityManagement _availabilityManagement;
         [SerializeField] private AudioPlayer _audioPlayer;
+        [SerializeField] private CubesInteractor _cubesInteractor;
         [SerializeField] private Adv _adv;
 
         private Snake _snake;
         private Beast _beast;
         private SplineContainer _splineContainer;
         private Coroutine _advLevelCreationCoroutine;
+        private AvailabilityManagement _availabilityManagement;
+
+        private void Awake()
+        {
+            _availabilityManagement = new();
+            _availabilityManagement.Init(_gridStorage);
+
+            _cubesInteractor.Init(_availabilityManagement);
+        }
 
         private void OnEnable()
         {

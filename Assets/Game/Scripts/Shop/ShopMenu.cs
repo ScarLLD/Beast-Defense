@@ -1,9 +1,9 @@
 ﻿using Game.Scripts.UI.Menu;
 using Game.Scripts.UI;
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace Game.Scripts.Shop
 {
@@ -34,34 +34,42 @@ namespace Game.Scripts.Shop
 
         public void Open()
         {
-            if (_transition.IsTransiting == false)
+            if (!_transition.IsTransiting)
                 StartCoroutine(OpenShop());
         }
 
         private IEnumerator OpenShop()
         {
-            yield return StartCoroutine(_transition.StartTransitionRoutine(_shopMaterial.color, _transitionDuration));
+            _transition.StartTransition(_shopMaterial.color, _transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             EnableMenu();
             Opened?.Invoke();
-            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+
+            _transition.ContinueTransition(_transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
         }
 
         private void OnExitButtonClick()
         {
             CallClickEvent();
 
-            if (_transition.IsTransiting == false)
+            if (!_transition.IsTransiting)
                 StartCoroutine(CloseShopRoutine());
         }
 
         private IEnumerator CloseShopRoutine()
         {
-            if (_transition.IsTransiting == false)
+            if (!_transition.IsTransiting)
             {
-                yield return StartCoroutine(_transition.StartBackTransitionRoutine(_shopMaterial.color, _transitionDuration));
+                _transition.StartBackTransition(_shopMaterial.color, _transitionDuration);
+                yield return new WaitUntil(() => !_transition.IsTransiting);
+
                 Closed?.Invoke();
                 DisableMenu();
-                yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
+
+                _transition.ContinueBackTransition(_transitionDuration);
+                yield return new WaitUntil(() => !_transition.IsTransiting);
             }
         }
     }

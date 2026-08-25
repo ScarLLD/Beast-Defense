@@ -39,12 +39,6 @@ namespace Game.Scripts.UI.Menu
             _closeMenuButton.onClick.RemoveListener(OnCloseMenuButtonClick);
         }
 
-
-        private void OnGameHeartDevastated()
-        {
-            EnableMenu();
-        }
-
         private void OnAdvButtonClick()
         {
             CallClickEvent();
@@ -67,5 +61,9 @@ namespace Game.Scripts.UI.Menu
 
             DisableMenu();
         }
+
+        private void OnGameHeartDevastated() => EnableMenu();
+
+        private void OnMiniGameStarted() => DisableMenu();
     }
 }

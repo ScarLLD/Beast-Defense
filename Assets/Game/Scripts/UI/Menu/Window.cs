@@ -21,16 +21,6 @@ namespace Game.Scripts.UI.Menu
             }
         }
 
-        protected void OnGameStarted()
-        {
-            DisableMenu();
-        }
-
-        protected void OnGameLeaved()
-        {
-            EnableMenu();
-        }
-
         protected void EnableMenu()
         {
             SwitchVisible(true);
@@ -48,40 +38,10 @@ namespace Game.Scripts.UI.Menu
         {
             ButtonClicked?.Invoke();
         }
-
-        protected void OnLeaderBoardOpened()
-        {
-            DisableMenu();
-        }
-
-        protected void OnLeaderBoardClosed()
-        {
-            EnableMenu();
-        }
-
-        protected void OnMiniGameStarted()
-        {
-            DisableMenu();
-        }
-
-        protected void OnMiniGameLeaved()
-        {
-            EnableMenu();
-        }
-
+        
         protected void OnGameTransited()
         {
             DisableMenu();
-        }
-
-        protected void OnShopOpened()
-        {
-            DisableMenu();
-        }
-
-        protected void OnShopClosed()
-        {
-            EnableMenu();
         }
     }
 }

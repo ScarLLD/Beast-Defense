@@ -84,7 +84,9 @@ namespace Game.Scripts.UI.Menu
 
         private void OnWinRewardDoubled()
         {
-            _totalRewardText.text = $"+{_wallet.RewardMoneyCount * _rewardMultiple}";
+            int doubledMoneyCount = _wallet.RewardMoneyCount * _rewardMultiple;
+
+            _totalRewardText.text = $"+{doubledMoneyCount}";
             _totalRewardText.color = Color.yellow;
         }
 

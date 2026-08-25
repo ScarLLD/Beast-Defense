@@ -2,9 +2,9 @@
 using Game.Scripts.UI.Menu;
 using Game.Scripts.UI;
 using Game.Scripts.MiniGameCore;
-using System;
 using System.Collections;
 using UnityEngine;
+using System;
 
 namespace Game.Scripts.MapGenerator
 {
@@ -59,39 +59,38 @@ namespace Game.Scripts.MapGenerator
 
         public void Begin()
         {
-            if (_transition.IsTransiting == false && _gameHeart.IsPossibleDecrease == true)
-                StartRoutine(BeginRoutine());
+            if (_gameHeart.IsPossibleDecrease)
+                StartCoroutine(BeginRoutine());
         }
 
         public void Continue()
         {
-            StartRoutine(ContinueRoutine());
+            StartCoroutine(ContinueRoutine());
         }
 
         public void Over()
         {
-            StartRoutine(OverRoutine());
+            StartCoroutine(OverRoutine());
         }
 
         public void Restart()
         {
-            if (_transition.IsTransiting == false)
-                StartRoutine(RestartRoutine());
+            StartCoroutine(RestartRoutine());
         }
 
         public void OnGameComplete()
         {
-            StartRoutine(CompleteRoutine());
+            StartCoroutine(CompleteRoutine());
         }
 
         public void Leave()
         {
-            StartRoutine(LeaveRoutine());
+            StartCoroutine(LeaveRoutine());
         }
 
         public void FastLeave()
         {
-            StartRoutine(FastLeaveRoutine());
+            StartCoroutine(FastLeaveRoutine());
         }
 
         public void StopTime()
@@ -108,13 +107,17 @@ namespace Game.Scripts.MapGenerator
 
         private IEnumerator BeginRoutine()
         {
-            yield return StartCoroutine(_transition.StartTransitionRoutine(_goodMaterial.color, _transitionDuration));
+            _transition.StartTransition(_goodMaterial.color, _transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             Started?.Invoke();
-            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+
+            _transition.ContinueTransition(_transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             HasStarted = true;
             HasCompleted = false;
             IsPlaying = true;
-            ClearRoutine();
         }
 
         private IEnumerator ContinueRoutine()
@@ -122,11 +125,13 @@ namespace Game.Scripts.MapGenerator
             Continued?.Invoke();
             _gameHeart.transform.SetParent(_mainMenu.transform);
             _gameHeart.gameObject.SetActive(false);
-            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+
+            _transition.ContinueTransition(_transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             Transited?.Invoke();
             HasCompleted = false;
             IsPlaying = true;
-            ClearRoutine();
         }
 
         private IEnumerator CompleteRoutine()
@@ -134,8 +139,9 @@ namespace Game.Scripts.MapGenerator
             IsPlaying = false;
             HasCompleted = true;
             Completed?.Invoke();
-            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_goodMaterial.color, _transitionDuration));
-            ClearRoutine();
+
+            _transition.StartBackTransition(_goodMaterial.color, _transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
         }
 
         private IEnumerator LeaveRoutine()
@@ -143,29 +149,33 @@ namespace Game.Scripts.MapGenerator
             IsPlaying = false;
             Leaved?.Invoke();
 
-            if (_miniGame.IsActive == true)
+            if (_miniGame.IsActive)
             {
                 _gameHeart.transform.SetParent(_mainMenu.transform);
                 _gameHeart.gameObject.SetActive(false);
             }
 
-            yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
+            _transition.ContinueBackTransition(_transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             Transited?.Invoke();
-            ClearRoutine();
         }
 
         private IEnumerator FastLeaveRoutine()
         {
-            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
+            _transition.StartBackTransition(_badMaterial.color, _transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             IsPlaying = false;
             HasCompleted = false;
             Leaved?.Invoke();
 
             _gameHeart.transform.SetParent(_mainMenu.transform);
 
-            yield return StartCoroutine(_transition.ContinueBackTransitionRoutine(_transitionDuration));
+            _transition.ContinueBackTransition(_transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             yield return StartCoroutine(_gameHeart.UseHeartRoutine());
-            ClearRoutine();
         }
 
         private IEnumerator OverRoutine()
@@ -173,33 +183,27 @@ namespace Game.Scripts.MapGenerator
             IsPlaying = false;
             HasCompleted = false;
             Lost?.Invoke();
-            yield return StartCoroutine(_transition.StartBackTransitionRoutine(_badMaterial.color, _transitionDuration));
+
+            _transition.StartBackTransition(_badMaterial.color, _transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             _gameHeart.transform.SetParent(_gameOverMenu.transform);
             _gameHeart.gameObject.SetActive(true);
+
             yield return StartCoroutine(_gameHeart.UseHeartRoutine());
-            ClearRoutine();
         }
 
         private IEnumerator RestartRoutine()
         {
-            Restarted.Invoke();
+            Restarted?.Invoke();
             _gameHeart.transform.SetParent(_mainMenu.transform);
             _gameHeart.gameObject.SetActive(false);
-            yield return StartCoroutine(_transition.ContinueTransitionRoutine(_transitionDuration));
+
+            _transition.ContinueTransition(_transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
+
             Transited?.Invoke();
             IsPlaying = true;
-            ClearRoutine();
-        }
-
-        private void StartRoutine(IEnumerator routine)
-        {
-            _currentCoroutine ??= StartCoroutine(routine);
-        }
-
-        private void ClearRoutine()
-        {
-            if (_currentCoroutine != null)
-                _currentCoroutine = null;
         }
     }
 }

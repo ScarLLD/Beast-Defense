@@ -10,6 +10,9 @@ namespace Game.Scripts.MiniGameCore
     [RequireComponent(typeof(Rigidbody))]
     public class MGSnake : MonoBehaviour
     {
+        private readonly List<GameObject> _bodyParts = new();
+        private readonly List<Vector3> _positionsHistory = new();
+
         [Header("Movement Settings")]
         [SerializeField] private float _moveSpeed = 5f;
         [SerializeField] private float _steerSpeed = 180f;
@@ -27,13 +30,12 @@ namespace Game.Scripts.MiniGameCore
         [SerializeField] private BeastCollector _collector;
         [SerializeField] private AudioPlayer _audioPlayer;
 
-        private readonly List<GameObject> _bodyParts = new ();
-        private readonly List<Vector3> _positionsHistory = new ();
+        private WaitForSeconds _growSleep;
         private float _steerDirection;
+        private bool _isMove;
         private Rigidbody _rb;
         private Coroutine _movementCoroutine;
         private Coroutine _growCoroutine;
-        private bool _isMove;
 
         public event Action Died;
 
@@ -41,6 +43,8 @@ namespace Game.Scripts.MiniGameCore
         {
             _rb = GetComponent<Rigidbody>();
             _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
+
+            _growSleep = new WaitForSeconds(_growInterval);
         }
 
         private void OnTriggerEnter(Collider other)
@@ -181,7 +185,7 @@ namespace Game.Scripts.MiniGameCore
         {
             while (_isMove)
             {
-                yield return new WaitForSeconds(_growInterval);
+                yield return _growSleep;
                 GrowSnake();
             }
         }

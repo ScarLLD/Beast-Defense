@@ -491,7 +491,7 @@ MonoBehaviour:
   _miniGame: {fileID: 1417510877}
   _sequencer: {fileID: 1417510876}
   _gameHeart: {fileID: 830789544}
-  _AdvButton: {fileID: 921676306}
+  _advButton: {fileID: 921676306}
   _miniGameButton: {fileID: 2088973006}
   _closeMenuButton: {fileID: 1236551849}
 --- !u!1 &69640491
@@ -1544,7 +1544,6 @@ GameObject:
   - component: {fileID: 122644704}
   - component: {fileID: 122644706}
   - component: {fileID: 122644705}
-  - component: {fileID: 122644707}
   m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
@@ -1635,18 +1634,6 @@ MonoBehaviour:
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
   m_PresetInfoIsWorld: 0
---- !u!114 &122644707
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 122644702}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95cc64c85c40b8749b126b8081edad42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &136355788
 GameObject:
   m_ObjectHideFlags: 0
@@ -6044,7 +6031,6 @@ GameObject:
   - component: {fileID: 529893071}
   - component: {fileID: 529893070}
   - component: {fileID: 529893073}
-  - component: {fileID: 529893072}
   m_Layer: 0
   m_Name: Cubes
   m_TagString: Untagged
@@ -6082,14 +6068,7 @@ MonoBehaviour:
   _gridStorage: {fileID: 1295288259}
   _cubePrefab: {fileID: 6593079791634868166, guid: b7da0541e62b912459a50827f0b8a466, type: 3}
   _animator: {fileID: 668936184}
-  "_\u0441olors":
-  - {fileID: 2100000, guid: e23c611b82215874cb3d1c77e3785156, type: 2}
-  - {fileID: 2100000, guid: 304135f78fc76ef459ea2511cebcb94c, type: 2}
-  - {fileID: 2100000, guid: f0c33f39586e9a2489347c96ad202592, type: 2}
-  - {fileID: 2100000, guid: 664dd83077f5cce46bd7a19a90532eac, type: 2}
-  - {fileID: 2100000, guid: 7e433d19536e08e4ea679168d5070746, type: 2}
-  - {fileID: 2100000, guid: 043543baaa58670418782cb3e9fd2eb4, type: 2}
-  - {fileID: 2100000, guid: 4c692737529829e4a81040a9045e7a98, type: 2}
+  _colors: []
   _counts: 080000000c00000010000000140000001800000020000000
 --- !u!114 &529893071
 MonoBehaviour:
@@ -6103,19 +6082,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9b698ce6a174b34989d750f0f28857e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &529893072
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 529893064}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02e69dca97387124ab9838dd035c1cb3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _gridStorage: {fileID: 1295288259}
 --- !u!114 &529893073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6132,7 +6098,6 @@ MonoBehaviour:
   _audioPlayer: {fileID: 1849475457}
   _noPlacesMessage: {fileID: 890251931}
   _placesHolder: {fileID: 1923091039}
-  _availabilityManagement: {fileID: 529893072}
 --- !u!1 &536823883
 GameObject:
   m_ObjectHideFlags: 0
@@ -20620,6 +20585,7 @@ MonoBehaviour:
   _beastSpawner: {fileID: 1441411479}
   _bulletSpawner: {fileID: 117216348}
   _gridCreator: {fileID: 1295288265}
+  _gridStorage: {fileID: 1295288259}
   _splineCreator: {fileID: 561811627}
   _cubeCreator: {fileID: 529893070}
   _placeStorage: {fileID: 1923091039}
@@ -20630,8 +20596,8 @@ MonoBehaviour:
   _detector: {fileID: 2645583919960169801}
   _slider: {fileID: 750858111}
   _deathModule: {fileID: 26740340}
-  _availabilityManagement: {fileID: 529893072}
   _audioPlayer: {fileID: 1849475457}
+  _cubesInteractor: {fileID: 529893073}
   _adv: {fileID: 1040958134}
 --- !u!114 &1614255505
 MonoBehaviour:
@@ -22192,8 +22158,7 @@ MonoBehaviour:
   _wallet: {fileID: 1469608306}
   _beastSpawner: {fileID: 1441411479}
   _snakeSpawner: {fileID: 437241863}
-  _Language: {fileID: 1469608307}
-  _localization: {fileID: 122644707}
+  _language: {fileID: 0}
   _beastSkinsContainer: {fileID: 1039779642}
   _snakeSkinsContainer: {fileID: 675108267}
   _skinItemPrefab: {fileID: 4271251869485383861, guid: b2697647d0a9bce4786a021950147b38, type: 3}

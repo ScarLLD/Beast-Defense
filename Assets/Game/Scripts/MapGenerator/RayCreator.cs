@@ -16,6 +16,7 @@ namespace Game.Scripts.MapGenerator
         private WaitForSeconds _clickCooldown;
         private Coroutine _rayCoroutine;
         private bool _isClickProcessed;
+        private bool _shouldStop;
 
         public event Action<PlayerCube> Clicked;
 
@@ -46,11 +47,14 @@ namespace Game.Scripts.MapGenerator
         private void EnableRay()
         {
             DisableRay();
+            _shouldStop = false;
             _rayCoroutine ??= StartCoroutine(MouseRaycastInteraction());
         }
 
         private void DisableRay()
         {
+            _shouldStop = true;
+
             if (_rayCoroutine != null)
             {
                 StopCoroutine(_rayCoroutine);
@@ -64,43 +68,49 @@ namespace Game.Scripts.MapGenerator
         {
             bool isWork = true;
 
-            while (isWork)
+            while (isWork && !_shouldStop)
             {
-                if (_game.IsPause == false && _game.IsPlaying == true)
+                isWork = !_shouldStop;
+
+                if (!_game.IsPause && _game.IsPlaying)
                 {
-                    Ray ray = new();
                     bool hasInput = false;
+                    Vector3 pos = Vector3.zero;
 
                     if (Input.GetMouseButtonDown(0))
                     {
-                        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        pos = Input.mousePosition;
                         hasInput = true;
                     }
                     else if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
                     {
-                        ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                        pos = Input.GetTouch(0).position;
                         hasInput = true;
                     }
 
-                    if (hasInput && !_isClickProcessed && Physics.Raycast(ray, out RaycastHit hit, _rayDirection))
+                    if (hasInput && !_isClickProcessed)
                     {
-                        if (hit.transform.TryGetComponent(out PlayerCube cube) && cube.IsAvailable && cube.IsScaling == false)
+                        Ray ray = Camera.main.ScreenPointToRay(pos);
+                        if (Physics.Raycast(ray, out RaycastHit hit, _rayDirection))
                         {
-                            _isClickProcessed = true;
-                            Clicked?.Invoke(cube);
-                            yield return StartCoroutine(ResetClickCooldown());
+                            if (hit.transform.TryGetComponent(out PlayerCube cube) &&
+                                cube.IsAvailable &&
+                                !cube.IsScaling)
+                            {
+                                _isClickProcessed = true;
+                                Clicked?.Invoke(cube);
+
+                                yield return _clickCooldown;
+                                _isClickProcessed = false;
+                            }
                         }
                     }
                 }
 
                 yield return _sleepTime;
             }
-        }
 
-        private IEnumerator ResetClickCooldown()
-        {
-            yield return _clickCooldown;
-            _isClickProcessed = false;
+            _rayCoroutine = null;
         }
     }
 }

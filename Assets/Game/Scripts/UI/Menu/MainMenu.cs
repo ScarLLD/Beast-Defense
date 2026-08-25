@@ -114,6 +114,22 @@ namespace Game.Scripts.UI.Menu
                 return;
 
             _leaderBoardMenu.Open();
-        }  
+        }
+
+        private void OnGameStarted() => DisableMenu();
+
+        private void OnGameLeaved() => EnableMenu();
+
+        private void OnMiniGameStarted() => DisableMenu();
+
+        private void OnMiniGameLeaved() => EnableMenu();
+
+        private void OnLeaderBoardOpened() => DisableMenu();
+
+        private void OnLeaderBoardClosed() => EnableMenu();
+
+        private void OnShopOpened() => DisableMenu();
+
+        private void OnShopClosed() => EnableMenu();
     }
 }

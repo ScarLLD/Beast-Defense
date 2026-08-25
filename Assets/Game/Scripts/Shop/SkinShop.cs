@@ -25,7 +25,6 @@ namespace Game.Scripts.Shop
         [SerializeField] private BeastSpawner _beastSpawner;
         [SerializeField] private SnakeSpawner _snakeSpawner;
         [SerializeField] private LanguageInitializer _language;
-        [SerializeField] private InterfaceLocalization _localization;
 
         [Header("UI References")]
         [SerializeField] private Transform _beastSkinsContainer;
@@ -53,11 +52,11 @@ namespace Game.Scripts.Shop
 
         private Color _greenColor = new(0.004f, 0.78f, 0.57f);
         private Color _redColor = new(1f, 0.3f, 0.25f);
-
         private string _selectedSkinId;
         private SkinType _selectedSkinType;
         private string _equippedBeastSkinId;
         private string _equippedSnakeSkinId;
+        private InterfaceLocalization _localization;
 
         public event Action Purchased;
         public event Action Selected;
@@ -82,6 +81,11 @@ namespace Game.Scripts.Shop
             _buyButton.onClick.RemoveListener(OnBuyButtonClick);
             _selectButton.onClick.RemoveListener(OnSelectButtonClick);
             _closePreviewButton.onClick.RemoveListener(OnClosePreviewButtonClick);
+        }
+
+        private void Awake()
+        {
+            _localization = new ();
         }
 
         private void Start()
