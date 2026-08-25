@@ -116,7 +116,7 @@ namespace Game.Scripts.Player
         {
             if (_target == _cachedCellTarget)
             {
-                var nextCell = _roadfinder.GetOptimalNextCell(_cell);
+                var nextCell = RoadFinder.GetOptimalNextCell(_cell);
 
                 if (nextCell != null)
                 {

@@ -175,11 +175,7 @@ namespace Game.Scripts.UI.Menu
             if (currentCount > _lastHeartCount && !_isAnimating)
             {
                 StartCoroutine(RestoreHeartAnimationRoutine(_lastHeartCount, currentCount));
-            }
-            else if (currentCount < _lastHeartCount)
-            {
-                UpdateUI();
-            }
+            }            
             else
             {
                 UpdateUI();

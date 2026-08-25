@@ -50,8 +50,8 @@ namespace Game.Scripts.Shop
         [SerializeField] private TMP_Text _buyButtonText;
         [SerializeField] private TMP_Text _selectButtonText;
 
-        private Color _greenColor = new(0.004f, 0.78f, 0.57f);
-        private Color _redColor = new(1f, 0.3f, 0.25f);
+        private readonly Color _greenColor = new(0.004f, 0.78f, 0.57f);
+        private readonly Color _redColor = new(1f, 0.3f, 0.25f);
         private string _selectedSkinId;
         private SkinType _selectedSkinType;
         private string _equippedBeastSkinId;
@@ -85,7 +85,7 @@ namespace Game.Scripts.Shop
 
         private void Awake()
         {
-            _localization = new ();
+            _localization = new InterfaceLocalization();
         }
 
         private void Start()
@@ -97,21 +97,17 @@ namespace Game.Scripts.Shop
         {
             ClearContainers();
 
-            if (string.IsNullOrEmpty(YG2.saves.EquippedBeastSkin) == false)
-                _equippedBeastSkinId = YG2.saves.EquippedBeastSkin;
-            else
-                _equippedBeastSkinId = GetDefaultSkinId(_beastSkinData);
+            _equippedBeastSkinId = string.IsNullOrEmpty(YG2.saves.EquippedBeastSkin) == false 
+                ? YG2.saves.EquippedBeastSkin : GetDefaultSkinId(_beastSkinData);
 
-            if (string.IsNullOrEmpty(YG2.saves.EquippedSnakeSkin) == false)
-                _equippedSnakeSkinId = YG2.saves.EquippedSnakeSkin;
-            else
-                _equippedSnakeSkinId = GetDefaultSkinId(_snakeSkinData);
+            _equippedSnakeSkinId = string.IsNullOrEmpty(YG2.saves.EquippedSnakeSkin) == false 
+                ? YG2.saves.EquippedSnakeSkin : GetDefaultSkinId(_snakeSkinData);
 
             LoadPurchasedSkins();
 
             foreach (var skin in _beastSkinData.Skins)
             {
-                SkinItemUI skinItem = Instantiate(_skinItemPrefab, _beastSkinsContainer);
+                var skinItem = Instantiate(_skinItemPrefab, _beastSkinsContainer);
                 skinItem.Initialize(skin, this, _wallet, SkinType.Beast, _greenColor, _redColor);
                 _beastSkinItems.Add(skinItem);
                 skinItem.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
@@ -119,7 +115,7 @@ namespace Game.Scripts.Shop
 
             foreach (var skin in _snakeSkinData.Skins)
             {
-                SkinItemUI skinItem = Instantiate(_skinItemPrefab, _snakeSkinsContainer);
+                var skinItem = Instantiate(_skinItemPrefab, _snakeSkinsContainer);
                 skinItem.Initialize(skin, this, _wallet, SkinType.Snake, _greenColor, _redColor);
                 _snakeSkinItems.Add(skinItem);
                 skinItem.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
@@ -132,14 +128,14 @@ namespace Game.Scripts.Shop
         {
             foreach (var item in _beastSkinItems)
             {
-                bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Beast);
+                var isPurchased = IsSkinPurchased(item.SkinId, SkinType.Beast);
                 item.UpdatePurchaseState(isPurchased);
                 item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
             }
 
             foreach (var item in _snakeSkinItems)
             {
-                bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Snake);
+                var isPurchased = IsSkinPurchased(item.SkinId, SkinType.Snake);
                 item.UpdatePurchaseState(isPurchased);
                 item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
             }
@@ -176,16 +172,14 @@ namespace Game.Scripts.Shop
 
         public bool TryOpenPreview(string skinId, SkinType skinType, Vector3 startPosition)
         {
-            if (_preview.activeInHierarchy == false)
-            {
-                _preview.SetActive(true);
-                SelectSkin(skinId, skinType);
-                _previewAnimator.Open(startPosition);
+            if (_preview.activeInHierarchy != false) return false;
+            
+            _preview.SetActive(true);
+            SelectSkin(skinId, skinType);
+            _previewAnimator.Open(startPosition);
 
-                return true;
-            }
+            return true;
 
-            return false;
         }
 
         public void SelectSkin(string skinId, SkinType skinType)
@@ -193,53 +187,52 @@ namespace Game.Scripts.Shop
             _selectedSkinId = skinId;
             _selectedSkinType = skinType;
 
-            SkinData skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
+            var skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
             var skin = skinData.GetSkinById(skinId);
 
-            if (skin != null)
+            if (skin == null) return;
+            
+            _selectedSkinImage.sprite = skin.Icon;
+            _selectedSkinName.text = skin.GetLocalizedName(YG2.lang);
+            _selectedSkinTypeText.text = skinType == SkinType.Snake ?
+                _localization.GetLocalizedSnakeType(YG2.lang) :
+                _localization.GetLocalizedBeastType(YG2.lang);
+
+
+            var isPurchased = IsSkinPurchased(skinId, skinType) || skin.IsDefault;
+            var isEquipped = IsSkinEquipped(skinId, skinType);
+
+            if (skin.IsDefault)
+                _selectedSkinPrice.text = _localization.GetLocalizedFreeText(YG2.lang);
+            else if (isPurchased)
+                _selectedSkinPrice.text = _localization.GetLocalizedPurchasedText(YG2.lang);
+            else
+                _selectedSkinPrice.text = $"{skin.Price} {_localization.GetLocalizedMoneyText(YG2.lang)}";
+
+            _buyButton.gameObject.SetActive(!isPurchased);
+            _selectButton.gameObject.SetActive(isPurchased && !isEquipped);
+
+            if (isPurchased)
             {
-                _selectedSkinImage.sprite = skin.Icon;
-                _selectedSkinName.text = skin.GetLocalizedName(YG2.lang);
-                _selectedSkinTypeText.text = skinType == SkinType.Snake ?
-                    _localization.GetLocalizedSnakeType(YG2.lang) :
-                    _localization.GetLocalizedBeastType(YG2.lang);
+                _selectButton.interactable = true;
+                _selectButtonText.text = _localization.GetLocalizedTakeText(YG2.lang);
+                _backgroundImage.color = _greenColor;
+            }
+            else
+            {
+                _backgroundImage.color = _redColor;
 
-
-                bool isPurchased = IsSkinPurchased(skinId, skinType) || skin.IsDefault;
-                bool isEquipped = IsSkinEquipped(skinId, skinType);
-
-                if (skin.IsDefault)
-                    _selectedSkinPrice.text = _localization.GetLocalizedFreeText(YG2.lang);
-                else if (isPurchased)
-                    _selectedSkinPrice.text = _localization.GetLocalizedPurchasedText(YG2.lang);
-                else
-                    _selectedSkinPrice.text = $"{skin.Price} {_localization.GetLocalizedMoneyText(YG2.lang)}";
-
-                _buyButton.gameObject.SetActive(!isPurchased);
-                _selectButton.gameObject.SetActive(isPurchased && !isEquipped);
-
-                if (isPurchased)
+                if (_wallet.CanAfford(skin.Price))
                 {
-                    _selectButton.interactable = true;
-                    _selectButtonText.text = _localization.GetLocalizedTakeText(YG2.lang);
-                    _backgroundImage.color = _greenColor;
+                    _buyButtonImage.color = Color.white;
+                    _buyButtonText.text = _localization.GetLocalizedBuyText(YG2.lang);
+                    _buyButton.interactable = true;
                 }
                 else
                 {
-                    _backgroundImage.color = _redColor;
-
-                    if (_wallet.CanAfford(skin.Price))
-                    {
-                        _buyButtonImage.color = Color.white;
-                        _buyButtonText.text = _localization.GetLocalizedBuyText(YG2.lang);
-                        _buyButton.interactable = true;
-                    }
-                    else
-                    {
-                        _buyButtonImage.color = Color.black;
-                        _buyButtonText.text = _localization.GetLocalizedNoMoneyText(YG2.lang);
-                        _buyButton.interactable = false;
-                    }
+                    _buyButtonImage.color = Color.black;
+                    _buyButtonText.text = _localization.GetLocalizedNoMoneyText(YG2.lang);
+                    _buyButton.interactable = false;
                 }
             }
         }
@@ -253,29 +246,28 @@ namespace Game.Scripts.Shop
 
         public bool IsSkinPurchased(string skinId, SkinType skinType)
         {
-            string list = skinType == SkinType.Beast
+            var list = skinType == SkinType.Beast
                 ? YG2.saves.PurchasedBeastSkins
                 : YG2.saves.PurchasedSnakeSkins;
 
-            SkinData skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
-            bool isDefault = skinData.GetSkinById(skinId)?.IsDefault ?? false;
+            var skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
+            var isDefault = skinData.GetSkinById(skinId)?.IsDefault ?? false;
 
-            bool result = isDefault || (!string.IsNullOrEmpty(list) && list.Split(',').Contains(skinId));
+            var result = isDefault || (!string.IsNullOrEmpty(list) && list.Split(',').Contains(skinId));
 
             return result;
         }
 
         private void OnBuyButtonClick()
         {
-            SkinData skinData = _selectedSkinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
+            var skinData = _selectedSkinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
             var skin = skinData.GetSkinById(_selectedSkinId);
 
-            if (skin != null && !skin.IsDefault)
-            {
-                BuySkin(_selectedSkinId, _selectedSkinType);
-                UpdateUIAfterPurchase();
-                OnSelectButtonClick();
-            }
+            if (skin == null || skin.IsDefault) return;
+            
+            BuySkin(_selectedSkinId, _selectedSkinType);
+            UpdateUIAfterPurchase();
+            OnSelectButtonClick();
         }
 
         private void OnSelectButtonClick()
@@ -291,39 +283,37 @@ namespace Game.Scripts.Shop
 
         private void BuySkin(string skinId, SkinType skinType)
         {
-            SkinData skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
+            var skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
             var skin = skinData.GetSkinById(skinId);
 
-            if (_wallet.CanAfford(skin.Price))
-            {
-                _wallet.DecreaseMoney(skin.Price);
-                SavePurchasedSkin(skinId, skinType);
-                Purchased?.Invoke();
-            }
+            if (!_wallet.CanAfford(skin.Price)) return;
+            
+            _wallet.DecreaseMoney(skin.Price);
+            SavePurchasedSkin(skinId, skinType);
+            Purchased?.Invoke();
         }
 
         private void EquipSkin(string skinId, SkinType skinType)
         {
-            SkinData skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
+            var skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
 
-            if (IsSkinPurchased(skinId, skinType) || skinData.GetSkinById(skinId).IsDefault)
+            if (!IsSkinPurchased(skinId, skinType) && !skinData.GetSkinById(skinId).IsDefault) return;
+            
+            if (skinType == SkinType.Beast)
             {
-                if (skinType == SkinType.Beast)
-                {
-                    _equippedBeastSkinId = skinId;
-                    YG2.saves.EquippedBeastSkin = skinId;
-                    _beastSpawner.UpdateSkin(skinId);
-                }
-                else
-                {
-                    _equippedSnakeSkinId = skinId;
-                    YG2.saves.EquippedSnakeSkin = skinId;
-                    _snakeSpawner.UpdateSkin(skinId);
-                }
-
-                YG2.SaveProgress();
-                Selected?.Invoke();
+                _equippedBeastSkinId = skinId;
+                YG2.saves.EquippedBeastSkin = skinId;
+                _beastSpawner.UpdateSkin(skinId);
             }
+            else
+            {
+                _equippedSnakeSkinId = skinId;
+                YG2.saves.EquippedSnakeSkin = skinId;
+                _snakeSpawner.UpdateSkin(skinId);
+            }
+
+            YG2.SaveProgress();
+            Selected?.Invoke();
         }
 
         private void UpdateUIAfterPurchase()
@@ -332,14 +322,14 @@ namespace Game.Scripts.Shop
 
             foreach (var item in _beastSkinItems)
             {
-                bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Beast);
+                var isPurchased = IsSkinPurchased(item.SkinId, SkinType.Beast);
                 item.UpdatePurchaseState(isPurchased);
                 item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
             }
 
             foreach (var item in _snakeSkinItems)
             {
-                bool isPurchased = IsSkinPurchased(item.SkinId, SkinType.Snake);
+                var isPurchased = IsSkinPurchased(item.SkinId, SkinType.Snake);
                 item.UpdatePurchaseState(isPurchased);
                 item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
             }
@@ -365,15 +355,15 @@ namespace Game.Scripts.Shop
             }
         }
 
-        private string GetDefaultSkinId(SkinData skinData)
+        private static string GetDefaultSkinId(SkinData skinData)
         {
             var defaultSkin = skinData.Skins.Find(skin => skin.IsDefault);
             return defaultSkin?.SkinId ?? skinData.Skins[0].SkinId;
         }
 
-        private void SavePurchasedSkin(string skinId, SkinType skinType)
+        private static void SavePurchasedSkin(string skinId, SkinType skinType)
         {
-            string purchasedSkins = skinType == SkinType.Beast
+            var purchasedSkins = skinType == SkinType.Beast
                 ? YG2.saves.PurchasedBeastSkins
                 : YG2.saves.PurchasedSnakeSkins;
 
@@ -392,20 +382,14 @@ namespace Game.Scripts.Shop
 
         private void LoadPurchasedSkins()
         {
-            foreach (var skin in _beastSkinData.Skins)
+            foreach (var skin in _beastSkinData.Skins.Where(skin => skin.IsDefault))
             {
-                if (skin.IsDefault)
-                {
-                    SavePurchasedSkin(skin.SkinId, SkinType.Beast);
-                }
+                SavePurchasedSkin(skin.SkinId, SkinType.Beast);
             }
 
-            foreach (var skin in _snakeSkinData.Skins)
+            foreach (var skin in _snakeSkinData.Skins.Where(skin => skin.IsDefault))
             {
-                if (skin.IsDefault)
-                {
-                    SavePurchasedSkin(skin.SkinId, SkinType.Snake);
-                }
+                SavePurchasedSkin(skin.SkinId, SkinType.Snake);
             }
         }
     }

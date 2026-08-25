@@ -6,7 +6,7 @@ namespace Game.Scripts.LifeCycle
     public class GameTimer : MonoBehaviour
     {
         private float _startTime;
-        private float _elapsedTime = 0;
+        private float _elapsedTime;
 
         public event Action<float> Stopped;
 
@@ -20,13 +20,10 @@ namespace Game.Scripts.LifeCycle
         {
             _elapsedTime = Time.time - _startTime;
 
-            if (isVictory)
-            {
-                int minutes = Mathf.FloorToInt(_elapsedTime / 60);
-                float seconds = _elapsedTime % 60;
+            if (!isVictory)
+                return;
 
-                Stopped?.Invoke(_elapsedTime);
-            }
+            Stopped?.Invoke(_elapsedTime);
         }
     }
 }
