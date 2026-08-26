@@ -16,35 +16,35 @@ namespace Game.Scripts.LifeCycle
         public event Action BeastDied;
         public event Action SnakeDied;
 
-        public void KillSnake(Transform gameObject)
+        public void KillSnake(Transform target)
         {
             _timer.StopTimer(true);
-            StartCoroutine(KillSnakeRoutine(gameObject));
+            StartCoroutine(KillSnakeRoutine(target));
         }
 
-        public void KillBeast(Transform gameObject)
+        public void KillBeast(Transform target)
         {
             _timer.StopTimer(false);
-            StartCoroutine(KillBeastRoutine(gameObject));
+            StartCoroutine(KillBeastRoutine(target));
         }
 
-        public IEnumerator DeathRoutine(Transform gameObject, Color color)
-        {
-            yield return StartCoroutine(_animator.DeathRoutine(gameObject, color));
-        }
-
-        private IEnumerator KillSnakeRoutine(Transform gameObject)
+        private IEnumerator KillSnakeRoutine(Transform target)
         {
             _audioPlayer.PlaySnakeDieSound();
-            yield return StartCoroutine(DeathRoutine(gameObject, Color.red));
+            yield return StartCoroutine(DeathRoutine(target, Color.red));
             SnakeDied?.Invoke();
         }
 
-        private IEnumerator KillBeastRoutine(Transform gameObject)
+        private IEnumerator KillBeastRoutine(Transform target)
         {
             _audioPlayer.PlayBeastDieSound();
-            yield return StartCoroutine(DeathRoutine(gameObject, Color.white));
+            yield return StartCoroutine(DeathRoutine(target, Color.white));
             BeastDied?.Invoke();
+        }
+
+        private IEnumerator DeathRoutine(Transform target, Color color)
+        {
+            yield return StartCoroutine(_animator.DeathRoutine(target, color));
         }
     }
 }

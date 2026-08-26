@@ -5,11 +5,12 @@ namespace Game.Scripts.MapGenerator
 {
     public class BoundaryMaker : MonoBehaviour
     {
+        private readonly Color _spawnAreaColor = Color.yellow;
+        
         [SerializeField] private List<Transform> _customBoundaryPoints;
         [SerializeField] private List<BoundarySegment> _manualSegments;
 
         [Header("Gizmos Settings")]
-        private Color _spawnAreaColor = Color.yellow;
         [SerializeField] private float _lineWidth = 0.1f;
         [SerializeField] private bool _drawGizmos = true;
 
@@ -37,53 +38,51 @@ namespace Game.Scripts.MapGenerator
             _lineSegments.Clear();
             _segmentsBySide.Clear();
 
-            if (_manualSegments != null && _manualSegments.Count > 0)
+            if (_manualSegments is { Count: > 0 })
             {
                 foreach (var segment in _manualSegments)
                 {
                     if (segment == null) continue;
 
-                    if (segment.StartPoint != null && segment.EndPoint != null)
+                    if (segment.StartPoint == null || segment.EndPoint == null) continue;
+                    
+                    var lineSegment = new LineSegment(
+                        segment.StartPoint.position,
+                        segment.EndPoint.position,
+                        segment.Side,
+                        segment.SpawnMinOffset,
+                        segment.SpawnMaxOffset);
+
+                    _lineSegments.Add(lineSegment);
+
+                    if (!_segmentsBySide.ContainsKey(segment.Side))
                     {
-                        var lineSegment = new LineSegment(
-                            segment.StartPoint.position,
-                            segment.EndPoint.position,
-                            segment.Side,
-                            segment.SpawnMinOffset,
-                            segment.SpawnMaxOffset);
-
-                        _lineSegments.Add(lineSegment);
-
-                        if (!_segmentsBySide.ContainsKey(segment.Side))
-                        {
-                            _segmentsBySide[segment.Side] = new List<LineSegment>();
-                        }
-
-                        _segmentsBySide[segment.Side].Add(lineSegment);
+                        _segmentsBySide[segment.Side] = new List<LineSegment>();
                     }
+
+                    _segmentsBySide[segment.Side].Add(lineSegment);
                 }
             }
 
-            if (_customBoundaryPoints != null && _customBoundaryPoints.Count >= 2)
+            if (_customBoundaryPoints == null || _customBoundaryPoints.Count < 2) return;
             {
-                for (int i = 0; i < _customBoundaryPoints.Count - 1; i++)
+                for (var i = 0; i < _customBoundaryPoints.Count - 1; i++)
                 {
-                    if (_customBoundaryPoints[i] != null && _customBoundaryPoints[i + 1] != null)
+                    if (_customBoundaryPoints[i] == null || _customBoundaryPoints[i + 1] == null) continue;
+                    
+                    var lineSegment = new LineSegment(
+                        _customBoundaryPoints[i].position,
+                        _customBoundaryPoints[i + 1].position,
+                        BoundarySide.Custom);
+
+                    _lineSegments.Add(lineSegment);
+
+                    if (!_segmentsBySide.ContainsKey(BoundarySide.Custom))
                     {
-                        var lineSegment = new LineSegment(
-                            _customBoundaryPoints[i].position,
-                            _customBoundaryPoints[i + 1].position,
-                            BoundarySide.Custom);
-
-                        _lineSegments.Add(lineSegment);
-
-                        if (!_segmentsBySide.ContainsKey(BoundarySide.Custom))
-                        {
-                            _segmentsBySide[BoundarySide.Custom] = new List<LineSegment>();
-                        }
-
-                        _segmentsBySide[BoundarySide.Custom].Add(lineSegment);
+                        _segmentsBySide[BoundarySide.Custom] = new List<LineSegment>();
                     }
+
+                    _segmentsBySide[BoundarySide.Custom].Add(lineSegment);
                 }
             }
         }
@@ -96,7 +95,7 @@ namespace Game.Scripts.MapGenerator
             }
 
             var segments = _segmentsBySide[side];
-            int segmentIndex = Random.Range(0, segments.Count);
+            var segmentIndex = Random.Range(0, segments.Count);
             var segment = segments[segmentIndex];
 
             return segment.GetRandomPoint();
@@ -144,7 +143,7 @@ namespace Game.Scripts.MapGenerator
                 return BoundarySide.Custom;
             }
 
-            int index = Random.Range(0, availableSides.Count);
+            var index = Random.Range(0, availableSides.Count);
             return availableSides[index];
         }
 
@@ -162,8 +161,8 @@ namespace Game.Scripts.MapGenerator
                 Gizmos.DrawSphere(segment.End, _lineWidth * 0.5f);
 
                 Gizmos.color = _spawnAreaColor;
-                Vector3 spawnStart = Vector3.Lerp(segment.Start, segment.End, segment.SpawnMinOffset);
-                Vector3 spawnEnd = Vector3.Lerp(segment.Start, segment.End, segment.SpawnMaxOffset);
+                var spawnStart = Vector3.Lerp(segment.Start, segment.End, segment.SpawnMinOffset);
+                var spawnEnd = Vector3.Lerp(segment.Start, segment.End, segment.SpawnMaxOffset);
                 Gizmos.DrawLine(spawnStart, spawnEnd);
                 Gizmos.DrawSphere(spawnStart, _lineWidth * 0.3f);
                 Gizmos.DrawSphere(spawnEnd, _lineWidth * 0.3f);
@@ -189,7 +188,7 @@ namespace Game.Scripts.MapGenerator
 
             public readonly Vector3 GetRandomPoint()
             {
-                float randomT = Random.Range(SpawnMinOffset, SpawnMaxOffset);
+                var randomT = Random.Range(SpawnMinOffset, SpawnMaxOffset);
                 return Vector3.Lerp(Start, End, randomT);
             }
         }

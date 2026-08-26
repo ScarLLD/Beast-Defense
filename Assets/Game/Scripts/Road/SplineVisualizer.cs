@@ -25,12 +25,12 @@ namespace Game.Scripts.Road
 
         public bool TryGenerateRoadFromSpline(SplineContainer splineContainer)
         {
-            if (_splineContainer != null)
+            if (_splineContainer)
                 _splineContainer.RemoveSpline(_splineContainer.Spline);
 
             _splineContainer = splineContainer;
 
-            if (_splineContainer == null)
+            if (!_splineContainer)
                 return false;
 
             GenerateSmoothRoadMesh();
@@ -40,7 +40,7 @@ namespace Game.Scripts.Road
 
         private void GenerateSmoothRoadMesh()
         {
-            if (_splineContainer == null) return;
+            if (!_splineContainer) return;
 
             _roadMesh = new Mesh
             {
@@ -52,40 +52,39 @@ namespace Game.Scripts.Road
             List<Vector2> uv = new ();
             List<Vector3> normals = new ();
 
-            Spline spline = _splineContainer.Spline;
+            var spline = _splineContainer.Spline;
 
-            for (int segmentIndex = 0; segmentIndex <= _roadQualitySegments; segmentIndex++)
+            for (var segmentIndex = 0; segmentIndex <= _roadQualitySegments; segmentIndex++)
             {
-                float splinePosition = segmentIndex / (float)_roadQualitySegments;
+                var splinePosition = segmentIndex / (float)_roadQualitySegments;
 
-                spline.Evaluate(splinePosition, out float3 position, out float3 tangent, out float3 upVector);
+                spline.Evaluate(splinePosition, out var position, out var tangent, out var upVector);
 
-                Vector3 roadTangent = new Vector3(tangent.x, tangent.y, tangent.z).normalized;
-                Vector3 roadUp = new Vector3(upVector.x, upVector.y, upVector.z).normalized;
-                Vector3 roadRight = Vector3.Cross(roadTangent, roadUp).normalized;
+                var roadTangent = new Vector3(tangent.x, tangent.y, tangent.z).normalized;
+                var roadUp = new Vector3(upVector.x, upVector.y, upVector.z).normalized;
+                var roadRight = Vector3.Cross(roadTangent, roadUp).normalized;
 
-                float widthMultiplier = 1f;
+                const float widthMultiplier = 1f;
 
-                Vector3 leftEdge = new Vector3(position.x, position.y, position.z) - 0.5f * _roadWidth * widthMultiplier * roadRight;
-                Vector3 rightEdge = new Vector3(position.x, position.y, position.z) + 0.5f * _roadWidth * widthMultiplier * roadRight;
+                var leftEdge = new Vector3(position.x, position.y, position.z) - 0.5f * _roadWidth * widthMultiplier * roadRight;
+                var rightEdge = new Vector3(position.x, position.y, position.z) + 0.5f * _roadWidth * widthMultiplier * roadRight;
 
                 vertices.Add(leftEdge);
                 vertices.Add(rightEdge);
 
-                float uvVertical = splinePosition;
-                uv.Add(new Vector2(0f, uvVertical));
-                uv.Add(new Vector2(1f, uvVertical));
+                uv.Add(new Vector2(0f, splinePosition));
+                uv.Add(new Vector2(1f, splinePosition));
 
                 normals.Add(roadUp);
                 normals.Add(roadUp);
             }
 
-            for (int segmentIndex = 0; segmentIndex < _roadQualitySegments; segmentIndex++)
+            for (var segmentIndex = 0; segmentIndex < _roadQualitySegments; segmentIndex++)
             {
-                int currentLeft = segmentIndex * 2;
-                int currentRight = segmentIndex * 2 + 1;
-                int nextLeft = (segmentIndex + 1) * 2;
-                int nextRight = (segmentIndex + 1) * 2 + 1;
+                var currentLeft = segmentIndex * 2;
+                var currentRight = segmentIndex * 2 + 1;
+                var nextLeft = (segmentIndex + 1) * 2;
+                var nextRight = (segmentIndex + 1) * 2 + 1;
 
                 triangles.Add(currentLeft);
                 triangles.Add(currentRight);
@@ -96,35 +95,35 @@ namespace Game.Scripts.Road
                 triangles.Add(nextLeft);
             }
 
-            float platformYOffset = -0.001f;
+            const float platformYOffset = -0.001f;
 
-            _splineContainer.Evaluate(1f, out float3 endPosition, out float3 endTangent, out float3 endUp);
-            Vector3 platformTangent = new Vector3(endTangent.x, endTangent.y, endTangent.z).normalized;
-            Vector3 platformUp = new Vector3(endUp.x, endUp.y, endUp.z).normalized;
-            Vector3 platformCenter = new Vector3(endPosition.x, endPosition.y, endPosition.z) + Vector3.up * platformYOffset;
+            _splineContainer.Evaluate(1f, out var endPosition, out var endTangent, out var endUp);
+            var platformTangent = new Vector3(endTangent.x, endTangent.y, endTangent.z).normalized;
+            var platformUp = new Vector3(endUp.x, endUp.y, endUp.z).normalized;
+            var platformCenter = new Vector3(endPosition.x, endPosition.y, endPosition.z) + Vector3.up * platformYOffset;
 
-            int centerIndex = vertices.Count;
+            var centerIndex = vertices.Count;
             vertices.Add(platformCenter);
             uv.Add(new Vector2(0.5f, 0.5f));
             normals.Add(platformUp);
 
-            float startAngle = Mathf.Atan2(platformTangent.z, platformTangent.x) + Mathf.PI * 0.5f;
+            var startAngle = Mathf.Atan2(platformTangent.z, platformTangent.x) + Mathf.PI * 0.5f;
 
-            for (int segmentIndex = 0; segmentIndex <= _platformSegments; segmentIndex++)
+            for (var segmentIndex = 0; segmentIndex <= _platformSegments; segmentIndex++)
             {
-                float angle = startAngle + segmentIndex / (float)_platformSegments * Mathf.PI * 2f;
+                var angle = startAngle + segmentIndex / (float)_platformSegments * Mathf.PI * 2f;
                 Vector3 direction = new(Mathf.Cos(angle), 0, Mathf.Sin(angle));
-                Vector3 platformEdge = platformCenter + direction * _endPlatformRadius;
+                var platformEdge = platformCenter + direction * _endPlatformRadius;
 
                 vertices.Add(platformEdge);
 
-                float uvHorizontal = 0.5f + Mathf.Cos(angle) * 0.5f;
-                float uvVertical = 0.5f + Mathf.Sin(angle) * 0.5f;
+                var uvHorizontal = 0.5f + Mathf.Cos(angle) * 0.5f;
+                var uvVertical = 0.5f + Mathf.Sin(angle) * 0.5f;
                 uv.Add(new Vector2(uvHorizontal, uvVertical));
                 normals.Add(platformUp);
             }
 
-            for (int segmentIndex = 1; segmentIndex < _platformSegments; segmentIndex++)
+            for (var segmentIndex = 1; segmentIndex < _platformSegments; segmentIndex++)
             {
                 triangles.Add(centerIndex);
                 triangles.Add(centerIndex + segmentIndex + 1);
@@ -135,13 +134,13 @@ namespace Game.Scripts.Road
             triangles.Add(centerIndex + 1);
             triangles.Add(centerIndex + _platformSegments);
 
-            int lastRoadLeft = _roadQualitySegments * 2;
-            int lastRoadRight = _roadQualitySegments * 2 + 1;
+            var lastRoadLeft = _roadQualitySegments * 2;
+            var lastRoadRight = _roadQualitySegments * 2 + 1;
 
-            for (int segmentIndex = 0; segmentIndex < _platformSegments; segmentIndex++)
+            for (var segmentIndex = 0; segmentIndex < _platformSegments; segmentIndex++)
             {
-                int platformVertex1 = centerIndex + segmentIndex + 1;
-                int platformVertex2 = centerIndex + segmentIndex + 2;
+                var platformVertex1 = centerIndex + segmentIndex + 1;
+                var platformVertex2 = centerIndex + segmentIndex + 2;
 
                 if (segmentIndex < _platformSegments / 2)
                 {

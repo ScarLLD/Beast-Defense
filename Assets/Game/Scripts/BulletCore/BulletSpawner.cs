@@ -4,6 +4,7 @@ using Game.Scripts.Options;
 using Game.Scripts.Pool;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game.Scripts.BulletCore
@@ -29,12 +30,12 @@ namespace Game.Scripts.BulletCore
 
         public void SpawnBullet(Vector3 spawnPosition, Cube cube)
         {
-            if (cube == null)
+            if (!cube)
                 throw new ArgumentException("cube не может быть null.", nameof(cube));
 
-            Bullet bullet = _pool.GetObject();
+            var bullet = _pool.GetObject();
 
-            if (_bullets.Contains(bullet) == false)
+            if (!_bullets.Contains(bullet))
                 _bullets.Add(bullet);
 
             bullet.transform.position = spawnPosition;
@@ -46,10 +47,9 @@ namespace Game.Scripts.BulletCore
 
         public void Cleanup()
         {
-            foreach (Bullet bullet in _bullets)
+            foreach (var bullet in _bullets.Where(bullet => bullet.gameObject.activeInHierarchy == true))
             {
-                if (bullet.gameObject.activeInHierarchy == true)
-                    bullet.StopMove();
+                bullet.StopMove();
             }
         }
     }

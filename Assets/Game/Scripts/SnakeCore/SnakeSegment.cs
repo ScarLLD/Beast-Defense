@@ -1,5 +1,7 @@
-﻿using Game.Scripts.CubeCore;
+﻿using System;
+using Game.Scripts.CubeCore;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game.Scripts.SnakeCore
@@ -8,17 +10,24 @@ namespace Game.Scripts.SnakeCore
     {
         [SerializeField] private List<Cube> _cubes;
 
-        private int _currentCubeIndex = 0;
-        private bool _isDestroyed = false;
+        private int _currentCubeIndex;
+        private bool _isDestroyed;
         private Snake _snake;
 
-        public Material Material { get; private set; }
-        public bool IsTarget { get; private set; } = false;
+        private Material _material;
+        public bool IsTarget { get; private set; }
+
+        private void Awake()
+        {
+            IsTarget = false;
+            _isDestroyed = false;
+            _currentCubeIndex = 0;
+        }
 
         public void Init(Material material, Snake snake)
         {
             _snake = snake;
-            Material = material;
+            _material = material;
             _isDestroyed = false;
 
             foreach (var cube in _cubes)
@@ -38,21 +47,14 @@ namespace Game.Scripts.SnakeCore
 
         public bool IsCurrentColor(Color color)
         {
-            return Material != null && Material.color == color;
+            return _material && _material.color == color;
         }
 
         private void ActivateVisibleCubes()
         {
-            for (int i = 0; i < _cubes.Count; i++)
+            foreach (var cube in _cubes)
             {
-                if (_cubes[i].IsDestroyed == false)
-                {
-                    _cubes[i].gameObject.SetActive(true);
-                }
-                else
-                {
-                    _cubes[i].gameObject.SetActive(false);
-                }
+                cube.gameObject.SetActive(!cube.IsDestroyed);
             }
         }
 
@@ -60,32 +62,26 @@ namespace Game.Scripts.SnakeCore
         {
             cube = null;
 
-            if (_currentCubeIndex < _cubes.Count)
-            {
-                cube = _cubes[_currentCubeIndex];
-                _currentCubeIndex++;
-                return true;
-            }
+            if (_currentCubeIndex >= _cubes.Count) return false;
 
-            return false;
+            cube = _cubes[_currentCubeIndex];
+            _currentCubeIndex++;
+            return true;
         }
 
         public void NotifyDeath()
         {
-            if (_snake == null)
+            if (!_snake)
                 return;
 
-            if (_isDestroyed == true)
+            if (_isDestroyed)
             {
                 return;
             }
 
-            foreach (var cube in _cubes)
+            if (_cubes.Any(cube => !cube.IsDestroyed))
             {
-                if (cube.IsDestroyed == false)
-                {
-                    return;
-                }
+                return;
             }
 
             _isDestroyed = true;
@@ -96,7 +92,7 @@ namespace Game.Scripts.SnakeCore
 
         public void SetActiveSegment(bool active)
         {
-            if (_isDestroyed == true)
+            if (_isDestroyed)
             {
                 return;
             }

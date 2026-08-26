@@ -5,6 +5,9 @@ namespace Game.Scripts.Player
     [RequireComponent(typeof(Animator))]
     public class PlayerCubeAnimator : MonoBehaviour
     {
+        private static readonly int IsAvailable = Animator.StringToHash("isAvailable");
+        private static readonly int IsWalk = Animator.StringToHash("isWalk");
+        
         private Animator _animator;
 
         private void Awake()
@@ -26,12 +29,12 @@ namespace Game.Scripts.Player
 
         public void SetAvailableTrigger()
         {
-            _animator.SetTrigger("isAvailable");
+            _animator.SetTrigger(IsAvailable);
         }
 
         public void SetWalkBool(bool value)
         {
-            _animator.SetBool("isWalk", value);
+            _animator.SetBool(IsWalk, value);
         }
     }
 }

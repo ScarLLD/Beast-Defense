@@ -24,7 +24,7 @@ namespace Game.Scripts.BulletCore
 
         public void ResetTrail()
         {
-            if (_trailRenderer != null)
+            if (_trailRenderer)
             {
                 _trailRenderer.Clear();
             }

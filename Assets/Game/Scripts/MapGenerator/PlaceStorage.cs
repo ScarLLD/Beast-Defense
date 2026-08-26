@@ -34,7 +34,7 @@ namespace Game.Scripts.MapGenerator
                 .OrderBy(place => Vector3.Distance(place.transform.position, cube.transform.position))
                 .FirstOrDefault(place => place.IsEmpty == true);
 
-            if (shootingPlace != null)
+            if (!shootingPlace) return shootingPlace && escapePlace != null;
             {
                 shootingPlace.ChangeEmptyStatus(false);
                 var tempShootingPlace = shootingPlace;
@@ -44,7 +44,7 @@ namespace Game.Scripts.MapGenerator
                     .FirstOrDefault();
             }
 
-            return shootingPlace != null && escapePlace != null;
+            return shootingPlace && escapePlace != null;
         }
 
         public void PutPlace(ShootingPlace place)
@@ -54,12 +54,11 @@ namespace Game.Scripts.MapGenerator
 
         public void SetDefaultSettings()
         {
-            if (_shootingPlaces.Count > 0)
+            if (_shootingPlaces.Count <= 0) return;
+            
+            foreach (var place in _shootingPlaces)
             {
-                foreach (ShootingPlace place in _shootingPlaces)
-                {
-                    place.ChangeEmptyStatus(true);
-                }
+                place.ChangeEmptyStatus(true);
             }
         }
     }

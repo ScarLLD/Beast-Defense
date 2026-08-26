@@ -17,14 +17,14 @@ namespace Game.Scripts.MapGenerator
             _game.Leaved -= DisableObjects;
         }
 
-        public void DisableObjects()
-        {
-            _objectsParent.SetActive(false);
-        }
-
         public void EnableObjects()
         {
             _objectsParent.SetActive(true);
+        }
+
+        private void DisableObjects()
+        {
+            _objectsParent.SetActive(false);
         }
     }
 }

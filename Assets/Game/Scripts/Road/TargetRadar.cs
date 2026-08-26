@@ -8,7 +8,7 @@ namespace Game.Scripts.Road
     [RequireComponent(typeof(Shooter))]
     public class TargetRadar : MonoBehaviour
     {
-        private readonly float _targetingDelay = 0.1f;
+        private const float TARGETING_DELAY = 0.1f;
 
         private int _bulletPerTarget;
         private Shooter _shooter;
@@ -20,7 +20,7 @@ namespace Game.Scripts.Road
         {
             _shooter = GetComponent<Shooter>();
 
-            _targetSleep = new WaitForSeconds(_targetingDelay);
+            _targetSleep = new WaitForSeconds(TARGETING_DELAY);
         }
 
         public void Init(TargetStorage targetStorage, int bulletPerTarget)
@@ -36,22 +36,21 @@ namespace Game.Scripts.Road
 
         public void TurnOff()
         {
-            if (_scanCoroutine != null)
-            {
-                StopCoroutine(_scanCoroutine);
-                _scanCoroutine = null;
-            }
+            if (_scanCoroutine == null) return;
+            
+            StopCoroutine(_scanCoroutine);
+            _scanCoroutine = null;
         }
 
         private IEnumerator ScanRoutine(Color color)
         {
-            int bulletsPerSegment = _shooter.BulletCount / _bulletPerTarget;
+            var bulletsPerSegment = _shooter.BulletCount / _bulletPerTarget;
 
             _shooter.SetInitialRotation();
 
             while (_shooter.BulletCount > 0)
             {
-                if (bulletsPerSegment > 0 && _targetStorage.TryGetTarget(color, out SnakeSegment snakeSegment))
+                if (bulletsPerSegment > 0 && _targetStorage.TryGetTarget(color, out var snakeSegment))
                 {
                     _shooter.AddTarget(snakeSegment);
                     bulletsPerSegment--;

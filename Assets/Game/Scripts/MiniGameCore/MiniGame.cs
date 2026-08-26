@@ -12,7 +12,12 @@ namespace Game.Scripts.MiniGameCore
         public event Action Defeated;
         public event Action Won;
 
-        public bool IsActive { get; private set; } = false;
+        public bool IsActive { get; private set; }
+
+        private void Awake()
+        {
+            IsActive = false;
+        }
 
         private void OnEnable()
         {
@@ -26,6 +31,7 @@ namespace Game.Scripts.MiniGameCore
 
         public void ResetSettings()
         {
+            IsActive = false;
             _collector.ResetSettings();
         }
 
@@ -41,7 +47,7 @@ namespace Game.Scripts.MiniGameCore
             Won?.Invoke();
         }
 
-        public void DefeatGame()
+        private void DefeatGame()
         {
             IsActive = false;
             Defeated?.Invoke();

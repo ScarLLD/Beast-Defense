@@ -28,7 +28,7 @@ namespace Game.Scripts.Player
 
         public void DisplayBullets()
         {
-            if (_cube.IsAvailable == true || _cube.HasClicked)
+            if (_cube.IsAvailable || _cube.HasClicked)
                 _text.text = _shooter.BulletCount.ToString();
             else
                 SetEmpty();

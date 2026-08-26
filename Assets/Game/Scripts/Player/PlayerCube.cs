@@ -16,7 +16,7 @@ namespace Game.Scripts.Player
     [RequireComponent(typeof(Animator))]
     public class PlayerCube : MonoBehaviour
     {
-        private readonly int _bulletsPerSegment = 4;
+        private const int BULLETS_PER_SEGMENT = 4;
 
         [SerializeField] private float _moveSpeed = 10f;
         [SerializeField] private float _scaleChangerSpeed = 3f;
@@ -31,7 +31,6 @@ namespace Game.Scripts.Player
 
         private PlayerCubeAnimator _cubeAnimator;
         private Transform _transform;
-        private CubeStack _stack;
         private TargetRadar _radar;
         private Shooter _shooter;
         private BulletView _bulletView;
@@ -42,7 +41,7 @@ namespace Game.Scripts.Player
         public bool IsAvailable { get; private set; }
         public bool HasClicked { get; private set; }
         public bool IsScaling { get; private set; }
-        public CubeStack GetStack => _stack;
+        public CubeStack GetStack { get; private set; }
 
         private void Awake()
         {
@@ -53,7 +52,7 @@ namespace Game.Scripts.Player
             _shooter = GetComponent<Shooter>();
             _radar = GetComponent<TargetRadar>();
             _bulletView = GetComponent<BulletView>();
-            _stack = GetComponent<CubeStack>();
+            GetStack = GetComponent<CubeStack>();
         }
 
         public void Init(GridCell cell, Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
@@ -61,10 +60,10 @@ namespace Game.Scripts.Player
             _gridCell = cell;
 
             _meshRenderer.material = material;
-            _shooter.Init(bulletSpawner, count, _bulletsPerSegment);
-            _radar.Init(targetStorage, _bulletsPerSegment);
+            _shooter.Init(bulletSpawner, count, BULLETS_PER_SEGMENT);
+            _radar.Init(targetStorage, BULLETS_PER_SEGMENT);
             _mover.Init(_moveSpeed);
-            _stack.Init(material, count);
+            GetStack.Init(material, count);
 
             foreach (var leg in _legs)
                 leg.material = material;
@@ -118,13 +117,6 @@ namespace Game.Scripts.Player
             SetHalfSizeTransform();
         }
 
-        public void StartMoving()
-        {
-            TurnOnLegs();
-            _cubeAnimator.SetWalkBool(true);
-            _mover.StartMoving();
-        }
-
         public void ChangeAvailableStatus(bool isAvailable)
         {
             IsAvailable = isAvailable;
@@ -133,6 +125,13 @@ namespace Game.Scripts.Player
                 ActivateAvailability();
             else
                 DeactivateAvailability();
+        }
+        
+        private void StartMoving()
+        {
+            TurnOnLegs();
+            _cubeAnimator.SetWalkBool(true);
+            _mover.StartMoving();
         }
 
         private void InitialDefaultTransform()
@@ -143,7 +142,7 @@ namespace Game.Scripts.Player
 
         private void ActivateAvailability()
         {
-            if (_isScaled == true)
+            if (_isScaled)
                 return;
 
             _outline.OutlineWidth = _outlineActive;
@@ -169,8 +168,8 @@ namespace Game.Scripts.Player
 
         private void SetHalfSizeTransform()
         {
-            _transform.localScale = new(_defaultScale.x, _defaultScale.y / 2, _defaultScale.z);
-            _transform.position = new(_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4, _defaultPosition.z);
+            _transform.localScale = new Vector3(_defaultScale.x, _defaultScale.y / 2, _defaultScale.z);
+            _transform.position = new Vector3(_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4, _defaultPosition.z);
 
             _meshRenderer.transform.localPosition = Vector3.zero;
         }
@@ -179,10 +178,10 @@ namespace Game.Scripts.Player
         {
             IsScaling = true;
 
-            Vector3 startScale = _transform.localScale;
-            Vector3 startPosition = _transform.position;
+            var startScale = _transform.localScale;
+            var startPosition = _transform.position;
 
-            float progress = 0f;
+            var progress = 0f;
 
             while (progress < 1f)
             {
@@ -211,12 +210,11 @@ namespace Game.Scripts.Player
 
         private void OnBulletsDecreased()
         {
-            if (_shooter.BulletCount == 0)
-            {
-                TurnOnLegs();
-                _cubeAnimator.SetWalkBool(true);
-                _mover.GoEscape();
-            }
+            if (_shooter.BulletCount != 0) return;
+            
+            TurnOnLegs();
+            _cubeAnimator.SetWalkBool(true);
+            _mover.GoEscape();
         }
 
         private void OnMoverEscaped()

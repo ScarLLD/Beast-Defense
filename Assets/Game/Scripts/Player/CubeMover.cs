@@ -9,7 +9,8 @@ namespace Game.Scripts.Player
 {
     public class CubeMover : MonoBehaviour
     {
-        private readonly float _arrivalThreshold = 0.15f;
+        private const float ARRIVAL_THRESHOLD = 0.15f;
+        
         private float _speed;
         private bool _isNewMove = true;
         private Vector3 _initialPosition;
@@ -17,8 +18,8 @@ namespace Game.Scripts.Player
         private Vector3 _target;
         private ShootingPlace _shootingPlace;
         private Coroutine _moveCoroutine;
-        private RoadFinder _roadfinder;
         private GridCell _cell;
+        private bool _isMoving;
 
         private Transform _transform;
         private Vector3 _cachedCellTarget;
@@ -27,11 +28,9 @@ namespace Game.Scripts.Player
         public event Action Arrived;
         public event Action Escaped;
 
-        public bool IsMoving { get; private set; }
 
         private void Awake()
         {
-            _roadfinder = new RoadFinder();
             _transform = transform;
             _initialPosition = _transform.position;
         }
@@ -65,7 +64,7 @@ namespace Game.Scripts.Player
         public void SetDefaultSetting()
         {
             StopMoving();
-            IsMoving = false;
+            _isMoving = false;
             _isNewMove = true;
         }
 
@@ -76,33 +75,32 @@ namespace Game.Scripts.Player
             _moveCoroutine = StartCoroutine(MoveRoutine());
         }
 
-        public void StopMoving()
+        private void StopMoving()
         {
-            if (_moveCoroutine != null)
-            {
-                StopCoroutine(_moveCoroutine);
-                _moveCoroutine = null;
-            }
+            if (_moveCoroutine == null) return;
+            
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
         }
 
         private IEnumerator MoveRoutine()
         {
-            IsMoving = true;
+            _isMoving = true;
 
-            while (IsMoving)
+            while (_isMoving)
             {
-                Vector3 direction = _target - _transform.position;
+                var direction = _target - _transform.position;
                 _transform.position += _speed * Time.deltaTime * direction.normalized;
                 _transform.LookAt(_target);
 
-                if (Vector3.Distance(_target, _transform.position) < _arrivalThreshold)
+                if (Vector3.Distance(_target, _transform.position) < ARRIVAL_THRESHOLD)
                 {
                     _transform.position = _target;
 
                     if (_target == _cachedShootingTarget)
                     {
                         Arrived?.Invoke();
-                        IsMoving = false;
+                        _isMoving = false;
                     }
 
                     SelectTarget();
@@ -116,9 +114,9 @@ namespace Game.Scripts.Player
         {
             if (_target == _cachedCellTarget)
             {
-                var nextCell = _roadfinder.GetOptimalNextCell(_cell);
+                var nextCell = RoadFinder.GetOptimalNextCell(_cell);
 
-                if (nextCell != null)
+                if (nextCell)
                 {
                     _cell = nextCell;
                     _cachedCellTarget = GetCurrentTarget(_cell.transform.position);
@@ -131,14 +129,14 @@ namespace Game.Scripts.Player
             }
             else if (_target == _escapePlace)
             {
-                IsMoving = false;
+                _isMoving = false;
                 Escaped?.Invoke();
             }
         }
 
         private Vector3 GetCurrentTarget(Vector3 targetPosition)
         {
-            return new(targetPosition.x, _initialPosition.y, targetPosition.z);
+            return new Vector3(targetPosition.x, _initialPosition.y, targetPosition.z);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Game.Scripts.MiniGameCore
             _snake.SetBodyColor(color);
         }
 
-        public void SpawnRoutine()
+        private void SpawnRoutine()
         {
             ResetSettings();
             Spawn();

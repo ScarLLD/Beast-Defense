@@ -74,24 +74,24 @@ namespace Game.Scripts.Shop
             {
                 _priceParent.SetActive(false);
 
-                if (_background != null)
+                if (_background)
                     _background.color = _greenColor;
             }
             else
             {
                 _priceParent.SetActive(true);
 
-                if (_background != null)
+                if (_background)
                     _background.color = _redColor;
 
-                bool canAfford = _wallet.CanAfford(_skin.Price);
+                var canAfford = _wallet.CanAfford(_skin.Price);
                 _priceText.color = canAfford ? Color.green : Color.red;
             }
         }
 
         public void UpdateEquippedState(string equippedSkinId, SkinShop.SkinType type)
         {
-            if (_equippedBadge != null)
+            if (_equippedBadge)
             {
                 _equippedBadge.SetActive(_skin.SkinId == equippedSkinId && _skinType == type);
             }

@@ -8,13 +8,14 @@ namespace Game.Scripts.CubeCore
         private MeshRenderer _meshRenderer;
         private SnakeSegment _snakeSegment;
 
-        public bool IsDestroyed { get; private set; } = false;
+        public bool IsDestroyed { get; private set; }
 
         public Material Material => _meshRenderer.material;
 
         private void Awake()
         {
             _meshRenderer = GetComponent<MeshRenderer>();
+            IsDestroyed = false;
         }
 
         public void Init(Material material)
@@ -30,18 +31,17 @@ namespace Game.Scripts.CubeCore
 
         public void Hit()
         {
-            if (IsDestroyed == true)
+            if (IsDestroyed)
                 return;
 
             Deactivate();
             IsDestroyed = true;
             _snakeSegment.NotifyDeath();
-
         }
 
         public void Deactivate()
         {
-            if (IsDestroyed == false)
+            if (!IsDestroyed)
                 gameObject.SetActive(false);
         }
     }

@@ -8,6 +8,9 @@ namespace Game.Scripts.MiniGameCore
 {
     public class MGBeastSpawner : MonoBehaviour
     {
+        private const int MAX_COLLIDERS_COUNT = 50;
+        private const int SPAWN_ATTEMPS_COUNT = 50;
+        
         [SerializeField] private MiniGame _miniGame;
         [SerializeField] private BeastCollector _collector;
         [SerializeField] private DOTWeenAnimator _miniGameAnimator;
@@ -22,11 +25,9 @@ namespace Game.Scripts.MiniGameCore
         [SerializeField] private int _minRandomBeastCount = 3;
         [SerializeField] private int _maxRandomBeastCount = 10;
 
-        private readonly int _maxCollidersCount = 50;
         private Collider[] _tempColliders;
         private List<MGBeast> _beasts;
         private int _maxBeastCount;
-        private readonly int _spawnAttempsCount = 50;
         private Bounds _bounds;
         private Coroutine _coroutine;
         private WaitForSeconds _sleepTime;
@@ -46,11 +47,11 @@ namespace Game.Scripts.MiniGameCore
 
         private void Awake()
         {
-            _pool = new(_beastPrefab, transform);
-            _beasts = new();
+            _pool = new ObjectPool<MGBeast>(_beastPrefab, transform);
+            _beasts = new List<MGBeast>();
             _bounds = new Bounds(_spawnPlatform.position, _spawnPlatform.localScale);
             _sleepTime = new WaitForSeconds(_spawnDelay);
-            _tempColliders = new Collider[_maxCollidersCount];
+            _tempColliders = new Collider[MAX_COLLIDERS_COUNT];
 
             RandomizeMaxBeastCount();
         }
@@ -79,7 +80,7 @@ namespace Game.Scripts.MiniGameCore
 
         private IEnumerator SpawnRoutine()
         {
-            int spawnedCount = 0;
+            var spawnedCount = 0;
 
             while (spawnedCount < _maxBeastCount && _miniGame.IsActive)
             {
@@ -96,11 +97,11 @@ namespace Game.Scripts.MiniGameCore
 
         private bool TrySpawn()
         {
-            int attempts = 0;
+            var attempts = 0;
 
-            while (attempts < _spawnAttempsCount && _miniGame.IsActive)
+            while (attempts < SPAWN_ATTEMPS_COUNT && _miniGame.IsActive)
             {
-                Vector3 spawnPoint = GetRandomPointInCube();
+                var spawnPoint = GetRandomPointInCube();
 
                 if (CheckCollidersNearPoint(spawnPoint))
                 {
@@ -116,14 +117,14 @@ namespace Game.Scripts.MiniGameCore
 
         private bool CheckCollidersNearPoint(Vector3 spawnPoint)
         {
-            int colliderCount = Physics.OverlapSphereNonAlloc(spawnPoint, _checkRadius, _tempColliders);
+            var colliderCount = Physics.OverlapSphereNonAlloc(spawnPoint, _checkRadius, _tempColliders);
 
-            for (int i = 0; i < colliderCount; i++)
+            for (var i = 0; i < colliderCount; i++)
             {
-                Collider collider = _tempColliders[i];
+                var tempCollider = _tempColliders[i];
 
-                if (collider.GetComponent<Beast>() != null ||
-                    collider.GetComponent<MGCube>() != null)
+                if (tempCollider.GetComponent<Beast>() ||
+                    tempCollider.GetComponent<MGCube>())
                 {
                     return false;
                 }
@@ -139,17 +140,16 @@ namespace Game.Scripts.MiniGameCore
             beast.transform.SetPositionAndRotation(spawnPoint, Quaternion.LookRotation(Vector3.back));
             _miniGameAnimator.DoScaleUp(beast.gameObject);
 
-            if (_beasts.Contains(beast) == false)
+            if (!_beasts.Contains(beast))
                 _beasts.Add(beast);
         }
 
         private void StopRoutine()
         {
-            if (_coroutine != null)
-            {
-                StopCoroutine(_coroutine);
-                _coroutine = null;
-            }
+            if (_coroutine == null) return;
+            
+            StopCoroutine(_coroutine);
+            _coroutine = null;
         }
 
         private void ResetSettings()

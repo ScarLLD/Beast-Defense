@@ -17,15 +17,6 @@ namespace Game.Scripts.Options
             ApplyAudioSettings();
         }
 
-        private void ApplyAudioSettings()
-        {
-            _soundAudio.mute = YG2.saves.SoundMuted;
-            _musicAudio.mute = YG2.saves.MusicMuted;
-
-            _soundNegativeIcon.SetActive(YG2.saves.SoundMuted);
-            _musicNegativeIcon.SetActive(YG2.saves.MusicMuted);
-        }
-
         public void ToggleSound()
         {
             YG2.saves.SoundMuted = !YG2.saves.SoundMuted;
@@ -38,6 +29,15 @@ namespace Game.Scripts.Options
             YG2.saves.MusicMuted = !YG2.saves.MusicMuted;
             ApplyAudioSettings();
             YG2.SaveProgress();
+        }
+        
+        private void ApplyAudioSettings()
+        {
+            _soundAudio.mute = YG2.saves.SoundMuted;
+            _musicAudio.mute = YG2.saves.MusicMuted;
+
+            _soundNegativeIcon.SetActive(YG2.saves.SoundMuted);
+            _musicNegativeIcon.SetActive(YG2.saves.MusicMuted);
         }
     }
 }

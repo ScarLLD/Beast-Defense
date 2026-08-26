@@ -53,18 +53,18 @@ namespace Game.Scripts.MapGenerator
 
         private void GenerateShootingPlaces()
         {
-            float placeWidth = _placePrefab.transform.localScale.x;
-            float totalWidth = (_placesCount - 1) * (placeWidth + _distanceBetweenPlaces);
+            var placeWidth = _placePrefab.transform.localScale.x;
+            var totalWidth = (_placesCount - 1) * (placeWidth + _distanceBetweenPlaces);
 
-            Vector3 startPoint = Vector3.zero;
+            var startPoint = Vector3.zero;
             startPoint.x -= totalWidth / 2;
 
-            for (int i = 0; i < _placesCount; i++)
+            for (var i = 0; i < _placesCount; i++)
             {
-                Vector3 spawnPosition = startPoint;
+                var spawnPosition = startPoint;
                 spawnPosition.x = startPoint.x + i * (placeWidth + _distanceBetweenPlaces);
 
-                ShootingPlace place = Instantiate(_placePrefab, transform);
+                var place = Instantiate(_placePrefab, transform);
                 place.transform.localPosition = spawnPosition;
                 _storage.PutPlace(place);
             }

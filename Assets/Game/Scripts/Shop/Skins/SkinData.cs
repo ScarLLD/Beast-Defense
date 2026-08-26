@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game.Scripts.Shop.Skins
@@ -9,23 +10,19 @@ namespace Game.Scripts.Shop.Skins
     {
         public List<Skin> Skins = new();
 
-        public SkinData.Skin GetSkinById(string currentSkinId)
+        public Skin GetSkinById(string currentSkinId)
         {
             return Skins.Find(skin => skin.SkinId == currentSkinId);
         }
 
         public string GetDefaultSkinId()
         {
-            foreach (var skin in Skins)
+            foreach (var skin in Skins.Where(skin => skin.IsDefault))
             {
-                if (skin.IsDefault)
-                    return skin.SkinId;
+                return skin.SkinId;
             }
 
-            if (Skins.Count > 0)
-                return Skins[0].SkinId;
-
-            return string.Empty;
+            return Skins.Count > 0 ? Skins[0].SkinId : string.Empty;
         }
 
         [Serializable]

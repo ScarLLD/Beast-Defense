@@ -13,6 +13,7 @@ namespace Game.Scripts.SnakeCore
     [RequireComponent(typeof(SnakeSpeedControl))]
     public class Snake : MonoBehaviour
     {
+        private static readonly int IsMouthOpen = Animator.StringToHash("isMouthOpen");
         private readonly List<SnakeSegment> _savedSegments = new ();
         private readonly List<SnakeSegment> _playableSegments = new ();
         private readonly Queue<SnakeSegment> _recoilQueue = new ();
@@ -46,7 +47,7 @@ namespace Game.Scripts.SnakeCore
         private Beast _beast;
         private Coroutine _movementCoroutine;
         private Coroutine _recoilCoroutine;
-        private bool _isRecoiling = false;
+        private bool _isRecoiling;
 
         public event Action<float, float> SegmentsCountChanged;
 
@@ -59,6 +60,7 @@ namespace Game.Scripts.SnakeCore
         {
             _initialHeadSize = _head.transform.localScale;
             _speedControl = GetComponent<SnakeSpeedControl>();
+            _isRecoiling = false;
         }
 
         public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
@@ -84,11 +86,11 @@ namespace Game.Scripts.SnakeCore
 
         public void DestroySegment(SnakeSegment segmentToDestroy)
         {
-            if (segmentToDestroy == null || !_playableSegments.Contains(segmentToDestroy)) return;
+            if (!segmentToDestroy || !_playableSegments.Contains(segmentToDestroy)) return;
 
             _recoilQueue.Enqueue(segmentToDestroy);
 
-            if (_isRecoiling == false)
+            if (!_isRecoiling)
                 StartCoroutine(ProcessRecoilQueue());
         }
 
@@ -99,9 +101,7 @@ namespace Game.Scripts.SnakeCore
 
         public IEnumerator GetBackToStart()
         {
-            bool isWork = true;
-
-            while (isWork && _splinePosition > 0)
+            while (_splinePosition > 0)
             {
                 if (_recoilCoroutine == null)
                 {
@@ -142,10 +142,10 @@ namespace Game.Scripts.SnakeCore
 
             foreach (var stack in stacks)
             {
-                if (stack == null) continue;
+                if (!stack) continue;
 
-                int segmentsCount = stack.Count / 4;
-                for (int i = 0; i < segmentsCount; i++)
+                var segmentsCount = stack.Count / 4;
+                for (var i = 0; i < segmentsCount; i++)
                 {
                     var segment = Instantiate(_segmentPrefab, transform);
                     segment.Init(stack.Material, this);
@@ -171,41 +171,39 @@ namespace Game.Scripts.SnakeCore
 
         private void ClearSavedSegments()
         {
-            if (_savedSegments.Count > 0)
+            if (_savedSegments.Count <= 0) return;
+            
+            foreach (var segment in _savedSegments)
             {
-                foreach (var segment in _savedSegments)
-                {
-                    Destroy(segment.gameObject);
-                }
-
-                _savedSegments.Clear();
+                Destroy(segment.gameObject);
             }
+
+            _savedSegments.Clear();
         }
 
         private void ClearPlayableSegments()
         {
-            if (_playableSegments.Count > 0)
+            if (_playableSegments.Count <= 0) return;
+            
+            foreach (var segment in _playableSegments)
             {
-                foreach (var segment in _playableSegments)
-                {
-                    Destroy(segment.gameObject);
-                }
-
-                _playableSegments.Clear();
+                Destroy(segment.gameObject);
             }
+
+            _playableSegments.Clear();
         }
 
         private IEnumerator SnakeMovement()
         {
             while (_playableSegments.Count > 0 && MoveSpeed != 0)
             {
-                if (_isRecoiling == false)
+                if (!_isRecoiling)
                 {
                     _splinePosition += MoveSpeed * Time.deltaTime;
                     UpdateHeadPosition();
                     UpdateSegmentsPosition();
 
-                    if ((_head.IsPlaying == false || _beast.IsMoving == false)
+                    if ((!_head.IsPlaying || !_beast.IsMoving)
                         && _beast.TryApproachNotify(NormalizedPosition))
                     {
                         OpenMouth();
@@ -234,12 +232,12 @@ namespace Game.Scripts.SnakeCore
         private void OpenMouth()
         {
             _head.ChangeParticleSpeed(MoveSpeed);
-            _animator.SetTrigger("isMouthOpen");
+            _animator.SetTrigger(IsMouthOpen);
         }
 
         private void UpdateHeadPosition()
         {
-            bool shouldBeActive = _splinePosition - _headRollback > 0f;
+            var shouldBeActive = _splinePosition - _headRollback > 0f;
             _head.gameObject.SetActive(shouldBeActive);
 
             PlaceOnSpline(_head.transform, _splinePosition - _headRollback);
@@ -249,21 +247,18 @@ namespace Game.Scripts.SnakeCore
 
         private void UpdateSegmentsPosition()
         {
-            float splinePosition = _splinePosition - _segmentDistance - _segmentRollback;
-            int activeSegments = 0;
+            var splinePosition = _splinePosition - _segmentDistance - _segmentRollback;
 
-            for (int i = 0; i < _playableSegments.Count; i++)
+            foreach (var segment in _playableSegments)
             {
-                var segment = _playableSegments[i];
-                if (segment == null) continue;
+                if (!segment) continue;
 
-                bool shouldBeActive = splinePosition > 0f;
+                var shouldBeActive = splinePosition > 0f;
                 segment.SetActiveSegment(shouldBeActive);
 
                 if (shouldBeActive)
                 {
                     PlaceOnSpline(segment.transform, splinePosition);
-                    activeSegments++;
                 }
 
                 splinePosition -= _segmentDistance;
@@ -272,14 +267,14 @@ namespace Game.Scripts.SnakeCore
 
         private void PlaceOnSpline(Transform target, float distance)
         {
-            if (_splineContainer == null) return;
+            if (!_splineContainer) return;
 
-            float t = Mathf.Clamp01(distance / _splineLength);
+            var t = Mathf.Clamp01(distance / _splineLength);
             _splineContainer.Evaluate(t, out var position, out var tangent, out var up);
             position.y += transform.localScale.y;
 
-            Vector3 safeTangent = (Vector3)tangent;
-            Vector3 safeUp = (Vector3)up;
+            var safeTangent = (Vector3)tangent;
+            var safeUp = (Vector3)up;
 
             if (safeTangent == Vector3.zero) safeTangent = Vector3.forward;
             if (safeUp == Vector3.zero) safeUp = Vector3.up;
@@ -294,7 +289,7 @@ namespace Game.Scripts.SnakeCore
             while (_recoilQueue.Count > 0)
             {
                 var segmentToDestroy = _recoilQueue.Dequeue();
-                if (segmentToDestroy == null || !_playableSegments.Contains(segmentToDestroy)) continue;
+                if (!segmentToDestroy || !_playableSegments.Contains(segmentToDestroy)) continue;
 
                 yield return _recoilCoroutine = StartCoroutine(PerformRecoil(segmentToDestroy));
             }
@@ -304,46 +299,45 @@ namespace Game.Scripts.SnakeCore
 
         private IEnumerator PerformRecoil(SnakeSegment segmentToDestroy)
         {
-            int targetIndex = _playableSegments.IndexOf(segmentToDestroy);
+            var targetIndex = _playableSegments.IndexOf(segmentToDestroy);
             if (targetIndex == -1) yield break;
 
             var segmentsToRecoil = new SnakeSegment[targetIndex];
-            for (int i = 0; i < targetIndex; i++)
+            for (var i = 0; i < targetIndex; i++)
             {
                 segmentsToRecoil[i] = _playableSegments[i];
             }
 
-            float startHeadPosition = _splinePosition;
-            float targetHeadPosition = _splinePosition - _segmentDistance;
+            var startHeadPosition = _splinePosition;
+            var targetHeadPosition = _splinePosition - _segmentDistance;
 
             var startPosition = new float[segmentsToRecoil.Length];
             var targetPosition = new float[segmentsToRecoil.Length];
 
-            for (int i = 0; i < segmentsToRecoil.Length; i++)
+            for (var i = 0; i < segmentsToRecoil.Length; i++)
             {
                 startPosition[i] = _splinePosition - _segmentDistance - _segmentRollback - (_segmentDistance * i);
                 targetPosition[i] = startPosition[i] - _segmentDistance;
             }
 
-            float timer = 0f;
+            var timer = 0f;
 
             while (timer < _recoilDuration)
             {
                 timer += Time.deltaTime;
-                float t = timer / _recoilDuration;
-                float smoothT = _recoilCurve.Evaluate(t);
+                var t = timer / _recoilDuration;
+                var smoothT = _recoilCurve.Evaluate(t);
 
                 _splinePosition = Mathf.Lerp(startHeadPosition, targetHeadPosition, smoothT);
 
                 UpdateHeadPosition();
 
-                for (int i = 0; i < segmentsToRecoil.Length; i++)
+                for (var i = 0; i < segmentsToRecoil.Length; i++)
                 {
-                    if (segmentsToRecoil[i] != null)
-                    {
-                        float dist = Mathf.Lerp(startPosition[i], targetPosition[i], smoothT);
-                        PlaceOnSpline(segmentsToRecoil[i].transform, dist);
-                    }
+                    if (!segmentsToRecoil[i]) continue;
+                    
+                    var dist = Mathf.Lerp(startPosition[i], targetPosition[i], smoothT);
+                    PlaceOnSpline(segmentsToRecoil[i].transform, dist);
                 }
 
                 yield return null;
@@ -353,7 +347,7 @@ namespace Game.Scripts.SnakeCore
 
             UpdateHeadPosition();
 
-            if (segmentToDestroy.gameObject != null)
+            if (segmentToDestroy.gameObject)
             {
                 _playableSegments.Remove(segmentToDestroy);
                 segmentToDestroy.gameObject.SetActive(false);

@@ -23,27 +23,27 @@ namespace Game.Scripts.Effects
 
         private void Awake()
         {
-            _pool = new(_cloudParticlePrefab, transform);
+            _pool = new ObjectPool<ParticleData>(_cloudParticlePrefab, transform);
 
             _deathTime = new WaitForSeconds(_animator.GetDuration);
             _delayTime = new WaitForSeconds(_cloudParticlePrefab.GetDuration + _deathDelay);
         }
 
-        public void KillRoutine(Transform gameObject, Color color)
+        public void KillRoutine(Transform target, Color color)
         {
-            StartCoroutine(DeathRoutine(gameObject, color));
+            StartCoroutine(DeathRoutine(target, color));
         }
 
-        public IEnumerator DeathRoutine(Transform transform, Color color)
+        public IEnumerator DeathRoutine(Transform target, Color color)
         {
-            _animator.DoScaleDown(transform.gameObject);
+            _animator.DoScaleDown(target.gameObject);
             yield return _deathTime;
             _audioPlayer.PlayCloudParticleSound();
 
-            transform.gameObject.SetActive(false);
+            target.gameObject.SetActive(false);
             var cloudParticle = _pool.GetObject();
             cloudParticle.SetColor(color);
-            cloudParticle.transform.position = transform.position;
+            cloudParticle.transform.position = target.position;
 
             yield return _delayTime;
 

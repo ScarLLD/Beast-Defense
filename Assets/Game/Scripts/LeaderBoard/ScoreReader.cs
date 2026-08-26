@@ -1,4 +1,5 @@
-﻿using Game.Scripts.LifeCycle;
+﻿using System;
+using Game.Scripts.LifeCycle;
 using Game.Scripts.UI.Menu;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,7 +17,12 @@ namespace Game.Scripts.LeaderBoard
         [SerializeField] private LeaderBoardMenu _leaderboardMenu;
 
         private LBData _lbData;
-        private float _pendingScore = 0;
+        private float _pendingScore;
+
+        private void Awake()
+        {
+            _pendingScore = 0;
+        }
 
         private void OnEnable()
         {
@@ -35,14 +41,14 @@ namespace Game.Scripts.LeaderBoard
 
         private void OnTimerStopped(float time)
         {
-            int totalSeconds = (int)time;
-            int minutes = totalSeconds / 60;
-            int seconds = totalSeconds % 60;
+            var totalSeconds = (int)time;
+            var minutes = totalSeconds / 60;
+            var seconds = totalSeconds % 60;
 
-            float fractionalPart = time - totalSeconds;
-            int hundredthsOfSecond = (int)(fractionalPart * 100);
+            var fractionalPart = time - totalSeconds;
+            var hundredthsOfSecond = (int)(fractionalPart * 100);
 
-            string formattedTime = $"{minutes}:{seconds}.{hundredthsOfSecond}";
+            var formattedTime = $"{minutes}:{seconds}.{hundredthsOfSecond}";
 
             _scoreText.text = formattedTime;
 
@@ -70,7 +76,7 @@ namespace Game.Scripts.LeaderBoard
 
         private void SubmitScoreInternal(float newScore)
         {
-            bool scoreRetrieved = TryGetScore(out float loadedScore, out _);
+             var scoreRetrieved = TryGetScore(out var loadedScore, out _);
 
             if (scoreRetrieved)
             {
@@ -91,14 +97,13 @@ namespace Game.Scripts.LeaderBoard
 
             _lbData = lbData;
 
-            if (_pendingScore > 0)
-            {
-                SubmitScoreInternal(_pendingScore);
-                _pendingScore = 0;
-            }
+            if (!(_pendingScore > 0)) return;
+            
+            SubmitScoreInternal(_pendingScore);
+            _pendingScore = 0;
         }
 
-        public bool TryGetScore(out float score, out bool isEmptyScore)
+        private bool TryGetScore(out float score, out bool isEmptyScore)
         {
             isEmptyScore = false;
             score = 0;

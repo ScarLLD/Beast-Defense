@@ -30,22 +30,22 @@ namespace Game.Scripts.MapGenerator.Grid
             if (_grid.Count >= index)
                 gridCell = _grid[index];
 
-            return gridCell != null;
+            return gridCell;
         }
 
         public void CreateCells(int rows, int columns)
         {
             _cells = new List<GridCell>[rows, columns];
 
-            for (int i = 0; i < _cells.GetLength(0); i++)
+            for (var i = 0; i < _cells.GetLength(0); i++)
             {
-                for (int j = 0; j < _cells.GetLength(1); j++)
+                for (var j = 0; j < _cells.GetLength(1); j++)
                 {
                     _cells[i, j] = new List<GridCell>();
 
-                    int index = i * columns + j;
+                    var index = i * columns + j;
 
-                    if (index < _grid.Count && TryGet(index, out GridCell cell))
+                    if (index < _grid.Count && TryGet(index, out var cell))
                     {
                         _cells[i, j].Add(cell);
                     }

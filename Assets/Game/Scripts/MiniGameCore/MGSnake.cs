@@ -51,12 +51,11 @@ namespace Game.Scripts.MiniGameCore
         {
             if (other.gameObject.TryGetComponent(out MGBeast beast))
             {
-                if (_collector.IsBeastsFull == false)
-                {
-                    _audioPlayer.PlayBeastJumpSound();
-                    _collector.IncreaseBeastCount();
-                    _deathAnimator.KillRoutine(beast.transform, Color.white);
-                }
+                if (_collector.IsBeastsFull) return;
+                
+                _audioPlayer.PlayBeastJumpSound();
+                _collector.IncreaseBeastCount();
+                _deathAnimator.KillRoutine(beast.transform, Color.white);
             }
             else
             {
@@ -107,11 +106,11 @@ namespace Game.Scripts.MiniGameCore
 
         private IEnumerator MovementRoutine()
         {
+            var moveDirection = transform.forward * _moveSpeed;
             while (_isMove)
             {
                 yield return new WaitForFixedUpdate();
 
-                Vector3 moveDirection = transform.forward * _moveSpeed;
                 _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
 
                 if (Application.isEditor || !Application.isMobilePlatform)
@@ -120,8 +119,8 @@ namespace Game.Scripts.MiniGameCore
                 }
                 else if (Input.touchCount > 0)
                 {
-                    Touch touch = Input.GetTouch(0);
-                    float screenCenter = Screen.width * 0.5f;
+                    var touch = Input.GetTouch(0);
+                    var screenCenter = Screen.width * 0.5f;
 
                     if (touch.position.x < screenCenter)
                     {
@@ -137,7 +136,7 @@ namespace Game.Scripts.MiniGameCore
                     _steerDirection = 0f;
                 }
 
-                Quaternion turnRotation = Quaternion.Euler(0f, _steerDirection * _steerSpeed * Time.fixedDeltaTime, 0f);
+                var turnRotation = Quaternion.Euler(0f, _steerDirection * _steerSpeed * Time.fixedDeltaTime, 0f);
                 _rb.MoveRotation(_rb.rotation * turnRotation);
 
                 _positionsHistory.Insert(0, transform.position);

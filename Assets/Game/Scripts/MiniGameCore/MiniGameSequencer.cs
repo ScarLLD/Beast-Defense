@@ -28,7 +28,7 @@ namespace Game.Scripts.MiniGameCore
 
         private void InitializeControlHint()
         {
-            bool deviceIsDesktop = YG2.envir.isDesktop;
+            var deviceIsDesktop = YG2.envir.isDesktop;
 
             if (deviceIsDesktop)
                 _desktopControl.gameObject.SetActive(true);

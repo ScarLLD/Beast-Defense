@@ -20,13 +20,12 @@ namespace Game.Scripts.Player
         private WaitForSeconds _sleepTime;
 
         private int _initialBulletCount;
-        private int _bulletCount;
         private int _bulletPerTarget;
         private Quaternion _initialRotation;
 
         public event Action BulletsCountChanged;
 
-        public int BulletCount => _bulletCount;
+        public int BulletCount { get; private set; }
 
         private void Awake()
         {
@@ -39,14 +38,14 @@ namespace Game.Scripts.Player
         {
             _bulletSpawner = bulletSpawner;
             _initialBulletCount = bulletCount;
-            _bulletCount = _initialBulletCount;
             _bulletPerTarget = bulletPerTarget;
             _initialRotation = transform.rotation;
+            BulletCount = _initialBulletCount;
         }
 
         public void AddTarget(SnakeSegment snakeSegment)
         {
-            if (_targets.Contains(snakeSegment) == false)
+            if (!_targets.Contains(snakeSegment))
                 _targets.Enqueue(snakeSegment);
 
             _shootCoroutine ??= StartCoroutine(Shoot());
@@ -66,33 +65,33 @@ namespace Game.Scripts.Player
             }
 
             _targets.Clear();
-            _bulletCount = _initialBulletCount;
+            BulletCount = _initialBulletCount;
             BulletsCountChanged?.Invoke();
             SetInitialRotation();
         }
 
         private IEnumerator Shoot()
         {
-            bool isWork = true;
+            var isWork = true;
 
             while (isWork)
             {
                 if (_targets.Count > 0)
                 {
-                    SnakeSegment segment = _targets.Dequeue();
-                    int spawnedBullet = 0;
+                    var segment = _targets.Dequeue();
+                    var spawnedBullet = 0;
 
-                    while (segment.TryGetCube(out Cube cube) && spawnedBullet < _bulletPerTarget)
+                    while (segment.TryGetCube(out var cube) && spawnedBullet < _bulletPerTarget)
                     {
                         spawnedBullet++;
                         transform.LookAt(segment.transform.position);
                         _bulletSpawner.SpawnBullet(transform.position, cube);
-                        _bulletCount--;
+                        BulletCount--;
 
                         BulletsCountChanged?.Invoke();
 
-                        _animator.ResetTrigger("Shoot");
-                        _animator.SetTrigger("Shoot");
+                        _animator.ResetTrigger(nameof(Shoot));
+                        _animator.SetTrigger(nameof(Shoot));
                         yield return _sleepTime;
                     }
 

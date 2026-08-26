@@ -7,8 +7,8 @@ namespace Game.Scripts.Road
 {
     public class SplineCreator : MonoBehaviour
     {
-        private readonly int _pointsCount = 3;
-        private readonly float _divider = 4f;
+        private const int POINTS_COUNT = 3;
+        private const float DIVIDER = 4f;
 
         [SerializeField] private float _tangentLength = 0.3f;
         [SerializeField] private float _cornerRadius = 3f;
@@ -23,61 +23,78 @@ namespace Game.Scripts.Road
             if (roadPoints == null || roadPoints.Count < 2)
                 return false;
 
-            GameObject splineObject = new("Spline");
-            splineObject.transform.position = Vector3.zero;
-            splineObject.transform.parent = transform;
+            GameObject splineObject = new("Spline")
+            {
+                transform =
+                {
+                    position = Vector3.zero,
+                    parent = transform
+                }
+            };
 
             splineContainer = splineObject.AddComponent<SplineContainer>();
 
-            Spline spline = splineContainer.Spline;
+            var spline = splineContainer.Spline;
             spline.Clear();
 
-            List<int> cornerIndices = FindCorners(roadPoints);
-            List<Vector3> roundedPoints = CreateRoundedCorners(roadPoints, cornerIndices);
-            List<Vector3> processedPoints = SmoothPointsWithCatmullRom(roundedPoints);
+            var cornerIndices = FindCorners(roadPoints);
+            var roundedPoints = CreateRoundedCorners(roadPoints, cornerIndices);
+            var processedPoints = SmoothPointsWithCatmullRom(roundedPoints);
 
-            for (int i = 0; i < processedPoints.Count; i++)
+            for (var i = 0; i < processedPoints.Count; i++)
             {
                 BezierKnot knot = new(processedPoints[i]);
 
-                if (i > 0 && i < processedPoints.Count - 1)
+                switch (i)
                 {
-                    Vector3 prevPoint = processedPoints[i - 1];
-                    Vector3 currentPoint = processedPoints[i];
-                    Vector3 nextPoint = processedPoints[i + 1];
-
-                    Vector3 inDirection = (currentPoint - prevPoint).normalized;
-                    Vector3 outDirection = (nextPoint - currentPoint).normalized;
-
-                    bool isCornerPoint = IsCornerPoint(i, processedPoints, roadPoints, cornerIndices);
-
-                    if (isCornerPoint)
+                    case > 0 when i < processedPoints.Count - 1:
                     {
-                        float angle = Vector3.Angle(inDirection, outDirection);
+                        var prevPoint = processedPoints[i - 1];
+                        var currentPoint = processedPoints[i];
+                        var nextPoint = processedPoints[i + 1];
 
-                        Vector3 tangentDirection = (inDirection + outDirection).normalized;
-                        float tangentStrength = _cornerRadius * _cornerSmoothness * Mathf.Lerp(0.1f, 0.5f, angle / 90f);
+                        var inDirection = (currentPoint - prevPoint).normalized;
+                        var outDirection = (nextPoint - currentPoint).normalized;
 
-                        knot.TangentIn = new float3(tangentStrength * -tangentDirection);
-                        knot.TangentOut = new float3(tangentStrength * tangentDirection);
+                        var isCornerPoint = IsCornerPoint(i, processedPoints, roadPoints, cornerIndices);
+
+                        if (isCornerPoint)
+                        {
+                            var angle = Vector3.Angle(inDirection, outDirection);
+
+                            var tangentDirection = (inDirection + outDirection).normalized;
+                            var tangentStrength = _cornerRadius * _cornerSmoothness 
+                                                                * Mathf.Lerp(0.1f, 0.5f, angle / 90f);
+
+                            knot.TangentIn = new float3(tangentStrength * -tangentDirection);
+                            knot.TangentOut = new float3(tangentStrength * tangentDirection);
+                        }
+                        else
+                        {
+                            var direction = (nextPoint - prevPoint).normalized;
+                            var straightMultiplier = Mathf.Lerp(0.5f, 1.5f, _cornerSmoothness);
+                            knot.TangentIn = new float3(_tangentLength * straightMultiplier * -direction);
+                            knot.TangentOut = new float3(_tangentLength * straightMultiplier * direction);
+                        }
+
+                        break;
                     }
-                    else
+                    case 0 when processedPoints.Count > 1:
                     {
-                        Vector3 direction = (nextPoint - prevPoint).normalized;
-                        float straightMultiplier = Mathf.Lerp(0.5f, 1.5f, _cornerSmoothness);
-                        knot.TangentIn = new float3(_tangentLength * straightMultiplier * -direction);
-                        knot.TangentOut = new float3(_tangentLength * straightMultiplier * direction);
+                        var direction = (processedPoints[i + 1] - processedPoints[i]).normalized;
+                        knot.TangentOut = new float3(_tangentLength * direction);
+                        break;
                     }
-                }
-                else if (i == 0 && processedPoints.Count > 1)
-                {
-                    Vector3 direction = (processedPoints[i + 1] - processedPoints[i]).normalized;
-                    knot.TangentOut = new float3(_tangentLength * direction);
-                }
-                else if (i == processedPoints.Count - 1 && processedPoints.Count > 1)
-                {
-                    Vector3 direction = (processedPoints[i] - processedPoints[i - 1]).normalized;
-                    knot.TangentIn = new float3(_tangentLength * -direction);
+                    default:
+                    {
+                        if (i == processedPoints.Count - 1 && processedPoints.Count > 1)
+                        {
+                            var direction = (processedPoints[i] - processedPoints[i - 1]).normalized;
+                            knot.TangentIn = new float3(_tangentLength * -direction);
+                        }
+
+                        break;
+                    }
                 }
 
                 spline.Add(knot);
@@ -86,17 +103,28 @@ namespace Game.Scripts.Road
             spline.Closed = false;
             return true;
         }
+        
+        private static Vector3 CalculateCatmullRomPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
+        {
+            var t2 = t * t;
+            var t3 = t2 * t;
+
+            return 0.5f * ((2 * p1) +
+                           (-p0 + p2) * t +
+                           (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+                           (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
+        }
 
         private List<int> FindCorners(List<Vector3> points)
         {
             List<int> corners = new();
 
-            for (int i = 1; i < points.Count - 1; i++)
+            for (var i = 1; i < points.Count - 1; i++)
             {
-                Vector3 prevDir = (points[i] - points[i - 1]).normalized;
-                Vector3 nextDir = (points[i + 1] - points[i]).normalized;
+                var prevDir = (points[i] - points[i - 1]).normalized;
+                var nextDir = (points[i + 1] - points[i]).normalized;
 
-                float angle = Vector3.Angle(prevDir, nextDir);
+                var angle = Vector3.Angle(prevDir, nextDir);
 
                 if (angle > _minAngleForRounding)
                 {
@@ -114,7 +142,7 @@ namespace Game.Scripts.Road
 
             List<Vector3> result = new();
 
-            for (int i = 0; i < originalPoints.Count; i++)
+            for (var i = 0; i < originalPoints.Count; i++)
             {
                 if (!cornerIndices.Contains(i))
                 {
@@ -122,29 +150,29 @@ namespace Game.Scripts.Road
                 }
                 else
                 {
-                    Vector3 prevPoint = originalPoints[i - 1];
-                    Vector3 cornerPoint = originalPoints[i];
-                    Vector3 nextPoint = originalPoints[i + 1];
+                    var prevPoint = originalPoints[i - 1];
+                    var cornerPoint = originalPoints[i];
+                    var nextPoint = originalPoints[i + 1];
 
-                    Vector3 inDir = (cornerPoint - prevPoint).normalized;
-                    Vector3 outDir = (nextPoint - cornerPoint).normalized;
+                    var inDir = (cornerPoint - prevPoint).normalized;
+                    var outDir = (nextPoint - cornerPoint).normalized;
 
-                    float radius = _cornerRadius;
-                    Vector3 startPoint = cornerPoint - inDir * radius;
-                    Vector3 endPoint = cornerPoint + outDir * radius;
+                    var radius = _cornerRadius;
+                    var startPoint = cornerPoint - inDir * radius;
+                    var endPoint = cornerPoint + outDir * radius;
 
                     if (result.Count == 0 || Vector3.Distance(result[^1], startPoint) > 0.01f)
                     {
                         result.Add(startPoint);
                     }
 
-                    for (int j = 1; j <= _pointsCount; j++)
+                    for (var j = 1; j <= POINTS_COUNT; j++)
                     {
-                        float t = j / _divider;
+                        var t = j / DIVIDER;
 
-                        Vector3 point1 = Vector3.Lerp(startPoint, cornerPoint, t);
-                        Vector3 point2 = Vector3.Lerp(cornerPoint, endPoint, t);
-                        Vector3 smoothedPoint = Vector3.Lerp(point1, point2, t);
+                        var point1 = Vector3.Lerp(startPoint, cornerPoint, t);
+                        var point2 = Vector3.Lerp(cornerPoint, endPoint, t);
+                        var smoothedPoint = Vector3.Lerp(point1, point2, t);
 
                         result.Add(smoothedPoint);
                     }
@@ -156,21 +184,21 @@ namespace Game.Scripts.Road
             return result;
         }
 
-        private bool IsCornerPoint(int index, List<Vector3> processedPoints, List<Vector3> originalPoints, List<int> cornerIndices)
+        private static bool IsCornerPoint(int index, List<Vector3> processedPoints, List<Vector3> originalPoints, List<int> cornerIndices)
         {
-            foreach (int cornerIndex in cornerIndices)
+            foreach (var cornerIndex in cornerIndices)
             {
-                float minDistance = float.MaxValue;
-                int closestOriginalIndex = -1;
+                var minDistance = float.MaxValue;
+                var closestOriginalIndex = -1;
 
-                for (int i = 0; i < originalPoints.Count; i++)
+                for (var i = 0; i < originalPoints.Count; i++)
                 {
-                    float dist = Vector3.Distance(processedPoints[index], originalPoints[i]);
-                    if (dist < minDistance)
-                    {
-                        minDistance = dist;
-                        closestOriginalIndex = i;
-                    }
+                    var dist = Vector3.Distance(processedPoints[index], originalPoints[i]);
+                    
+                    if (!(dist < minDistance)) continue;
+                    
+                    minDistance = dist;
+                    closestOriginalIndex = i;
                 }
 
                 if (closestOriginalIndex >= 0 && Mathf.Abs(closestOriginalIndex - cornerIndex) <= 2)
@@ -192,24 +220,24 @@ namespace Game.Scripts.Road
                 points[0],
             };
 
-            for (int i = 0; i < points.Count - 1; i++)
+            for (var i = 0; i < points.Count - 1; i++)
             {
-                Vector3 p0 = (i > 0) ? points[i - 1] : points[i];
-                Vector3 p1 = points[i];
-                Vector3 p2 = points[i + 1];
-                Vector3 p3 = (i < points.Count - 2) ? points[i + 2] : points[i + 1];
+                var p0 = (i > 0) ? points[i - 1] : points[i];
+                var p1 = points[i];
+                var p2 = points[i + 1];
+                var p3 = (i < points.Count - 2) ? points[i + 2] : points[i + 1];
 
-                float segmentLength = Vector3.Distance(p1, p2);
+                var segmentLength = Vector3.Distance(p1, p2);
                 if (segmentLength < _cornerRadius * 0.5f)
                 {
                     smoothed.Add(p2);
                     continue;
                 }
 
-                for (int j = 1; j <= _subdivisions; j++)
+                for (var j = 1; j <= _subdivisions; j++)
                 {
-                    float t = j / (float)(_subdivisions + 1);
-                    Vector3 point = CalculateCatmullRomPoint(t, p0, p1, p2, p3);
+                    var t = j / (float)(_subdivisions + 1);
+                    var point = CalculateCatmullRomPoint(t, p0, p1, p2, p3);
                     smoothed.Add(point);
                 }
 
@@ -217,17 +245,6 @@ namespace Game.Scripts.Road
             }
 
             return smoothed;
-        }
-
-        private Vector3 CalculateCatmullRomPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
-        {
-            float t2 = t * t;
-            float t3 = t2 * t;
-
-            return 0.5f * ((2 * p1) +
-                          (-p0 + p2) * t +
-                          (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
-                          (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
         }
     }
 }

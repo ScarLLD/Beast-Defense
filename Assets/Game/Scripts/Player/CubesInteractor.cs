@@ -34,7 +34,7 @@ namespace Game.Scripts.Player
             if (_availabilityManagement == null)
                 return;
 
-            if (_placesHolder.TryGetPlace(cube, out ShootingPlace shootingPlace, out Vector3 escapePlace))
+            if (_placesHolder.TryGetPlace(cube, out var shootingPlace, out var escapePlace))
             {
                 _audioPlayer.PlayPickShooterSound();
                 cube.Interact(shootingPlace, escapePlace);

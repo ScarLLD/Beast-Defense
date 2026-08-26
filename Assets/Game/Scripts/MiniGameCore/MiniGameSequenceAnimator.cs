@@ -15,7 +15,7 @@ namespace Game.Scripts.MiniGameCore
 
         public void StartAnimation()
         {
-            if (_platform == null || _snake == null)
+            if (!_platform || !_snake)
             {
                 Debug.LogError("Один или несколько объектов не назначены в инспекторе!");
                 return;
@@ -43,7 +43,7 @@ namespace Game.Scripts.MiniGameCore
 
         public void CloseAnimation()
         {
-            if (_platform == null || _snake == null)
+            if (!_platform || !_snake)
             {
                 Debug.LogError("Один или несколько объектов не назначены в инспекторе!");
                 return;

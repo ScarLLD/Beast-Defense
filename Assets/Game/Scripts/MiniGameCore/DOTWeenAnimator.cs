@@ -5,26 +5,26 @@ namespace Game.Scripts.MiniGameCore
 {
     public class DOTWeenAnimator : MonoBehaviour
     {
-        private readonly float _scaleDuration = 0.5f;
+        private const float SCALE_DURATION = 0.5f;
 
-        public float GetDuration => _scaleDuration;
+        public float GetDuration => SCALE_DURATION;
 
-        public void DoScaleUp(GameObject gameObject)
+        public void DoScaleUp(GameObject target)
         {
-            if (gameObject == null)
+            if (!target)
                 return;
 
-            gameObject.transform.localScale = Vector3.zero;
-            gameObject.transform.DOScale(Vector3.one, _scaleDuration).SetEase(Ease.OutBack);
+            target.transform.localScale = Vector3.zero;
+            target.transform.DOScale(Vector3.one, SCALE_DURATION).SetEase(Ease.OutBack);
         }
 
-        public void DoScaleDown(GameObject gameObject)
+        public void DoScaleDown(GameObject target)
         {
-            if (gameObject == null)
+            if (!target)
                 return;
 
-            gameObject.transform.localScale = Vector3.one;
-            gameObject.transform.DOScale(Vector3.zero, _scaleDuration).SetEase(Ease.InCubic);
+            target.transform.localScale = Vector3.one;
+            target.transform.DOScale(Vector3.zero, SCALE_DURATION).SetEase(Ease.InCubic);
         }
     }
 }

@@ -22,8 +22,7 @@ namespace Game.Scripts.LifeCycle
         [SerializeField] private SliderLevelViewer _levelViewer;
         [SerializeField] private GameObjectsDisabler _disabler;
 
-        [Header("Spawners")]
-        [SerializeField] private PlaceSpawner _placeSpawner;
+        [Header("Spawners")] [SerializeField] private PlaceSpawner _placeSpawner;
         [SerializeField] private RoadSpawner _roadSpawner;
         [SerializeField] private SnakeSpawner _snakeSpawner;
         [SerializeField] private BeastSpawner _beastSpawner;
@@ -33,13 +32,13 @@ namespace Game.Scripts.LifeCycle
         [SerializeField] private SplineCreator _splineCreator;
         [SerializeField] private CubeCreator _cubeCreator;
 
-        [Header("Storages")]
-        [SerializeField] private PlaceStorage _placeStorage;
+        [Header("Storages")] [SerializeField] private PlaceStorage _placeStorage;
         [SerializeField] private CubeStorage _cubeStorage;
         [SerializeField] private TargetStorage _targetStorage;
 
-        [Header("Other dependencies")]
-        [SerializeField] private BoundaryMaker _boundaryMaker;
+        [Header("Other dependencies")] [SerializeField]
+        private BoundaryMaker _boundaryMaker;
+
         [SerializeField] private SplineVisualizer _splineVisualizer;
         [SerializeField] private TargetDetector _detector;
         [SerializeField] private SmoothBarSlider _slider;
@@ -56,7 +55,7 @@ namespace Game.Scripts.LifeCycle
 
         private void Awake()
         {
-            _availabilityManagement = new();
+            _availabilityManagement = new AvailabilityManagement();
             _availabilityManagement.Init(_gridStorage);
 
             _cubesInteractor.Init(_availabilityManagement);
@@ -77,11 +76,10 @@ namespace Game.Scripts.LifeCycle
             _game.Restarted -= OnGameRestarted;
             _adv.LevelRegenerated -= OnAdvWatched;
 
-            if (_advLevelCreationCoroutine != null)
-            {
-                StopCoroutine(_advLevelCreationCoroutine);
-                _advLevelCreationCoroutine = null;
-            }
+            if (_advLevelCreationCoroutine == null) return;
+            
+            StopCoroutine(_advLevelCreationCoroutine);
+            _advLevelCreationCoroutine = null;
         }
 
         private void OnGameStarted()
@@ -154,11 +152,10 @@ namespace Game.Scripts.LifeCycle
             _gridCreator.Terminate();
             _cubeCreator.Terminate();
 
-            if (TryGenerateLevel())
-            {
-                _levelViewer.DisplayText();
-                InitializeGameplay();
-            }
+            if (!TryGenerateLevel()) yield break;
+            
+            _levelViewer.DisplayText();
+            InitializeGameplay();
         }
 
         private IEnumerator ContinueCurrentLevelRoutine()
@@ -177,7 +174,7 @@ namespace Game.Scripts.LifeCycle
 
         private IEnumerator CleanupRoutine()
         {
-            if (_snake != null && _beast != null)
+            if (_snake && _beast)
             {
                 yield return StartCoroutine(_snake.GetBackToStart());
                 _snake.SetDefaultSetting();
@@ -191,12 +188,12 @@ namespace Game.Scripts.LifeCycle
 
         private bool TryGenerateLevel()
         {
-            bool success = _gridCreator.TryCreate()
-                && _placeSpawner.TryGeneratePlaces()
-                && _cubeCreator.TryCreate(_cubeStorage, _bulletSpawner, _targetStorage)
-                && _roadSpawner.TrySpawn(out List<Vector3> road)
-                && _splineCreator.TryCreateSpline(road, out _splineContainer)
-                && _splineVisualizer.TryGenerateRoadFromSpline(_splineContainer);
+            var success = _gridCreator.TryCreate()
+                          && _placeSpawner.TryGeneratePlaces()
+                          && _cubeCreator.TryCreate(_cubeStorage, _bulletSpawner, _targetStorage)
+                          && _roadSpawner.TrySpawn(out var road)
+                          && _splineCreator.TryCreateSpline(road, out _splineContainer)
+                          && _splineVisualizer.TryGenerateRoadFromSpline(_splineContainer);
 
             if (success)
                 _availabilityManagement.UpdateAvailability();
@@ -227,12 +224,12 @@ namespace Game.Scripts.LifeCycle
 
         private void SetupDetector()
         {
-            if (_roadSpawner.LastSpawnedRoad != null && _roadSpawner.LastSpawnedRoad.Count > 1)
-            {
-                _detector.transform.position = _roadSpawner.LastSpawnedRoad[2] + Vector3.up * _snake.transform.localScale.y;
-                _detector.gameObject.SetActive(true);
-                _detector.EnableTrigger();
-            }
+            if (_roadSpawner.LastSpawnedRoad is not { Count: > 1 }) return;
+            
+            _detector.transform.position =
+                _roadSpawner.LastSpawnedRoad[2] + Vector3.up * _snake.transform.localScale.y;
+            _detector.gameObject.SetActive(true);
+            _detector.EnableTrigger();
         }
 
         private void StartGameplay()

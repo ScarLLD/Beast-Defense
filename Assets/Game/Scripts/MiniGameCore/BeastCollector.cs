@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.Scripts.MiniGameCore
@@ -10,21 +11,25 @@ namespace Game.Scripts.MiniGameCore
         [SerializeField] private MGBeastSpawner _beastSpawner;
         [SerializeField] private MGSnake _snake;
 
-        private int _beastCollectedCount = 0;
+        private int _beastCollectedCount;
         private int _maxBeastCollectedCount = 10;
 
         public bool IsBeastsFull => _beastCollectedCount == _maxBeastCollectedCount;
+
+        private void Awake()
+        {
+            _beastCollectedCount = 0;
+        }
 
         public void IncreaseBeastCount()
         {
             _beastCollectedCount += 1;
             DisplayCount();
 
-            if (_beastCollectedCount == _maxBeastCollectedCount)
-            {
-                _snake.Die();
-                _miniGame.VictoryGame();
-            }
+            if (_beastCollectedCount != _maxBeastCollectedCount) return;
+            
+            _snake.Die();
+            _miniGame.VictoryGame();
         }
 
         public void ResetSettings()

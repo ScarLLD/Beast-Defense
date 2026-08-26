@@ -14,31 +14,31 @@ namespace Game.Scripts.Options
             FitCameraToBoundaries();
         }
 
-        public void FitCameraToBoundaries()
+        private void FitCameraToBoundaries()
         {
-            if (_targetCamera == null || !_targetCamera.orthographic)
+            if (!_targetCamera || !_targetCamera.orthographic)
                 return;
 
-            if (_leftBoundaryObject == null || _rightBoundaryObject == null)
+            if (!_leftBoundaryObject || !_rightBoundaryObject)
                 return;
 
-            Vector3 leftInCameraSpace = _targetCamera.transform.InverseTransformPoint(_leftBoundaryObject.position);
-            Vector3 rightInCameraSpace = _targetCamera.transform.InverseTransformPoint(_rightBoundaryObject.position);
+            var leftInCameraSpace = _targetCamera.transform.InverseTransformPoint(_leftBoundaryObject.position);
+            var rightInCameraSpace = _targetCamera.transform.InverseTransformPoint(_rightBoundaryObject.position);
 
-            float leftBoundary = leftInCameraSpace.x;
-            float rightBoundary = rightInCameraSpace.x;
-            float requiredWidth = Mathf.Abs(rightBoundary - leftBoundary);
+            var leftBoundary = leftInCameraSpace.x;
+            var rightBoundary = rightInCameraSpace.x;
+            var requiredWidth = Mathf.Abs(rightBoundary - leftBoundary);
 
-            float aspect = _targetCamera.aspect;
-            float requiredOrthoSizeForWidth = (requiredWidth / aspect) / 2f;
-            float requiredOrthoSize = requiredOrthoSizeForWidth;
+            var aspect = _targetCamera.aspect;
+            var requiredOrthoSizeForWidth = (requiredWidth / aspect) / 2f;
+            var requiredOrthoSize = requiredOrthoSizeForWidth;
 
-            if (_bottomBoundaryObject != null)
+            if (_bottomBoundaryObject)
             {
-                Vector3 bottomInCameraSpace = _targetCamera.transform.InverseTransformPoint(_bottomBoundaryObject.position);
-                float bottomBoundary = bottomInCameraSpace.y;
+                var bottomInCameraSpace = _targetCamera.transform.InverseTransformPoint(_bottomBoundaryObject.position);
+                var bottomBoundary = bottomInCameraSpace.y;
 
-                float requiredOrthoSizeForBottom = Mathf.Abs(bottomBoundary);
+                var requiredOrthoSizeForBottom = Mathf.Abs(bottomBoundary);
                 requiredOrthoSize = Mathf.Max(requiredOrthoSizeForWidth, requiredOrthoSizeForBottom);
             }
 

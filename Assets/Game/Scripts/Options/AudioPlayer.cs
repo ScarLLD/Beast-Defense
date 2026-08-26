@@ -111,10 +111,10 @@ namespace Game.Scripts.Options
         {
             PlaySound(_pickShooterSound);
         }
-
-        public void OnButtonClicked()
+        
+        public void PlayBeastJumpSound()
         {
-            PlaySound(_buttonClickSound);
+            PlaySound(_beastJumpSound);
         }
 
         private void OnTransiting()
@@ -131,10 +131,10 @@ namespace Game.Scripts.Options
         {
             PlaySound(_shootSound);
         }
-
-        public void PlayBeastJumpSound()
+        
+        private void OnButtonClicked()
         {
-            PlaySound(_beastJumpSound);
+            PlaySound(_buttonClickSound);
         }
 
         private void PlaySound(AudioClip clip)

@@ -1,5 +1,6 @@
 ﻿using Game.Scripts.Player;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game.Scripts.CubeCore
@@ -15,14 +16,7 @@ namespace Game.Scripts.CubeCore
 
         public List<CubeStack> GetStacks()
         {
-            List<CubeStack> cubeStacks = new();
-
-            foreach (var cube in _cubes)
-            {
-                cubeStacks.Add(cube.GetStack);
-            }
-
-            return cubeStacks;
+            return _cubes.Select(cube => cube.GetStack).ToList();
         }
 
         public void Clear()

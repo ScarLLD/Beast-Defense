@@ -6,6 +6,8 @@ namespace Game.Scripts.Effects
 {
     public class SkinItemPreviewOpenAnimator : MonoBehaviour
     {
+        private readonly Vector3 _startPreviewScale = Vector3.one * 0.1f;
+
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private RectTransform _previewRectTransform;
         [SerializeField] private Vector3 _targetPreviewPosition;
@@ -16,24 +18,22 @@ namespace Game.Scripts.Effects
         [SerializeField] private Ease _scaleEase = Ease.OutBounce;
         [SerializeField] private Ease _fadeEase = Ease.Linear;
 
-        private Vector3 _startPreviewScale = Vector3.one * 0.1f;
-
         private void Awake()
         {
-            if (_canvasGroup != null)
+            if (_canvasGroup)
                 _canvasGroup.alpha = 0f;
         }
 
         public void Open(Vector3 startPreviewPosition)
         {
-            if (_canvasGroup == null)
+            if (!_canvasGroup)
                 throw new ArgumentException("_canvasGroup не может быть null.", nameof(_canvasGroup));
 
             _previewRectTransform.position = startPreviewPosition;
             _previewRectTransform.localScale = _startPreviewScale;
             _canvasGroup.alpha = 0;
 
-            if (_canvasGroup != null)
+            if (_canvasGroup)
                 _canvasGroup.interactable = false;
 
             _canvasGroup.DOFade(1f, _animationDuration / 2).SetEase(_fadeEase);
@@ -41,10 +41,10 @@ namespace Game.Scripts.Effects
             _previewRectTransform.DOAnchorPos(_targetPreviewPosition, _animationDuration).SetEase(_positionEase);
 
             _previewRectTransform.DOScale(_targetPreviewScale, _animationDuration).SetEase(_scaleEase).OnComplete(() =>
-                {
-                    if (_canvasGroup != null)
-                        _canvasGroup.interactable = true;
-                });
+            {
+                if (_canvasGroup)
+                    _canvasGroup.interactable = true;
+            });
         }
     }
 }

@@ -17,11 +17,13 @@ namespace Game.Scripts.MapGenerator
         private Coroutine _rayCoroutine;
         private bool _isClickProcessed;
         private bool _shouldStop;
+        private Camera _camera;
 
         public event Action<PlayerCube> Clicked;
 
         private void Awake()
         {
+            _camera = Camera.main;
             _sleepTime = new WaitForSeconds(0.01f);
             _clickCooldown = new WaitForSeconds(0.1f);
         }
@@ -66,7 +68,7 @@ namespace Game.Scripts.MapGenerator
 
         private IEnumerator MouseRaycastInteraction()
         {
-            bool isWork = true;
+            var isWork = true;
 
             while (isWork && !_shouldStop)
             {
@@ -74,8 +76,8 @@ namespace Game.Scripts.MapGenerator
 
                 if (!_game.IsPause && _game.IsPlaying)
                 {
-                    bool hasInput = false;
-                    Vector3 pos = Vector3.zero;
+                    var hasInput = false;
+                    var pos = Vector3.zero;
 
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -90,8 +92,8 @@ namespace Game.Scripts.MapGenerator
 
                     if (hasInput && !_isClickProcessed)
                     {
-                        Ray ray = Camera.main.ScreenPointToRay(pos);
-                        if (Physics.Raycast(ray, out RaycastHit hit, _rayDirection))
+                        var ray = _camera.ScreenPointToRay(pos);
+                        if (Physics.Raycast(ray, out var hit, _rayDirection))
                         {
                             if (hit.transform.TryGetComponent(out PlayerCube cube) &&
                                 cube.IsAvailable &&

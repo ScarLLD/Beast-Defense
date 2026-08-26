@@ -16,12 +16,14 @@ namespace Game.Scripts.MapGenerator
         [SerializeField] private VictoryMenu _victoryMenu;
         [SerializeField] private MainMenu _mainMenu;
 
-        [Header("Transition Colors")]
-        [SerializeField] private Material _goodMaterial;
+        [Header("Transition Colors")] [SerializeField]
+        private Material _goodMaterial;
+
         [SerializeField] private Material _badMaterial;
 
-        [Header("Other settings")]
-        [SerializeField] private float _transitionDuration = 0.75f;
+        [Header("Other settings")] [SerializeField]
+        private float _transitionDuration = 0.75f;
+
         [SerializeField] private MiniGame _miniGame;
         [SerializeField] private DeathModule _deathModule;
         [SerializeField] private GameHeart _gameHeart;
@@ -38,8 +40,14 @@ namespace Game.Scripts.MapGenerator
 
         public bool HasCompleted { get; private set; }
         public bool HasStarted { get; private set; }
-        public bool IsPause { get; private set; } = false;
-        public bool IsPlaying { get; private set; } = false;
+        public bool IsPause { get; private set; }
+        public bool IsPlaying { get; private set; }
+
+        private void Awake()
+        {
+            IsPause = false;
+            IsPlaying = false;
+        }
 
         private void OnEnable()
         {
@@ -76,11 +84,6 @@ namespace Game.Scripts.MapGenerator
         public void Restart()
         {
             StartCoroutine(RestartRoutine());
-        }
-
-        public void OnGameComplete()
-        {
-            StartCoroutine(CompleteRoutine());
         }
 
         public void Leave()
@@ -204,6 +207,11 @@ namespace Game.Scripts.MapGenerator
 
             Transited?.Invoke();
             IsPlaying = true;
+        }
+
+        private void OnGameComplete()
+        {
+            StartCoroutine(CompleteRoutine());
         }
     }
 }

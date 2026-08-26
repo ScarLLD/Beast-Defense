@@ -1,5 +1,6 @@
 ﻿using Game.Scripts.MapGenerator;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Game.Scripts.Road
@@ -22,11 +23,11 @@ namespace Game.Scripts.Road
         {
             _directionHolder = GetComponent<DirectionAnalyzer>();
 
-            if (_boundaryMaker != null)
+            if (_boundaryMaker)
             {
                 UpdateBoundariesFromBoundaryMaker();
             }
-            else if (_directionHolder != null)
+            else if (_directionHolder)
             {
                 _leftBoundX = _directionHolder.LeftBoundX;
                 _rightBoundX = _directionHolder.RightBoundX;
@@ -40,27 +41,6 @@ namespace Game.Scripts.Road
                 _lowerBoundZ = -10f;
                 _upperBoundZ = 10f;
             }
-        }
-
-        public void UpdateBoundariesFromBoundaryMaker()
-        {
-            if (_boundaryMaker == null) return;
-
-            if (_boundaryMaker.TryGetBoundaryLimits(out float minX, out float maxX, out float minZ, out float maxZ))
-            {
-                _leftBoundX = minX;
-                _rightBoundX = maxX;
-                _lowerBoundZ = minZ;
-                _upperBoundZ = maxZ;
-            }
-        }
-
-        public bool IsTooCloseToBoundary(Vector3 point)
-        {
-            return point.x < _leftBoundX + _boundaryMargin ||
-                   point.x > _rightBoundX - _boundaryMargin ||
-                   point.z > _upperBoundZ - _boundaryMargin ||
-                   point.z < _lowerBoundZ + _boundaryMargin;
         }
 
         public bool IsEndTooCloseToBoundary(Vector3 point)
@@ -78,26 +58,27 @@ namespace Game.Scripts.Road
                 return false;
             }
 
-            if (pathPoints != null)
-            {
-                foreach (var point in pathPoints)
-                {
-                    if (Vector3.Distance(position, point) < _radiusBetweenSegments)
-                    {
-                        return false;
-                    }
-                }
-            }
+            return pathPoints == null || 
+                   pathPoints.All(point => !(Vector3.Distance(position, point) < _radiusBetweenSegments));
+        }
+        
+        private void UpdateBoundariesFromBoundaryMaker()
+        {
+            if (!_boundaryMaker) return;
 
-            return true;
+            if (!_boundaryMaker.TryGetBoundaryLimits(out var minX, out var maxX, out var minZ, out var maxZ)) return;
+            _leftBoundX = minX;
+            _rightBoundX = maxX;
+            _lowerBoundZ = minZ;
+            _upperBoundZ = maxZ;
         }
 
-        public void SetBoundaries(float leftX, float rightX, float lowerZ, float upperZ)
+        private bool IsTooCloseToBoundary(Vector3 point)
         {
-            _leftBoundX = leftX;
-            _rightBoundX = rightX;
-            _lowerBoundZ = lowerZ;
-            _upperBoundZ = upperZ;
+            return point.x < _leftBoundX + _boundaryMargin ||
+                   point.x > _rightBoundX - _boundaryMargin ||
+                   point.z > _upperBoundZ - _boundaryMargin ||
+                   point.z < _lowerBoundZ + _boundaryMargin;
         }
 
         private void OnDrawGizmosSelected()

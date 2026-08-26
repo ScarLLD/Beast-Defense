@@ -34,20 +34,13 @@ namespace Game.Scripts.SnakeCore
 
         private void LoadCurrentSkin()
         {
-            string savedSkinId = YG2.saves.EquippedSnakeSkin;
+            var savedSkinId = YG2.saves.EquippedSnakeSkin;
 
-            if (string.IsNullOrEmpty(savedSkinId) == false)
+            if (!string.IsNullOrEmpty(savedSkinId))
             {
                 var skin = _skinData.GetSkinById(savedSkinId);
 
-                if (skin != null)
-                {
-                    _currentSkinId = savedSkinId;
-                }
-                else
-                {
-                    _currentSkinId = _skinData.GetDefaultSkinId();
-                }
+                _currentSkinId = skin != null ? savedSkinId : _skinData.GetDefaultSkinId();
             }
             else
             {
@@ -57,7 +50,7 @@ namespace Game.Scripts.SnakeCore
 
         public Snake Spawn(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule, Beast beast)
         {
-            if (_snake == null)
+            if (!_snake)
             {
                 _snake = Instantiate(_snakePrefab, _transform);
                 ApplyCurrentSkin();
@@ -75,7 +68,7 @@ namespace Game.Scripts.SnakeCore
 
             _currentSkinId = skinId;
 
-            if (_snake != null)
+            if (_snake)
             {
                 ApplyCurrentSkin();
             }
@@ -88,7 +81,7 @@ namespace Game.Scripts.SnakeCore
         {
             var skin = _skinData.GetSkinById(_currentSkinId);
 
-            if (skin != null && skin.Model != null)
+            if (skin != null && skin.Model)
             {
                 ApplySkinModel(skin.Model);
             }
@@ -96,7 +89,7 @@ namespace Game.Scripts.SnakeCore
 
         private void ApplySkinModel(GameObject skinModelPrefab)
         {
-            Transform modelContainer = _snake.ModelContainer;
+            var modelContainer = _snake.ModelContainer;
 
             foreach (Transform child in modelContainer)
             {

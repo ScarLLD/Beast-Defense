@@ -21,28 +21,25 @@ namespace Game.Scripts.Road
 
         public bool TryGetTarget(Color color, out SnakeSegment snakeSegment)
         {
-            snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrentColor(color) && segment.IsTarget == false);
+            snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrentColor(color) && !segment.IsTarget);
 
-            if (snakeSegment != null)
-            {
-                snakeSegment.SetIsTarget(true);
-                return true;
-            }
+            if (!snakeSegment) return false;
+            
+            snakeSegment.SetIsTarget(true);
+            return true;
 
-            return false;
         }
 
         public void Cleanup()
         {
-            if (_segments != null && _segments.Count > 0)
+            if (_segments is not { Count: > 0 }) return;
+            
+            foreach (var segment in _segments)
             {
-                foreach (var segment in _segments)
-                {
-                    segment.SetIsTarget(false);
-                }
-
-                _segments.Clear();
+                segment.SetIsTarget(false);
             }
+
+            _segments.Clear();
         }
     }
 }
