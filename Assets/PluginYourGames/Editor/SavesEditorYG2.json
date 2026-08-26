@@ -1,15 +1,4 @@
 {
-    "Money": 0,
-    "LevelNumber": 1,
-    "HeartCount": 0,
-    "PendingRestores": 3,
-    "NextRestoreTime": "2026-08-25T10:23:50.9858112Z",
-    "EquippedBeastSkin": "2",
-    "EquippedSnakeSkin": "",
-    "PurchasedBeastSkins": "1,2",
-    "PurchasedSnakeSkins": "1",
-    "SoundMuted": false,
-    "MusicMuted": false,
     "intExample": 5,
     "strExample": "Hello!",
     "boolExample": [
@@ -18,5 +7,16 @@
         false,
         false
     ],
-    "idSave": 29
+    "idSave": 211,
+    "Money": 0,
+    "LevelNumber": 1,
+    "HeartCount": 1,
+    "PendingRestores": 3,
+    "NextRestoreTime": "2026-08-16T20:53:03.3233205Z",
+    "EquippedBeastSkin": "1",
+    "EquippedSnakeSkin": "",
+    "PurchasedBeastSkins": "1,2",
+    "PurchasedSnakeSkins": "1",
+    "SoundMuted": false,
+    "MusicMuted": false
 }
