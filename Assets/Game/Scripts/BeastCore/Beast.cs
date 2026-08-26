@@ -49,10 +49,10 @@ namespace Game.Scripts.BeastCore
             if (snakeSpeed < 0)
                 throw new ArgumentException("SnakeSpeed не может быть меньше 0.", nameof(snakeSpeed));
 
-            if (!splineContainer)
+            if (splineContainer == null)
                 throw new ArgumentNullException("splineContainer не может быть null.", nameof(splineContainer));
 
-            if (!audioPlayer)
+            if (audioPlayer == null)
                 throw new ArgumentNullException("audioPlayer не может быть null.", nameof(audioPlayer));
 
             _snakeSpeed = snakeSpeed;
@@ -133,15 +133,15 @@ namespace Game.Scripts.BeastCore
             _animator.ResetSettings();
             _animator.SetWalkBool(true);
 
-            var currentTargetPercentage = _targetPercentages.Dequeue();
+            float currentTargetPercentage = _targetPercentages.Dequeue();
 
-            var isWork = true;
+            bool isWork = true;
 
             IsMoving = true;
 
             while (isWork)
             {
-                var moveDistance = _snakeSpeed * _speedMultiplier * Time.deltaTime / _cachedSplineLength;
+                float moveDistance = _snakeSpeed * _speedMultiplier * Time.deltaTime / _cachedSplineLength;
                 _currentSplinePosition = Mathf.MoveTowards(_currentSplinePosition, currentTargetPercentage, moveDistance);
 
                 PlaceOnSpline();
@@ -165,21 +165,21 @@ namespace Game.Scripts.BeastCore
 
         private void PlaceOnSpline()
         {
-            if (!_splineContainer)
+            if (_splineContainer == null)
                 throw new ArgumentException("_splineContainer не может быть null.", nameof(_splineContainer));
 
             _splineContainer.Spline.Evaluate(_currentSplinePosition,
-                out var position,
-                out var tangent,
-                out var up);
+                out float3 position,
+                out float3 tangent,
+                out float3 up);
 
             position.y += transform.localScale.y;
             _transform.position = position;
 
             if (!IsMoving) return;
 
-            var safeTangent = (Vector3)tangent;
-            var safeUp = (Vector3)up;
+            Vector3 safeTangent = (Vector3)tangent;
+            Vector3 safeUp = (Vector3)up;
 
             if (safeTangent == Vector3.zero)
                 safeTangent = Vector3.forward;
@@ -200,16 +200,16 @@ namespace Game.Scripts.BeastCore
 
         private IEnumerator RotateToFace()
         {
-            var targetRotation = Quaternion.LookRotation(Vector3.back);
-            var startRotation = _transform.rotation;
+            Quaternion targetRotation = Quaternion.LookRotation(Vector3.back);
+            Quaternion startRotation = _transform.rotation;
 
-            var timer = 0f;
-            var inverseDuration = 1f / _rotateDuration;
+            float timer = 0f;
+            float inverseDuration = 1f / _rotateDuration;
 
             while (timer < _rotateDuration)
             {
                 timer += Time.deltaTime;
-                var t = timer * inverseDuration;
+                float t = timer * inverseDuration;
                 _transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
                 yield return null;
             }

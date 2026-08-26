@@ -6068,14 +6068,7 @@ MonoBehaviour:
   _gridStorage: {fileID: 1295288259}
   _cubePrefab: {fileID: 6593079791634868166, guid: b7da0541e62b912459a50827f0b8a466, type: 3}
   _animator: {fileID: 668936184}
-  _colors:
-  - {fileID: 2100000, guid: 4c692737529829e4a81040a9045e7a98, type: 2}
-  - {fileID: 2100000, guid: 7e433d19536e08e4ea679168d5070746, type: 2}
-  - {fileID: 2100000, guid: 043543baaa58670418782cb3e9fd2eb4, type: 2}
-  - {fileID: 2100000, guid: 664dd83077f5cce46bd7a19a90532eac, type: 2}
-  - {fileID: 2100000, guid: f0c33f39586e9a2489347c96ad202592, type: 2}
-  - {fileID: 2100000, guid: 304135f78fc76ef459ea2511cebcb94c, type: 2}
-  - {fileID: 2100000, guid: e23c611b82215874cb3d1c77e3785156, type: 2}
+  _colors: []
   _counts: 080000000c00000010000000140000001800000020000000
 --- !u!114 &529893071
 MonoBehaviour:
@@ -10792,7 +10785,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   _changeDuration: 1
-  _afterAnimateDelay: 0.2
+  _changeDelay: 0.25
   _adv: {fileID: 1040958134}
   _miniGame: {fileID: 1417510877}
 --- !u!95 &830789545

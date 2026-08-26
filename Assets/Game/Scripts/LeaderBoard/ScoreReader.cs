@@ -35,18 +35,18 @@ namespace Game.Scripts.LeaderBoard
 
         private void OnTimerStopped(float time)
         {
-            var totalSeconds = (int)time;
-            var minutes = totalSeconds / 60;
-            var seconds = totalSeconds % 60;
+            int totalSeconds = (int)time;
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
 
-            var fractionalPart = time - totalSeconds;
-            var hundredthsOfSecond = (int)(fractionalPart * 100);
+            float fractionalPart = time - totalSeconds;
+            int hundredthsOfSecond = (int)(fractionalPart * 100);
 
-            var formattedTime = $"{minutes}:{seconds}.{hundredthsOfSecond}";
+            string formattedTime = $"{minutes}:{seconds}.{hundredthsOfSecond}";
 
             _scoreText.text = formattedTime;
 
-            if (TryGetScore(out var loadedTime, out var isEmptyScore))
+            if (TryGetScore(out float loadedTime, out bool isEmptyScore))
                 _recordIdentifier.SetActive(loadedTime > time || isEmptyScore);
             else
                 _recordIdentifier.SetActive(false);
@@ -70,7 +70,7 @@ namespace Game.Scripts.LeaderBoard
 
         private void SubmitScoreInternal(float newScore)
         {
-            var scoreRetrieved = TryGetScore(out float loadedScore, out _);
+            bool scoreRetrieved = TryGetScore(out float loadedScore, out _);
 
             if (scoreRetrieved)
             {
@@ -91,14 +91,14 @@ namespace Game.Scripts.LeaderBoard
 
             _lbData = lbData;
 
-            if (_pendingScore < 0)
-                return;
-
-            SubmitScoreInternal(_pendingScore);
-            _pendingScore = 0;
+            if (_pendingScore > 0)
+            {
+                SubmitScoreInternal(_pendingScore);
+                _pendingScore = 0;
+            }
         }
 
-        private bool TryGetScore(out float score, out bool isEmptyScore)
+        public bool TryGetScore(out float score, out bool isEmptyScore)
         {
             isEmptyScore = false;
             score = 0;
@@ -113,10 +113,11 @@ namespace Game.Scripts.LeaderBoard
 
             foreach (var player in _lbData.players)
             {
-                if (player.uniqueID != YG2.player.id) continue;
-                
-                score = player.score / 1000f;
-                return true;
+                if (player.uniqueID == YG2.player.id)
+                {
+                    score = player.score / 1000f;
+                    return true;
+                }
             }
 
             return false;

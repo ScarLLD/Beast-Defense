@@ -32,33 +32,34 @@ namespace Game.Scripts.CubeCore
 
         public bool TryCreate(CubeStorage cubeStorage, BulletSpawner bulletSpawner, TargetStorage targetStorage)
         {
-            var gridCount = _gridStorage.GridCount;
+            int gridCount = _gridStorage.GridCount;
 
             if (gridCount <= 0)
                 return false;
 
             cubeStorage.Clear();
 
-            for (var i = 0; i < gridCount; i++)
+            for (int i = 0; i < gridCount; i++)
             {
-                var count = _counts[Random.Range(0, _counts.Count)];
-                var material = _colors[Random.Range(0, _colors.Count)];
+                int count = _counts[Random.Range(0, _counts.Count)];
+                Material material = _colors[Random.Range(0, _colors.Count)];
 
-                if (!_gridStorage.TryGet(i, out var gridCell) || gridCell.IsOccupied != false) continue;
-                
-                Vector3 spawnPoint =
-                    new(gridCell.transform.position.x,
+                if (_gridStorage.TryGet(i, out GridCell gridCell) && gridCell.IsOccupied == false)
+                {
+                    Vector3 spawnPoint =
+                        new(gridCell.transform.position.x,
                         gridCell.transform.position.y + _cubePrefab.transform.localScale.y / 2,
                         gridCell.transform.position.z);
 
-                var playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, _transform);
-                playerCube.Init(gridCell, material, count, bulletSpawner, targetStorage);
-                playerCube.SetDefaultSettings();
-                _cubes.Add(playerCube);
-                cubeStorage.Add(playerCube);
+                    PlayerCube playerCube = Instantiate(_cubePrefab, spawnPoint, Quaternion.identity, _transform);
+                    playerCube.Init(gridCell, material, count, bulletSpawner, targetStorage);
+                    playerCube.SetDefaultSettings();
+                    _cubes.Add(playerCube);
+                    cubeStorage.Add(playerCube);
 
-                gridCell.InitCube(playerCube);
-                _cells.Add(gridCell);
+                    gridCell.InitCube(playerCube);
+                    _cells.Add(gridCell);
+                }
             }
 
             return true;
@@ -66,15 +67,15 @@ namespace Game.Scripts.CubeCore
 
         public void Respawn()
         {
-            foreach (var playerCube in _cubes)
+            foreach (PlayerCube playerCube in _cubes)
             {
-                if (!playerCube.isActiveAndEnabled)
+                if (playerCube.isActiveAndEnabled == false)
                     playerCube.gameObject.SetActive(true);
 
                 playerCube.SetDefaultSettings();
             }
 
-            foreach (var cell in _cells)
+            foreach (GridCell cell in _cells)
             {
                 cell.SetDefaultSettings();
             }

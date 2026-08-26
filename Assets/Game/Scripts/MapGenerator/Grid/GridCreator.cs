@@ -3,7 +3,6 @@ using Game.Scripts.CubeCore;
 using Game.Scripts.Player;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -62,21 +61,21 @@ namespace Game.Scripts.MapGenerator.Grid
             _cellGrid = new GridCell[_rows, _columns];
             _cellPositions = new Vector3[_rows, _columns];
 
-            var gridWidth = _columns * _objectWidth + (_columns - 1) * _cellSpacingX;
-            var gridDepth = _rows * _objectDepth + (_rows - 1) * _cellSpacingZ;
+            float gridWidth = _columns * _objectWidth + (_columns - 1) * _cellSpacingX;
+            float gridDepth = _rows * _objectDepth + (_rows - 1) * _cellSpacingZ;
 
-            var gridStart = _centerPosition - new Vector3(gridWidth / 2f, 0f, gridDepth / 2f);
+            Vector3 gridStart = _centerPosition - new Vector3(gridWidth / 2f, 0f, gridDepth / 2f);
 
             CreateGridCells(gridStart);
 
-            var shouldCreateObstacles = _isCreateObstacles && UserUtils.GetIntRandomNumber(0, 2) == 1;
+            bool shouldCreateObstacles = _isCreateObstacles && UserUtils.GetIntRandomNumber(0, 2) == 1;
 
             if (shouldCreateObstacles)
             {
                 CreateAllObstacles();
                 CreateStretchedObstaclesBetweenNeighbors();
 
-                if (_walls)
+                if (_walls != null)
                 {
                     _walls.position = _centerPosition;
                     _walls.gameObject.SetActive(true);
@@ -96,17 +95,19 @@ namespace Game.Scripts.MapGenerator.Grid
 
         public void Terminate()
         {
-            foreach (var cell in _gridStorage.GetAllCells.Where(cell => cell && cell.gameObject))
+            foreach (var cell in _gridStorage.GetAllCells)
             {
-                Destroy(cell.gameObject);
+                if (cell != null && cell.gameObject != null)
+                    Destroy(cell.gameObject);
             }
 
-            foreach (var obstacle in _obstacles.Where(obstacle => obstacle && obstacle.gameObject))
+            foreach (var obstacle in _obstacles)
             {
-                Destroy(obstacle.gameObject);
+                if (obstacle != null && obstacle.gameObject != null)
+                    Destroy(obstacle.gameObject);
             }
 
-            if (_walls)
+            if (_walls != null)
             {
                 _walls.gameObject.SetActive(false);
             }
@@ -119,19 +120,19 @@ namespace Game.Scripts.MapGenerator.Grid
         {
             _gridStorage.Clear();
 
-            for (var row = 0; row < _rows; row++)
+            for (int row = 0; row < _rows; row++)
             {
-                for (var col = 0; col < _columns; col++)
+                for (int col = 0; col < _columns; col++)
                 {
-                    var x = gridStart.x + col * (_objectWidth + _cellSpacingX) + _objectWidth / 2f;
-                    var z = gridStart.z + row * (_objectDepth + _cellSpacingZ) + _objectDepth / 2f;
-                    var y = _centerPosition.y + _cellHeightOffset;
+                    float x = gridStart.x + col * (_objectWidth + _cellSpacingX) + _objectWidth / 2f;
+                    float z = gridStart.z + row * (_objectDepth + _cellSpacingZ) + _objectDepth / 2f;
+                    float y = _centerPosition.y + _cellHeightOffset;
 
                     Vector3 position = new (x, y, z);
 
                     _cellPositions[row, col] = position;
 
-                    var cell = Instantiate(_cellPrefab, transform);
+                    GridCell cell = Instantiate(_cellPrefab, transform);
                     cell.transform.SetPositionAndRotation(position, Quaternion.identity);
 
                     _cellGrid[row, col] = cell;
@@ -142,16 +143,16 @@ namespace Game.Scripts.MapGenerator.Grid
 
         private void CreateAllObstacles()
         {
-            foreach (var obs in _obstacles.Where(obs => obs))
+            foreach (var obs in _obstacles)
             {
-                Destroy(obs.gameObject);
+                if (obs != null) Destroy(obs.gameObject);
             } 
 
             _obstacles.Clear();
 
-            for (var row = 0; row < _rows; row++)
+            for (int row = 0; row < _rows; row++)
             {
-                for (var col = 0; col < _columns; col++)
+                for (int col = 0; col < _columns; col++)
                 {
                     if (row == _rows - 1) continue;
 
@@ -163,12 +164,12 @@ namespace Game.Scripts.MapGenerator.Grid
 
         private void CreateSingleObstacle(int row, int col)
         {
-            var cell = _cellGrid[row, col];
+            GridCell cell = _cellGrid[row, col];
 
-            if (!cell) return;
+            if (cell == null) return;
 
-            var parent = _obstaclesContainer ? _obstaclesContainer : transform;
-            var obstacle = Instantiate(_obstaclePrefab, parent);
+            Transform parent = _obstaclesContainer != null ? _obstaclesContainer : transform;
+            Obstacle obstacle = Instantiate(_obstaclePrefab, parent);
 
             obstacle.transform.position = cell.transform.position;
             obstacle.transform.position += Vector3.up * obstacle.transform.localScale.y;
@@ -179,13 +180,13 @@ namespace Game.Scripts.MapGenerator.Grid
 
         private void CreateStretchedObstaclesBetweenNeighbors()
         {
-            if (!_stretchedObstaclePrefab) return;
+            if (_stretchedObstaclePrefab == null) return;
 
-            var parent = _obstaclesContainer ? _obstaclesContainer : transform;
+            Transform parent = _obstaclesContainer != null ? _obstaclesContainer : transform;
 
-            for (var row = 0; row < _rows; row++)
+            for (int row = 0; row < _rows; row++)
             {
-                for (var column = 0; column < _columns; column++)
+                for (int column = 0; column < _columns; column++)
                 {
                     if (!_obstacleMap[row, column]) continue;
 
@@ -223,13 +224,13 @@ namespace Game.Scripts.MapGenerator.Grid
 
         private void CreateHorizontalStretchedObstacle(Vector3 startPos, Vector3 endPos, Transform parent)
         {
-            var centerPosition = (startPos + endPos) / 2f;
+            Vector3 centerPosition = (startPos + endPos) / 2f;
             centerPosition.y = startPos.y + _stretchedObstaclePrefab.transform.localScale.y;
 
-            var obstacle = Instantiate(_stretchedObstaclePrefab, parent);
+            Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
 
-            var distance = Vector3.Distance(startPos, endPos);
-            var scale = obstacle.transform.localScale;
+            float distance = Vector3.Distance(startPos, endPos);
+            Vector3 scale = obstacle.transform.localScale;
             scale.x = distance;
             obstacle.transform.localScale = scale;
 
@@ -240,13 +241,13 @@ namespace Game.Scripts.MapGenerator.Grid
 
         private void CreateVerticalStretchedObstacle(Vector3 startPos, Vector3 endPos, Transform parent)
         {
-            var centerPosition = (startPos + endPos) / 2f;
+            Vector3 centerPosition = (startPos + endPos) / 2f;
             centerPosition.y = startPos.y + _stretchedObstaclePrefab.transform.localScale.y;
 
-            var obstacle = Instantiate(_stretchedObstaclePrefab, parent);
+            Obstacle obstacle = Instantiate(_stretchedObstaclePrefab, parent);
 
-            var distance = Vector3.Distance(startPos, endPos);
-            var scale = obstacle.transform.localScale;
+            float distance = Vector3.Distance(startPos, endPos);
+            Vector3 scale = obstacle.transform.localScale;
             scale.x = distance;
             obstacle.transform.localScale = scale;
 
@@ -257,25 +258,26 @@ namespace Game.Scripts.MapGenerator.Grid
 
         private bool[,] GenerateComplexObstacleMap()
         {
-            var map = new bool[_rows, _columns];
-            var total = 0;
-            var groups = Random.Range(1, Mathf.Min(4, _rows / 2 + 1));
+            bool[,] map = new bool[_rows, _columns];
+            int total = 0;
+            int groups = Random.Range(1, Mathf.Min(4, _rows / 2 + 1));
 
-            for (var g = 0; g < groups; g++)
+            for (int g = 0; g < groups; g++)
             {
                 if (total >= _maxObstacles) break;
 
-                var row = Random.Range(1, _rows - 1);
-                var startCol = Random.Range(0, _columns / 2 - 1);
-                var length = Random.Range(1, Mathf.Min(_maxObstacleLength + 1, _columns / 2 - startCol + 1));
+                int row = Random.Range(1, _rows - 1);
+                int startCol = Random.Range(0, _columns / 2 - 1);
+                int length = Random.Range(1, Mathf.Min(_maxObstacleLength + 1, _columns / 2 - startCol + 1));
 
-                for (var i = 0; i < length; i++)
+                for (int i = 0; i < length; i++)
                 {
-                    if (startCol + i >= _columns / 2 || total >= _maxObstacles) continue;
-                    
-                    map[row, startCol + i] = true;
-                    map[row, _columns - 1 - (startCol + i)] = true;
-                    total += 2;
+                    if (startCol + i < _columns / 2 && total < _maxObstacles)
+                    {
+                        map[row, startCol + i] = true;
+                        map[row, _columns - 1 - (startCol + i)] = true;
+                        total += 2;
+                    }
                 }
             }
 

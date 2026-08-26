@@ -5,7 +5,6 @@ namespace Game.Scripts.BeastCore
     [RequireComponent(typeof(Animator))]
     public class BeastAnimator : MonoBehaviour
     {
-        private static readonly int IsWalk = Animator.StringToHash("isWalk");
         private Animator _animator;
 
         private void Awake()
@@ -27,7 +26,7 @@ namespace Game.Scripts.BeastCore
 
         public void SetWalkBool(bool value)
         {
-            _animator.SetBool(IsWalk, value);
+            _animator.SetBool("isWalk", value);
         }
     }
 }

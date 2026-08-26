@@ -21,14 +21,14 @@ namespace Game.Scripts.BeastCore
 
         private void LoadCurrentSkin()
         {
-            var savedSkinId = YG2.saves.EquippedBeastSkin;
-            var isSkinMissing = string.IsNullOrEmpty(savedSkinId) || _skinData.GetSkinById(savedSkinId) == null;
+            string savedSkinId = YG2.saves.EquippedBeastSkin;
+            bool isSkinMissing = string.IsNullOrEmpty(savedSkinId) || _skinData.GetSkinById(savedSkinId) == null;
             _currentSkinId = isSkinMissing ? _skinData.GetDefaultSkinId() : savedSkinId;
         }
 
         public Beast Spawn()
         {
-            if (!_beast)
+            if (_beast == null)
                 _beast = Instantiate(_beastPrefab, transform);
 
             ApplyCurrentSkin();
@@ -56,7 +56,7 @@ namespace Game.Scripts.BeastCore
         {
             var skin = _skinData.GetSkinById(_currentSkinId);
 
-            if (skin != null && skin.Model)
+            if (skin != null && skin.Model != null)
             {
                 ApplySkinModel(skin.Model);
             }

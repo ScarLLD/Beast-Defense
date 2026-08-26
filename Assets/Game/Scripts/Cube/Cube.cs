@@ -30,7 +30,7 @@ namespace Game.Scripts.CubeCore
 
         public void Hit()
         {
-            if (IsDestroyed)
+            if (IsDestroyed == true)
                 return;
 
             Deactivate();
@@ -41,7 +41,7 @@ namespace Game.Scripts.CubeCore
 
         public void Deactivate()
         {
-            if (!IsDestroyed)
+            if (IsDestroyed == false)
                 gameObject.SetActive(false);
         }
     }

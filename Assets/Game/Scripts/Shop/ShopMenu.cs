@@ -60,16 +60,17 @@ namespace Game.Scripts.Shop
 
         private IEnumerator CloseShopRoutine()
         {
-            if (_transition.IsTransiting) yield break;
-            
-            _transition.StartBackTransition(_shopMaterial.color, _transitionDuration);
-            yield return new WaitUntil(() => !_transition.IsTransiting);
+            if (!_transition.IsTransiting)
+            {
+                _transition.StartBackTransition(_shopMaterial.color, _transitionDuration);
+                yield return new WaitUntil(() => !_transition.IsTransiting);
 
-            Closed?.Invoke();
-            DisableMenu();
+                Closed?.Invoke();
+                DisableMenu();
 
-            _transition.ContinueBackTransition(_transitionDuration);
-            yield return new WaitUntil(() => !_transition.IsTransiting);
+                _transition.ContinueBackTransition(_transitionDuration);
+                yield return new WaitUntil(() => !_transition.IsTransiting);
+            }
         }
     }
 }

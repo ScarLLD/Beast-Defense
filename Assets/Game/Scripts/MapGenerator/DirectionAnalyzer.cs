@@ -6,10 +6,15 @@ namespace Game.Scripts.MapGenerator
     {
         [SerializeField] private BoundaryMaker _boundaryMaker;
 
-        public float LeftBoundX { get; private set; }
-        public float RightBoundX { get; private set; }
-        public float UpperBoundZ { get; private set; }
-        public float LowerBoundZ { get; private set; }
+        private float _leftBoundX;
+        private float _rightBoundX;
+        private float _upperBoundZ;
+        private float _lowerBoundZ;
+
+        public float LeftBoundX => _leftBoundX;
+        public float RightBoundX => _rightBoundX;
+        public float UpperBoundZ => _upperBoundZ;
+        public float LowerBoundZ => _lowerBoundZ;
 
         private void Start()
         {
@@ -19,40 +24,40 @@ namespace Game.Scripts.MapGenerator
             }
             else
             {
-                LeftBoundX = -10f;
-                RightBoundX = 10f;
-                UpperBoundZ = 10f;
-                LowerBoundZ = -10f;
+                _leftBoundX = -10f;
+                _rightBoundX = 10f;
+                _upperBoundZ = 10f;
+                _lowerBoundZ = -10f;
             }
         }
 
-        private void UpdateBoundaries()
+        public void UpdateBoundaries()
         {
-            if (_boundaryMaker == null ||
-                !_boundaryMaker.TryGetBoundaryLimits(out var minX, out var maxX, out var minZ, out var maxZ))
-                return;
-            LeftBoundX = minX;
-            RightBoundX = maxX;
-            UpperBoundZ = maxZ;
-            LowerBoundZ = minZ;
+            if (_boundaryMaker != null && _boundaryMaker.TryGetBoundaryLimits(out float minX, out float maxX, out float minZ, out float maxZ))
+            {
+                _leftBoundX = minX;
+                _rightBoundX = maxX;
+                _upperBoundZ = maxZ;
+                _lowerBoundZ = minZ;
+            }
         }
 
         public Vector3 GetValidDirection(Vector3 point)
         {
             Vector3 direction;
 
-            var distToLeft = Mathf.Abs(point.x - LeftBoundX);
-            var distToRight = Mathf.Abs(point.x - RightBoundX);
-            var distToTop = Mathf.Abs(point.z - UpperBoundZ);
-            var distToBottom = Mathf.Abs(point.z - LowerBoundZ);
+            float distToLeft = Mathf.Abs(point.x - _leftBoundX);
+            float distToRight = Mathf.Abs(point.x - _rightBoundX);
+            float distToTop = Mathf.Abs(point.z - _upperBoundZ);
+            float distToBottom = Mathf.Abs(point.z - _lowerBoundZ);
 
-            var minDist = Mathf.Min(distToLeft, distToRight, distToTop, distToBottom);
+            float minDist = Mathf.Min(distToLeft, distToRight, distToTop, distToBottom);
 
-            if (Mathf.Approximately(minDist, distToLeft))
+            if (minDist == distToLeft)
                 direction = Vector3.right;
-            else if (Mathf.Approximately(minDist, distToRight))
+            else if (minDist == distToRight)
                 direction = Vector3.left;
-            else if (Mathf.Approximately(minDist, distToTop))
+            else if (minDist == distToTop)
                 direction = Vector3.back;
             else
                 direction = Vector3.forward;

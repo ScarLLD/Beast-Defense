@@ -6,7 +6,7 @@ namespace Game.Scripts.CubeCore
 {
     public class RoadFinder
     {
-        private static List<GridCell> FindShortestPath(GridCell startCell)
+        public List<GridCell> FindShortestPath(GridCell startCell)
         {
             var visited = new HashSet<GridCell>();
             var queue = new Queue<List<GridCell>>();
@@ -25,16 +25,19 @@ namespace Game.Scripts.CubeCore
 
                 foreach (var neighbor in lastCell.AvailableCells)
                 {
-                    if (!visited.Add(neighbor)) continue;
-                    var newPath = new List<GridCell>(currentPath) { neighbor };
-                    queue.Enqueue(newPath);
+                    if (visited.Contains(neighbor) == false)
+                    {
+                        visited.Add(neighbor);
+                        var newPath = new List<GridCell>(currentPath) { neighbor };
+                        queue.Enqueue(newPath);
+                    }
                 }
             }
 
             return null;
         }
 
-        public static GridCell GetOptimalNextCell(GridCell currentCell)
+        public GridCell GetOptimalNextCell(GridCell currentCell)
         {
             var shortestPath = FindShortestPath(currentCell);
             return shortestPath?.Count > 1 ? shortestPath[1] : null;

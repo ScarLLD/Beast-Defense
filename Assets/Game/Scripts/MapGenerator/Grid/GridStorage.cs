@@ -5,46 +5,47 @@ namespace Game.Scripts.MapGenerator.Grid
 {
     public class GridStorage : MonoBehaviour
     {
+        private List<GridCell> _grid;
         private List<GridCell>[,] _cells;
 
         public IReadOnlyList<GridCell>[,] Cells => _cells;
 
-        public int GridCount => GetAllCells.Count;
-        public List<GridCell> GetAllCells { get; private set; }
+        public int GridCount => _grid.Count;
+        public List<GridCell> GetAllCells => _grid;
 
         private void Awake()
         {
-            GetAllCells = new List<GridCell>();
+            _grid = new List<GridCell>();
         }
 
         public void Add(GridCell gridCell)
         {
-            GetAllCells.Add(gridCell);
+            _grid.Add(gridCell);
         }
 
         public bool TryGet(int index, out GridCell gridCell)
         {
             gridCell = null;
 
-            if (GetAllCells.Count >= index)
-                gridCell = GetAllCells[index];
+            if (_grid.Count >= index)
+                gridCell = _grid[index];
 
-            return gridCell;
+            return gridCell != null;
         }
 
         public void CreateCells(int rows, int columns)
         {
             _cells = new List<GridCell>[rows, columns];
 
-            for (var i = 0; i < _cells.GetLength(0); i++)
+            for (int i = 0; i < _cells.GetLength(0); i++)
             {
-                for (var j = 0; j < _cells.GetLength(1); j++)
+                for (int j = 0; j < _cells.GetLength(1); j++)
                 {
                     _cells[i, j] = new List<GridCell>();
 
-                    var index = i * columns + j;
+                    int index = i * columns + j;
 
-                    if (index < GetAllCells.Count && TryGet(index, out var cell))
+                    if (index < _grid.Count && TryGet(index, out GridCell cell))
                     {
                         _cells[i, j].Add(cell);
                     }
@@ -54,12 +55,12 @@ namespace Game.Scripts.MapGenerator.Grid
 
         public void Clear()
         {
-            foreach (var cell in GetAllCells)
+            foreach (var cell in _grid)
             {
                 Destroy(cell.gameObject);
             }
 
-            GetAllCells.Clear();
+            _grid.Clear();
         }
     }
 }

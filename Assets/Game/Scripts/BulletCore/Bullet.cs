@@ -50,14 +50,14 @@ namespace Game.Scripts.BulletCore
         {
             _isMove = true;
 
-            while (_isMove && cube && cube.isActiveAndEnabled == true)
+            while (_isMove && cube != null && cube.isActiveAndEnabled == true)
             {
                 Vector3 direction = (cube.transform.position - _transform.position).normalized;
                 _rigidbody.velocity = direction * _speed;
 
                 if ((cube.transform.position - _transform.position).magnitude < _arrivalThreshold)
                 {
-                    if (_particleCreator)
+                    if (_particleCreator != null)
                         _particleCreator.Create(cube);
 
                     _isMove = false;
