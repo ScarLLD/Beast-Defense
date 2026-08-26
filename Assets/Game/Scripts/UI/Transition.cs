@@ -33,12 +33,12 @@ namespace Game.Scripts.UI
         }
 
         private void SetSpriteOptions()
-        {            
-            float offset = Camera.main.pixelWidth * 3f;
+        {
+            float offset = Camera.main.pixelWidth * 4f;
             Vector3 center = _canvas.transform.position;
 
-            _leftPos = new Vector3(center.x - offset, center.y, center.z);
-            _rightPos = new Vector3(center.x + offset, center.y, center.z);
+            _leftPos = new Vector3(center.x - offset, 0, 0);
+            _rightPos = new Vector3(center.x + offset, 0, 0);
 
             _sprite.localPosition = _leftPos;
             _spriteImage.enabled = false;
@@ -85,7 +85,7 @@ namespace Game.Scripts.UI
                     BackTransited?.Invoke();
                 });
         }
-        
+
         public void ContinueTransition(float duration)
         {
             if (_isTransiting) return;
@@ -93,7 +93,6 @@ namespace Game.Scripts.UI
             _isTransiting = true;
             Transiting?.Invoke();
 
-            // Сначала ждём holdTime, потом двигаем
             StartCoroutine(HoldAndMove(_rightPos, duration));
         }
 
