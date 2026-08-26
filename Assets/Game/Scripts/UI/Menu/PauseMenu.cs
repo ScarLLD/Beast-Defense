@@ -55,11 +55,10 @@ namespace Game.Scripts.UI.Menu
         {
             CallClickEvent();
 
-            if (_game.IsPlaying)
-            {
-                EnableMenu();
-                YG2.PauseGame(true, true, false, false, false);
-            }
+            if (!_game.IsPlaying) return;
+            
+            EnableMenu();
+            YG2.PauseGame(true, true, false, false, false);
         }
 
         private void OnRestartButtonClick()

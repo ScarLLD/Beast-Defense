@@ -20,7 +20,7 @@ namespace Game.Scripts.UI
 
         public void Init(Snake snake)
         {
-            if (_snake == null)
+            if (!_snake)
             {
                 _snake = snake;
                 _snake.SegmentsCountChanged += OnCountChanged;
@@ -32,13 +32,13 @@ namespace Game.Scripts.UI
 
         private void OnEnable()
         {
-            if (_snake != null)
+            if (_snake)
                 _snake.SegmentsCountChanged += OnCountChanged;
         }
 
         private void OnDisable()
         {
-            if (_snake != null)
+            if (_snake)
                 _snake.SegmentsCountChanged -= OnCountChanged;
         }
 

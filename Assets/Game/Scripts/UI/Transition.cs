@@ -20,25 +20,28 @@ namespace Game.Scripts.UI
         private Vector3 _rightPos;
 
         private Tween _currentTween;
-        private bool _isTransiting;
 
-        public bool IsTransiting => _isTransiting;
+        public bool IsTransiting { get; private set; }
+
         public event Action Transiting;
         public event Action BackTransited;
 
         private void Awake()
         {
             SetSpriteOptions();
-            _isTransiting = false;
+            IsTransiting = false;
         }
 
         private void SetSpriteOptions()
         {
-            float offset = Camera.main.pixelWidth * 4f;
-            Vector3 center = _canvas.transform.position;
+            if (Camera.main != null)
+            {
+                var offset = Camera.main.pixelWidth * 4f;
+                var center = _canvas.transform.position;
 
-            _leftPos = new Vector3(center.x - offset, 0, 0);
-            _rightPos = new Vector3(center.x + offset, 0, 0);
+                _leftPos = new Vector3(center.x - offset, 0, 0);
+                _rightPos = new Vector3(center.x + offset, 0, 0);
+            }
 
             _sprite.localPosition = _leftPos;
             _spriteImage.enabled = false;
@@ -47,13 +50,13 @@ namespace Game.Scripts.UI
 
         public void StartTransition(Color color, float duration)
         {
-            if (_isTransiting) return;
+            if (IsTransiting) return;
 
             _spriteImage.color = color;
             _spriteImage.enabled = true;
             _loadingText.enabled = true;
 
-            _isTransiting = true;
+            IsTransiting = true;
             Transiting?.Invoke();
 
             KillCurrentTween();
@@ -61,19 +64,19 @@ namespace Game.Scripts.UI
                 .SetEase(Ease.OutQuad)
                 .OnComplete(() =>
                 {
-                    _isTransiting = false;
+                    IsTransiting = false;
                 });
         }
 
         public void StartBackTransition(Color color, float duration)
         {
-            if (_isTransiting) return;
+            if (IsTransiting) return;
 
             _spriteImage.color = color;
             _spriteImage.enabled = true;
             _loadingText.enabled = false;
 
-            _isTransiting = true;
+            IsTransiting = true;
             Transiting?.Invoke();
 
             KillCurrentTween();
@@ -81,16 +84,16 @@ namespace Game.Scripts.UI
                 .SetEase(Ease.OutQuad)
                 .OnComplete(() =>
                 {
-                    _isTransiting = false;
+                    IsTransiting = false;
                     BackTransited?.Invoke();
                 });
         }
 
         public void ContinueTransition(float duration)
         {
-            if (_isTransiting) return;
+            if (IsTransiting) return;
 
-            _isTransiting = true;
+            IsTransiting = true;
             Transiting?.Invoke();
 
             StartCoroutine(HoldAndMove(_rightPos, duration));
@@ -98,9 +101,9 @@ namespace Game.Scripts.UI
 
         public void ContinueBackTransition(float duration)
         {
-            if (_isTransiting) return;
+            if (IsTransiting) return;
 
-            _isTransiting = true;
+            IsTransiting = true;
             Transiting?.Invoke();
 
             StartCoroutine(HoldAndMove(_leftPos, duration));
@@ -115,7 +118,7 @@ namespace Game.Scripts.UI
                 .SetEase(Ease.OutQuad)
                 .OnComplete(() =>
                 {
-                    _isTransiting = false;
+                    IsTransiting = false;
                     if (targetPosition == _rightPos)
                         _loadingText.enabled = true;
                     else

@@ -20,7 +20,7 @@ namespace Game.Scripts.UI
         private Coroutine _transitionCoroutine;
         private WaitForSeconds _sleep;
         private Vector3 _upperPosition;
-        private Vector3 _centarPosition;
+        private Vector3 _centerPosition;
         private Vector3 _lowerPosition;
 
         public event Action Displayed;
@@ -32,7 +32,7 @@ namespace Game.Scripts.UI
             _upperPosition = Vector3.zero;
             _upperPosition.y += _distanceYOffset;
 
-            _centarPosition = Vector3.zero;
+            _centerPosition = Vector3.zero;
 
             _lowerPosition = Vector3.zero;
             _lowerPosition.y -= _distanceYOffset;
@@ -50,9 +50,11 @@ namespace Game.Scripts.UI
         private IEnumerator DisplayMessageRoutine()
         {
             _messageRectTransform.gameObject.SetActive(true);
-            yield return StartCoroutine(AnimatePosition(_transitionAnimationCurve, _lowerPosition, _centarPosition, 0, 1));
+            yield return StartCoroutine(
+                AnimatePosition(_transitionAnimationCurve, _lowerPosition, _centerPosition, 0, 1));
             yield return _sleep;
-            yield return StartCoroutine(AnimatePosition(_reverseTransitionAnimationCurve, _centarPosition, _upperPosition, 1, 0));
+            yield return StartCoroutine(
+                AnimatePosition(_reverseTransitionAnimationCurve, _centerPosition, _upperPosition, 1, 0));
             _messageRectTransform.gameObject.SetActive(false);
 
             _transitionCoroutine = null;
@@ -60,23 +62,23 @@ namespace Game.Scripts.UI
 
         private IEnumerator AnimatePosition(AnimationCurve curve, Vector3 startPosition, Vector3 targetPosition, float startAlpha, float targetAlpha)
         {
-            float elapsedTime = 0f;
+            var elapsedTime = 0f;
 
             while (elapsedTime < _transitionDuration)
             {
                 elapsedTime += Time.deltaTime;
-                float progress = elapsedTime / _transitionDuration;
-                float curveValue = curve.Evaluate(progress);
+                var progress = elapsedTime / _transitionDuration;
+                var curveValue = curve.Evaluate(progress);
 
                 _messageRectTransform.anchoredPosition = Vector3.Lerp(startPosition, targetPosition, curveValue);
 
-                float currentAlpha = Mathf.Lerp(startAlpha, targetAlpha, curveValue);
+                var currentAlpha = Mathf.Lerp(startAlpha, targetAlpha, curveValue);
 
-                Color imageColor = _messageImage.color;
+                var imageColor = _messageImage.color;
                 imageColor.a = currentAlpha;
                 _messageImage.color = imageColor;
 
-                Color textColor = _messageText.color;
+                var textColor = _messageText.color;
                 textColor.a = currentAlpha;
                 _messageText.color = textColor;
 

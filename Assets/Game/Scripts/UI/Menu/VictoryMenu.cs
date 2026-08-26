@@ -6,6 +6,9 @@ namespace Game.Scripts.UI.Menu
 {
     public class VictoryMenu : Window
     {
+        private const float ADV_BUTTON_ALPHA_PRESSED_COLOR = 0.5f;
+        private const int REWARD_MULTIPLE = 2;
+        
         [SerializeField] private Adv _adv;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private MapGenerator.Game _game;
@@ -17,9 +20,6 @@ namespace Game.Scripts.UI.Menu
         [SerializeField] private Button _advDoubleRewardButton;
         [SerializeField] private Button _continueButton;
         [SerializeField] private Button _exitButton;
-
-        private readonly float _advButtonAlphaPressedColor = 0.5f;
-        private readonly int _rewardMultiple = 2;
 
         private void Awake()
         {
@@ -54,7 +54,7 @@ namespace Game.Scripts.UI.Menu
         {
             _advDoubleRewardButton.interactable = true;
 
-            Color iconColor = _iconImage.color;
+            var iconColor = _iconImage.color;
             iconColor.a = 1f;
             _iconImage.color = iconColor;
 
@@ -66,12 +66,12 @@ namespace Game.Scripts.UI.Menu
         {
             _advDoubleRewardButton.interactable = false;
 
-            Color iconColor = _iconImage.color;
-            iconColor.a = _advButtonAlphaPressedColor;
+            var iconColor = _iconImage.color;
+            iconColor.a = ADV_BUTTON_ALPHA_PRESSED_COLOR;
             _iconImage.color = iconColor;
 
-            _doubleRewardText.alpha = _advButtonAlphaPressedColor;
-            _doubleRewardMultipleText.alpha = _advButtonAlphaPressedColor;
+            _doubleRewardText.alpha = ADV_BUTTON_ALPHA_PRESSED_COLOR;
+            _doubleRewardMultipleText.alpha = ADV_BUTTON_ALPHA_PRESSED_COLOR;
         }
 
         private void OnDoubleRewardButtonClick()
@@ -84,7 +84,7 @@ namespace Game.Scripts.UI.Menu
 
         private void OnWinRewardDoubled()
         {
-            int doubledMoneyCount = _wallet.RewardMoneyCount * _rewardMultiple;
+            var doubledMoneyCount = _wallet.RewardMoneyCount * REWARD_MULTIPLE;
 
             _totalRewardText.text = $"+{doubledMoneyCount}";
             _totalRewardText.color = Color.yellow;

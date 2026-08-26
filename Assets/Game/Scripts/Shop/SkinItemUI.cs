@@ -84,7 +84,7 @@ namespace Game.Scripts.Shop
                 if (_background)
                     _background.color = _redColor;
 
-                var canAfford = _wallet.CanAfford(_skin.Price);
+                var canAfford = Wallet.CanAfford(_skin.Price);
                 _priceText.color = canAfford ? Color.green : Color.red;
             }
         }

@@ -58,17 +58,16 @@ namespace Game.Scripts.UI.Menu
 
         private IEnumerator CloseLeaderBoardRoutine()
         {
-            if (!_transition.IsTransiting)
-            {
-                _transition.StartBackTransition(_leaderBoardMaterial.color, _transitionDuration);
-                yield return new WaitUntil(() => !_transition.IsTransiting);
+            if (_transition.IsTransiting) yield break;
+            
+            _transition.StartBackTransition(_leaderBoardMaterial.color, _transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
 
-                Closed?.Invoke();
-                DisableMenu();
+            Closed?.Invoke();
+            DisableMenu();
 
-                _transition.ContinueBackTransition(_transitionDuration);
-                yield return new WaitUntil(() => !_transition.IsTransiting);
-            }
+            _transition.ContinueBackTransition(_transitionDuration);
+            yield return new WaitUntil(() => !_transition.IsTransiting);
         }
     }
 }

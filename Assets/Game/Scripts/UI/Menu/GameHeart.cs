@@ -9,18 +9,20 @@ namespace Game.Scripts.UI.Menu
 {
     public class GameHeart : MonoBehaviour
     {
-        [Header("UI элементы")]
-        [SerializeField] private TMP_Text _countText;
+        private static readonly int Shake = Animator.StringToHash("Shake");
+        private const float UPDATE_UI_DELAY = 1f;
+
+        [Header("UI элементы")] [SerializeField]
+        private TMP_Text _countText;
+
         [SerializeField] private Image _heartImage;
         [SerializeField] private TMP_Text _timerText;
         [SerializeField] private AnimationCurve _changeAnimationCurve;
 
-        [Header("Анимации")]
-        [SerializeField] private float _changeDuration = 0.5f;
+        [Header("Анимации")] [SerializeField] private float _changeDuration = 0.5f;
         [SerializeField] private float _afterAnimateDelay = 0.2f;
 
-        [Header("Другое")]
-        [SerializeField] private Adv _adv;
+        [Header("Другое")] [SerializeField] private Adv _adv;
         [SerializeField] private MiniGame _miniGame;
 
         private WaitForSecondsRealtime _updateUISleep;
@@ -29,11 +31,10 @@ namespace Game.Scripts.UI.Menu
         private Animator _animator;
         private Coroutine _timerCoroutine;
         private Coroutine _heartUpdateCoroutine;
-        private bool _isAnimating = false;
-        private bool _isAnimatingHeartChange = false;
+        private bool _isAnimating;
+        private bool _isAnimatingHeartChange;
         private bool _isFirstUpdate = true;
-        private int _lastHeartCount = 0;
-        private float _updateUIDelay = 1f;
+        private int _lastHeartCount;
 
         public event Action Devastated;
 
@@ -45,13 +46,18 @@ namespace Game.Scripts.UI.Menu
             _heartTimer = new HeartTimer();
             _heartTimer.HeartsChanged += OnHeartsChanged;
 
-            _updateUISleep = new WaitForSecondsRealtime(_updateUIDelay);
+            _updateUISleep = new WaitForSecondsRealtime(UPDATE_UI_DELAY);
             _afterAnimateSleep = new WaitForSeconds(_afterAnimateDelay);
+
+            _isAnimating = false;
+            _isAnimatingHeartChange = false;
+            _isAnimatingHeartChange = false;
+            _lastHeartCount = 0;
         }
 
         private void Start()
         {
-            if (_heartTimer != null && !_heartTimer.IsInitialized)
+            if (_heartTimer is { IsInitialized: false })
             {
                 _heartTimer.Initialize();
             }
@@ -93,7 +99,7 @@ namespace Game.Scripts.UI.Menu
 
         private void OnHeartIncreased()
         {
-            if (_heartTimer == null || !_heartTimer.IsInitialized || _isAnimating || _isAnimatingHeartChange)
+            if (_heartTimer is not { IsInitialized: true } || _isAnimating || _isAnimatingHeartChange)
                 return;
 
             _isAnimatingHeartChange = true;
@@ -102,14 +108,14 @@ namespace Game.Scripts.UI.Menu
 
         public IEnumerator UseHeartRoutine()
         {
-            if (_heartTimer == null || !_heartTimer.IsInitialized || !_heartTimer.HasAvailableHearts || _isAnimating)
+            if (_heartTimer is not { IsInitialized: true } || !_heartTimer.HasAvailableHearts || _isAnimating)
                 yield break;
 
             _isAnimating = true;
 
-            int previousCount = _heartTimer.CurrentHearts;
+            var previousCount = _heartTimer.CurrentHearts;
 
-            bool success = _heartTimer.TryUseHeart();
+            var success = _heartTimer.TryUseHeart();
 
             if (!success)
             {
@@ -144,7 +150,7 @@ namespace Game.Scripts.UI.Menu
         {
             while (true)
             {
-                if (_heartTimer != null && _heartTimer.IsInitialized)
+                if (_heartTimer is { IsInitialized: true })
                 {
                     _heartTimer.UpdateTimer();
                 }
@@ -157,7 +163,7 @@ namespace Game.Scripts.UI.Menu
         {
             if (_heartTimer == null) return;
 
-            int currentCount = _heartTimer.CurrentHearts;
+            var currentCount = _heartTimer.CurrentHearts;
 
             if (_isFirstUpdate)
             {
@@ -175,10 +181,6 @@ namespace Game.Scripts.UI.Menu
             if (currentCount > _lastHeartCount && !_isAnimating)
             {
                 StartCoroutine(RestoreHeartAnimationRoutine(_lastHeartCount, currentCount));
-            }
-            else if (currentCount < _lastHeartCount)
-            {
-                UpdateUI();
             }
             else
             {
@@ -209,7 +211,6 @@ namespace Game.Scripts.UI.Menu
         {
             if (endCount > _heartTimer.MaxHearts)
             {
-                Debug.LogWarning($"Попытка добавить сердце выше максимума ({_heartTimer.MaxHearts}). Операция отменена.");
                 _isAnimatingHeartChange = false;
                 yield break;
             }
@@ -238,18 +239,18 @@ namespace Game.Scripts.UI.Menu
 
         private IEnumerator AnimateHeartChange(int startCount, int endCount, AnimationCurve curve)
         {
-            float timer = 0f;
-            float startFillAmount = (float)startCount / _heartTimer.MaxHearts;
-            float targetFillAmount = (float)endCount / _heartTimer.MaxHearts;
+            var timer = 0f;
+            var startFillAmount = (float)startCount / _heartTimer.MaxHearts;
+            var targetFillAmount = (float)endCount / _heartTimer.MaxHearts;
 
             while (timer < _changeDuration)
             {
                 timer += Time.deltaTime;
-                float t = timer / _changeDuration;
+                var t = timer / _changeDuration;
 
                 _heartImage.fillAmount = Mathf.Lerp(startFillAmount, targetFillAmount, curve.Evaluate(t));
 
-                int displayCount = Mathf.RoundToInt(Mathf.Lerp(startCount, endCount, t));
+                var displayCount = Mathf.RoundToInt(Mathf.Lerp(startCount, endCount, t));
                 _countText.text = $"{displayCount}/{_heartTimer.MaxHearts}";
 
                 yield return null;
@@ -262,10 +263,10 @@ namespace Game.Scripts.UI.Menu
 
         public void PlayShakeAnimation()
         {
-            if (_animator != null)
+            if (_animator)
             {
                 _animator.enabled = true;
-                _animator.SetTrigger("Shake");
+                _animator.SetTrigger(Shake);
             }
 
             Devastated?.Invoke();
@@ -273,11 +274,11 @@ namespace Game.Scripts.UI.Menu
 
         private void UpdateUI()
         {
-            if (_heartTimer == null || !_heartTimer.IsInitialized)
+            if (_heartTimer is not { IsInitialized: true })
             {
                 _heartImage.fillAmount = 1f;
                 _countText.text = $"{_heartTimer?.CurrentHearts ?? 0}/{_heartTimer?.MaxHearts ?? 5}";
-                if (_timerText != null) _timerText.text = "";
+                if (_timerText) _timerText.text = "";
                 return;
             }
 
@@ -288,7 +289,7 @@ namespace Game.Scripts.UI.Menu
 
         private void UpdateTimerText()
         {
-            if (_timerText != null)
+            if (_timerText)
             {
                 _timerText.text = _heartTimer?.GetTimerText() ?? string.Empty;
             }

@@ -2,7 +2,7 @@
 {
     public class InterfaceLocalization
     {
-        public string GetLocalizedSnakeType(string languageCode)
+        public static string GetLocalizedSnakeType(string languageCode)
         {
             return languageCode switch
             {
@@ -13,7 +13,7 @@
             };
         }
 
-        public string GetLocalizedBeastType(string languageCode)
+        public static string GetLocalizedBeastType(string languageCode)
         {
             return languageCode switch
             {
@@ -24,7 +24,7 @@
             };
         }
 
-        public string GetLocalizedFreeText(string languageCode)
+        public static string GetLocalizedFreeText(string languageCode)
         {
             return languageCode switch
             {
@@ -35,7 +35,7 @@
             };
         }
 
-        public string GetLocalizedPurchasedText(string languageCode)
+        public static string GetLocalizedPurchasedText(string languageCode)
         {
             return languageCode switch
             {
@@ -46,7 +46,7 @@
             };
         }
 
-        public string GetLocalizedMoneyText(string languageCode)
+        public static string GetLocalizedMoneyText(string languageCode)
         {
             return languageCode switch
             {
@@ -57,7 +57,7 @@
             };
         }
 
-        public string GetLocalizedNoMoneyText(string languageCode)
+        public static string GetLocalizedNoMoneyText(string languageCode)
         {
             return languageCode switch
             {
@@ -68,7 +68,7 @@
             };
         }
 
-        public string GetLocalizedBuyText(string languageCode)
+        public static string GetLocalizedBuyText(string languageCode)
         {
             return languageCode switch
             {
@@ -79,7 +79,7 @@
             };
         }
 
-        public string GetLocalizedTakeText(string languageCode)
+        public static string GetLocalizedTakeText(string languageCode)
         {
             return languageCode switch
             {

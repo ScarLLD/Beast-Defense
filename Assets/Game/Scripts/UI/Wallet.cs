@@ -31,19 +31,9 @@ namespace Game.Scripts.UI
             CountChanged?.Invoke();
         }
 
-        public bool CanAfford(int count)
+        public static bool CanAfford(int count)
         {
             return YG2.saves.Money >= count;
-        }
-
-        public void IncreaseMoney(int count)
-        {
-            if (count < 0)
-                return;
-
-            YG2.saves.Money += count;
-            YG2.SaveProgress();
-            CountChanged?.Invoke();
         }
 
         public void DecreaseMoney(int count)
@@ -51,12 +41,21 @@ namespace Game.Scripts.UI
             if (count < 0)
                 return;
 
-            if (YG2.saves.Money >= count)
-            {
-                YG2.saves.Money -= count;
-                YG2.SaveProgress();
-                CountChanged?.Invoke();
-            }
+            if (YG2.saves.Money < count) return;
+            
+            YG2.saves.Money -= count;
+            YG2.SaveProgress();
+            CountChanged?.Invoke();
+        }
+        
+        private void IncreaseMoney(int count)
+        {
+            if (count < 0)
+                return;
+
+            YG2.saves.Money += count;
+            YG2.SaveProgress();
+            CountChanged?.Invoke();
         }
 
         private void OnGameCompleted()

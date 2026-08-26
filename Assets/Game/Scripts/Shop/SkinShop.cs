@@ -196,8 +196,8 @@ namespace Game.Scripts.Shop
             _selectedSkinImage.sprite = skin.Icon;
             _selectedSkinName.text = skin.GetLocalizedName(YG2.lang);
             _selectedSkinTypeText.text = skinType == SkinType.Snake
-                ? _localization.GetLocalizedSnakeType(YG2.lang)
-                : _localization.GetLocalizedBeastType(YG2.lang);
+                ? InterfaceLocalization.GetLocalizedSnakeType(YG2.lang)
+                : InterfaceLocalization.GetLocalizedBeastType(YG2.lang);
 
 
             var isPurchased = IsSkinPurchased(skinId, skinType) || skin.IsDefault;
@@ -223,7 +223,7 @@ namespace Game.Scripts.Shop
             {
                 _backgroundImage.color = _redColor;
 
-                if (_wallet.CanAfford(skin.Price))
+                if (Wallet.CanAfford(skin.Price))
                 {
                     _buyButtonImage.color = Color.white;
                     _buyButtonText.text = _localization.GetLocalizedBuyText(YG2.lang);
@@ -310,7 +310,7 @@ namespace Game.Scripts.Shop
             var skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
             var skin = skinData.GetSkinById(skinId);
 
-            if (!_wallet.CanAfford(skin.Price)) return;
+            if (!Wallet.CanAfford(skin.Price)) return;
 
             _wallet.DecreaseMoney(skin.Price);
             SavePurchasedSkin(skinId, skinType);

@@ -38,7 +38,7 @@ namespace Game.Scripts.UI
 
         public void RegenerateLevelAdvShow()
         {
-            if (_transition.IsTransiting == false)
+            if (!_transition.IsTransiting)
             {
                 YG2.RewardedAdvShow(_skipLevelID, () =>
                 {
@@ -49,7 +49,7 @@ namespace Game.Scripts.UI
 
         public void DoubleRewardAdvShow()
         {
-            if (_transition.IsTransiting == false)
+            if (!_transition.IsTransiting)
             {
                 YG2.RewardedAdvShow(_doubleRewardID, () =>
                 {
@@ -57,8 +57,8 @@ namespace Game.Scripts.UI
                 });
             }
         }
-
-        private void ShowInterstitialAdv()
+        
+        private static void ShowInterstitialAdv()
         {
             YG2.InterstitialAdvShow();
         }

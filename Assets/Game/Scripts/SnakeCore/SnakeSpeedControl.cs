@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 
 namespace Game.Scripts.SnakeCore
@@ -56,11 +57,9 @@ namespace Game.Scripts.SnakeCore
 
         private void ResetSnakeSpeed()
         {
-            if (_snake != null)
-            {
-                float baseSpeed = GetSnakeBaseSpeed();
-                _snake.ChangeSpeed(baseSpeed);
-            }
+            if (!_snake) return;
+            var baseSpeed = GetSnakeBaseSpeed();
+            _snake.ChangeSpeed(baseSpeed);
         }
 
         private float GetSnakeBaseSpeed()
@@ -84,11 +83,10 @@ namespace Game.Scripts.SnakeCore
             _snake.ChangeSpeed(_initialSpeed);
             _currentState = SpeedState.Normal;
 
-            if (_transitionCoroutine != null)
-            {
-                StopCoroutine(_transitionCoroutine);
-                _transitionCoroutine = null;
-            }
+            if (_transitionCoroutine == null) return;
+            
+            StopCoroutine(_transitionCoroutine);
+            _transitionCoroutine = null;
         }
 
         private void EndControl()
@@ -99,11 +97,10 @@ namespace Game.Scripts.SnakeCore
                 _controlCoroutine = null;
             }
 
-            if (_transitionCoroutine != null)
-            {
-                StopCoroutine(_transitionCoroutine);
-                _transitionCoroutine = null;
-            }
+            if (_transitionCoroutine == null) return;
+            
+            StopCoroutine(_transitionCoroutine);
+            _transitionCoroutine = null;
         }
 
         private IEnumerator ControlSpeed()
@@ -113,7 +110,7 @@ namespace Game.Scripts.SnakeCore
 
             while (_currentState != SpeedState.Stopped)
             {
-                float distance = _snake.NormalizedPosition;
+                var distance = _snake.NormalizedPosition;
 
                 switch (_currentState)
                 {
@@ -129,6 +126,10 @@ namespace Game.Scripts.SnakeCore
                     case SpeedState.FinalSlowdown:
                         HandleFinalSlowdownState(distance);
                         break;
+                    case SpeedState.Stopped:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
 
                 yield return _sleep;
@@ -218,8 +219,8 @@ namespace Game.Scripts.SnakeCore
             if (_transitionCoroutine != null)
                 StopCoroutine(_transitionCoroutine);
 
-            float remainingDistance = 1f - _snake.NormalizedPosition;
-            float duration = Mathf.Max(2f, remainingDistance * 3f);
+            var remainingDistance = 1f - _snake.NormalizedPosition;
+            var duration = Mathf.Max(2f, remainingDistance * 3f);
 
             _transitionCoroutine = StartCoroutine(FinalSlowdownCoroutine(duration));
         }
@@ -234,15 +235,15 @@ namespace Game.Scripts.SnakeCore
 
         private IEnumerator FinalSlowdownCoroutine(float duration)
         {
-            float startSpeed = _snake.MoveSpeed;
-            float elapsed = 0f;
-            float targetSpeed = _initialSpeed * _finalSlowdownMultiplier;
+            var startSpeed = _snake.MoveSpeed;
+            var elapsed = 0f;
+            var targetSpeed = _initialSpeed * _finalSlowdownMultiplier;
 
             while (elapsed < duration && _currentState == SpeedState.FinalSlowdown)
             {
                 elapsed += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsed / duration);
-                float newSpeed = Mathf.Lerp(startSpeed, targetSpeed, t);
+                var t = Mathf.Clamp01(elapsed / duration);
+                var newSpeed = Mathf.Lerp(startSpeed, targetSpeed, t);
                 _snake.ChangeSpeed(newSpeed);
                 yield return null;
             }
@@ -262,13 +263,13 @@ namespace Game.Scripts.SnakeCore
                 yield break;
             }
 
-            float startSpeed = _snake.MoveSpeed;
-            float elapsed = 0f;
+            var startSpeed = _snake.MoveSpeed;
+            var elapsed = 0f;
 
             while (elapsed < duration)
             {
                 elapsed += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsed / duration);
+                var t = Mathf.Clamp01(elapsed / duration);
                 _snake.ChangeSpeed(Mathf.Lerp(startSpeed, targetSpeed, t));
                 yield return null;
             }

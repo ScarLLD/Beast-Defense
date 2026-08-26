@@ -13,12 +13,17 @@ namespace Game.Scripts.UI.Menu
 
         public bool IsActive { get; private set; }
 
-        protected void SwitchVisible(bool isActive)
+        private void SwitchVisible(bool isActive)
         {
-            foreach (GameObject gameObject in menu)
+            foreach (var target in menu)
             {
-                gameObject.SetActive(isActive);
+                target.SetActive(isActive);
             }
+        }
+        
+        protected static void CallClickEvent()
+        {
+            ButtonClicked?.Invoke();
         }
 
         protected void EnableMenu()
@@ -32,11 +37,6 @@ namespace Game.Scripts.UI.Menu
         {
             SwitchVisible(false);
             IsActive = false;
-        }
-
-        protected void CallClickEvent()
-        {
-            ButtonClicked?.Invoke();
         }
         
         protected void OnGameTransited()

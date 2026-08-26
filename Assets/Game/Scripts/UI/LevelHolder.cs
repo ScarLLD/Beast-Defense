@@ -18,7 +18,7 @@ namespace Game.Scripts.UI
             _game.Completed -= IncreaseLevel;
         }
 
-        public void IncreaseLevel()
+        private static void IncreaseLevel()
         {
             YG2.saves.LevelNumber++;
             YG2.SaveProgress();

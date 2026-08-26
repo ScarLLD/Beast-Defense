@@ -8,9 +8,12 @@ namespace Game.Scripts.UI.Menu
 {
     public class BuyPlaceMenu : Window
     {
-        private readonly float _notEnoughMoneyAlpha = 0.4f;
-        private readonly float _enoughMoneyAlpha = 1f;
+        private const float NOT_ENOUGH_MONEY_ALPHA = 0.4f;
+        private const float ENOUGH_MONEY_ALPHA = 1f;
 
+        private readonly Color _notEnoughMoneyColor = Color.red;
+        private readonly Color _enoughMoneyColor = Color.green;
+        
         [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private DeathModule _deathModule;
@@ -21,9 +24,6 @@ namespace Game.Scripts.UI.Menu
         [SerializeField] private Button _exitButton;
         [SerializeField] private Image _buyButtonImage;
         [SerializeField] private Image _buyButtonIconImage;
-
-        private Color _notEnoughMoneyColor = Color.red;
-        private Color _enoughMoneyColor = Color.green;
 
         private void Awake()
         {
@@ -85,17 +85,17 @@ namespace Game.Scripts.UI.Menu
         {
             _placePriceText.text = _placePrice.ToString();
 
-            if (_wallet.CanAfford(_placePrice))
+            if (Wallet.CanAfford(_placePrice))
             {
                 _placePriceText.color = _enoughMoneyColor;
                 _buyButton.interactable = true;
 
-                Color buttonColor = _buyButtonImage.color;
-                buttonColor.a = _enoughMoneyAlpha;
+                var buttonColor = _buyButtonImage.color;
+                buttonColor.a = ENOUGH_MONEY_ALPHA;
                 _buyButtonImage.color = buttonColor;
 
-                Color iconColor = _buyButtonIconImage.color;
-                iconColor.a = _enoughMoneyAlpha;
+                var iconColor = _buyButtonIconImage.color;
+                iconColor.a = ENOUGH_MONEY_ALPHA;
                 _buyButtonIconImage.color = iconColor;
 
             }
@@ -104,12 +104,12 @@ namespace Game.Scripts.UI.Menu
                 _placePriceText.color = _notEnoughMoneyColor;
                 _buyButton.interactable = false;
 
-                Color buttonColor = _buyButtonImage.color;
-                buttonColor.a = _notEnoughMoneyAlpha;
+                var buttonColor = _buyButtonImage.color;
+                buttonColor.a = NOT_ENOUGH_MONEY_ALPHA;
                 _buyButtonImage.color = buttonColor;
 
-                Color iconColor = _buyButtonIconImage.color;
-                iconColor.a = _notEnoughMoneyAlpha;
+                var iconColor = _buyButtonIconImage.color;
+                iconColor.a = NOT_ENOUGH_MONEY_ALPHA;
                 _buyButtonIconImage.color = iconColor;
 
             }

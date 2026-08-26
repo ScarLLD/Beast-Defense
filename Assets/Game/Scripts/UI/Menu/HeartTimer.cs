@@ -11,28 +11,29 @@ namespace Game.Scripts.UI.Menu
 
         public event Action HeartsChanged;
 
-        private int _currentHearts;
-        private int _pendingRestores = 0;
         private DateTime? _nextRestoreTimeUtc;
-        private bool _isRestoring = false;
+        private int _pendingRestores;
+        private bool _isRestoring;
 
         public bool IsInitialized { get; private set; }
-        public int CurrentHearts => _currentHearts;
+        public int CurrentHearts { get; private set; }
+
         public int MaxHearts => MAX_HEARTS;
-        public bool HasAvailableHearts => _currentHearts > 0;
+        public bool HasAvailableHearts => CurrentHearts > 0;
 
         public void Initialize()
         {
             if (IsInitialized) return;
 
-            _currentHearts = YG2.saves.HeartCount;
+            CurrentHearts = YG2.saves.HeartCount;
             _pendingRestores = YG2.saves.PendingRestores;
 
-            string restoreTimeString = YG2.saves.NextRestoreTime;
+            var restoreTimeString = YG2.saves.NextRestoreTime;
 
             if (!string.IsNullOrEmpty(restoreTimeString))
             {
-                if (DateTime.TryParse(restoreTimeString, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime parsedTime))
+                if (DateTime.TryParse(restoreTimeString, null, 
+                        System.Globalization.DateTimeStyles.RoundtripKind, out var parsedTime))
                 {
                     _nextRestoreTimeUtc = parsedTime.ToUniversalTime();
                 }
@@ -57,41 +58,31 @@ namespace Game.Scripts.UI.Menu
 
         public string GetTimerText()
         {
-            if (_currentHearts >= MAX_HEARTS)
+            if (CurrentHearts >= MAX_HEARTS || !_isRestoring || _nextRestoreTimeUtc == null)
             {
                 return string.Empty;
             }
 
-            if (!_isRestoring || _nextRestoreTimeUtc == null)
-            {
-                return string.Empty;
-            }
-
-            TimeSpan timeRemaining = _nextRestoreTimeUtc.Value - DateTime.UtcNow;
+            var timeRemaining = _nextRestoreTimeUtc.Value - DateTime.UtcNow;
 
             if (timeRemaining <= TimeSpan.Zero)
             {
                 return "00:00";
             }
 
-            if (timeRemaining.TotalHours >= 1)
-            {
-                return $"{timeRemaining:h\\:mm\\:ss}";
-            }
-
-            return $"{timeRemaining:mm\\:ss}";
+            return timeRemaining.TotalHours >= 1 ? $@"{timeRemaining:h\:mm\:ss}" : $"{timeRemaining:mm\\:ss}";
         }
 
         public float GetFillAmount()
         {
-            return (float)_currentHearts / MAX_HEARTS;
+            return (float)CurrentHearts / MAX_HEARTS;
         }
 
         public void UpdateTimer()
         {
             if (!_isRestoring || _nextRestoreTimeUtc == null) return;
 
-            DateTime nowUtc = DateTime.UtcNow;
+            var nowUtc = DateTime.UtcNow;
 
             if (nowUtc >= _nextRestoreTimeUtc.Value)
             {
@@ -101,9 +92,9 @@ namespace Game.Scripts.UI.Menu
 
         public bool TryUseHeart()
         {
-            if (_currentHearts <= 0) return false;
+            if (CurrentHearts <= 0) return false;
 
-            _currentHearts--;
+            CurrentHearts--;
             _pendingRestores++;
 
             if (!_isRestoring)
@@ -118,46 +109,46 @@ namespace Game.Scripts.UI.Menu
 
         public void SetCurrentHearts(int newCount)
         {
-            _currentHearts = Mathf.Clamp(newCount, 0, MAX_HEARTS);
+            CurrentHearts = Mathf.Clamp(newCount, 0, MAX_HEARTS);
             SaveData();
             HeartsChanged?.Invoke();
         }
 
         private void ValidateData()
         {
-            _currentHearts = Mathf.Clamp(_currentHearts, 0, MAX_HEARTS);
+            CurrentHearts = Mathf.Clamp(CurrentHearts, 0, MAX_HEARTS);
 
-            if (_currentHearts > MAX_HEARTS)
+            if (CurrentHearts > MAX_HEARTS)
             {
-                _currentHearts = MAX_HEARTS;
+                CurrentHearts = MAX_HEARTS;
                 _pendingRestores = 0;
                 _isRestoring = false;
                 _nextRestoreTimeUtc = null;
             }
 
-            if (_currentHearts == MAX_HEARTS)
+            if (CurrentHearts == MAX_HEARTS)
             {
                 _pendingRestores = 0;
                 _isRestoring = false;
                 _nextRestoreTimeUtc = null;
             }
 
-            int maxPending = MAX_HEARTS - _currentHearts;
+            var maxPending = MAX_HEARTS - CurrentHearts;
 
             if (_pendingRestores > maxPending)
             {
                 _pendingRestores = maxPending;
-            }
+            }   
         }
 
         private void ProcessOfflineRestores()
         {
-            if (!_nextRestoreTimeUtc.HasValue || _pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
+            if (!_nextRestoreTimeUtc.HasValue || _pendingRestores <= 0 || CurrentHearts >= MAX_HEARTS)
             {
                 return;
             }
 
-            DateTime nowUtc = DateTime.UtcNow;
+            var nowUtc = DateTime.UtcNow;
 
             if (nowUtc < _nextRestoreTimeUtc.Value)
             {
@@ -165,33 +156,33 @@ namespace Game.Scripts.UI.Menu
                 return;
             }
 
-            TimeSpan timePassed = nowUtc - _nextRestoreTimeUtc.Value;
+            var timePassed = nowUtc - _nextRestoreTimeUtc.Value;
 
             if (timePassed.TotalSeconds < RESTORE_TIME_SECONDS)
             {
                 CompleteSingleRestore();
 
-                if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
+                if (_pendingRestores > 0 && CurrentHearts < MAX_HEARTS)
                 {
                     StartNextRestore();
                 }
                 return;
             }
 
-            int fullRestores = (int)(timePassed.TotalSeconds / RESTORE_TIME_SECONDS);
-            int heartsToAdd = Mathf.Min(fullRestores, _pendingRestores);
+            var fullRestores = (int)(timePassed.TotalSeconds / RESTORE_TIME_SECONDS);
+            var heartsToAdd = Mathf.Min(fullRestores, _pendingRestores);
 
             if (heartsToAdd > 0)
             {
-                _currentHearts += heartsToAdd;
+                CurrentHearts += heartsToAdd;
                 _pendingRestores -= heartsToAdd;
 
-                if (_currentHearts > MAX_HEARTS) _currentHearts = MAX_HEARTS;
+                if (CurrentHearts > MAX_HEARTS) CurrentHearts = MAX_HEARTS;
                 if (_pendingRestores < 0) _pendingRestores = 0;
 
-                double remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
+                var remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
 
-                if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
+                if (_pendingRestores > 0 && CurrentHearts < MAX_HEARTS)
                 {
                     _nextRestoreTimeUtc = nowUtc.AddSeconds(RESTORE_TIME_SECONDS - remainingSeconds);
                     _isRestoring = true;
@@ -206,7 +197,7 @@ namespace Game.Scripts.UI.Menu
             }
             else
             {
-                double remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
+                var remainingSeconds = timePassed.TotalSeconds % RESTORE_TIME_SECONDS;
                 _nextRestoreTimeUtc = nowUtc.AddSeconds(RESTORE_TIME_SECONDS - remainingSeconds);
                 _isRestoring = true;
             }
@@ -214,18 +205,18 @@ namespace Game.Scripts.UI.Menu
 
         private void CompleteSingleRestore()
         {
-            if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS) return;
+            if (_pendingRestores <= 0 || CurrentHearts >= MAX_HEARTS) return;
 
-            _currentHearts++;
+            CurrentHearts++;
             _pendingRestores--;
 
-            if (_currentHearts > MAX_HEARTS) _currentHearts = MAX_HEARTS;
+            if (CurrentHearts > MAX_HEARTS) CurrentHearts = MAX_HEARTS;
             if (_pendingRestores < 0) _pendingRestores = 0;
         }
 
         private void StartNextRestore()
         {
-            if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS)
+            if (_pendingRestores <= 0 || CurrentHearts >= MAX_HEARTS)
             {
                 _isRestoring = false;
                 _nextRestoreTimeUtc = null;
@@ -241,12 +232,12 @@ namespace Game.Scripts.UI.Menu
 
         private void CompleteRestore()
         {
-            if (_pendingRestores <= 0 || _currentHearts >= MAX_HEARTS) return;
+            if (_pendingRestores <= 0 || CurrentHearts >= MAX_HEARTS) return;
 
-            _currentHearts++;
+            CurrentHearts++;
             _pendingRestores--;
 
-            if (_pendingRestores > 0 && _currentHearts < MAX_HEARTS)
+            if (_pendingRestores > 0 && CurrentHearts < MAX_HEARTS)
             {
                 StartNextRestore();
             }
@@ -262,12 +253,12 @@ namespace Game.Scripts.UI.Menu
 
         private void SaveData()
         {
-            YG2.saves.HeartCount = _currentHearts;
+            YG2.saves.HeartCount = CurrentHearts;
             YG2.saves.PendingRestores = _pendingRestores;
 
             if (_nextRestoreTimeUtc.HasValue)
             {
-                string utcString = _nextRestoreTimeUtc.Value.ToString("o");
+                var utcString = _nextRestoreTimeUtc.Value.ToString("o");
                 YG2.saves.NextRestoreTime = utcString;
             }
             else

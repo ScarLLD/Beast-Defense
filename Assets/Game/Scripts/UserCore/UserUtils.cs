@@ -13,11 +13,11 @@ namespace Game.Scripts.UserCore
         public static List<T> ShuffleList<T>(List<T> list)
         {
             var random = new System.Random();
-            int count = list.Count;
+            var count = list.Count;
 
-            for (int i = count - 1; i > 0; i--)
+            for (var i = count - 1; i > 0; i--)
             {
-                int j = random.Next(i + 1);
+                var j = random.Next(i + 1);
                 (list[i], list[j]) = (list[j], list[i]);
             }
 
