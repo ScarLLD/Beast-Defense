@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using static UnityEngine.ParticleSystem;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace Game.Scripts.Effects
 {
@@ -7,24 +7,43 @@ namespace Game.Scripts.Effects
     public class ParticleData : MonoBehaviour
     {
         private ParticleSystem _particle;
-        private MainModule _particleModule;
+        private ParticleSystem.MainModule _particleModule;
+        private Coroutine _disableCoroutine;
+        private WaitForSeconds _sleep;
 
         public float GetDuration => _particleModule.duration;
-
-        private void OnEnable()
-        {
-            _particle.Play();
-        }
-
-        private void OnDisable()
-        {
-            _particle.Stop();
-        }
 
         private void Awake()
         {
             _particle = GetComponent<ParticleSystem>();
             _particleModule = _particle.main;
+            _sleep = new WaitForSeconds(_particleModule.duration);
+        }
+
+        private void OnEnable()
+        {
+            if (_disableCoroutine != null)
+                StopCoroutine(_disableCoroutine);
+
+            _particle.Play();
+            _disableCoroutine = StartCoroutine(WaitAndDisable());
+        }
+
+        private void OnDisable()
+        {
+            if (_disableCoroutine != null)
+                StopCoroutine(_disableCoroutine);
+
+            _particle.Stop();
+        }
+
+        private IEnumerator WaitAndDisable()
+        {
+            var duration = _particleModule.duration;
+
+            yield return _sleep;
+
+            gameObject.SetActive(false);
         }
 
         public void SetColor(Color color)

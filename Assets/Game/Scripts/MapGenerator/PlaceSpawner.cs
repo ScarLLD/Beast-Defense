@@ -30,12 +30,10 @@ namespace Game.Scripts.MapGenerator
             _game.Completed -= SetDefaultSettings;
         }
 
-        public bool TryGeneratePlaces()
+        public void GeneratePlaces()
         {
             _storage.Clear();
             GenerateShootingPlaces();
-
-            return true;
         }
 
         public void IncreasePlace()

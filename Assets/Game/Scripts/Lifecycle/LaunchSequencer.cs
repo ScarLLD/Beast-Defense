@@ -74,7 +74,7 @@ namespace Game.Scripts.LifeCycle
             _adv.LevelRegenerated -= OnAdvWatched;
 
             if (_advLevelCreationCoroutine == null) return;
-            
+
             StopCoroutine(_advLevelCreationCoroutine);
             _advLevelCreationCoroutine = null;
         }
@@ -150,7 +150,7 @@ namespace Game.Scripts.LifeCycle
             _cubeCreator.Terminate();
 
             if (!TryGenerateLevel()) yield break;
-            
+
             _levelViewer.DisplayText();
             InitializeGameplay();
         }
@@ -163,7 +163,7 @@ namespace Game.Scripts.LifeCycle
         private IEnumerator RestartCurrentLevelRoutine()
         {
             yield return StartCoroutine(CleanupRoutine());
-            _placeSpawner.TryGeneratePlaces();
+            _placeSpawner.GeneratePlaces();
             _cubeCreator.Respawn();
             _availabilityManagement.UpdateAvailability();
             ResumeGameplay();
@@ -186,14 +186,16 @@ namespace Game.Scripts.LifeCycle
         private bool TryGenerateLevel()
         {
             var success = _gridCreator.TryCreate()
-                          && _placeSpawner.TryGeneratePlaces()
                           && _cubeCreator.TryCreate(_cubeStorage, _bulletSpawner, _targetStorage)
                           && _roadSpawner.TrySpawn(out var road)
                           && _splineCreator.TryCreateSpline(road, out _splineContainer)
                           && _splineVisualizer.TryGenerateRoadFromSpline(_splineContainer);
 
             if (success)
+            {
+                _placeSpawner.GeneratePlaces();
                 _availabilityManagement.UpdateAvailability();
+            }
 
             return success;
         }
@@ -222,7 +224,7 @@ namespace Game.Scripts.LifeCycle
         private void SetupDetector()
         {
             if (_roadSpawner.LastSpawnedRoad is not { Count: > 1 }) return;
-            
+
             _detector.transform.position =
                 _roadSpawner.LastSpawnedRoad[2] + Vector3.up * _snake.transform.localScale.y;
             _detector.gameObject.SetActive(true);

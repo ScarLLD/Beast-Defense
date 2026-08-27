@@ -391,7 +391,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f75be742e000d45b0558ed6210fbf4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _game: {fileID: 1614255502}
   _timer: {fileID: 1614255506}
   _animator: {fileID: 668936182}
   _audioPlayer: {fileID: 1849475457}
@@ -5259,6 +5258,7 @@ GameObject:
   m_Component:
   - component: {fileID: 437241862}
   - component: {fileID: 437241863}
+  - component: {fileID: 437241864}
   m_Layer: 0
   m_Name: Snake
   m_TagString: Untagged
@@ -5294,8 +5294,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _snakePrefab: {fileID: 1056603179970402766, guid: d9447595fb08d8241add5f1bf8bfca5a, type: 3}
-  _skinData: {fileID: 11400000, guid: 2e302c663f92e6e449109fd2a34ac5c4, type: 2}
+  _skinController: {fileID: 437241864}
   _targetStorage: {fileID: 9171917265129906606}
+--- !u!114 &437241864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 437241861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec81a55abe894acb97a0b3ac47605863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skinData: {fileID: 11400000, guid: 2e302c663f92e6e449109fd2a34ac5c4, type: 2}
 --- !u!1 &442903041
 GameObject:
   m_ObjectHideFlags: 0
@@ -8920,7 +8933,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 497dbe7dac9bead44a87e48e1447e7d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _levelHolder: {fileID: 1614255505}
   _sliderLevelViewer: {fileID: 308458189}
 --- !u!1 &771541321
 GameObject:
@@ -18740,6 +18752,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1441411480}
   - component: {fileID: 1441411479}
+  - component: {fileID: 1441411481}
   m_Layer: 0
   m_Name: Beast
   m_TagString: Untagged
@@ -18760,7 +18773,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _beastPrefab: {fileID: 3015566633710220428, guid: 67b73ca65cb58b5478d08954afd7e755, type: 3}
-  _skinData: {fileID: 11400000, guid: f16dab0cc1f8e7f44bd985dcaa246a51, type: 2}
+  _skinController: {fileID: 1441411481}
 --- !u!4 &1441411480
 Transform:
   m_ObjectHideFlags: 0
@@ -18776,6 +18789,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2100491923}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1441411481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441411478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec81a55abe894acb97a0b3ac47605863, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skinData: {fileID: 11400000, guid: f16dab0cc1f8e7f44bd985dcaa246a51, type: 2}
 --- !u!1 &1447742554
 GameObject:
   m_ObjectHideFlags: 0
@@ -20566,7 +20592,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1aafe3e03950e08459ba7c0e82dd6f46, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pauseMenu: {fileID: 1675306278}
   _game: {fileID: 1614255502}
   _rayDirection: 100
 --- !u!114 &1614255504
@@ -20597,7 +20622,6 @@ MonoBehaviour:
   _placeStorage: {fileID: 1923091039}
   _cubeStorage: {fileID: 529893071}
   _targetStorage: {fileID: 9171917265129906606}
-  _boundaryMaker: {fileID: 1295288266}
   _splineVisualizer: {fileID: 561811626}
   _detector: {fileID: 2645583919960169801}
   _slider: {fileID: 750858111}
@@ -21856,7 +21880,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _game: {fileID: 1614255502}
-  _camera: {fileID: 963194227}
   _storage: {fileID: 1923091039}
   _placePrefab: {fileID: 775908119623022719, guid: df4c662850db070458a0356e420be51c, type: 3}
   _distanceBetweenPlaces: 1.5
@@ -22152,13 +22175,10 @@ MonoBehaviour:
   _wallet: {fileID: 1469608306}
   _beastSpawner: {fileID: 1441411479}
   _snakeSpawner: {fileID: 437241863}
-  _language: {fileID: 0}
   _beastSkinsContainer: {fileID: 1039779642}
   _snakeSkinsContainer: {fileID: 675108267}
   _skinItemPrefab: {fileID: 4271251869485383861, guid: b2697647d0a9bce4786a021950147b38, type: 3}
   _closePreviewButton: {fileID: 978269871}
-  _beastSectionHeader: {fileID: 943374553}
-  _snakeSectionHeader: {fileID: 351886024}
   _previewAnimator: {fileID: 1381013153}
   _preview: {fileID: 1381013151}
   _backgroundImage: {fileID: 554887072}
