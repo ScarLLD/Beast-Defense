@@ -56,7 +56,6 @@ namespace Game.Scripts.Shop
         private SkinType _selectedSkinType;
         private string _equippedBeastSkinId;
         private string _equippedSnakeSkinId;
-        private InterfaceLocalization _localization;
 
         public event Action Purchased;
         public event Action Selected;
@@ -81,11 +80,6 @@ namespace Game.Scripts.Shop
             _buyButton.onClick.RemoveListener(OnBuyButtonClick);
             _selectButton.onClick.RemoveListener(OnSelectButtonClick);
             _closePreviewButton.onClick.RemoveListener(OnClosePreviewButtonClick);
-        }
-
-        private void Awake()
-        {
-            _localization = new InterfaceLocalization();
         }
 
         private void Start()
@@ -204,11 +198,11 @@ namespace Game.Scripts.Shop
             var isEquipped = IsSkinEquipped(skinId, skinType);
 
             if (skin.IsDefault)
-                _selectedSkinPrice.text = _localization.GetLocalizedFreeText(YG2.lang);
+                _selectedSkinPrice.text = InterfaceLocalization.GetLocalizedFreeText(YG2.lang);
             else if (isPurchased)
-                _selectedSkinPrice.text = _localization.GetLocalizedPurchasedText(YG2.lang);
+                _selectedSkinPrice.text = InterfaceLocalization.GetLocalizedPurchasedText(YG2.lang);
             else
-                _selectedSkinPrice.text = $"{skin.Price} {_localization.GetLocalizedMoneyText(YG2.lang)}";
+                _selectedSkinPrice.text = $"{skin.Price} {InterfaceLocalization.GetLocalizedMoneyText(YG2.lang)}";
 
             _buyButton.gameObject.SetActive(!isPurchased);
             _selectButton.gameObject.SetActive(isPurchased && !isEquipped);
@@ -216,7 +210,7 @@ namespace Game.Scripts.Shop
             if (isPurchased)
             {
                 _selectButton.interactable = true;
-                _selectButtonText.text = _localization.GetLocalizedTakeText(YG2.lang);
+                _selectButtonText.text = InterfaceLocalization.GetLocalizedTakeText(YG2.lang);
                 _backgroundImage.color = _greenColor;
             }
             else
@@ -226,13 +220,13 @@ namespace Game.Scripts.Shop
                 if (Wallet.CanAfford(skin.Price))
                 {
                     _buyButtonImage.color = Color.white;
-                    _buyButtonText.text = _localization.GetLocalizedBuyText(YG2.lang);
+                    _buyButtonText.text = InterfaceLocalization.GetLocalizedBuyText(YG2.lang);
                     _buyButton.interactable = true;
                 }
                 else
                 {
                     _buyButtonImage.color = Color.black;
-                    _buyButtonText.text = _localization.GetLocalizedNoMoneyText(YG2.lang);
+                    _buyButtonText.text = InterfaceLocalization.GetLocalizedNoMoneyText(YG2.lang);
                     _buyButton.interactable = false;
                 }
             }
