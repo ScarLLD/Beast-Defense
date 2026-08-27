@@ -11,70 +11,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e5d23f73-5d24-4a81-bd89-a64b4e162432" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinController.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Beast-Defense/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Beast-Defense/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scenes/Debug.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scenes/Debug.unity.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scenes/SampleScene.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BeastCore/BeastAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BeastCore/BeastAnimator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BeastCore/BeastSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BeastCore/BeastSpawner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/Bullet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/Bullet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/BulletSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/BulletSpawner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/BulletTrail.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/BulletTrail.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/Cube.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/Cube.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/CubeCreator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/CubeCreator.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/CubeStack.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/CubeStack.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/CubeStorage.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/CubeStorage.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/RoadFinder.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Cube/RoadFinder.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/DeathAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/DeathAnimator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/SkinItemPreviewOpenAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/SkinItemPreviewOpenAnimator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/LeaderBoard/ScoreReader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/LeaderBoard/ScoreReader.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/DeathModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/DeathModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/GameTimer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/GameTimer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/GameReady.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/GameReady.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/LaunchSequencer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/LaunchSequencer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/BoundaryMaker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/BoundaryMaker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/DirectionAnalyzer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/DirectionAnalyzer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Game.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/GameObjectsDisabler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/GameObjectsDisabler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridCell.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridCreator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridCreator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridStorage.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/PlaceSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/PlaceSpawner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/PlaceStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/PlaceStorage.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/RayCreator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/RayCreator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/BeastCollector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/BeastCollector.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/DOTWeenAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/DOTWeenAnimator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGBeastSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGBeastSpawner.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGSnake.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGSnake.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGSnakeSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGSnakeSpawner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGame.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGame.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGameSequenceAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGameSequenceAnimator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGameSequencer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGameSequencer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Options/AudioPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Options/AudioPlayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Options/CameraSizeAdjuster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Options/CameraSizeAdjuster.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Options/GameOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Options/GameOptions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/BulletView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/BulletView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/CubeMover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/CubeMover.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/CubesInteractor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/CubesInteractor.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/PlayerCube.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/PlayerCube.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/PlayerCubeAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/PlayerCubeAnimator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/Shooter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/Shooter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Pool/ObjectPool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Pool/ObjectPool.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/RoadLimiter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/RoadLimiter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/RoadSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/RoadSpawner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/SplineCreator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/SplineCreator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/SplineVisualizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/SplineVisualizer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/TargetRadar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/TargetRadar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/TargetStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/TargetStorage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/ShopMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/ShopMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinItemUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinItemUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinShop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinShop.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/Skins/SkinData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/Skins/SkinData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/Snake.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/Snake.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSegment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSegment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSpawner.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/SliderLevelViewer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/SliderLevelViewer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Transition.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Transition.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UserCore.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UserCore/UserUtils.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UserCore/UserUtils.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UserCore/YG.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UserCore/YG/SavesYG.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UserCore/YG/SavesYG.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,12 +56,19 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/37cc348edc804f4cb176b63962c716e7177200/1d/2b55a11e/Vector3.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Game/Scripts/Core/SkinSpawnerHelper.cs" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="3IS6fBesxbNl8288valulqES6wN" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -107,11 +84,13 @@
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;
   }
 }</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
@@ -202,5 +181,9 @@
         </breakpoint>
       </breakpoints>
     </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

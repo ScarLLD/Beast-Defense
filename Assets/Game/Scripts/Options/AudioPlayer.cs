@@ -1,5 +1,5 @@
 ﻿using Game.Scripts.BulletCore;
-using Game.Scripts.UserCore;
+using Game.Scripts.Core;
 using Game.Scripts.LifeCycle;
 using Game.Scripts.UI.Menu;
 using Game.Scripts.Shop;

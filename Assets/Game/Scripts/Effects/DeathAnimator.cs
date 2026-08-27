@@ -25,7 +25,7 @@ namespace Game.Scripts.Effects
         {
             _pool = new ObjectPool<ParticleData>(_cloudParticlePrefab, transform);
 
-            _deathTime = new WaitForSeconds(_animator.GetDuration);
+            _deathTime = new WaitForSeconds(DOTWeenAnimator.GetDuration);
             _delayTime = new WaitForSeconds(_cloudParticlePrefab.GetDuration + _deathDelay);
         }
 
@@ -36,7 +36,7 @@ namespace Game.Scripts.Effects
 
         public IEnumerator DeathRoutine(Transform target, Color color)
         {
-            _animator.DoScaleDown(target.gameObject);
+            DOTWeenAnimator.DoScaleDown(target.gameObject);
             yield return _deathTime;
             _audioPlayer.PlayCloudParticleSound();
 

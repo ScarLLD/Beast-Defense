@@ -8,7 +8,6 @@ namespace Game.Scripts.LifeCycle
 {
     public class DeathModule : MonoBehaviour
     {
-        [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private GameTimer _timer;
         [SerializeField] private DeathAnimator _animator;
         [SerializeField] private AudioPlayer _audioPlayer;

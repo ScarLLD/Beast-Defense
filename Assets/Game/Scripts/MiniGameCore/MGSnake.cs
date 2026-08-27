@@ -216,7 +216,7 @@ namespace Game.Scripts.MiniGameCore
 
             if (_animator != null && body != null)
             {
-                _animator.DoScaleUp(body);
+                DOTWeenAnimator.DoScaleUp(body);
             }
         }
 

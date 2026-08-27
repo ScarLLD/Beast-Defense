@@ -25,7 +25,6 @@ namespace Game.Scripts.Shop
         [SerializeField] private Wallet _wallet;
         [SerializeField] private BeastSpawner _beastSpawner;
         [SerializeField] private SnakeSpawner _snakeSpawner;
-        [SerializeField] private LanguageInitializer _language;
 
         [Header("UI References")] [SerializeField]
         private Transform _beastSkinsContainer;
@@ -33,11 +32,6 @@ namespace Game.Scripts.Shop
         [SerializeField] private Transform _snakeSkinsContainer;
         [SerializeField] private SkinItemUI _skinItemPrefab;
         [SerializeField] private Button _closePreviewButton;
-
-        [Header("Section Headers")] [SerializeField]
-        private TMP_Text _beastSectionHeader;
-
-        [SerializeField] private TMP_Text _snakeSectionHeader;
 
         [Header("Preview")] [SerializeField] private SkinItemPreviewOpenAnimator _previewAnimator;
         [SerializeField] private GameObject _preview;

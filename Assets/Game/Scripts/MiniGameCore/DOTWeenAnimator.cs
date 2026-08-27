@@ -7,9 +7,9 @@ namespace Game.Scripts.MiniGameCore
     {
         private const float SCALE_DURATION = 0.5f;
 
-        public float GetDuration => SCALE_DURATION;
+        public static float GetDuration => SCALE_DURATION;
 
-        public void DoScaleUp(GameObject target)
+        public static void DoScaleUp(GameObject target)
         {
             if (!target)
                 return;
@@ -18,7 +18,7 @@ namespace Game.Scripts.MiniGameCore
             target.transform.DOScale(Vector3.one, SCALE_DURATION).SetEase(Ease.OutBack);
         }
 
-        public void DoScaleDown(GameObject target)
+        public static void DoScaleDown(GameObject target)
         {
             if (!target)
                 return;

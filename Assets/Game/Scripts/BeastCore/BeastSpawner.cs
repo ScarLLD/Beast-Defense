@@ -1,4 +1,5 @@
-﻿using Game.Scripts.Shop.Skins;
+﻿using Game.Scripts.Shop;
+using Game.Scripts.Shop.Skins;
 using UnityEngine;
 using YG;
 
@@ -7,70 +8,49 @@ namespace Game.Scripts.BeastCore
     public class BeastSpawner : MonoBehaviour
     {
         [SerializeField] private Beast _beastPrefab;
-        [SerializeField] private SkinData _skinData;
+        [SerializeField] private SkinController _skinController;
 
         private Beast _beast;
-        private string _currentSkinId;
 
-        public SkinData.Skin GetCurrentSkin => _skinData.GetSkinById(_currentSkinId);
+        public SkinData.Skin GetCurrentSkin =>
+            _skinController.CurrentSkin;
 
-        private void Start()
+        private void Awake()
         {
-            LoadCurrentSkin();
-        }
-
-        private void LoadCurrentSkin()
-        {
-            var savedSkinId = YG2.saves.EquippedBeastSkin;
-            var isSkinMissing = string.IsNullOrEmpty(savedSkinId) || _skinData.GetSkinById(savedSkinId) == null;
-            _currentSkinId = isSkinMissing ? _skinData.GetDefaultSkinId() : savedSkinId;
+            _skinController.Load(
+                YG2.saves.EquippedBeastSkin);
         }
 
         public Beast Spawn()
         {
-            if (!_beast)
-                _beast = Instantiate(_beastPrefab, transform);
+            if (_beast) return _beast;
+            _beast = Instantiate(
+                _beastPrefab,
+                transform);
 
-            ApplyCurrentSkin();
+            _skinController.Apply(
+                _beast.transform,
+                "beastModel");
 
             return _beast;
         }
 
         public void UpdateSkin(string skinId)
         {
-            if (_currentSkinId == skinId)
+            if (!_skinController.SetSkin(skinId))
                 return;
 
-            _currentSkinId = skinId;
-
-            if (_beast != null)
+            if (_beast)
             {
-                ApplyCurrentSkin();
+                _skinController.Apply(
+                    _beast.transform,
+                    "beastModel");
             }
 
-            YG2.saves.EquippedBeastSkin = _currentSkinId;
+            YG2.saves.EquippedBeastSkin =
+                _skinController.CurrentSkinId;
+
             YG2.SaveProgress();
-        }
-
-        private void ApplyCurrentSkin()
-        {
-            var skin = _skinData.GetSkinById(_currentSkinId);
-
-            if (skin != null && skin.Model)
-            {
-                ApplySkinModel(skin.Model);
-            }
-        }
-
-        private void ApplySkinModel(GameObject skinModelPrefab)
-        {
-            foreach (Transform child in _beast.transform)
-            {
-                Destroy(child.gameObject);
-            }
-
-            var model = Instantiate(skinModelPrefab, _beast.transform);
-            model.name = "beastModel";
         }
     }
 }

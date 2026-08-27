@@ -24,7 +24,6 @@ namespace Game.Scripts.UI
         public bool IsTransiting { get; private set; }
 
         public event Action Transiting;
-        public event Action BackTransited;
 
         private void Awake()
         {
@@ -34,7 +33,7 @@ namespace Game.Scripts.UI
 
         private void SetSpriteOptions()
         {
-            if (Camera.main != null)
+            if (Camera.main)
             {
                 var offset = Camera.main.pixelWidth * 4f;
                 var center = _canvas.transform.position;
@@ -85,7 +84,6 @@ namespace Game.Scripts.UI
                 .OnComplete(() =>
                 {
                     IsTransiting = false;
-                    BackTransited?.Invoke();
                 });
         }
 

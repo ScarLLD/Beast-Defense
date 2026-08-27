@@ -1,5 +1,5 @@
 ﻿using Game.Scripts.BeastCore;
-using Game.Scripts.UserCore;
+using Game.Scripts.Core;
 using Game.Scripts.CubeCore;
 using Game.Scripts.LifeCycle;
 using System;

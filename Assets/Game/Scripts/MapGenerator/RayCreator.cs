@@ -8,7 +8,6 @@ namespace Game.Scripts.MapGenerator
 {
     public class RayCreator : MonoBehaviour
     {
-        [SerializeField] private PauseMenu _pauseMenu;
         [SerializeField] private Game _game;
         [SerializeField] private float _rayDirection;
 

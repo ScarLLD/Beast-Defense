@@ -6,7 +6,6 @@ namespace Game.Scripts.UI
 {
     public class SliderLevelViewer : MonoBehaviour
     {
-        [SerializeField] private LevelHolder _levelHolder;
         [SerializeField] private TMP_Text _sliderLevelViewer;
 
         private void Start()

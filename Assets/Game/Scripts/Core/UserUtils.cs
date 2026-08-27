@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Game.Scripts.UserCore
+namespace Game.Scripts.Core
 {
     public static class UserUtils
     {

@@ -36,9 +36,6 @@ namespace Game.Scripts.LifeCycle
         [SerializeField] private CubeStorage _cubeStorage;
         [SerializeField] private TargetStorage _targetStorage;
 
-        [Header("Other dependencies")] [SerializeField]
-        private BoundaryMaker _boundaryMaker;
-
         [SerializeField] private SplineVisualizer _splineVisualizer;
         [SerializeField] private TargetDetector _detector;
         [SerializeField] private SmoothBarSlider _slider;

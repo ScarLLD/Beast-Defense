@@ -5,7 +5,6 @@ namespace Game.Scripts.MapGenerator
     public class PlaceSpawner : MonoBehaviour
     {
         [SerializeField] private Game _game;
-        [SerializeField] private Camera _camera;
         [SerializeField] private PlaceStorage _storage;
         [SerializeField] private ShootingPlace _placePrefab;
         [SerializeField] private float _distanceBetweenPlaces = 1;

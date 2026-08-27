@@ -138,7 +138,7 @@ namespace Game.Scripts.MiniGameCore
             var beast = _pool.GetObject();
             spawnPoint.y += _beastPrefab.transform.localScale.y;
             beast.transform.SetPositionAndRotation(spawnPoint, Quaternion.LookRotation(Vector3.back));
-            _miniGameAnimator.DoScaleUp(beast.gameObject);
+            DOTWeenAnimator.DoScaleUp(beast.gameObject);
 
             if (!_beasts.Contains(beast))
                 _beasts.Add(beast);
