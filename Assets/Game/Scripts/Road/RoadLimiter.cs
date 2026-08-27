@@ -1,6 +1,6 @@
-﻿using Game.Scripts.MapGenerator;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Game.Scripts.MapGenerator;
 using UnityEngine;
 
 namespace Game.Scripts.Road
@@ -15,8 +15,8 @@ namespace Game.Scripts.Road
 
         private DirectionAnalyzer _directionHolder;
         private float _leftBoundX;
-        private float _rightBoundX;
         private float _lowerBoundZ;
+        private float _rightBoundX;
         private float _upperBoundZ;
 
         private void Start()
@@ -43,6 +43,24 @@ namespace Game.Scripts.Road
             }
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            if (!Application.isPlaying) return;
+
+            Gizmos.color = Color.yellow;
+
+            Vector3 topLeft = new(_leftBoundX + _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
+            Vector3 topRight = new(_rightBoundX - _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
+            Gizmos.DrawLine(topLeft, topRight);
+
+            Vector3 bottomLeft = new(_leftBoundX + _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
+            Vector3 bottomRight = new(_rightBoundX - _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
+            Gizmos.DrawLine(bottomLeft, bottomRight);
+
+            Gizmos.DrawLine(topLeft, bottomLeft);
+            Gizmos.DrawLine(topRight, bottomRight);
+        }
+
         public bool IsEndTooCloseToBoundary(Vector3 point)
         {
             return point.x < _leftBoundX + _boundaryMargin * _endPointMargin ||
@@ -53,15 +71,12 @@ namespace Game.Scripts.Road
 
         public bool IsPositionValid(Vector3 position, List<Vector3> pathPoints)
         {
-            if (IsTooCloseToBoundary(position))
-            {
-                return false;
-            }
+            if (IsTooCloseToBoundary(position)) return false;
 
-            return pathPoints == null || 
+            return pathPoints == null ||
                    pathPoints.All(point => !(Vector3.Distance(position, point) < _radiusBetweenSegments));
         }
-        
+
         private void UpdateBoundariesFromBoundaryMaker()
         {
             if (!_boundaryMaker) return;
@@ -79,24 +94,6 @@ namespace Game.Scripts.Road
                    point.x > _rightBoundX - _boundaryMargin ||
                    point.z > _upperBoundZ - _boundaryMargin ||
                    point.z < _lowerBoundZ + _boundaryMargin;
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            if (!Application.isPlaying) return;
-
-            Gizmos.color = Color.yellow;
-
-            Vector3 topLeft = new(_leftBoundX + _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
-            Vector3 topRight = new(_rightBoundX - _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
-            Gizmos.DrawLine(topLeft, topRight);
-
-            Vector3 bottomLeft = new(_leftBoundX + _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
-            Vector3 bottomRight = new(_rightBoundX - _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
-            Gizmos.DrawLine(bottomLeft, bottomRight);
-
-            Gizmos.DrawLine(topLeft, bottomLeft);
-            Gizmos.DrawLine(topRight, bottomRight);
         }
     }
 }

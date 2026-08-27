@@ -1,8 +1,8 @@
-﻿using Game.Scripts.CubeCore;
-using Game.Scripts.MapGenerator.Grid;
-using Game.Scripts.MapGenerator;
-using System;
+﻿using System;
 using System.Collections;
+using Game.Scripts.CubeCore;
+using Game.Scripts.MapGenerator;
+using Game.Scripts.MapGenerator.Grid;
 using UnityEngine;
 
 namespace Game.Scripts.Player
@@ -10,23 +10,20 @@ namespace Game.Scripts.Player
     public class CubeMover : MonoBehaviour
     {
         private const float ARRIVAL_THRESHOLD = 0.15f;
-        
-        private float _speed;
-        private bool _isNewMove = true;
-        private Vector3 _initialPosition;
-        private Vector3 _escapePlace;
-        private Vector3 _target;
-        private ShootingPlace _shootingPlace;
-        private Coroutine _moveCoroutine;
-        private GridCell _cell;
-        private bool _isMoving;
-
-        private Transform _transform;
         private Vector3 _cachedCellTarget;
         private Vector3 _cachedShootingTarget;
+        private GridCell _cell;
+        private Vector3 _escapePlace;
+        private Vector3 _initialPosition;
+        private bool _isMoving;
+        private bool _isNewMove = true;
+        private Coroutine _moveCoroutine;
+        private ShootingPlace _shootingPlace;
 
-        public event Action Arrived;
-        public event Action Escaped;
+        private float _speed;
+        private Vector3 _target;
+
+        private Transform _transform;
 
 
         private void Awake()
@@ -34,6 +31,9 @@ namespace Game.Scripts.Player
             _transform = transform;
             _initialPosition = _transform.position;
         }
+
+        public event Action Arrived;
+        public event Action Escaped;
 
         public void Init(float speed)
         {
@@ -78,7 +78,7 @@ namespace Game.Scripts.Player
         private void StopMoving()
         {
             if (_moveCoroutine == null) return;
-            
+
             StopCoroutine(_moveCoroutine);
             _moveCoroutine = null;
         }

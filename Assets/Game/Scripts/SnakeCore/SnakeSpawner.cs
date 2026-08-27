@@ -1,10 +1,10 @@
-﻿using Game.Scripts.BeastCore;
+using System.Collections.Generic;
+using Game.Scripts.BeastCore;
 using Game.Scripts.CubeCore;
-using Game.Scripts.LifeCycle;
+using Game.Scripts.Lifecycle;
 using Game.Scripts.Road;
 using Game.Scripts.Shop;
 using Game.Scripts.Shop.Skins;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 using YG;

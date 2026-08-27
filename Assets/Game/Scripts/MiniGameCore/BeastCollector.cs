@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.Scripts.MiniGameCore
@@ -27,7 +26,7 @@ namespace Game.Scripts.MiniGameCore
             DisplayCount();
 
             if (_beastCollectedCount != _maxBeastCollectedCount) return;
-            
+
             _snake.Die();
             _miniGame.VictoryGame();
         }

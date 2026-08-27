@@ -1,15 +1,16 @@
-﻿using Game.Scripts.MiniGameCore;
+﻿using System.Collections;
+using Game.Scripts.MiniGameCore;
 using Game.Scripts.Options;
 using Game.Scripts.Pool;
-using System.Collections;
 using UnityEngine;
 
 namespace Game.Scripts.Effects
 {
     public class DeathAnimator : MonoBehaviour
     {
-        [Header("Animator settings.")]
-        [SerializeField] private DOTWeenAnimator _animator;
+        [Header("Animator settings.")] [SerializeField]
+        private DOTWeenAnimator _animator;
+
         [SerializeField] private AudioPlayer _audioPlayer;
         [SerializeField] private AnimationCurve _deathAnimationCurve;
         [SerializeField] private ParticleData _cloudParticlePrefab;

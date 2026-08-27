@@ -1,6 +1,6 @@
-﻿using Game.Scripts.MiniGameCore;
-using System;
+﻿using System;
 using System.Collections;
+using Game.Scripts.MiniGameCore;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

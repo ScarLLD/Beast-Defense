@@ -1,7 +1,7 @@
-﻿using Game.Scripts.CubeCore;
-using Game.Scripts.Options;
+﻿using System.Collections;
+using Game.Scripts.CubeCore;
 using Game.Scripts.Effects;
-using System.Collections;
+using Game.Scripts.Options;
 using UnityEngine;
 
 namespace Game.Scripts.BulletCore

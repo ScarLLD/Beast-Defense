@@ -1,19 +1,18 @@
-﻿using Game.Scripts.BeastCore;
+using System.Collections;
+using Game.Scripts.BeastCore;
 using Game.Scripts.BulletCore;
 using Game.Scripts.CubeCore;
-using Game.Scripts.Options;
-using Game.Scripts.MapGenerator.Grid;
 using Game.Scripts.MapGenerator;
+using Game.Scripts.MapGenerator.Grid;
+using Game.Scripts.Options;
 using Game.Scripts.Player;
 using Game.Scripts.Road;
 using Game.Scripts.SnakeCore;
 using Game.Scripts.UI;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 
-namespace Game.Scripts.LifeCycle
+namespace Game.Scripts.Lifecycle
 {
     public class LaunchSequencer : MonoBehaviour
     {
@@ -43,12 +42,12 @@ namespace Game.Scripts.LifeCycle
         [SerializeField] private AudioPlayer _audioPlayer;
         [SerializeField] private CubesInteractor _cubesInteractor;
         [SerializeField] private Adv _adv;
-
-        private Snake _snake;
-        private Beast _beast;
-        private SplineContainer _splineContainer;
         private Coroutine _advLevelCreationCoroutine;
         private AvailabilityManagement _availabilityManagement;
+        private Beast _beast;
+
+        private Snake _snake;
+        private SplineContainer _splineContainer;
 
         private void Awake()
         {
@@ -109,10 +108,7 @@ namespace Game.Scripts.LifeCycle
 
         private void OnAdvWatched()
         {
-            if (_advLevelCreationCoroutine != null)
-            {
-                StopCoroutine(_advLevelCreationCoroutine);
-            }
+            if (_advLevelCreationCoroutine != null) StopCoroutine(_advLevelCreationCoroutine);
 
             _placeSpawner.SetDefaultSettings();
             _advLevelCreationCoroutine = StartCoroutine(AdvLevelCreationRoutine());
@@ -191,13 +187,12 @@ namespace Game.Scripts.LifeCycle
                           && _splineCreator.TryCreateSpline(road, out _splineContainer)
                           && _splineVisualizer.TryGenerateRoadFromSpline(_splineContainer);
 
-            if (success)
-            {
-                _placeSpawner.GeneratePlaces();
-                _availabilityManagement.UpdateAvailability();
-            }
+            if (!success) return false;
 
-            return success;
+            _placeSpawner.GeneratePlaces();
+            _availabilityManagement.UpdateAvailability();
+
+            return true;
         }
 
         private void InitializeGameplay()

@@ -6,9 +6,9 @@ namespace Game.Scripts.Effects
     [RequireComponent(typeof(ParticleSystem))]
     public class ParticleData : MonoBehaviour
     {
+        private Coroutine _disableCoroutine;
         private ParticleSystem _particle;
         private ParticleSystem.MainModule _particleModule;
-        private Coroutine _disableCoroutine;
         private WaitForSeconds _sleep;
 
         public float GetDuration => _particleModule.duration;
@@ -39,8 +39,6 @@ namespace Game.Scripts.Effects
 
         private IEnumerator WaitAndDisable()
         {
-            var duration = _particleModule.duration;
-
             yield return _sleep;
 
             gameObject.SetActive(false);

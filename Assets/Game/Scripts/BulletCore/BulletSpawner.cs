@@ -1,10 +1,10 @@
-﻿using Game.Scripts.CubeCore;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Game.Scripts.CubeCore;
 using Game.Scripts.Effects;
 using Game.Scripts.Options;
 using Game.Scripts.Pool;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Game.Scripts.BulletCore

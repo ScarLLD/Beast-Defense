@@ -1,7 +1,6 @@
-﻿using Game.Scripts.UI.Menu;
-using Game.Scripts.Player;
-using System;
+﻿using System;
 using System.Collections;
+using Game.Scripts.Player;
 using UnityEngine;
 
 namespace Game.Scripts.MapGenerator
@@ -10,15 +9,13 @@ namespace Game.Scripts.MapGenerator
     {
         [SerializeField] private Game _game;
         [SerializeField] private float _rayDirection;
+        private Camera _camera;
+        private WaitForSeconds _clickCooldown;
+        private bool _isClickProcessed;
+        private Coroutine _rayCoroutine;
+        private bool _shouldStop;
 
         private WaitForSeconds _sleepTime;
-        private WaitForSeconds _clickCooldown;
-        private Coroutine _rayCoroutine;
-        private bool _isClickProcessed;
-        private bool _shouldStop;
-        private Camera _camera;
-
-        public event Action<PlayerCube> Clicked;
 
         private void Awake()
         {
@@ -44,6 +41,8 @@ namespace Game.Scripts.MapGenerator
             _game.Completed -= DisableRay;
             _game.Lost -= DisableRay;
         }
+
+        public event Action<PlayerCube> Clicked;
 
         private void EnableRay()
         {
@@ -93,7 +92,6 @@ namespace Game.Scripts.MapGenerator
                     {
                         var ray = _camera.ScreenPointToRay(pos);
                         if (Physics.Raycast(ray, out var hit, _rayDirection))
-                        {
                             if (hit.transform.TryGetComponent(out PlayerCube cube) &&
                                 cube.IsAvailable &&
                                 !cube.IsScaling)
@@ -104,7 +102,6 @@ namespace Game.Scripts.MapGenerator
                                 yield return _clickCooldown;
                                 _isClickProcessed = false;
                             }
-                        }
                     }
                 }
 

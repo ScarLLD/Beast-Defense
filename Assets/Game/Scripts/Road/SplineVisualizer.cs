@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -14,13 +13,18 @@ namespace Game.Scripts.Road
 
         private float _endPlatformRadius;
         private MeshFilter _meshFilter;
-        private SplineContainer _splineContainer;
         private Mesh _roadMesh;
+        private SplineContainer _splineContainer;
 
         private void Awake()
         {
             _endPlatformRadius = _roadWidth / 2;
             _meshFilter = GetComponent<MeshFilter>();
+        }
+
+        private void OnDestroy()
+        {
+            ClearRoad();
         }
 
         public bool TryGenerateRoadFromSpline(SplineContainer splineContainer)
@@ -44,13 +48,13 @@ namespace Game.Scripts.Road
 
             _roadMesh = new Mesh
             {
-                name = "RoadMesh",
+                name = "RoadMesh"
             };
 
-            List<Vector3> vertices = new ();
-            List<int> triangles = new ();
-            List<Vector2> uv = new ();
-            List<Vector3> normals = new ();
+            List<Vector3> vertices = new();
+            List<int> triangles = new();
+            List<Vector2> uv = new();
+            List<Vector3> normals = new();
 
             var spline = _splineContainer.Spline;
 
@@ -66,8 +70,10 @@ namespace Game.Scripts.Road
 
                 const float widthMultiplier = 1f;
 
-                var leftEdge = new Vector3(position.x, position.y, position.z) - 0.5f * _roadWidth * widthMultiplier * roadRight;
-                var rightEdge = new Vector3(position.x, position.y, position.z) + 0.5f * _roadWidth * widthMultiplier * roadRight;
+                var leftEdge = new Vector3(position.x, position.y, position.z) -
+                               0.5f * _roadWidth * widthMultiplier * roadRight;
+                var rightEdge = new Vector3(position.x, position.y, position.z) +
+                                0.5f * _roadWidth * widthMultiplier * roadRight;
 
                 vertices.Add(leftEdge);
                 vertices.Add(rightEdge);
@@ -100,7 +106,8 @@ namespace Game.Scripts.Road
             _splineContainer.Evaluate(1f, out var endPosition, out var endTangent, out var endUp);
             var platformTangent = new Vector3(endTangent.x, endTangent.y, endTangent.z).normalized;
             var platformUp = new Vector3(endUp.x, endUp.y, endUp.z).normalized;
-            var platformCenter = new Vector3(endPosition.x, endPosition.y, endPosition.z) + Vector3.up * platformYOffset;
+            var platformCenter =
+                new Vector3(endPosition.x, endPosition.y, endPosition.z) + Vector3.up * platformYOffset;
 
             var centerIndex = vertices.Count;
             vertices.Add(platformCenter);
@@ -177,15 +184,7 @@ namespace Game.Scripts.Road
 
         private void ClearRoad()
         {
-            if (_meshFilter != null && _meshFilter.mesh != null)
-            {
-                DestroyImmediate(_meshFilter.mesh);
-            }
-        }
-
-        private void OnDestroy()
-        {
-            ClearRoad();
+            if (_meshFilter != null && _meshFilter.mesh != null) DestroyImmediate(_meshFilter.mesh);
         }
     }
 }

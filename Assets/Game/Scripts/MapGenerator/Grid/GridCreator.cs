@@ -1,9 +1,8 @@
-﻿using Game.Scripts.Core;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Game.Scripts.Core;
 using Game.Scripts.CubeCore;
 using Game.Scripts.Player;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -32,16 +31,14 @@ namespace Game.Scripts.MapGenerator.Grid
         [SerializeField] private GridStorage _gridStorage;
         [SerializeField] private CubeCreator _cubeCreator;
         [SerializeField] private BoundaryMaker _boundaryMaker;
-
-        private List<Obstacle> _obstacles;
         private GridCell[,] _cellGrid;
-        private bool[,] _obstacleMap;
         private Vector3[,] _cellPositions;
-
-        private float _objectWidth;
         private float _objectDepth;
 
-        public event Action Created;
+        private float _objectWidth;
+        private bool[,] _obstacleMap;
+
+        private List<Obstacle> _obstacles;
 
         private void Awake()
         {
@@ -83,13 +80,9 @@ namespace Game.Scripts.MapGenerator.Grid
                 }
             }
 
-            if (_gridStorage.GridCount == 0)
-            {
-                return false;
-            }
+            if (_gridStorage.GridCount == 0) return false;
 
             _gridStorage.CreateCells(_rows, _columns);
-            Created?.Invoke();
 
             return true;
         }
@@ -97,19 +90,12 @@ namespace Game.Scripts.MapGenerator.Grid
         public void Terminate()
         {
             foreach (var cell in _gridStorage.GetAllCells.Where(cell => cell && cell.gameObject))
-            {
                 Destroy(cell.gameObject);
-            }
 
             foreach (var obstacle in _obstacles.Where(obstacle => obstacle && obstacle.gameObject))
-            {
                 Destroy(obstacle.gameObject);
-            }
 
-            if (_walls)
-            {
-                _walls.gameObject.SetActive(false);
-            }
+            if (_walls) _walls.gameObject.SetActive(false);
 
             _obstacles.Clear();
             _gridStorage.Clear();
@@ -120,44 +106,37 @@ namespace Game.Scripts.MapGenerator.Grid
             _gridStorage.Clear();
 
             for (var row = 0; row < _rows; row++)
+            for (var col = 0; col < _columns; col++)
             {
-                for (var col = 0; col < _columns; col++)
-                {
-                    var x = gridStart.x + col * (_objectWidth + _cellSpacingX) + _objectWidth / 2f;
-                    var z = gridStart.z + row * (_objectDepth + _cellSpacingZ) + _objectDepth / 2f;
-                    var y = _centerPosition.y + _cellHeightOffset;
+                var x = gridStart.x + col * (_objectWidth + _cellSpacingX) + _objectWidth / 2f;
+                var z = gridStart.z + row * (_objectDepth + _cellSpacingZ) + _objectDepth / 2f;
+                var y = _centerPosition.y + _cellHeightOffset;
 
-                    Vector3 position = new(x, y, z);
+                Vector3 position = new(x, y, z);
 
-                    _cellPositions[row, col] = position;
+                _cellPositions[row, col] = position;
 
-                    var cell = Instantiate(_cellPrefab, transform);
-                    cell.transform.SetPositionAndRotation(position, Quaternion.identity);
+                var cell = Instantiate(_cellPrefab, transform);
+                cell.transform.SetPositionAndRotation(position, Quaternion.identity);
 
-                    _cellGrid[row, col] = cell;
-                    _gridStorage.Add(cell);
-                }
+                _cellGrid[row, col] = cell;
+                _gridStorage.Add(cell);
             }
         }
 
         private void CreateAllObstacles()
         {
-            foreach (var obs in _obstacles.Where(obs => obs))
-            {
-                Destroy(obs.gameObject);
-            }
+            foreach (var obs in _obstacles.Where(obs => obs)) Destroy(obs.gameObject);
 
             _obstacles.Clear();
 
             for (var row = 0; row < _rows; row++)
+            for (var col = 0; col < _columns; col++)
             {
-                for (var col = 0; col < _columns; col++)
-                {
-                    if (row == _rows - 1) continue;
+                if (row == _rows - 1) continue;
 
-                    if (_obstacleMap[row, col])
-                        CreateSingleObstacle(row, col);
-                }
+                if (_obstacleMap[row, col])
+                    CreateSingleObstacle(row, col);
             }
         }
 
@@ -184,40 +163,28 @@ namespace Game.Scripts.MapGenerator.Grid
             var parent = _obstaclesContainer ? _obstaclesContainer : transform;
 
             for (var row = 0; row < _rows; row++)
+            for (var column = 0; column < _columns; column++)
             {
-                for (var column = 0; column < _columns; column++)
-                {
-                    if (!_obstacleMap[row, column]) continue;
+                if (!_obstacleMap[row, column]) continue;
 
-                    if (column < _columns - 1 && _obstacleMap[row, column + 1])
-                    {
-                        CreateHorizontalStretchedObstacle(_cellPositions[row, column],
-                            _cellPositions[row, column + 1], parent);
-                    }
+                if (column < _columns - 1 && _obstacleMap[row, column + 1])
+                    CreateHorizontalStretchedObstacle(_cellPositions[row, column],
+                        _cellPositions[row, column + 1], parent);
 
-                    if (row < _rows - 2 && _obstacleMap[row + 1, column])
-                    {
-                        CreateVerticalStretchedObstacle(_cellPositions[row, column],
-                            _cellPositions[row + 1, column], parent);
-                    }
+                if (row < _rows - 2 && _obstacleMap[row + 1, column])
+                    CreateVerticalStretchedObstacle(_cellPositions[row, column],
+                        _cellPositions[row + 1, column], parent);
 
-                    if (column == 0)
-                    {
-                        CreateHorizontalStretchedObstacle(_cellPositions[row, column],
-                            _cellPositions[row, column] + Vector3.left * (_objectWidth + _cellSpacingX), parent);
-                    }
-                    else if (column == _columns - 1)
-                    {
-                        CreateHorizontalStretchedObstacle(_cellPositions[row, column],
-                            _cellPositions[row, column] + Vector3.right * (_objectWidth + _cellSpacingX), parent);
-                    }
+                if (column == 0)
+                    CreateHorizontalStretchedObstacle(_cellPositions[row, column],
+                        _cellPositions[row, column] + Vector3.left * (_objectWidth + _cellSpacingX), parent);
+                else if (column == _columns - 1)
+                    CreateHorizontalStretchedObstacle(_cellPositions[row, column],
+                        _cellPositions[row, column] + Vector3.right * (_objectWidth + _cellSpacingX), parent);
 
-                    if (row == 0)
-                    {
-                        CreateVerticalStretchedObstacle(_cellPositions[row, column],
-                            _cellPositions[row, column] + Vector3.back * (_objectDepth + _cellSpacingZ), parent);
-                    }
-                }
+                if (row == 0)
+                    CreateVerticalStretchedObstacle(_cellPositions[row, column],
+                        _cellPositions[row, column] + Vector3.back * (_objectDepth + _cellSpacingZ), parent);
             }
         }
 

@@ -1,5 +1,5 @@
-﻿using Game.Scripts.Pool;
-using Game.Scripts.CubeCore;
+﻿using Game.Scripts.CubeCore;
+using Game.Scripts.Pool;
 using UnityEngine;
 
 namespace Game.Scripts.Effects

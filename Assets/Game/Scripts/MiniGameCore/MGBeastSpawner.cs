@@ -1,7 +1,7 @@
-﻿using Game.Scripts.BeastCore;
-using Game.Scripts.Pool;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Game.Scripts.BeastCore;
+using Game.Scripts.Pool;
 using UnityEngine;
 
 namespace Game.Scripts.MiniGameCore
@@ -10,14 +10,14 @@ namespace Game.Scripts.MiniGameCore
     {
         private const int MAX_COLLIDERS_COUNT = 50;
         private const int SPAWN_ATTEMPS_COUNT = 50;
-        
+
         [SerializeField] private MiniGame _miniGame;
         [SerializeField] private BeastCollector _collector;
         [SerializeField] private DOTWeenAnimator _miniGameAnimator;
         [SerializeField] private Transform _spawnPlatform;
         [SerializeField] private MGBeast _beastPrefab;
 
-        [Header("SpawnRoutine Settings")]
+        [Header("SpawnRoutine Settings")] 
         [SerializeField] private Transform _container;
         [SerializeField] private float _spawnDelay;
         [SerializeField] private float _boundOffset;
@@ -25,13 +25,25 @@ namespace Game.Scripts.MiniGameCore
         [SerializeField] private int _minRandomBeastCount = 3;
         [SerializeField] private int _maxRandomBeastCount = 10;
 
-        private Collider[] _tempColliders;
         private List<MGBeast> _beasts;
-        private int _maxBeastCount;
         private Bounds _bounds;
         private Coroutine _coroutine;
-        private WaitForSeconds _sleepTime;
+        private int _maxBeastCount;
         private ObjectPool<MGBeast> _pool;
+        private WaitForSeconds _sleepTime;
+
+        private Collider[] _tempColliders;
+
+        private void Awake()
+        {
+            _pool = new ObjectPool<MGBeast>(_beastPrefab, transform);
+            _beasts = new List<MGBeast>();
+            _bounds = new Bounds(_spawnPlatform.position, _spawnPlatform.localScale);
+            _sleepTime = new WaitForSeconds(_spawnDelay);
+            _tempColliders = new Collider[MAX_COLLIDERS_COUNT];
+
+            RandomizeMaxBeastCount();
+        }
 
         private void OnEnable()
         {
@@ -43,17 +55,6 @@ namespace Game.Scripts.MiniGameCore
         {
             _miniGame.Started -= OnMiniGameStarted;
             _miniGame.Defeated -= OnMiniGameDefeated;
-        }
-
-        private void Awake()
-        {
-            _pool = new ObjectPool<MGBeast>(_beastPrefab, transform);
-            _beasts = new List<MGBeast>();
-            _bounds = new Bounds(_spawnPlatform.position, _spawnPlatform.localScale);
-            _sleepTime = new WaitForSeconds(_spawnDelay);
-            _tempColliders = new Collider[MAX_COLLIDERS_COUNT];
-
-            RandomizeMaxBeastCount();
         }
 
         public void InitializeSkin(GameObject beastPrefab)
@@ -86,10 +87,7 @@ namespace Game.Scripts.MiniGameCore
             {
                 yield return _sleepTime;
 
-                if (TrySpawn())
-                {
-                    spawnedCount++;
-                }
+                if (TrySpawn()) spawnedCount++;
             }
 
             StopRoutine();
@@ -125,9 +123,7 @@ namespace Game.Scripts.MiniGameCore
 
                 if (tempCollider.GetComponent<Beast>() ||
                     tempCollider.GetComponent<MGCube>())
-                {
                     return false;
-                }
             }
 
             return true;
@@ -147,7 +143,7 @@ namespace Game.Scripts.MiniGameCore
         private void StopRoutine()
         {
             if (_coroutine == null) return;
-            
+
             StopCoroutine(_coroutine);
             _coroutine = null;
         }
@@ -157,10 +153,7 @@ namespace Game.Scripts.MiniGameCore
             RandomizeMaxBeastCount();
             StopRoutine();
 
-            foreach (var beast in _beasts)
-            {
-                beast.gameObject.SetActive(false);
-            }
+            foreach (var beast in _beasts) beast.gameObject.SetActive(false);
 
             _beasts.Clear();
         }

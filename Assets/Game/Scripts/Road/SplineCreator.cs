@@ -63,7 +63,7 @@ namespace Game.Scripts.Road
                             var angle = Vector3.Angle(inDirection, outDirection);
 
                             var tangentDirection = (inDirection + outDirection).normalized;
-                            var tangentStrength = _cornerRadius * _cornerSmoothness 
+                            var tangentStrength = _cornerRadius * _cornerSmoothness
                                                                 * Mathf.Lerp(0.1f, 0.5f, angle / 90f);
 
                             knot.TangentIn = new float3(tangentStrength * -tangentDirection);
@@ -103,13 +103,13 @@ namespace Game.Scripts.Road
             spline.Closed = false;
             return true;
         }
-        
+
         private static Vector3 CalculateCatmullRomPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
         {
             var t2 = t * t;
             var t3 = t2 * t;
 
-            return 0.5f * ((2 * p1) +
+            return 0.5f * (2 * p1 +
                            (-p0 + p2) * t +
                            (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
                            (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
@@ -126,10 +126,7 @@ namespace Game.Scripts.Road
 
                 var angle = Vector3.Angle(prevDir, nextDir);
 
-                if (angle > _minAngleForRounding)
-                {
-                    corners.Add(i);
-                }
+                if (angle > _minAngleForRounding) corners.Add(i);
             }
 
             return corners;
@@ -143,7 +140,6 @@ namespace Game.Scripts.Road
             List<Vector3> result = new();
 
             for (var i = 0; i < originalPoints.Count; i++)
-            {
                 if (!cornerIndices.Contains(i))
                 {
                     result.Add(originalPoints[i]);
@@ -161,10 +157,7 @@ namespace Game.Scripts.Road
                     var startPoint = cornerPoint - inDir * radius;
                     var endPoint = cornerPoint + outDir * radius;
 
-                    if (result.Count == 0 || Vector3.Distance(result[^1], startPoint) > 0.01f)
-                    {
-                        result.Add(startPoint);
-                    }
+                    if (result.Count == 0 || Vector3.Distance(result[^1], startPoint) > 0.01f) result.Add(startPoint);
 
                     for (var j = 1; j <= POINTS_COUNT; j++)
                     {
@@ -179,12 +172,12 @@ namespace Game.Scripts.Road
 
                     result.Add(endPoint);
                 }
-            }
 
             return result;
         }
 
-        private static bool IsCornerPoint(int index, List<Vector3> processedPoints, List<Vector3> originalPoints, List<int> cornerIndices)
+        private static bool IsCornerPoint(int index, List<Vector3> processedPoints, List<Vector3> originalPoints,
+            List<int> cornerIndices)
         {
             foreach (var cornerIndex in cornerIndices)
             {
@@ -194,17 +187,14 @@ namespace Game.Scripts.Road
                 for (var i = 0; i < originalPoints.Count; i++)
                 {
                     var dist = Vector3.Distance(processedPoints[index], originalPoints[i]);
-                    
+
                     if (!(dist < minDistance)) continue;
-                    
+
                     minDistance = dist;
                     closestOriginalIndex = i;
                 }
 
-                if (closestOriginalIndex >= 0 && Mathf.Abs(closestOriginalIndex - cornerIndex) <= 2)
-                {
-                    return true;
-                }
+                if (closestOriginalIndex >= 0 && Mathf.Abs(closestOriginalIndex - cornerIndex) <= 2) return true;
             }
 
             return false;
@@ -217,15 +207,15 @@ namespace Game.Scripts.Road
 
             List<Vector3> smoothed = new()
             {
-                points[0],
+                points[0]
             };
 
             for (var i = 0; i < points.Count - 1; i++)
             {
-                var p0 = (i > 0) ? points[i - 1] : points[i];
+                var p0 = i > 0 ? points[i - 1] : points[i];
                 var p1 = points[i];
                 var p2 = points[i + 1];
-                var p3 = (i < points.Count - 2) ? points[i + 2] : points[i + 1];
+                var p3 = i < points.Count - 2 ? points[i + 2] : points[i + 1];
 
                 var segmentLength = Vector3.Distance(p1, p2);
                 if (segmentLength < _cornerRadius * 0.5f)

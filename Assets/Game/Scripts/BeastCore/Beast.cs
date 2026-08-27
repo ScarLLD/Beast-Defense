@@ -1,8 +1,7 @@
-﻿using Game.Scripts.Options;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Mathematics;
+using Game.Scripts.Options;
 using UnityEngine;
 using UnityEngine.Splines;
 
@@ -11,11 +10,11 @@ namespace Game.Scripts.BeastCore
     [RequireComponent(typeof(BeastAnimator))]
     public class Beast : MonoBehaviour
     {
-        private readonly float _arrivalThreshold = 0.005f;
-        private readonly float _escapeThreshold = 0.15f;
-        private readonly float _startSplinePosition = 0.5f;
-        private readonly float _initialTargetPercentage = 0.75f;
-        private readonly float _finalTargetPercentage = 1f;
+        private const float ARRIVAL_THRESHOLD = 0.005f;
+        private const float ESCAPE_THRESHOLD = 0.15f;
+        private const float START_SPLINE_POSITION = 0.5f;
+        private const float INITIAL_TARGET_PERCENTAGE = 0.75f;
+        private const float FINAL_TARGET_PERCENTAGE = 1f;
 
         [SerializeField] private float _speedMultiplier = 3f;
         [SerializeField] private float _rotationSpeed = 15f;
@@ -49,10 +48,10 @@ namespace Game.Scripts.BeastCore
             if (snakeSpeed < 0)
                 throw new ArgumentException("SnakeSpeed не может быть меньше 0.", nameof(snakeSpeed));
 
-            if (splineContainer == null)
+            if (!splineContainer)
                 throw new ArgumentNullException("splineContainer не может быть null.", nameof(splineContainer));
 
-            if (audioPlayer == null)
+            if (!audioPlayer)
                 throw new ArgumentNullException("audioPlayer не может быть null.", nameof(audioPlayer));
 
             _snakeSpeed = snakeSpeed;
@@ -77,10 +76,10 @@ namespace Game.Scripts.BeastCore
 
             _cachedSplineLength = _splineContainer.Spline.GetLength();
 
-            _currentSplinePosition = _startSplinePosition;
+            _currentSplinePosition = START_SPLINE_POSITION;
 
-            _targetPercentages.Enqueue(_initialTargetPercentage);
-            _targetPercentages.Enqueue(_finalTargetPercentage);
+            _targetPercentages.Enqueue(INITIAL_TARGET_PERCENTAGE);
+            _targetPercentages.Enqueue(FINAL_TARGET_PERCENTAGE);
 
             PlaceOnSpline();
             _rotateCoroutine = StartCoroutine(RotateToFace());
@@ -93,7 +92,7 @@ namespace Game.Scripts.BeastCore
 
         public bool TryApproachNotify(float snakeSplinePosition)
         {
-            if (_currentSplinePosition - snakeSplinePosition >= _escapeThreshold)
+            if (_currentSplinePosition - snakeSplinePosition >= ESCAPE_THRESHOLD)
                 return false;
 
             if (_targetPercentages.Count <= 0)
@@ -133,20 +132,20 @@ namespace Game.Scripts.BeastCore
             _animator.ResetSettings();
             _animator.SetWalkBool(true);
 
-            float currentTargetPercentage = _targetPercentages.Dequeue();
+            var currentTargetPercentage = _targetPercentages.Dequeue();
 
-            bool isWork = true;
+            var isWork = true;
 
             IsMoving = true;
 
             while (isWork)
             {
-                float moveDistance = _snakeSpeed * _speedMultiplier * Time.deltaTime / _cachedSplineLength;
+                var moveDistance = _snakeSpeed * _speedMultiplier * Time.deltaTime / _cachedSplineLength;
                 _currentSplinePosition = Mathf.MoveTowards(_currentSplinePosition, currentTargetPercentage, moveDistance);
 
                 PlaceOnSpline();
 
-                if (Mathf.Abs(_currentSplinePosition - currentTargetPercentage) < _arrivalThreshold)
+                if (Mathf.Abs(_currentSplinePosition - currentTargetPercentage) < ARRIVAL_THRESHOLD)
                 {
                     _currentSplinePosition = currentTargetPercentage;
                     PlaceOnSpline();
@@ -165,21 +164,21 @@ namespace Game.Scripts.BeastCore
 
         private void PlaceOnSpline()
         {
-            if (_splineContainer == null)
+            if (!_splineContainer)
                 throw new ArgumentException("_splineContainer не может быть null.", nameof(_splineContainer));
 
             _splineContainer.Spline.Evaluate(_currentSplinePosition,
-                out float3 position,
-                out float3 tangent,
-                out float3 up);
+                out var position,
+                out var tangent,
+                out var up);
 
             position.y += transform.localScale.y;
             _transform.position = position;
 
             if (!IsMoving) return;
 
-            Vector3 safeTangent = (Vector3)tangent;
-            Vector3 safeUp = (Vector3)up;
+            var safeTangent = (Vector3)tangent;
+            var safeUp = (Vector3)up;
 
             if (safeTangent == Vector3.zero)
                 safeTangent = Vector3.forward;
@@ -187,7 +186,7 @@ namespace Game.Scripts.BeastCore
             if (safeUp == Vector3.zero)
                 safeUp = Vector3.up;
 
-            Quaternion targetRotation = Quaternion.LookRotation(safeTangent, safeUp);
+            var targetRotation = Quaternion.LookRotation(safeTangent, safeUp);
 
             if (Quaternion.Angle(_transform.rotation, targetRotation) > 0.1f)
             {
@@ -200,16 +199,16 @@ namespace Game.Scripts.BeastCore
 
         private IEnumerator RotateToFace()
         {
-            Quaternion targetRotation = Quaternion.LookRotation(Vector3.back);
-            Quaternion startRotation = _transform.rotation;
+            var targetRotation = Quaternion.LookRotation(Vector3.back);
+            var startRotation = _transform.rotation;
 
-            float timer = 0f;
-            float inverseDuration = 1f / _rotateDuration;
+            var timer = 0f;
+            var inverseDuration = 1f / _rotateDuration;
 
             while (timer < _rotateDuration)
             {
                 timer += Time.deltaTime;
-                float t = timer * inverseDuration;
+                var t = timer * inverseDuration;
                 _transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
                 yield return null;
             }

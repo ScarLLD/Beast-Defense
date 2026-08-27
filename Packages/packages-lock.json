@@ -193,6 +193,13 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.xavierarpa.namespacepath": {
+      "version": "https://github.com/xavierarpa/NamespacePath.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "3d649275bba8a61089f449a25b56e44b80612a9d"
+    },
     "com.unity.modules.ai": {
       "version": "1.0.0",
       "depth": 0,

@@ -8,8 +8,8 @@ namespace Game.Scripts.Options
         [SerializeField] private AudioSource _soundAudio;
         [SerializeField] private AudioSource _musicAudio;
 
-        [Header("Icons")]
-        [SerializeField] private GameObject _musicNegativeIcon;
+        [Header("Icons")] [SerializeField] private GameObject _musicNegativeIcon;
+
         [SerializeField] private GameObject _soundNegativeIcon;
 
         private void Awake()
@@ -30,7 +30,7 @@ namespace Game.Scripts.Options
             ApplyAudioSettings();
             YG2.SaveProgress();
         }
-        
+
         private void ApplyAudioSettings()
         {
             _soundAudio.mute = YG2.saves.SoundMuted;

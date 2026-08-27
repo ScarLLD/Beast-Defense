@@ -1,9 +1,9 @@
-﻿using Game.Scripts.UI.Menu;
-using Game.Scripts.UI;
+﻿using System;
 using System.Collections;
+using Game.Scripts.UI;
+using Game.Scripts.UI.Menu;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 namespace Game.Scripts.Shop
 {
@@ -13,9 +13,6 @@ namespace Game.Scripts.Shop
         [SerializeField] private float _transitionDuration = 0.4f;
         [SerializeField] private Material _shopMaterial;
         [SerializeField] private Button _exitButton;
-
-        public new event Action Opened;
-        public event Action Closed;
 
         private void Awake()
         {
@@ -31,6 +28,9 @@ namespace Game.Scripts.Shop
         {
             _exitButton.onClick.RemoveListener(OnExitButtonClick);
         }
+
+        public new event Action Opened;
+        public event Action Closed;
 
         public void Open()
         {
@@ -61,7 +61,7 @@ namespace Game.Scripts.Shop
         private IEnumerator CloseShopRoutine()
         {
             if (_transition.IsTransiting) yield break;
-            
+
             _transition.StartBackTransition(_shopMaterial.color, _transitionDuration);
             yield return new WaitUntil(() => !_transition.IsTransiting);
 

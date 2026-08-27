@@ -1,10 +1,10 @@
-﻿using Game.Scripts.Effects;
-using Game.Scripts.Options;
 using System;
 using System.Collections;
+using Game.Scripts.Effects;
+using Game.Scripts.Options;
 using UnityEngine;
 
-namespace Game.Scripts.LifeCycle
+namespace Game.Scripts.Lifecycle
 {
     public class DeathModule : MonoBehaviour
     {

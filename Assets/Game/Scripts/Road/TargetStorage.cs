@@ -1,6 +1,6 @@
-﻿using Game.Scripts.SnakeCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Game.Scripts.SnakeCore;
 using UnityEngine;
 
 namespace Game.Scripts.Road
@@ -24,20 +24,16 @@ namespace Game.Scripts.Road
             snakeSegment = _segments.FirstOrDefault(segment => segment.IsCurrentColor(color) && !segment.IsTarget);
 
             if (!snakeSegment) return false;
-            
+
             snakeSegment.SetIsTarget(true);
             return true;
-
         }
 
         public void Cleanup()
         {
             if (_segments is not { Count: > 0 }) return;
-            
-            foreach (var segment in _segments)
-            {
-                segment.SetIsTarget(false);
-            }
+
+            foreach (var segment in _segments) segment.SetIsTarget(false);
 
             _segments.Clear();
         }

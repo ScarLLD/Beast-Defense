@@ -1,10 +1,11 @@
-﻿using Game.Scripts.BulletCore;
-using Game.Scripts.Core;
-using Game.Scripts.LifeCycle;
-using Game.Scripts.UI.Menu;
-using Game.Scripts.Shop;
 using System.Collections.Generic;
+using Game.Scripts.BulletCore;
+using Game.Scripts.Core;
+using Game.Scripts.Lifecycle;
+using Game.Scripts.MiniGameCore;
+using Game.Scripts.Shop;
 using Game.Scripts.UI;
+using Game.Scripts.UI.Menu;
 using UnityEngine;
 
 namespace Game.Scripts.Options
@@ -14,8 +15,8 @@ namespace Game.Scripts.Options
         [SerializeField] private AudioSource _soundSource;
         [SerializeField] private AudioSource _musicSource;
 
-        [Header("Sounds")]
-        [SerializeField] private AudioClip _transitionSound;
+        [Header("Sounds")] [SerializeField] private AudioClip _transitionSound;
+
         [SerializeField] private AudioClip _beastDieSound;
         [SerializeField] private AudioClip _snakeDieSound;
         [SerializeField] private AudioClip _cloudParticleSound;
@@ -30,13 +31,13 @@ namespace Game.Scripts.Options
         [SerializeField] private AudioClip _skinSelectSound;
         [SerializeField] private AudioClip _buttonClickSound;
 
-        [Header("Musics")]
-        [SerializeField] private List<AudioClip> _musics;
+        [Header("Musics")] [SerializeField] private List<AudioClip> _musics;
+
         [SerializeField] private AudioClip _miniGameMusic;
 
-        [Header("Other")]
-        [SerializeField] private MapGenerator.Game _game;
-        [SerializeField] private MiniGameCore.MiniGame _miniGame;
+        [Header("Other")] [SerializeField] private MapGenerator.Game _game;
+
+        [SerializeField] private MiniGame _miniGame;
         [SerializeField] private DeathModule _deathModule;
         [SerializeField] private SkinShop _shop;
         [SerializeField] private Transition _transition;
@@ -111,7 +112,7 @@ namespace Game.Scripts.Options
         {
             PlaySound(_pickShooterSound);
         }
-        
+
         public void PlayBeastJumpSound()
         {
             PlaySound(_beastJumpSound);
@@ -131,7 +132,7 @@ namespace Game.Scripts.Options
         {
             PlaySound(_shootSound);
         }
-        
+
         private void OnButtonClicked()
         {
             PlaySound(_buttonClickSound);

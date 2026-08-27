@@ -6,7 +6,7 @@ namespace Game.Scripts.UI.Menu
 {
     public class GameOverMenu : Window
     {
-        private readonly float _advButtonAlphaPressedColor = 0.5f;
+        private const float ADV_BUTTON_ALPHA_PRESSED_COLOR = 0.5f;
 
         [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private Adv _adv;
@@ -109,7 +109,7 @@ namespace Game.Scripts.UI.Menu
         private void DisableAdvButton()
         {
             _advRegenerateLevelButton.interactable = false;
-            _regenerateText.alpha = _advButtonAlphaPressedColor;
+            _regenerateText.alpha = ADV_BUTTON_ALPHA_PRESSED_COLOR;
         }
 
         private void EnableAdvButton()

@@ -1,7 +1,7 @@
 ﻿using Game.Scripts.Player;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+using System.Linq;
 
 namespace Game.Scripts.MapGenerator
 {

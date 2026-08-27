@@ -1,10 +1,10 @@
-﻿using Game.Scripts.BulletCore;
-using Game.Scripts.CubeCore;
-using Game.Scripts.MapGenerator.Grid;
-using Game.Scripts.MapGenerator;
-using Game.Scripts.Road;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using Game.Scripts.BulletCore;
+using Game.Scripts.CubeCore;
+using Game.Scripts.MapGenerator;
+using Game.Scripts.MapGenerator.Grid;
+using Game.Scripts.Road;
 using UnityEngine;
 
 namespace Game.Scripts.Player
@@ -21,22 +21,22 @@ namespace Game.Scripts.Player
         [SerializeField] private float _moveSpeed = 10f;
         [SerializeField] private float _scaleChangerSpeed = 3f;
         [SerializeField] private float _outlineActive = 4.4f;
-        [SerializeField] private float _outlineDisable = 0f;
+        [SerializeField] private float _outlineDisable;
         [SerializeField] private MeshRenderer _meshRenderer;
         [SerializeField] private Outline _outline;
         [SerializeField] private List<MeshRenderer> _legs;
-
-        private Vector3 _defaultScale;
-        private Vector3 _defaultPosition;
+        private BulletView _bulletView;
 
         private PlayerCubeAnimator _cubeAnimator;
-        private Transform _transform;
+        private Vector3 _defaultPosition;
+
+        private Vector3 _defaultScale;
+        private GridCell _gridCell;
+        private bool _isScaled;
+        private CubeMover _mover;
         private TargetRadar _radar;
         private Shooter _shooter;
-        private BulletView _bulletView;
-        private GridCell _gridCell;
-        private CubeMover _mover;
-        private bool _isScaled;
+        private Transform _transform;
 
         public bool IsAvailable { get; private set; }
         public bool HasClicked { get; private set; }
@@ -55,7 +55,22 @@ namespace Game.Scripts.Player
             GetStack = GetComponent<CubeStack>();
         }
 
-        public void Init(GridCell cell, Material material, int count, BulletSpawner bulletSpawner, TargetStorage targetStorage)
+        private void OnEnable()
+        {
+            _mover.Arrived += OnMoverArrived;
+            _mover.Escaped += OnMoverEscaped;
+            _shooter.BulletsCountChanged += OnBulletsDecreased;
+        }
+
+        private void OnDisable()
+        {
+            _mover.Arrived -= OnMoverArrived;
+            _mover.Escaped -= OnMoverEscaped;
+            _shooter.BulletsCountChanged -= OnBulletsDecreased;
+        }
+
+        public void Init(GridCell cell, Material material, int count, BulletSpawner bulletSpawner,
+            TargetStorage targetStorage)
         {
             _gridCell = cell;
 
@@ -69,20 +84,6 @@ namespace Game.Scripts.Player
                 leg.material = material;
 
             InitialDefaultTransform();
-        }
-
-        private void OnEnable()
-        {
-            _mover.Arrived += OnMoverArrived;
-            _mover.Escaped += OnMoverEscaped;
-            _shooter.BulletsCountChanged += OnBulletsDecreased;
-        }
-
-        private void OnDisable()
-        {
-            _mover.Arrived -= OnMoverArrived;
-            _mover.Escaped -= OnMoverEscaped;
-            _shooter.BulletsCountChanged -= OnBulletsDecreased;
         }
 
         public void Interact(ShootingPlace shootingPlace, Vector3 escapePlace)
@@ -126,7 +127,7 @@ namespace Game.Scripts.Player
             else
                 DeactivateAvailability();
         }
-        
+
         private void StartMoving()
         {
             TurnOnLegs();
@@ -169,7 +170,8 @@ namespace Game.Scripts.Player
         private void SetHalfSizeTransform()
         {
             _transform.localScale = new Vector3(_defaultScale.x, _defaultScale.y / 2, _defaultScale.z);
-            _transform.position = new Vector3(_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4, _defaultPosition.z);
+            _transform.position = new Vector3(_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4,
+                _defaultPosition.z);
 
             _meshRenderer.transform.localPosition = Vector3.zero;
         }
@@ -211,7 +213,7 @@ namespace Game.Scripts.Player
         private void OnBulletsDecreased()
         {
             if (_shooter.BulletCount != 0) return;
-            
+
             TurnOnLegs();
             _cubeAnimator.SetWalkBool(true);
             _mover.GoEscape();

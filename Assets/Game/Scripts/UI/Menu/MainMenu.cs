@@ -1,6 +1,6 @@
-﻿using Game.Scripts.MiniGameCore;
+﻿using System.Threading.Tasks;
+using Game.Scripts.MiniGameCore;
 using Game.Scripts.Shop;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 using YG;
@@ -24,6 +24,15 @@ namespace Game.Scripts.UI.Menu
         [SerializeField] private Button _miniGameStartButton;
 
         private bool _isGameReadySent;
+
+        private async void Awake()
+        {
+            EnableMenu();
+
+            await Task.Yield();
+
+            SendGameReady();
+        }
 
         private void OnEnable()
         {
@@ -61,15 +70,6 @@ namespace Game.Scripts.UI.Menu
 
             _leaderBoardMenu.Opened -= OnLeaderBoardOpened;
             _leaderBoardMenu.Closed -= OnLeaderBoardClosed;
-        }
-
-        private async void Awake()
-        {
-            EnableMenu();
-
-            await Task.Yield();
-
-            SendGameReady();
         }
 
         private void SendGameReady()
@@ -116,20 +116,44 @@ namespace Game.Scripts.UI.Menu
             _leaderBoardMenu.Open();
         }
 
-        private void OnGameStarted() => DisableMenu();
+        private void OnGameStarted()
+        {
+            DisableMenu();
+        }
 
-        private void OnGameLeaved() => EnableMenu();
+        private void OnGameLeaved()
+        {
+            EnableMenu();
+        }
 
-        private void OnMiniGameStarted() => DisableMenu();
+        private void OnMiniGameStarted()
+        {
+            DisableMenu();
+        }
 
-        private void OnMiniGameLeaved() => EnableMenu();
+        private void OnMiniGameLeaved()
+        {
+            EnableMenu();
+        }
 
-        private void OnLeaderBoardOpened() => DisableMenu();
+        private void OnLeaderBoardOpened()
+        {
+            DisableMenu();
+        }
 
-        private void OnLeaderBoardClosed() => EnableMenu();
+        private void OnLeaderBoardClosed()
+        {
+            EnableMenu();
+        }
 
-        private void OnShopOpened() => DisableMenu();
+        private void OnShopOpened()
+        {
+            DisableMenu();
+        }
 
-        private void OnShopClosed() => EnableMenu();
+        private void OnShopClosed()
+        {
+            EnableMenu();
+        }
     }
 }

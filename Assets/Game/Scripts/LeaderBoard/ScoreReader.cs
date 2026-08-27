@@ -1,5 +1,4 @@
-﻿using System;
-using Game.Scripts.LifeCycle;
+using Game.Scripts.Lifecycle;
 using Game.Scripts.UI.Menu;
 using UnityEngine;
 using UnityEngine.UI;
@@ -52,7 +51,7 @@ namespace Game.Scripts.LeaderBoard
 
             _scoreText.text = formattedTime;
 
-            if (TryGetScore(out float loadedTime, out bool isEmptyScore))
+            if (TryGetScore(out var loadedTime, out var isEmptyScore))
                 _recordIdentifier.SetActive(loadedTime > time || isEmptyScore);
             else
                 _recordIdentifier.SetActive(false);
@@ -76,7 +75,7 @@ namespace Game.Scripts.LeaderBoard
 
         private void SubmitScoreInternal(float newScore)
         {
-             var scoreRetrieved = TryGetScore(out var loadedScore, out _);
+            var scoreRetrieved = TryGetScore(out var loadedScore, out _);
 
             if (scoreRetrieved)
             {
@@ -98,7 +97,7 @@ namespace Game.Scripts.LeaderBoard
             _lbData = lbData;
 
             if (!(_pendingScore > 0)) return;
-            
+
             SubmitScoreInternal(_pendingScore);
             _pendingScore = 0;
         }
@@ -118,11 +117,10 @@ namespace Game.Scripts.LeaderBoard
 
             foreach (var player in _lbData.players)
             {
-                if (player.uniqueID == YG2.player.id)
-                {
-                    score = player.score / 1000f;
-                    return true;
-                }
+                if (player.uniqueID != YG2.player.id) continue;
+
+                score = player.score / 1000f;
+                return true;
             }
 
             return false;

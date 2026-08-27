@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using UnityEngine;
 using YG;
 
@@ -33,7 +34,7 @@ namespace Game.Scripts.UI.Menu
             if (!string.IsNullOrEmpty(restoreTimeString))
             {
                 if (DateTime.TryParse(restoreTimeString, null, 
-                        System.Globalization.DateTimeStyles.RoundtripKind, out var parsedTime))
+                        DateTimeStyles.RoundtripKind, out var parsedTime))
                 {
                     _nextRestoreTimeUtc = parsedTime.ToUniversalTime();
                 }

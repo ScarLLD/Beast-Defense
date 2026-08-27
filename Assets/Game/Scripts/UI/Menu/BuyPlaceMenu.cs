@@ -1,4 +1,4 @@
-﻿using Game.Scripts.LifeCycle;
+using Game.Scripts.Lifecycle;
 using Game.Scripts.MapGenerator;
 using TMPro;
 using UnityEngine;
@@ -11,9 +11,6 @@ namespace Game.Scripts.UI.Menu
         private const float NOT_ENOUGH_MONEY_ALPHA = 0.4f;
         private const float ENOUGH_MONEY_ALPHA = 1f;
 
-        private readonly Color _notEnoughMoneyColor = Color.red;
-        private readonly Color _enoughMoneyColor = Color.green;
-        
         [SerializeField] private MapGenerator.Game _game;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private DeathModule _deathModule;
@@ -24,6 +21,9 @@ namespace Game.Scripts.UI.Menu
         [SerializeField] private Button _exitButton;
         [SerializeField] private Image _buyButtonImage;
         [SerializeField] private Image _buyButtonIconImage;
+        private readonly Color _enoughMoneyColor = Color.green;
+
+        private readonly Color _notEnoughMoneyColor = Color.red;
 
         private void Awake()
         {
@@ -97,7 +97,6 @@ namespace Game.Scripts.UI.Menu
                 var iconColor = _buyButtonIconImage.color;
                 iconColor.a = ENOUGH_MONEY_ALPHA;
                 _buyButtonIconImage.color = iconColor;
-
             }
             else
             {
@@ -111,7 +110,6 @@ namespace Game.Scripts.UI.Menu
                 var iconColor = _buyButtonIconImage.color;
                 iconColor.a = NOT_ENOUGH_MONEY_ALPHA;
                 _buyButtonIconImage.color = iconColor;
-
             }
         }
     }

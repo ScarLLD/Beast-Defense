@@ -12,8 +12,9 @@ namespace Game.Scripts.MiniGameCore
         [SerializeField] private BeastSpawner _beastSpawner;
         [SerializeField] private AudioPlayer _audioPlayer;
 
-        [Header("MiniGameSettings")]
-        [SerializeField] private MiniGame _miniGame;
+        [Header("MiniGameSettings")] [SerializeField]
+        private MiniGame _miniGame;
+
         [SerializeField] private GameObject _gameObjectsParent;
         [SerializeField] private MiniGameSequenceAnimator _animator;
         [SerializeField] private MGBeastSpawner _mgBeastSpawner;
@@ -26,16 +27,6 @@ namespace Game.Scripts.MiniGameCore
             InitializeControlHint();
         }
 
-        private void InitializeControlHint()
-        {
-            var deviceIsDesktop = YG2.envir.isDesktop;
-
-            if (deviceIsDesktop)
-                _desktopControl.gameObject.SetActive(true);
-            else
-                _mobileControl.gameObject.SetActive(true);
-        }
-
         private void OnEnable()
         {
             _miniGame.Won += Close;
@@ -46,6 +37,16 @@ namespace Game.Scripts.MiniGameCore
         {
             _miniGame.Won -= Close;
             _miniGame.Defeated -= Close;
+        }
+
+        private void InitializeControlHint()
+        {
+            var deviceIsDesktop = YG2.envir.isDesktop;
+
+            if (deviceIsDesktop)
+                _desktopControl.gameObject.SetActive(true);
+            else
+                _mobileControl.gameObject.SetActive(true);
         }
 
         public void Launch()

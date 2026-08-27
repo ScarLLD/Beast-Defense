@@ -4,6 +4,8 @@ namespace Game.Scripts.MiniGameCore
 {
     public class MGSnakeSpawner : MonoBehaviour
     {
+        private readonly Vector3 _modelSpawnPoint = new(0f, -1.25f, 0f);
+        
         [SerializeField] private MiniGame _miniGame;
 
         [Header("SpawnRoutine settings")]
@@ -11,7 +13,6 @@ namespace Game.Scripts.MiniGameCore
         [SerializeField] private MGSnake _snake;
         [SerializeField] private Vector3 _spawnPoint;
 
-        private Vector3 _modelSpawnPoint = new(0f, -1.25f, 0f);
         private GameObject _snakeModel;
 
         private void OnEnable()

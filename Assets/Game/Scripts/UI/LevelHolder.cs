@@ -1,5 +1,4 @@
-﻿using Game.Scripts.MapGenerator;
-using UnityEngine;
+﻿using UnityEngine;
 using YG;
 
 namespace Game.Scripts.UI

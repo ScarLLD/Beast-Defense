@@ -17,10 +17,7 @@ namespace Game.Scripts.Shop.Skins
 
         public string GetDefaultSkinId()
         {
-            foreach (var skin in Skins.Where(skin => skin.IsDefault))
-            {
-                return skin.SkinId;
-            }
+            foreach (var skin in Skins.Where(skin => skin.IsDefault)) return skin.SkinId;
 
             return Skins.Count > 0 ? Skins[0].SkinId : string.Empty;
         }
@@ -30,21 +27,13 @@ namespace Game.Scripts.Shop.Skins
         {
             public string SkinId;
 
-            [Serializable]
-            public class LocalizedName
-            {
-                public string Ru;
-                public string En;
-                public string Tr;
-            }
-
             public LocalizedName SkinNameTranslations;
 
             public int Price;
             public Sprite Icon;
             public GameObject Model;
             public Color Color;
-            public bool IsDefault = false;
+            public bool IsDefault;
 
             public string GetLocalizedName(string languageCode)
             {
@@ -53,8 +42,16 @@ namespace Game.Scripts.Shop.Skins
                     "ru" => SkinNameTranslations.Ru,
                     "en" => SkinNameTranslations.En,
                     "tr" => SkinNameTranslations.Tr,
-                    _ => SkinNameTranslations.En,
+                    _ => SkinNameTranslations.En
                 };
+            }
+
+            [Serializable]
+            public class LocalizedName
+            {
+                public string Ru;
+                public string En;
+                public string Tr;
             }
         }
     }

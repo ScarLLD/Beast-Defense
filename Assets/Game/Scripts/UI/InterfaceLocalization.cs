@@ -1,6 +1,6 @@
 ﻿namespace Game.Scripts.UI
 {
-    public class InterfaceLocalization
+    public static class InterfaceLocalization
     {
         public static string GetLocalizedSnakeType(string languageCode)
         {
@@ -9,7 +9,7 @@
                 "ru" => "Змея",
                 "en" => "Snake",
                 "tr" => "Yılan",
-                _ => "Snake",
+                _ => "Snake"
             };
         }
 
@@ -20,7 +20,7 @@
                 "ru" => "Зверь",
                 "en" => "BeastCore",
                 "tr" => "Canavar",
-                _ => "BeastCore",
+                _ => "BeastCore"
             };
         }
 
@@ -31,7 +31,7 @@
                 "ru" => "Бесплатно",
                 "en" => "Free",
                 "tr" => "Ücret",
-                _ => "Free",
+                _ => "Free"
             };
         }
 
@@ -42,7 +42,7 @@
                 "ru" => "Куплено",
                 "en" => "Purchased",
                 "tr" => "Satın alındı",
-                _ => "Purchased",
+                _ => "Purchased"
             };
         }
 
@@ -53,7 +53,7 @@
                 "ru" => "Монет",
                 "en" => "Money",
                 "tr" => "Para",
-                _ => "Money",
+                _ => "Money"
             };
         }
 
@@ -64,7 +64,7 @@
                 "ru" => "НЕ ХВАТАЕТ МОНЕТ",
                 "en" => "NOT ENOUGH MONEY",
                 "tr" => "YETERLİ BOZUK PARA YOK",
-                _ => "NOT ENOUGH MONEY",
+                _ => "NOT ENOUGH MONEY"
             };
         }
 
@@ -75,7 +75,7 @@
                 "ru" => "КУПИТЬ",
                 "en" => "BUY",
                 "tr" => "ALMAK",
-                _ => "BUY",
+                _ => "BUY"
             };
         }
 
@@ -86,7 +86,7 @@
                 "ru" => "ВЫБРАТЬ",
                 "en" => "CHOOSE",
                 "tr" => "SEÇMEK",
-                _ => "CHOOSE",
+                _ => "CHOOSE"
             };
         }
     }

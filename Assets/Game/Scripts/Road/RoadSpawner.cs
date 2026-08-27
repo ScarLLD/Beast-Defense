@@ -1,5 +1,5 @@
-﻿using Game.Scripts.MapGenerator;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Game.Scripts.MapGenerator;
 using UnityEngine;
 
 namespace Game.Scripts.Road
@@ -16,25 +16,27 @@ namespace Game.Scripts.Road
         [SerializeField] private int _minPathSegments = 5;
         [SerializeField] private int _maxPathSegments = 15;
 
-        [Header("SpawnRoutine Settings")]
-        [SerializeField] private bool _allowTopSpawn = true;
+        [Header("SpawnRoutine Settings")] [SerializeField]
+        private bool _allowTopSpawn = true;
+
         [SerializeField] private bool _allowLeftSpawn = true;
         [SerializeField] private bool _allowRightSpawn = true;
 
-        [Header("Pathfinding Settings")]
-        [SerializeField] private float _initialTurnProbability = 0.3f;
+        [Header("Pathfinding Settings")] [SerializeField]
+        private float _initialTurnProbability = 0.3f;
+
         [SerializeField] private float _turnProbabilityIncrease = 0.02f;
 
         private DirectionAnalyzer _directionAnalyzer;
+        private Vector3 _initialDirection;
         private RoadLimiter _limiter;
-        private float _minAllowedHeight;
         private float _maxAllowedHeight;
-        private float _minAllowedX;
         private float _maxAllowedX;
+        private float _minAllowedHeight;
+        private float _minAllowedX;
+        private Vector3 _spawnPoint;
 
         private GameObject _stump;
-        private Vector3 _spawnPoint;
-        private Vector3 _initialDirection;
 
         public List<Vector3> LastSpawnedRoad { get; } = new();
 
@@ -44,14 +46,41 @@ namespace Game.Scripts.Road
             _limiter = GetComponent<RoadLimiter>();
             CalculatePlayAreaLimits();
         }
-        
+
+        private void OnDrawGizmos()
+        {
+            if (!Application.isPlaying) return;
+
+            Gizmos.color = Color.cyan;
+            DrawRectangle(_minAllowedX, _maxAllowedX, _minAllowedHeight, _maxAllowedHeight);
+
+            if (LastSpawnedRoad.Count <= 0) return;
+
+            Gizmos.color = Color.gray;
+            if (LastSpawnedRoad.Count > 1)
+            {
+                Gizmos.DrawLine(LastSpawnedRoad[0], LastSpawnedRoad[1]);
+                Gizmos.DrawSphere(LastSpawnedRoad[0], 0.15f);
+            }
+
+            Gizmos.color = Color.yellow;
+            for (var i = 1; i < LastSpawnedRoad.Count - 1; i++)
+            {
+                Gizmos.DrawLine(LastSpawnedRoad[i], LastSpawnedRoad[i + 1]);
+                Gizmos.DrawSphere(LastSpawnedRoad[i], 0.2f);
+            }
+
+            if (LastSpawnedRoad.Count > 1)
+                Gizmos.DrawSphere(LastSpawnedRoad[^1], 0.2f);
+        }
+
         public bool TrySpawn(out List<Vector3> road)
         {
             road = null;
             LastSpawnedRoad.Clear();
 
             if (!GenerateValidRoad()) return false;
-            
+
             road = LastSpawnedRoad;
 
             var spawnPosition = road[1];
@@ -64,9 +93,8 @@ namespace Game.Scripts.Road
 
             _stump.transform.LookAt(lookPosition);
             return true;
-
         }
-        
+
         private static Vector3[] GetAllPossibleDirections()
         {
             return new[]
@@ -77,7 +105,7 @@ namespace Game.Scripts.Road
                 Vector3.back
             };
         }
-        
+
         private static bool LineSegmentsIntersect(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
         {
             var s1_x = p2.x - p1.x;
@@ -90,7 +118,7 @@ namespace Game.Scripts.Road
 
             return s is >= 0 and <= 1 && t is >= 0 and <= 1;
         }
-        
+
         private static void DrawRectangle(float minX, float maxX, float minZ, float maxZ)
         {
             Vector3 tl = new(minX, 0, maxZ);
@@ -132,7 +160,7 @@ namespace Game.Scripts.Road
             _minAllowedHeight = -8f;
             _maxAllowedHeight = 8f;
         }
-        
+
         private bool GenerateRoad()
         {
             var currentDirection = _initialDirection;
@@ -149,26 +177,26 @@ namespace Game.Scripts.Road
                     if (IsOutsidePlayArea(currentPosition))
                     {
                         LastSpawnedRoad.RemoveAt(LastSpawnedRoad.Count - 1);
-                        currentDirection = GetValidTurnDirection(currentDirection, 
+                        currentDirection = GetValidTurnDirection(currentDirection,
                             currentPosition, true, startedFromTop);
-                        
+
                         if (currentDirection == Vector3.zero) break;
                         continue;
                     }
 
                     if (ShouldTurn(LastSpawnedRoad.Count))
                     {
-                        currentDirection = GetValidTurnDirection(currentDirection, 
+                        currentDirection = GetValidTurnDirection(currentDirection,
                             currentPosition, false, startedFromTop);
-                        
+
                         if (currentDirection == Vector3.zero) break;
                     }
                 }
                 else
                 {
-                    currentDirection = GetValidTurnDirection(currentDirection, 
+                    currentDirection = GetValidTurnDirection(currentDirection,
                         currentPosition, false, startedFromTop);
-                    
+
                     if (currentDirection == Vector3.zero) break;
                 }
 
@@ -190,7 +218,7 @@ namespace Game.Scripts.Road
                 if (_spawnPoint == Vector3.zero) continue;
 
                 if (!GenerateRoad() || LastSpawnedRoad.Count < _minPathSegments) continue;
-                
+
                 AddEntryPointBeforeStart();
 
                 var lastPointValid = !_limiter.IsEndTooCloseToBoundary(LastSpawnedRoad[^1]);
@@ -235,7 +263,7 @@ namespace Game.Scripts.Road
                 BoundaryMaker.BoundarySide.Left => Vector3.right,
                 BoundaryMaker.BoundarySide.Right => Vector3.left,
                 BoundaryMaker.BoundarySide.Bottom => Vector3.forward,
-                _ => _directionAnalyzer.GetValidDirection(_spawnPoint),
+                _ => _directionAnalyzer.GetValidDirection(_spawnPoint)
             };
         }
 
@@ -265,16 +293,15 @@ namespace Game.Scripts.Road
             if (!_limiter.IsPositionValid(newPosition, LastSpawnedRoad)) return false;
             position = newPosition;
             return true;
-
         }
 
         private bool ShouldTurn(int segmentCount)
         {
-            var turnProbability = _initialTurnProbability + (segmentCount * _turnProbabilityIncrease);
+            var turnProbability = _initialTurnProbability + segmentCount * _turnProbabilityIncrease;
             return Random.value < turnProbability;
         }
 
-        private Vector3 GetValidTurnDirection(Vector3 currentDirection, 
+        private Vector3 GetValidTurnDirection(Vector3 currentDirection,
             Vector3 currentPosition, bool avoidExtremeDirections, bool startedFromTop)
         {
             List<Vector3> validDirections = new();
@@ -291,14 +318,14 @@ namespace Game.Scripts.Road
                 if (avoidExtremeDirections)
                 {
                     if (startedFromTop && turn == Vector3.forward) continue;
-                    if (turn == Vector3.forward && currentPosition.z >= _maxAllowedHeight - _segmentLength * 0.5f) continue;
-                    if (turn == Vector3.back && currentPosition.z <= _minAllowedHeight + _segmentLength * 0.5f) continue;
+                    if (turn == Vector3.forward &&
+                        currentPosition.z >= _maxAllowedHeight - _segmentLength * 0.5f) continue;
+                    if (turn == Vector3.back && currentPosition.z <= _minAllowedHeight + _segmentLength * 0.5f)
+                        continue;
                 }
 
                 if (_limiter.IsPositionValid(testPosition, LastSpawnedRoad) && !wouldBeOutside)
-                {
                     validDirections.Add(turn);
-                }
             }
 
             if (validDirections.Count != 0)
@@ -308,9 +335,7 @@ namespace Game.Scripts.Road
             {
                 var testPosition = currentPosition + currentDirection * _segmentLength;
                 if (_limiter.IsPositionValid(testPosition, LastSpawnedRoad) && !IsOutsidePlayArea(testPosition))
-                {
                     return currentDirection;
-                }
             }
 
             return validDirections.Count > 0 ? validDirections[Random.Range(0, validDirections.Count)] : Vector3.zero;
@@ -325,9 +350,8 @@ namespace Game.Scripts.Road
         private bool IsRoadWithinPlayArea()
         {
             for (var i = 1; i < LastSpawnedRoad.Count; i++)
-            {
-                if (IsOutsidePlayArea(LastSpawnedRoad[i])) return false;
-            }
+                if (IsOutsidePlayArea(LastSpawnedRoad[i]))
+                    return false;
 
             return true;
         }
@@ -359,33 +383,6 @@ namespace Game.Scripts.Road
             Vector2 b2_2d = new(b2.x, b2.z);
 
             return LineSegmentsIntersect(a1_2d, a2_2d, b1_2d, b2_2d);
-        }
-      
-        private void OnDrawGizmos()
-        {
-            if (!Application.isPlaying) return;
-
-            Gizmos.color = Color.cyan;
-            DrawRectangle(_minAllowedX, _maxAllowedX, _minAllowedHeight, _maxAllowedHeight);
-
-            if (LastSpawnedRoad.Count <= 0) return;
-            
-            Gizmos.color = Color.gray;
-            if (LastSpawnedRoad.Count > 1)
-            {
-                Gizmos.DrawLine(LastSpawnedRoad[0], LastSpawnedRoad[1]);
-                Gizmos.DrawSphere(LastSpawnedRoad[0], 0.15f);
-            }
-
-            Gizmos.color = Color.yellow;
-            for (var i = 1; i < LastSpawnedRoad.Count - 1; i++)
-            {
-                Gizmos.DrawLine(LastSpawnedRoad[i], LastSpawnedRoad[i + 1]);
-                Gizmos.DrawSphere(LastSpawnedRoad[i], 0.2f);
-            }
-
-            if (LastSpawnedRoad.Count > 1)
-                Gizmos.DrawSphere(LastSpawnedRoad[^1], 0.2f);
         }
     }
 }

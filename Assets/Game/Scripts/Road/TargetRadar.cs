@@ -1,6 +1,5 @@
-﻿using Game.Scripts.Player;
-using Game.Scripts.SnakeCore;
-using System.Collections;
+﻿using System.Collections;
+using Game.Scripts.Player;
 using UnityEngine;
 
 namespace Game.Scripts.Road
@@ -11,10 +10,10 @@ namespace Game.Scripts.Road
         private const float TARGETING_DELAY = 0.1f;
 
         private int _bulletPerTarget;
-        private Shooter _shooter;
-        private TargetStorage _targetStorage;
         private Coroutine _scanCoroutine;
+        private Shooter _shooter;
         private WaitForSeconds _targetSleep;
+        private TargetStorage _targetStorage;
 
         private void Awake()
         {
@@ -37,7 +36,7 @@ namespace Game.Scripts.Road
         public void TurnOff()
         {
             if (_scanCoroutine == null) return;
-            
+
             StopCoroutine(_scanCoroutine);
             _scanCoroutine = null;
         }

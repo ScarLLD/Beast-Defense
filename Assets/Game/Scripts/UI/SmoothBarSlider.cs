@@ -6,7 +6,7 @@ namespace Game.Scripts.UI
 {
     public class SmoothBarSlider : MonoBehaviour
     {
-        private readonly float _maxSliderValue = 1;
+        private const float MAX_SLIDER_VALUE = 1;
 
         [SerializeField] private float _speed;
         [SerializeField] private Slider _slider;
@@ -16,18 +16,6 @@ namespace Game.Scripts.UI
         private void Awake()
         {
             _slider.gameObject.SetActive(false);
-        }
-
-        public void Init(Snake snake)
-        {
-            if (!_snake)
-            {
-                _snake = snake;
-                _snake.SegmentsCountChanged += OnCountChanged;
-            }
-
-            _slider.gameObject.SetActive(true);
-            SetDefaultValue();
         }
 
         private void OnEnable()
@@ -42,14 +30,26 @@ namespace Game.Scripts.UI
                 _snake.SegmentsCountChanged -= OnCountChanged;
         }
 
+        public void Init(Snake snake)
+        {
+            if (!_snake)
+            {
+                _snake = snake;
+                _snake.SegmentsCountChanged += OnCountChanged;
+            }
+
+            _slider.gameObject.SetActive(true);
+            SetDefaultValue();
+        }
+
         private void OnCountChanged(float currentCount, float maxCount)
         {
-            _slider.value = 1 - (currentCount / maxCount);
+            _slider.value = 1 - currentCount / maxCount;
         }
 
         private void SetDefaultValue()
         {
-            _slider.maxValue = _maxSliderValue;
+            _slider.maxValue = MAX_SLIDER_VALUE;
             _slider.minValue = 0;
 
             _slider.value = _slider.minValue;

@@ -1,7 +1,6 @@
-﻿using System;
-using Game.Scripts.CubeCore;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Game.Scripts.CubeCore;
 using UnityEngine;
 
 namespace Game.Scripts.SnakeCore
@@ -12,9 +11,9 @@ namespace Game.Scripts.SnakeCore
 
         private int _currentCubeIndex;
         private bool _isDestroyed;
-        private Snake _snake;
 
         private Material _material;
+        private Snake _snake;
         public bool IsTarget { get; private set; }
 
         private void Awake()
@@ -52,10 +51,7 @@ namespace Game.Scripts.SnakeCore
 
         private void ActivateVisibleCubes()
         {
-            foreach (var cube in _cubes)
-            {
-                cube.gameObject.SetActive(!cube.IsDestroyed);
-            }
+            foreach (var cube in _cubes) cube.gameObject.SetActive(!cube.IsDestroyed);
         }
 
         public bool TryGetCube(out Cube cube)
@@ -74,15 +70,9 @@ namespace Game.Scripts.SnakeCore
             if (!_snake)
                 return;
 
-            if (_isDestroyed)
-            {
-                return;
-            }
+            if (_isDestroyed) return;
 
-            if (_cubes.Any(cube => !cube.IsDestroyed))
-            {
-                return;
-            }
+            if (_cubes.Any(cube => !cube.IsDestroyed)) return;
 
             _isDestroyed = true;
 
@@ -92,17 +82,11 @@ namespace Game.Scripts.SnakeCore
 
         public void SetActiveSegment(bool active)
         {
-            if (_isDestroyed)
-            {
-                return;
-            }
+            if (_isDestroyed) return;
 
             gameObject.SetActive(active);
 
-            if (active)
-            {
-                ActivateVisibleCubes();
-            }
+            if (active) ActivateVisibleCubes();
         }
     }
 }

@@ -1,10 +1,10 @@
-﻿using Game.Scripts.LifeCycle;
-using Game.Scripts.UI.Menu;
-using Game.Scripts.UI;
-using Game.Scripts.MiniGameCore;
-using System.Collections;
-using UnityEngine;
 using System;
+using System.Collections;
+using Game.Scripts.Lifecycle;
+using Game.Scripts.MiniGameCore;
+using Game.Scripts.UI;
+using Game.Scripts.UI.Menu;
+using UnityEngine;
 
 namespace Game.Scripts.MapGenerator
 {
@@ -29,14 +29,6 @@ namespace Game.Scripts.MapGenerator
         [SerializeField] private GameHeart _gameHeart;
 
         private Coroutine _currentCoroutine;
-
-        public event Action Started;
-        public event Action Continued;
-        public event Action Lost;
-        public event Action Completed;
-        public event Action Restarted;
-        public event Action Leaved;
-        public event Action Transited;
 
         public bool HasCompleted { get; private set; }
         public bool HasStarted { get; private set; }
@@ -64,6 +56,14 @@ namespace Game.Scripts.MapGenerator
             if (IsPlaying)
                 _gameHeart.DecreaseCount();
         }
+
+        public event Action Started;
+        public event Action Continued;
+        public event Action Lost;
+        public event Action Completed;
+        public event Action Restarted;
+        public event Action Leaved;
+        public event Action Transited;
 
         public void Begin()
         {

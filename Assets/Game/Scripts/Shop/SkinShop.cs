@@ -1,24 +1,25 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Linq;
-using UnityEngine.UI;
 using Game.Scripts.BeastCore;
 using Game.Scripts.Effects;
+using Game.Scripts.Shop.Skins;
 using Game.Scripts.SnakeCore;
 using Game.Scripts.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 using YG;
-using Game.Scripts.Shop.Skins;
 
 namespace Game.Scripts.Shop
 {
     public class SkinShop : MonoBehaviour
     {
-        private readonly List<SkinItemUI> _beastSkinItems = new();
-        private readonly List<SkinItemUI> _snakeSkinItems = new();
-        private readonly Color _greenColor = new(0.004f, 0.78f, 0.57f);
-        private readonly Color _redColor = new(1f, 0.3f, 0.25f);
+        public enum SkinType
+        {
+            Beast,
+            Snake
+        }
 
         [Header("Skins")] [SerializeField] private SkinData _beastSkinData;
         [SerializeField] private SkinData _snakeSkinData;
@@ -45,19 +46,22 @@ namespace Game.Scripts.Shop
         [SerializeField] private Button _selectButton;
         [SerializeField] private TMP_Text _buyButtonText;
         [SerializeField] private TMP_Text _selectButtonText;
+        private readonly List<SkinItemUI> _beastSkinItems = new();
+        private readonly Color _greenColor = new(0.004f, 0.78f, 0.57f);
+        private readonly Color _redColor = new(1f, 0.3f, 0.25f);
+        private readonly List<SkinItemUI> _snakeSkinItems = new();
+        private string _equippedBeastSkinId;
+        private string _equippedSnakeSkinId;
 
         private string _selectedSkinId;
         private SkinType _selectedSkinType;
-        private string _equippedBeastSkinId;
-        private string _equippedSnakeSkinId;
 
         public event Action Purchased;
         public event Action Selected;
 
-        public enum SkinType
+        private void Start()
         {
-            Beast,
-            Snake
+            InitializeShop();
         }
 
         private void OnEnable()
@@ -74,11 +78,6 @@ namespace Game.Scripts.Shop
             _buyButton.onClick.RemoveListener(OnBuyButtonClick);
             _selectButton.onClick.RemoveListener(OnSelectButtonClick);
             _closePreviewButton.onClick.RemoveListener(OnClosePreviewButtonClick);
-        }
-
-        private void Start()
-        {
-            InitializeShop();
         }
 
         private void InitializeShop()
@@ -133,17 +132,11 @@ namespace Game.Scripts.Shop
 
         private void ClearContainers()
         {
-            foreach (Transform child in _beastSkinsContainer)
-            {
-                Destroy(child.gameObject);
-            }
+            foreach (Transform child in _beastSkinsContainer) Destroy(child.gameObject);
 
             _beastSkinItems.Clear();
 
-            foreach (Transform child in _snakeSkinsContainer)
-            {
-                Destroy(child.gameObject);
-            }
+            foreach (Transform child in _snakeSkinsContainer) Destroy(child.gameObject);
 
             _snakeSkinItems.Clear();
         }
@@ -151,13 +144,8 @@ namespace Game.Scripts.Shop
         private void SelectFirstSkin()
         {
             if (_beastSkinData.Skins.Count > 0)
-            {
                 SelectSkin(_beastSkinData.Skins[0].SkinId, SkinType.Beast);
-            }
-            else if (_snakeSkinData.Skins.Count > 0)
-            {
-                SelectSkin(_snakeSkinData.Skins[0].SkinId, SkinType.Snake);
-            }
+            else if (_snakeSkinData.Skins.Count > 0) SelectSkin(_snakeSkinData.Skins[0].SkinId, SkinType.Snake);
         }
 
         public bool TryOpenPreview(string skinId, SkinType skinType, Vector3 startPosition)
@@ -352,32 +340,20 @@ namespace Game.Scripts.Shop
             SelectSkin(_selectedSkinId, _selectedSkinType);
 
             if (_selectedSkinType == SkinType.Beast)
-            {
                 foreach (var item in _beastSkinItems)
-                {
                     item.UpdateEquippedState(_equippedBeastSkinId, SkinType.Beast);
-                }
-            }
             else
-            {
                 foreach (var item in _snakeSkinItems)
-                {
                     item.UpdateEquippedState(_equippedSnakeSkinId, SkinType.Snake);
-                }
-            }
         }
 
         private void LoadPurchasedSkins()
         {
             foreach (var skin in _beastSkinData.Skins.Where(skin => skin.IsDefault))
-            {
                 SavePurchasedSkin(skin.SkinId, SkinType.Beast);
-            }
 
             foreach (var skin in _snakeSkinData.Skins.Where(skin => skin.IsDefault))
-            {
                 SavePurchasedSkin(skin.SkinId, SkinType.Snake);
-            }
         }
     }
 }

@@ -1,13 +1,11 @@
-﻿using DG.Tweening;
-using System;
+﻿using System;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Game.Scripts.Effects
 {
     public class SkinItemPreviewOpenAnimator : MonoBehaviour
     {
-        private readonly Vector3 _startPreviewScale = Vector3.one * 0.1f;
-
         [SerializeField] private CanvasGroup _canvasGroup;
         [SerializeField] private RectTransform _previewRectTransform;
         [SerializeField] private Vector3 _targetPreviewPosition;
@@ -17,6 +15,7 @@ namespace Game.Scripts.Effects
         [SerializeField] private Ease _positionEase = Ease.OutBack;
         [SerializeField] private Ease _scaleEase = Ease.OutBounce;
         [SerializeField] private Ease _fadeEase = Ease.Linear;
+        private readonly Vector3 _startPreviewScale = Vector3.one * 0.1f;
 
         private void Awake()
         {

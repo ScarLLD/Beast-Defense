@@ -1,9 +1,8 @@
-﻿using Game.Scripts.BulletCore;
-using Game.Scripts.CubeCore;
-using Game.Scripts.SnakeCore;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.Scripts.BulletCore;
+using Game.Scripts.SnakeCore;
 using UnityEngine;
 
 namespace Game.Scripts.Player
@@ -12,20 +11,20 @@ namespace Game.Scripts.Player
     public class Shooter : MonoBehaviour
     {
         [SerializeField] private float _timeBetweenShoot;
+        private Animator _animator;
+        private int _bulletPerTarget;
 
         private BulletSpawner _bulletSpawner;
-        private Coroutine _shootCoroutine;
-        private Animator _animator;
-        private Queue<SnakeSegment> _targets;
-        private WaitForSeconds _sleepTime;
 
         private int _initialBulletCount;
-        private int _bulletPerTarget;
         private Quaternion _initialRotation;
-
-        public event Action BulletsCountChanged;
+        private Coroutine _shootCoroutine;
+        private WaitForSeconds _sleepTime;
+        private Queue<SnakeSegment> _targets;
 
         public int BulletCount { get; private set; }
+
+        public event Action BulletsCountChanged;
 
         private void Awake()
         {

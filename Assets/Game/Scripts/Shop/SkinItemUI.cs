@@ -1,31 +1,32 @@
-﻿using TMPro;
-using Game.Scripts.Shop.Skins;
+﻿using Game.Scripts.Shop.Skins;
 using Game.Scripts.UI;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Game.Scripts.Shop
 {
     [RequireComponent(typeof(RectTransform), typeof(SkinItemUIClickAnimator))]
     public class SkinItemUI : MonoBehaviour, IPointerClickHandler
     {
-        [Header("UI Elements")]
-        [SerializeField] private Image _skinIcon;
+        [Header("UI Elements")] [SerializeField]
+        private Image _skinIcon;
+
         [SerializeField] private Image _background;
         [SerializeField] private TextMeshProUGUI _priceText;
         [SerializeField] private GameObject _priceParent;
         [SerializeField] private GameObject _equippedBadge;
-
-        private RectTransform _rectTransform;
         private SkinItemUIClickAnimator _clickAnimator;
-        private SkinShop _shop;
-        private SkinData.Skin _skin;
-        private Wallet _wallet;
-        private SkinShop.SkinType _skinType;
 
         private Color _greenColor;
+
+        private RectTransform _rectTransform;
         private Color _redColor;
+        private SkinShop _shop;
+        private SkinData.Skin _skin;
+        private SkinShop.SkinType _skinType;
+        private Wallet _wallet;
 
         public string SkinId => _skin?.SkinId;
 
@@ -35,7 +36,14 @@ namespace Game.Scripts.Shop
             _clickAnimator = GetComponent<SkinItemUIClickAnimator>();
         }
 
-        public void Initialize(SkinData.Skin skin, SkinShop shop, Wallet wallet, SkinShop.SkinType skinType, Color greenColor, Color redColor)
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (_shop.TryOpenPreview(_skin.SkinId, _skinType, _rectTransform.position))
+                _clickAnimator.Interact();
+        }
+
+        public void Initialize(SkinData.Skin skin, SkinShop shop, Wallet wallet, SkinShop.SkinType skinType,
+            Color greenColor, Color redColor)
         {
             _wallet = wallet;
             _skin = skin;
@@ -62,12 +70,6 @@ namespace Game.Scripts.Shop
             UpdatePurchaseState(_shop.IsSkinPurchased(skin.SkinId, skinType));
         }
 
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            if (_shop.TryOpenPreview(_skin.SkinId, _skinType, _rectTransform.position))
-                _clickAnimator.Interact();
-        }
-
         public void UpdatePurchaseState(bool isPurchased)
         {
             if (isPurchased || _skin.IsDefault)
@@ -91,10 +93,7 @@ namespace Game.Scripts.Shop
 
         public void UpdateEquippedState(string equippedSkinId, SkinShop.SkinType type)
         {
-            if (_equippedBadge)
-            {
-                _equippedBadge.SetActive(_skin.SkinId == equippedSkinId && _skinType == type);
-            }
+            if (_equippedBadge) _equippedBadge.SetActive(_skin.SkinId == equippedSkinId && _skinType == type);
         }
     }
 }

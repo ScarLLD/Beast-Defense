@@ -11,7 +11,7 @@ namespace Game.Scripts.Player
 
         public void SetAvailableTrigger()
         {
-            _animator.SetTrigger(IsAvailable);
+            animator.SetTrigger(IsAvailable);
         }
     }
 }

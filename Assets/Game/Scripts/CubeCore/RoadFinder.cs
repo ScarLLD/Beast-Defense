@@ -1,10 +1,10 @@
-﻿using Game.Scripts.MapGenerator.Grid;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Game.Scripts.MapGenerator.Grid;
 
 namespace Game.Scripts.CubeCore
 {
-    public class RoadFinder
+    public static class RoadFinder
     {
         private static List<GridCell> FindShortestPath(GridCell startCell)
         {

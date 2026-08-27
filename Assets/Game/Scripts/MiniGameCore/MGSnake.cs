@@ -1,8 +1,9 @@
-﻿using Game.Scripts.Effects;
-using Game.Scripts.Options;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Game.Scripts.Effects;
+using Game.Scripts.Options;
 using UnityEngine;
 
 namespace Game.Scripts.MiniGameCore
@@ -10,39 +11,41 @@ namespace Game.Scripts.MiniGameCore
     [RequireComponent(typeof(Rigidbody))]
     public class MGSnake : MonoBehaviour
     {
-        private readonly List<GameObject> _bodyParts = new();
-        private readonly List<Vector3> _positionsHistory = new();
+        [Header("Movement Settings")] [SerializeField]
+        private float _moveSpeed = 5f;
 
-        [Header("Movement Settings")]
-        [SerializeField] private float _moveSpeed = 5f;
         [SerializeField] private float _steerSpeed = 180f;
         [SerializeField] private int _gap = 10;
 
-        [Header("Body Settings")]
-        [SerializeField] private GameObject _bodyContainer;
+        [Header("Body Settings")] [SerializeField]
+        private GameObject _bodyContainer;
+
         [SerializeField] private MGCube _bodyPrefab;
         [SerializeField] private float _growInterval = 3f;
         [SerializeField] private float _tailPullback = 0.5f;
 
-        [Header("Other")]
-        [SerializeField] private DOTWeenAnimator _animator;
+        [Header("Other")] [SerializeField] private DOTWeenAnimator _animator;
+
         [SerializeField] private DeathAnimator _deathAnimator;
         [SerializeField] private BeastCollector _collector;
         [SerializeField] private AudioPlayer _audioPlayer;
-
-        private WaitForSeconds _growSleep;
-        private float _steerDirection;
-        private bool _isMove;
-        private Rigidbody _rb;
-        private Coroutine _movementCoroutine;
+        private readonly List<GameObject> _bodyParts = new();
+        private readonly List<Vector3> _positionsHistory = new();
         private Coroutine _growCoroutine;
 
-        public event Action Died;
+        private WaitForSeconds _growSleep;
+        private bool _isMove;
+        private Coroutine _movementCoroutine;
+        private Rigidbody _rb;
+        private float _steerDirection;
 
+        public event Action Died;
+        
         private void Awake()
         {
             _rb = GetComponent<Rigidbody>();
-            _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ | RigidbodyConstraints.FreezePositionY;
+            _rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ |
+                              RigidbodyConstraints.FreezePositionY;
 
             _growSleep = new WaitForSeconds(_growInterval);
         }
@@ -52,7 +55,7 @@ namespace Game.Scripts.MiniGameCore
             if (other.gameObject.TryGetComponent(out MGBeast beast))
             {
                 if (_collector.IsBeastsFull) return;
-                
+
                 _audioPlayer.PlayBeastJumpSound();
                 _collector.IncreaseBeastCount();
                 _deathAnimator.KillRoutine(beast.transform, Color.white);
@@ -123,13 +126,9 @@ namespace Game.Scripts.MiniGameCore
                     var screenCenter = Screen.width * 0.5f;
 
                     if (touch.position.x < screenCenter)
-                    {
                         _steerDirection = -1f;
-                    }
                     else
-                    {
                         _steerDirection = 1f;
-                    }
                 }
                 else
                 {
@@ -147,32 +146,31 @@ namespace Game.Scripts.MiniGameCore
 
         private void MoveBodyParts()
         {
-            int index = 0;
+            var index = 0;
             foreach (var body in _bodyParts)
             {
-                if (body == null) continue;
+                if (!body) continue;
 
-                int historyIndex = (index + 1) * _gap;
-                int pullbackIndex = Mathf.FloorToInt(historyIndex + _tailPullback);
+                var historyIndex = (index + 1) * _gap;
+                var pullbackIndex = Mathf.FloorToInt(historyIndex + _tailPullback);
 
                 if (pullbackIndex < _positionsHistory.Count)
                 {
-                    Vector3 targetPoint = _positionsHistory[pullbackIndex];
+                    var targetPoint = _positionsHistory[pullbackIndex];
                     body.transform.position = targetPoint;
 
                     if (pullbackIndex + 1 < _positionsHistory.Count)
                     {
-                        Vector3 nextPoint = _positionsHistory[pullbackIndex + 1];
-                        Vector3 direction = nextPoint - targetPoint;
-                        if (direction.magnitude > 0.001f)
-                        {
+                        var nextPoint = _positionsHistory[pullbackIndex + 1];
+                        var direction = nextPoint - targetPoint;
+                        
+                        if (direction.magnitude > 0.001f) 
                             body.transform.rotation = Quaternion.LookRotation(direction);
-                        }
                     }
                 }
                 else if (_positionsHistory.Count > 0)
                 {
-                    Vector3 targetPoint = _positionsHistory[^1];
+                    var targetPoint = _positionsHistory[^1];
                     body.transform.position = targetPoint;
                 }
 
@@ -196,9 +194,9 @@ namespace Game.Scripts.MiniGameCore
             Vector3 spawnPosition;
             Quaternion spawnRotation;
 
-            if (_bodyParts.Count > 0 && _bodyParts[^1] != null)
+            if (_bodyParts.Count > 0 && _bodyParts[^1])
             {
-                GameObject lastSegment = _bodyParts[^1];
+                var lastSegment = _bodyParts[^1];
                 spawnPosition = lastSegment.transform.position - lastSegment.transform.forward * 1.5f;
                 spawnRotation = lastSegment.transform.rotation;
             }
@@ -210,23 +208,17 @@ namespace Game.Scripts.MiniGameCore
 
             spawnPosition.y = transform.position.y;
 
-            GameObject body = Instantiate(_bodyPrefab.gameObject, spawnPosition, spawnRotation);
+            var body = Instantiate(_bodyPrefab.gameObject, spawnPosition, spawnRotation);
             body.transform.parent = _bodyContainer.transform;
             _bodyParts.Add(body);
 
-            if (_animator != null && body != null)
-            {
-                DOTWeenAnimator.DoScaleUp(body);
-            }
+            if (_animator && body) DOTWeenAnimator.DoScaleUp(body);
         }
 
         private void ClearBody()
         {
-            foreach (var bodyPart in _bodyParts)
-            {
-                if (bodyPart != null)
-                    Destroy(bodyPart);
-            }
+            foreach (var bodyPart in _bodyParts.Where(bodyPart => bodyPart))
+                Destroy(bodyPart);
 
             _bodyParts.Clear();
         }

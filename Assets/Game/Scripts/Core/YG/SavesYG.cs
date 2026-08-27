@@ -1,4 +1,4 @@
-﻿namespace YG
+namespace YG
 {
     public partial class SavesYG
     {
