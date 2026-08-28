@@ -16,6 +16,9 @@ namespace Game.Scripts.Core
         public void ResetSettings()
         {
             SetWalkBool(false);
+            
+            if(!isActiveAndEnabled) return;
+            
             animator.Rebind();
             animator.Update(0f);
         }

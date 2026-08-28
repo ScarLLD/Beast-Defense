@@ -30,6 +30,14 @@ namespace Game.Scripts.MapGenerator
 
         private Coroutine _currentCoroutine;
 
+        public event Action Started;
+        public event Action Continued;
+        public event Action Lost;
+        public event Action Completed;
+        public event Action Restarted;
+        public event Action Leaved;
+        public event Action Transited;
+        
         public bool HasCompleted { get; private set; }
         public bool HasStarted { get; private set; }
         public bool IsPause { get; private set; }
@@ -56,14 +64,6 @@ namespace Game.Scripts.MapGenerator
             if (IsPlaying)
                 _gameHeart.DecreaseCount();
         }
-
-        public event Action Started;
-        public event Action Continued;
-        public event Action Lost;
-        public event Action Completed;
-        public event Action Restarted;
-        public event Action Leaved;
-        public event Action Transited;
 
         public void Begin()
         {
@@ -152,11 +152,8 @@ namespace Game.Scripts.MapGenerator
             IsPlaying = false;
             Leaved?.Invoke();
 
-            if (_miniGame.IsActive)
-            {
-                _gameHeart.transform.SetParent(_mainMenu.transform);
-                _gameHeart.gameObject.SetActive(false);
-            }
+            _gameHeart.transform.SetParent(_mainMenu.transform);
+            _gameHeart.gameObject.SetActive(!_miniGame.IsActive);
 
             _transition.ContinueBackTransition(_transitionDuration);
             yield return new WaitUntil(() => !_transition.IsTransiting);

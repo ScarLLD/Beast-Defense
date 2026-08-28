@@ -39,6 +39,7 @@ namespace Game.Scripts.Effects
         {
             DOTWeenAnimator.DoScaleDown(target.gameObject);
             yield return _deathTime;
+            
             _audioPlayer.PlayCloudParticleSound();
 
             target.gameObject.SetActive(false);
@@ -47,13 +48,6 @@ namespace Game.Scripts.Effects
             cloudParticle.transform.position = target.position;
 
             yield return _delayTime;
-
-            ClearRoutine();
-        }
-
-        private void ClearRoutine()
-        {
-            StopAllCoroutines();
         }
     }
 }

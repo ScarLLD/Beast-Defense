@@ -29,12 +29,12 @@ namespace Game.Scripts.Road
 
         private DirectionAnalyzer _directionAnalyzer;
         private Vector3 _initialDirection;
+        private Vector3 _spawnPoint;
         private RoadLimiter _limiter;
         private float _maxAllowedHeight;
         private float _maxAllowedX;
         private float _minAllowedHeight;
         private float _minAllowedX;
-        private Vector3 _spawnPoint;
 
         private GameObject _stump;
 
@@ -234,6 +234,7 @@ namespace Game.Scripts.Road
         private void AddEntryPointBeforeStart()
         {
             if (LastSpawnedRoad.Count <= 0) return;
+            
             var firstPoint = LastSpawnedRoad[0];
             var secondPoint = LastSpawnedRoad[1];
 
@@ -291,6 +292,7 @@ namespace Game.Scripts.Road
             var newPosition = position + direction * _segmentLength;
 
             if (!_limiter.IsPositionValid(newPosition, LastSpawnedRoad)) return false;
+            
             position = newPosition;
             return true;
         }

@@ -14,6 +14,9 @@ namespace Game.Scripts.Shop
         [SerializeField] private Material _shopMaterial;
         [SerializeField] private Button _exitButton;
 
+        public event Action Opened;
+        public event Action Closed;
+
         private void Awake()
         {
             DisableMenu();
@@ -28,9 +31,6 @@ namespace Game.Scripts.Shop
         {
             _exitButton.onClick.RemoveListener(OnExitButtonClick);
         }
-
-        public new event Action Opened;
-        public event Action Closed;
 
         public void Open()
         {

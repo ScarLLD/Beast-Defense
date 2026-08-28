@@ -10,11 +10,11 @@ namespace Game.Scripts.UI.Menu
         private const int MAX_HEARTS = 3;
         private const int RESTORE_TIME_SECONDS = 900;
 
-        public event Action HeartsChanged;
-
         private DateTime? _nextRestoreTimeUtc;
         private int _pendingRestores;
         private bool _isRestoring;
+        
+        public event Action HeartsChanged;
 
         public bool IsInitialized { get; private set; }
         public int CurrentHearts { get; private set; }
@@ -167,6 +167,7 @@ namespace Game.Scripts.UI.Menu
                 {
                     StartNextRestore();
                 }
+                
                 return;
             }
 

@@ -25,28 +25,24 @@ namespace Game.Scripts.Player
         [SerializeField] private MeshRenderer _meshRenderer;
         [SerializeField] private Outline _outline;
         [SerializeField] private List<MeshRenderer> _legs;
-        private BulletView _bulletView;
-
-        private PlayerCubeAnimator _cubeAnimator;
+        
         private Vector3 _defaultPosition;
-
         private Vector3 _defaultScale;
+        private BulletView _bulletView;
+        private PlayerCubeAnimator _cubeAnimator;
         private GridCell _gridCell;
-        private bool _isScaled;
         private CubeMover _mover;
         private TargetRadar _radar;
         private Shooter _shooter;
-        private Transform _transform;
+        private bool _isScaled;
 
+        public CubeStack GetStack { get; private set; }
         public bool IsAvailable { get; private set; }
         public bool HasClicked { get; private set; }
         public bool IsScaling { get; private set; }
-        public CubeStack GetStack { get; private set; }
 
         private void Awake()
         {
-            _transform = transform;
-
             _cubeAnimator = GetComponent<PlayerCubeAnimator>();
             _mover = GetComponent<CubeMover>();
             _shooter = GetComponent<Shooter>();
@@ -137,8 +133,8 @@ namespace Game.Scripts.Player
 
         private void InitialDefaultTransform()
         {
-            _defaultScale = _transform.localScale;
-            _defaultPosition = _transform.position;
+            _defaultScale = transform.localScale;
+            _defaultPosition = transform.position;
         }
 
         private void ActivateAvailability()
@@ -161,16 +157,16 @@ namespace Game.Scripts.Player
 
         private void SetDefaultTransform()
         {
-            _transform.localScale = _defaultScale;
-            _transform.position = _defaultPosition;
+            transform.localScale = _defaultScale;
+            transform.position = _defaultPosition;
 
             _meshRenderer.transform.localPosition = Vector3.zero;
         }
 
         private void SetHalfSizeTransform()
         {
-            _transform.localScale = new Vector3(_defaultScale.x, _defaultScale.y / 2, _defaultScale.z);
-            _transform.position = new Vector3(_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4,
+            transform.localScale = new Vector3(_defaultScale.x, _defaultScale.y / 2, _defaultScale.z);
+            transform.position = new Vector3(_defaultPosition.x, _defaultPosition.y - _defaultScale.y / 4,
                 _defaultPosition.z);
 
             _meshRenderer.transform.localPosition = Vector3.zero;
@@ -180,16 +176,16 @@ namespace Game.Scripts.Player
         {
             IsScaling = true;
 
-            var startScale = _transform.localScale;
-            var startPosition = _transform.position;
+            var startScale = transform.localScale;
+            var startPosition = transform.position;
 
             var progress = 0f;
 
             while (progress < 1f)
             {
                 progress += Time.deltaTime * _scaleChangerSpeed;
-                _transform.localScale = Vector3.Lerp(startScale, _defaultScale, progress);
-                _transform.position = Vector3.Lerp(startPosition, _defaultPosition, progress);
+                transform.localScale = Vector3.Lerp(startScale, _defaultScale, progress);
+                transform.position = Vector3.Lerp(startPosition, _defaultPosition, progress);
                 yield return null;
             }
 

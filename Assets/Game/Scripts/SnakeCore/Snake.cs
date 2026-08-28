@@ -14,10 +14,13 @@ namespace Game.Scripts.SnakeCore
     public class Snake : MonoBehaviour
     {
         private static readonly int IsMouthOpen = Animator.StringToHash("isMouthOpen");
+        
+        private readonly List<SnakeSegment> _playableSegments = new();
+        private readonly Queue<SnakeSegment> _recoilQueue = new();
+        private readonly List<SnakeSegment> _savedSegments = new();
 
-        [Header("Snake Settings")] [SerializeField]
-        private Animator _animator;
-
+        [Header("Snake Settings")] 
+        [SerializeField] private Animator _animator;
         [SerializeField] private SnakeHead _head;
         [SerializeField] private Transform _modelContainer;
         [SerializeField] private float _moveSpeed = 2f;
@@ -25,18 +28,15 @@ namespace Game.Scripts.SnakeCore
         [SerializeField] private float _segmentDistance = 1.15f;
         [SerializeField] private float _segmentRollback = 1.5f;
         [SerializeField] private float _headRollback = 1.5f;
-
         [SerializeField] private float _startSplinePosition;
 
-        [Header("Prefabs")] [SerializeField] private SnakeSegment _segmentPrefab;
+        [Header("Prefabs")] 
+        [SerializeField] private SnakeSegment _segmentPrefab;
 
-        [Header("Recoil Settings")] [SerializeField]
-        private float _recoilDuration = 0.3f;
-
+        [Header("Recoil Settings")] 
+        [SerializeField] private float _recoilDuration = 0.3f;
         [SerializeField] private AnimationCurve _recoilCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-        private readonly List<SnakeSegment> _playableSegments = new();
-        private readonly Queue<SnakeSegment> _recoilQueue = new();
-        private readonly List<SnakeSegment> _savedSegments = new();
+        
         private Beast _beast;
         private DeathModule _deathModule;
         private Vector3 _initialHeadSize;
@@ -47,8 +47,9 @@ namespace Game.Scripts.SnakeCore
         private SplineContainer _splineContainer;
         private float _splineLength;
         private float _splinePosition;
-
         private int _startSegmentsCount;
+        
+        public event Action<float, float> SegmentsCountChanged;
 
         public float MoveSpeed { get; private set; }
         public float BaseSpeed { get; private set; }
@@ -61,8 +62,6 @@ namespace Game.Scripts.SnakeCore
             _speedControl = GetComponent<SnakeSpeedControl>();
             _isRecoiling = false;
         }
-
-        public event Action<float, float> SegmentsCountChanged;
 
         public void InitializeSnake(List<CubeStack> stacks, SplineContainer splineContainer, DeathModule deathModule,
             Beast beast)

@@ -43,24 +43,6 @@ namespace Game.Scripts.Road
             }
         }
 
-        private void OnDrawGizmosSelected()
-        {
-            if (!Application.isPlaying) return;
-
-            Gizmos.color = Color.yellow;
-
-            Vector3 topLeft = new(_leftBoundX + _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
-            Vector3 topRight = new(_rightBoundX - _boundaryMargin, 0, _upperBoundZ - _boundaryMargin);
-            Gizmos.DrawLine(topLeft, topRight);
-
-            Vector3 bottomLeft = new(_leftBoundX + _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
-            Vector3 bottomRight = new(_rightBoundX - _boundaryMargin, 0, _lowerBoundZ + _boundaryMargin);
-            Gizmos.DrawLine(bottomLeft, bottomRight);
-
-            Gizmos.DrawLine(topLeft, bottomLeft);
-            Gizmos.DrawLine(topRight, bottomRight);
-        }
-
         public bool IsEndTooCloseToBoundary(Vector3 point)
         {
             return point.x < _leftBoundX + _boundaryMargin * _endPointMargin ||
@@ -82,6 +64,7 @@ namespace Game.Scripts.Road
             if (!_boundaryMaker) return;
 
             if (!_boundaryMaker.TryGetBoundaryLimits(out var minX, out var maxX, out var minZ, out var maxZ)) return;
+            
             _leftBoundX = minX;
             _rightBoundX = maxX;
             _lowerBoundZ = minZ;

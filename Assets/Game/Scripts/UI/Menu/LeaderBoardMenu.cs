@@ -12,7 +12,7 @@ namespace Game.Scripts.UI.Menu
         [SerializeField] private float _transitionDuration = 0.4f;
         [SerializeField] private Button _exitButton;
 
-        public new event Action Opened;
+        public event Action Opened;
         public event Action Closed;
 
         private void Awake()

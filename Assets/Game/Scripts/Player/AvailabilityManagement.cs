@@ -96,11 +96,10 @@ namespace Game.Scripts.Player
                                 rightCell.TakeCell(cell);
                             }
 
-                            if (!isBottomEdge && k < cells[i - 1, j].Count)
-                            {
-                                var bottomCell = cells[i - 1, j][k];
-                                bottomCell.TakeCell(cell);
-                            }
+                            if (isBottomEdge || k >= cells[i - 1, j].Count) continue;
+                            
+                            var bottomCell = cells[i - 1, j][k];
+                            bottomCell.TakeCell(cell);
                         }
                     }
                 }

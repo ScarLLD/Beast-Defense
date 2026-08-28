@@ -31,6 +31,7 @@ namespace Game.Scripts.Lifecycle
         {
             _audioPlayer.PlaySnakeDieSound();
             yield return StartCoroutine(DeathRoutine(target, Color.red));
+
             SnakeDied?.Invoke();
         }
 
@@ -38,6 +39,7 @@ namespace Game.Scripts.Lifecycle
         {
             _audioPlayer.PlayBeastDieSound();
             yield return StartCoroutine(DeathRoutine(target, Color.white));
+            
             BeastDied?.Invoke();
         }
 

@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using System;
+﻿using System;
+using UnityEngine;
 
 namespace Game.Scripts.MiniGameCore
 {
@@ -8,11 +8,11 @@ namespace Game.Scripts.MiniGameCore
         [SerializeField] private BeastCollector _collector;
         [SerializeField] private MGSnake _snake;
 
-        public bool IsActive { get; private set; }
-
         public event Action Started;
         public event Action Defeated;
         public event Action Won;
+        
+        public bool IsActive { get; private set; }
         
         private void Awake()
         {

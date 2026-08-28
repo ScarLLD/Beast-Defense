@@ -159,6 +159,7 @@ namespace Game.Scripts.Lifecycle
         private IEnumerator RestartCurrentLevelRoutine()
         {
             yield return StartCoroutine(CleanupRoutine());
+            
             _placeSpawner.GeneratePlaces();
             _cubeCreator.Respawn();
             _availabilityManagement.UpdateAvailability();
@@ -170,6 +171,7 @@ namespace Game.Scripts.Lifecycle
             if (_snake && _beast)
             {
                 yield return StartCoroutine(_snake.GetBackToStart());
+                
                 _snake.SetDefaultSetting();
                 _beast.SetDefaultSettings();
             }

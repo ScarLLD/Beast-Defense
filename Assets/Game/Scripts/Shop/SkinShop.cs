@@ -15,26 +15,26 @@ namespace Game.Scripts.Shop
 {
     public class SkinShop : MonoBehaviour
     {
-        public enum SkinType
-        {
-            Beast,
-            Snake
-        }
-
-        [Header("Skins")] [SerializeField] private SkinData _beastSkinData;
+        private readonly List<SkinItemUI> _beastSkinItems = new();
+        private readonly Color _greenColor = new(0.004f, 0.78f, 0.57f);
+        private readonly Color _redColor = new(1f, 0.3f, 0.25f);
+        private readonly List<SkinItemUI> _snakeSkinItems = new();
+        
+        [Header("Skins")] 
+        [SerializeField] private SkinData _beastSkinData;
         [SerializeField] private SkinData _snakeSkinData;
         [SerializeField] private Wallet _wallet;
         [SerializeField] private BeastSpawner _beastSpawner;
         [SerializeField] private SnakeSpawner _snakeSpawner;
 
-        [Header("UI References")] [SerializeField]
-        private Transform _beastSkinsContainer;
-
+        [Header("UI References")] 
+        [SerializeField] private Transform _beastSkinsContainer;
         [SerializeField] private Transform _snakeSkinsContainer;
         [SerializeField] private SkinItemUI _skinItemPrefab;
         [SerializeField] private Button _closePreviewButton;
 
-        [Header("Preview")] [SerializeField] private SkinItemPreviewOpenAnimator _previewAnimator;
+        [Header("Preview")] 
+        [SerializeField] private SkinItemPreviewOpenAnimator _previewAnimator;
         [SerializeField] private GameObject _preview;
         [SerializeField] private Image _backgroundImage;
         [SerializeField] private Image _selectedSkinImage;
@@ -46,18 +46,20 @@ namespace Game.Scripts.Shop
         [SerializeField] private Button _selectButton;
         [SerializeField] private TMP_Text _buyButtonText;
         [SerializeField] private TMP_Text _selectButtonText;
-        private readonly List<SkinItemUI> _beastSkinItems = new();
-        private readonly Color _greenColor = new(0.004f, 0.78f, 0.57f);
-        private readonly Color _redColor = new(1f, 0.3f, 0.25f);
-        private readonly List<SkinItemUI> _snakeSkinItems = new();
+        
         private string _equippedBeastSkinId;
         private string _equippedSnakeSkinId;
-
         private string _selectedSkinId;
         private SkinType _selectedSkinType;
 
         public event Action Purchased;
         public event Action Selected;
+        
+        public enum SkinType
+        {
+            Beast,
+            Snake
+        }
 
         private void Start()
         {
@@ -78,6 +80,72 @@ namespace Game.Scripts.Shop
             _buyButton.onClick.RemoveListener(OnBuyButtonClick);
             _selectButton.onClick.RemoveListener(OnSelectButtonClick);
             _closePreviewButton.onClick.RemoveListener(OnClosePreviewButtonClick);
+        }
+        
+        public bool TryOpenPreview(string skinId, SkinType skinType, Vector3 startPosition)
+        {
+            if (_preview.activeInHierarchy) return false;
+
+            _preview.SetActive(true);
+            SelectSkin(skinId, skinType);
+            _previewAnimator.Open(startPosition);
+
+            return true;
+        }
+
+        public void SelectSkin(string skinId, SkinType skinType)
+        {
+            _selectedSkinId = skinId;
+            _selectedSkinType = skinType;
+
+            var skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
+            var skin = skinData.GetSkinById(skinId);
+
+            if (skin == null) return;
+
+            _selectedSkinImage.sprite = skin.Icon;
+            _selectedSkinName.text = skin.GetLocalizedName(YG2.lang);
+            _selectedSkinTypeText.text = skinType == SkinType.Snake
+                ? InterfaceLocalization.GetLocalizedSnakeType(YG2.lang)
+                : InterfaceLocalization.GetLocalizedBeastType(YG2.lang);
+
+
+            var isPurchased = IsSkinPurchased(skinId, skinType) || skin.IsDefault;
+            var isEquipped = IsSkinEquipped(skinId, skinType);
+
+            if (skin.IsDefault)
+                _selectedSkinPrice.text = InterfaceLocalization.GetLocalizedFreeText(YG2.lang);
+            else if (isPurchased)
+                _selectedSkinPrice.text = InterfaceLocalization.GetLocalizedPurchasedText(YG2.lang);
+            else
+                _selectedSkinPrice.text = $"{skin.Price} {InterfaceLocalization.GetLocalizedMoneyText(YG2.lang)}";
+
+            _buyButton.gameObject.SetActive(!isPurchased);
+            _selectButton.gameObject.SetActive(isPurchased && !isEquipped);
+
+            if (isPurchased)
+            {
+                _selectButton.interactable = true;
+                _selectButtonText.text = InterfaceLocalization.GetLocalizedTakeText(YG2.lang);
+                _backgroundImage.color = _greenColor;
+            }
+            else
+            {
+                _backgroundImage.color = _redColor;
+
+                if (Wallet.CanAfford(skin.Price))
+                {
+                    _buyButtonImage.color = Color.white;
+                    _buyButtonText.text = InterfaceLocalization.GetLocalizedBuyText(YG2.lang);
+                    _buyButton.interactable = true;
+                }
+                else
+                {
+                    _buyButtonImage.color = Color.black;
+                    _buyButtonText.text = InterfaceLocalization.GetLocalizedNoMoneyText(YG2.lang);
+                    _buyButton.interactable = false;
+                }
+            }
         }
 
         private void InitializeShop()
@@ -146,72 +214,6 @@ namespace Game.Scripts.Shop
             if (_beastSkinData.Skins.Count > 0)
                 SelectSkin(_beastSkinData.Skins[0].SkinId, SkinType.Beast);
             else if (_snakeSkinData.Skins.Count > 0) SelectSkin(_snakeSkinData.Skins[0].SkinId, SkinType.Snake);
-        }
-
-        public bool TryOpenPreview(string skinId, SkinType skinType, Vector3 startPosition)
-        {
-            if (_preview.activeInHierarchy) return false;
-
-            _preview.SetActive(true);
-            SelectSkin(skinId, skinType);
-            _previewAnimator.Open(startPosition);
-
-            return true;
-        }
-
-        public void SelectSkin(string skinId, SkinType skinType)
-        {
-            _selectedSkinId = skinId;
-            _selectedSkinType = skinType;
-
-            var skinData = skinType == SkinType.Beast ? _beastSkinData : _snakeSkinData;
-            var skin = skinData.GetSkinById(skinId);
-
-            if (skin == null) return;
-
-            _selectedSkinImage.sprite = skin.Icon;
-            _selectedSkinName.text = skin.GetLocalizedName(YG2.lang);
-            _selectedSkinTypeText.text = skinType == SkinType.Snake
-                ? InterfaceLocalization.GetLocalizedSnakeType(YG2.lang)
-                : InterfaceLocalization.GetLocalizedBeastType(YG2.lang);
-
-
-            var isPurchased = IsSkinPurchased(skinId, skinType) || skin.IsDefault;
-            var isEquipped = IsSkinEquipped(skinId, skinType);
-
-            if (skin.IsDefault)
-                _selectedSkinPrice.text = InterfaceLocalization.GetLocalizedFreeText(YG2.lang);
-            else if (isPurchased)
-                _selectedSkinPrice.text = InterfaceLocalization.GetLocalizedPurchasedText(YG2.lang);
-            else
-                _selectedSkinPrice.text = $"{skin.Price} {InterfaceLocalization.GetLocalizedMoneyText(YG2.lang)}";
-
-            _buyButton.gameObject.SetActive(!isPurchased);
-            _selectButton.gameObject.SetActive(isPurchased && !isEquipped);
-
-            if (isPurchased)
-            {
-                _selectButton.interactable = true;
-                _selectButtonText.text = InterfaceLocalization.GetLocalizedTakeText(YG2.lang);
-                _backgroundImage.color = _greenColor;
-            }
-            else
-            {
-                _backgroundImage.color = _redColor;
-
-                if (Wallet.CanAfford(skin.Price))
-                {
-                    _buyButtonImage.color = Color.white;
-                    _buyButtonText.text = InterfaceLocalization.GetLocalizedBuyText(YG2.lang);
-                    _buyButton.interactable = true;
-                }
-                else
-                {
-                    _buyButtonImage.color = Color.black;
-                    _buyButtonText.text = InterfaceLocalization.GetLocalizedNoMoneyText(YG2.lang);
-                    _buyButton.interactable = false;
-                }
-            }
         }
 
         private bool IsSkinEquipped(string skinId, SkinType skinType)

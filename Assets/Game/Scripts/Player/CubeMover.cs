@@ -10,30 +10,28 @@ namespace Game.Scripts.Player
     public class CubeMover : MonoBehaviour
     {
         private const float ARRIVAL_THRESHOLD = 0.15f;
+        
         private Vector3 _cachedCellTarget;
         private Vector3 _cachedShootingTarget;
-        private GridCell _cell;
         private Vector3 _escapePlace;
         private Vector3 _initialPosition;
+        private Vector3 _target;
+        private Transform _transform;
+        private ShootingPlace _shootingPlace;
+        private Coroutine _moveCoroutine;
+        private GridCell _cell;
         private bool _isMoving;
         private bool _isNewMove = true;
-        private Coroutine _moveCoroutine;
-        private ShootingPlace _shootingPlace;
-
         private float _speed;
-        private Vector3 _target;
 
-        private Transform _transform;
-
+        public event Action Arrived;
+        public event Action Escaped;
 
         private void Awake()
         {
             _transform = transform;
             _initialPosition = _transform.position;
         }
-
-        public event Action Arrived;
-        public event Action Escaped;
 
         public void Init(float speed)
         {

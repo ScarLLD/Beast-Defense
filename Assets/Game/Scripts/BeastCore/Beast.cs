@@ -20,15 +20,15 @@ namespace Game.Scripts.BeastCore
         [SerializeField] private float _rotationSpeed = 15f;
         [SerializeField] private float _rotateDuration = 0.3f;
 
-        private float _currentSplinePosition;
         private Vector3 _originalScale;
-        private SplineContainer _splineContainer;
-        private BeastAnimator _animator;
         private Queue<float> _targetPercentages;
+        private SplineContainer _splineContainer;
+        private AudioPlayer _audioPlayer;
+        private BeastAnimator _animator;
         private Coroutine _rotateCoroutine;
         private Coroutine _moveCoroutine;
         private Transform _transform;
-        private AudioPlayer _audioPlayer;
+        private float _currentSplinePosition;
         private float _snakeSpeed;
 
         private float _cachedSplineLength;

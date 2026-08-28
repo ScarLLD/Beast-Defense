@@ -50,11 +50,14 @@ namespace Game.Scripts.UI
         private IEnumerator DisplayMessageRoutine()
         {
             _messageRectTransform.gameObject.SetActive(true);
-            yield return StartCoroutine(
-                AnimatePosition(_transitionAnimationCurve, _lowerPosition, _centerPosition, 0, 1));
+            yield return StartCoroutine(AnimatePosition(_transitionAnimationCurve, 
+                _lowerPosition, _centerPosition, 0, 1));
+            
             yield return _sleep;
-            yield return StartCoroutine(
-                AnimatePosition(_reverseTransitionAnimationCurve, _centerPosition, _upperPosition, 1, 0));
+            
+            yield return StartCoroutine(AnimatePosition(_reverseTransitionAnimationCurve, 
+                    _centerPosition, _upperPosition, 1, 0));
+            
             _messageRectTransform.gameObject.SetActive(false);
 
             _transitionCoroutine = null;

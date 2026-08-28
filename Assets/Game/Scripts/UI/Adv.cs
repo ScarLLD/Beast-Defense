@@ -11,7 +11,6 @@ namespace Game.Scripts.UI
         [SerializeField] private string _skipLevelID = "Skip";
         [SerializeField] private string _increaseHeartID = "Heart";
         [SerializeField] private string _doubleRewardID = "Double";
-
         [SerializeField] private Button _beginButton;
 
         public event Action HeartIncreased;

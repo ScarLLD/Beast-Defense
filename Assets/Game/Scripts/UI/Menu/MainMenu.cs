@@ -123,6 +123,8 @@ namespace Game.Scripts.UI.Menu
 
         private void OnGameLeaved()
         {
+            if (_miniGame.IsActive) return;
+
             EnableMenu();
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -381,7 +382,7 @@ namespace YG.EditorScr
             if (normalized.Length > 0 && (normalized[0] == 'v' || normalized[0] == 'V'))
                 normalized = normalized.Substring(1).TrimStart();
 
-            System.Text.StringBuilder builder = new System.Text.StringBuilder();
+            StringBuilder builder = new StringBuilder();
             bool hasDigit = false;
             bool lastWasDot = false;
 

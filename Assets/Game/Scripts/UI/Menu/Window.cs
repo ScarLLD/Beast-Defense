@@ -9,7 +9,6 @@ namespace Game.Scripts.UI.Menu
         [SerializeField] protected List<GameObject> menu = new();
 
         public static event Action ButtonClicked;
-        public event Action Opened;
 
         public bool IsActive { get; private set; }
 
@@ -30,7 +29,6 @@ namespace Game.Scripts.UI.Menu
         {
             SwitchVisible(true);
             IsActive = true;
-            Opened?.Invoke();
         }
 
         protected void DisableMenu()

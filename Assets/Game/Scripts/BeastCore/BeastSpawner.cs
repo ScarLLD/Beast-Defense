@@ -24,6 +24,7 @@ namespace Game.Scripts.BeastCore
         public Beast Spawn()
         {
             if (_beast) return _beast;
+            
             _beast = Instantiate(
                 _beastPrefab,
                 transform);

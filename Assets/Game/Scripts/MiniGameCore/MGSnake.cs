@@ -11,33 +11,32 @@ namespace Game.Scripts.MiniGameCore
     [RequireComponent(typeof(Rigidbody))]
     public class MGSnake : MonoBehaviour
     {
-        [Header("Movement Settings")] [SerializeField]
-        private float _moveSpeed = 5f;
-
+        private readonly List<GameObject> _bodyParts = new();
+        private readonly List<Vector3> _positionsHistory = new();
+        
+        [Header("Movement Settings")] 
+        [SerializeField] private float _moveSpeed = 5f;
         [SerializeField] private float _steerSpeed = 180f;
         [SerializeField] private int _gap = 10;
 
-        [Header("Body Settings")] [SerializeField]
-        private GameObject _bodyContainer;
-
+        [Header("Body Settings")] 
+        [SerializeField] private GameObject _bodyContainer;
         [SerializeField] private MGCube _bodyPrefab;
         [SerializeField] private float _growInterval = 3f;
         [SerializeField] private float _tailPullback = 0.5f;
 
-        [Header("Other")] [SerializeField] private DOTWeenAnimator _animator;
-
+        [Header("Other")] 
+        [SerializeField] private DOTWeenAnimator _animator;
         [SerializeField] private DeathAnimator _deathAnimator;
         [SerializeField] private BeastCollector _collector;
         [SerializeField] private AudioPlayer _audioPlayer;
-        private readonly List<GameObject> _bodyParts = new();
-        private readonly List<Vector3> _positionsHistory = new();
-        private Coroutine _growCoroutine;
-
-        private WaitForSeconds _growSleep;
-        private bool _isMove;
+        
         private Coroutine _movementCoroutine;
+        private Coroutine _growCoroutine;
+        private WaitForSeconds _growSleep;
         private Rigidbody _rb;
         private float _steerDirection;
+        private bool _isMove;
 
         public event Action Died;
         
@@ -109,11 +108,11 @@ namespace Game.Scripts.MiniGameCore
 
         private IEnumerator MovementRoutine()
         {
-            var moveDirection = transform.forward * _moveSpeed;
             while (_isMove)
             {
                 yield return new WaitForFixedUpdate();
 
+                var moveDirection = transform.forward * _moveSpeed;
                 _rb.velocity = new Vector3(moveDirection.x, _rb.velocity.y, moveDirection.z);
 
                 if (Application.isEditor || !Application.isMobilePlatform)
@@ -139,7 +138,6 @@ namespace Game.Scripts.MiniGameCore
                 _rb.MoveRotation(_rb.rotation * turnRotation);
 
                 _positionsHistory.Insert(0, transform.position);
-
                 MoveBodyParts();
             }
         }
@@ -183,6 +181,7 @@ namespace Game.Scripts.MiniGameCore
             while (_isMove)
             {
                 yield return _growSleep;
+                
                 GrowSnake();
             }
         }

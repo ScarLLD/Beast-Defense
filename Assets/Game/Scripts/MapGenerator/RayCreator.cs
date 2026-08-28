@@ -9,13 +9,15 @@ namespace Game.Scripts.MapGenerator
     {
         [SerializeField] private Game _game;
         [SerializeField] private float _rayDirection;
-        private Camera _camera;
+        
         private WaitForSeconds _clickCooldown;
-        private bool _isClickProcessed;
-        private Coroutine _rayCoroutine;
-        private bool _shouldStop;
-
         private WaitForSeconds _sleepTime;
+        private Coroutine _rayCoroutine;
+        private Camera _camera;
+        private bool _isClickProcessed;
+        private bool _shouldStop;
+        
+        public event Action<PlayerCube> Clicked;
 
         private void Awake()
         {
@@ -41,8 +43,6 @@ namespace Game.Scripts.MapGenerator
             _game.Completed -= DisableRay;
             _game.Lost -= DisableRay;
         }
-
-        public event Action<PlayerCube> Clicked;
 
         private void EnableRay()
         {
@@ -100,6 +100,7 @@ namespace Game.Scripts.MapGenerator
                                 Clicked?.Invoke(cube);
 
                                 yield return _clickCooldown;
+                                
                                 _isClickProcessed = false;
                             }
                     }

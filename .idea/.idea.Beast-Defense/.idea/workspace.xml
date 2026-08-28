@@ -12,66 +12,154 @@
   <component name="ChangeListManager">
     <list default="true" id="e5d23f73-5d24-4a81-bd89-a64b4e162432" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Beast-Defense/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Beast-Defense/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Animation/Snake/Snake(Clone).controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Animation/Snake/Snake(Clone).controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scenes/SampleScene.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scenes/SampleScene.unity.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BeastCore/Beast.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BeastCore/Beast.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/Bullet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/Bullet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/BulletSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BulletCore/BulletSpawner.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/BeastCore/BeastSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/BeastCore/BeastSpawner.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Core/BaseAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Core/BaseAnimator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Core/YG/SavesYG.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Core/YG/SavesYG.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/CubeCore/CubeCreator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/CubeCore/CubeCreator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/CubeCore/CubeStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/CubeCore/CubeStorage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/CubeCore/RoadFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/CubeCore/RoadFinder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/DeathAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/DeathAnimator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/ParticleCreator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/ParticleCreator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/ParticleData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/ParticleData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/SkinItemPreviewOpenAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Effects/SkinItemPreviewOpenAnimator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/LeaderBoard/ScoreReader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/LeaderBoard/ScoreReader.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/DeathModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/DeathModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/GameTimer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/GameTimer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/LaunchSequencer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Lifecycle/LaunchSequencer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/BoundaryMaker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/BoundaryMaker.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Game.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridCell.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridCreator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridCreator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/Grid/GridStorage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/PlaceStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/PlaceStorage.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/RayCreator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MapGenerator/RayCreator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/BeastCollector.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/BeastCollector.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGBeastSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGBeastSpawner.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGSnake.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGSnake.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGSnakeSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MGSnakeSpawner.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGame.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGame.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGameSequencer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/MiniGameCore/MiniGameSequencer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Options/AudioPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Options/AudioPlayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Options/GameOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Options/GameOptions.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/AvailabilityManagement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/AvailabilityManagement.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/CubeMover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/CubeMover.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/PlayerCube.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/PlayerCube.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/PlayerCubeAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/PlayerCubeAnimator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Player/Shooter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Player/Shooter.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/RoadLimiter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/RoadLimiter.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/RoadSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/RoadSpawner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/SplineCreator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/SplineCreator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/SplineVisualizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/SplineVisualizer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/TargetRadar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/TargetRadar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Road/TargetStorage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Road/TargetStorage.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/ShopMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/ShopMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinItemUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinItemUI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinShop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/SkinShop.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/Skins/SkinData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/Shop/Skins/SkinData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/Snake.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/Snake.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSegment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSegment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSpawner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/InterfaceLocalization.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/InterfaceLocalization.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/LevelHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/LevelHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/BuyPlaceMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/BuyPlaceMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSpeedControl.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/SnakeCore/SnakeSpeedControl.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Adv.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Adv.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/GameHeart.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/GameHeart.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/GameOverMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/GameOverMenu.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/HeartTimer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/HeartTimer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/LeaderBoardMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/LeaderBoardMenu.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/MainMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/MainMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/SmoothBarSlider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/SmoothBarSlider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/Window.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Menu/Window.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/NoPlacesMessageDisplayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/NoPlacesMessageDisplayer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Transition.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Game/Scripts/UI/Transition.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Readme.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Readme.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Materials.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Materials/OutlineFill.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Materials/OutlineFill.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Materials/OutlineMask.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Materials/OutlineMask.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Shaders.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Shaders/OutlineFill.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Shaders/OutlineFill.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Shaders/OutlineMask.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Resources/Shaders/OutlineMask.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Samples.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Samples/Materials.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Samples/Materials/Plane.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Samples/Materials/Plane.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Samples/Scenes.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Samples/Scenes/QuickOutline.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Samples/Scenes/QuickOutline.unity.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Scripts.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Scripts/Outline.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/QuickOutline/Scripts/Outline.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Documentation.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Documentation/TextMesh Pro User Guide 2016.pdf.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Fonts.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Fonts/LiberationSans - OFL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Fonts/LiberationSans - OFL.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Fonts/LiberationSans.ttf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Fonts/LiberationSans.ttf.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Drop Shadow.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Drop Shadow.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Fallback.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Outline.mat" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF - Outline.mat.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Fonts &amp; Materials/LiberationSans SDF.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/LineBreaking Following Characters.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/LineBreaking Following Characters.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/LineBreaking Leading Characters.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Sprite Assets.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Sprite Assets/EmojiOne.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Style Sheets.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/Style Sheets/Default Style Sheet.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/TMP Settings.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Resources/TMP Settings.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_Bitmap.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_Bitmap.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF SSD.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF SSD.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_SDF.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_Sprite.shader" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMP_Sprite.shader.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMPro.cginc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMPro.cginc.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMPro_Mobile.cginc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMPro_Mobile.cginc.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMPro_Properties.cginc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMPro_Properties.cginc.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMPro_Surface.cginc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Shaders/TMPro_Surface.cginc.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Sprites.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Sprites/EmojiOne Attribution.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Sprites/EmojiOne Attribution.txt.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Sprites/EmojiOne.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Sprites/EmojiOne.json.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Sprites/EmojiOne.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/TextMesh Pro/Sprites/EmojiOne.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/Images.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/Images/background.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/Images/background.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/index.html.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/style.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/style.css.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/thumbnail.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ImportedAssets/WebGLTemplates/YandexGames/thumbnail.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/BuildLogYG2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/BuildLogYG2.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Editor/SavesEditorYG2.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Resources/SettingsYG2.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Resources/SettingsYG2.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PluginYourGames/Scripts/Server/Editor/Utils/ModulesInstaller.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PluginYourGames/Scripts/Server/Editor/Utils/ModulesInstaller.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,28 +193,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Attach to Unity Editor.Attach to Unity Editor.executor": "Debug",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "cidr.known.project.marker": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "rider.code.cleanup.on.save.profile": "Built-in: Reformat Code",
-    "settings.editor.selected.configurable": "actions.on.save"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Attach to Unity Editor.Attach to Unity Editor.executor&quot;: &quot;Debug&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;rider.code.cleanup.on.save.profile&quot;: &quot;Built-in: Reformat Code&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../../Game\Beast Defense.exe" />
@@ -158,15 +246,13 @@
       <option name="MIXED_MODE_DEBUG" value="0" />
       <method v="2" />
     </configuration>
-    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false" ignored-value-for-modified-check="14568">
+    <configuration name="Attach to Unity Editor" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="Unity Debug" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost" useMixedMode="false">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
-      <option name="pid" value="14568" />
+      <option name="pid" />
       <option name="projectPathOnTarget" />
       <option name="runtimes">
-        <list>
-          <MonoRuntime />
-        </list>
+        <list />
       </option>
       <option name="selectedOptions">
         <list />

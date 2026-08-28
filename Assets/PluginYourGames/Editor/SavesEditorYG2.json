@@ -1,9 +1,9 @@
 {
     "Money": 0,
     "LevelNumber": 1,
-    "HeartCount": 2,
-    "PendingRestores": 1,
-    "NextRestoreTime": "2026-08-27T13:53:03.5829607Z",
+    "HeartCount": 0,
+    "PendingRestores": 4,
+    "NextRestoreTime": "2026-08-28T13:18:51.9776949Z",
     "EquippedBeastSkin": "1",
     "EquippedSnakeSkin": "",
     "PurchasedBeastSkins": "1,2",
@@ -18,5 +18,5 @@
         false,
         false
     ],
-    "idSave": 291
+    "idSave": 362
 }

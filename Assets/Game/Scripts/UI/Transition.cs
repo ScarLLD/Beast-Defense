@@ -21,9 +21,9 @@ namespace Game.Scripts.UI
 
         private Tween _currentTween;
 
-        public bool IsTransiting { get; private set; }
-
         public event Action Transiting;
+        
+        public bool IsTransiting { get; private set; }
 
         private void Awake()
         {

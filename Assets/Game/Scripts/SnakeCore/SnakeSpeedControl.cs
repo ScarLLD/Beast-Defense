@@ -7,11 +7,11 @@ namespace Game.Scripts.SnakeCore
     [RequireComponent(typeof(Snake))]
     public class SnakeSpeedControl : MonoBehaviour
     {
+        private SpeedState _currentState = SpeedState.Normal;
         private Snake _snake;
         private Coroutine _controlCoroutine;
         private Coroutine _transitionCoroutine;
         private float _initialSpeed;
-        private SpeedState _currentState = SpeedState.Normal;
 
         [SerializeField] private float _transitionDuration = 1f;
         [SerializeField] private float _sleepTime = 0.1f;
@@ -58,6 +58,7 @@ namespace Game.Scripts.SnakeCore
         private void ResetSnakeSpeed()
         {
             if (!_snake) return;
+            
             var baseSpeed = GetSnakeBaseSpeed();
             _snake.ChangeSpeed(baseSpeed);
         }

@@ -11,20 +11,19 @@ namespace Game.Scripts.Player
     public class Shooter : MonoBehaviour
     {
         [SerializeField] private float _timeBetweenShoot;
-        private Animator _animator;
-        private int _bulletPerTarget;
-
+        
+        private Queue<SnakeSegment> _targets;
         private BulletSpawner _bulletSpawner;
-
-        private int _initialBulletCount;
-        private Quaternion _initialRotation;
+        private Animator _animator;
         private Coroutine _shootCoroutine;
         private WaitForSeconds _sleepTime;
-        private Queue<SnakeSegment> _targets;
-
-        public int BulletCount { get; private set; }
+        private Quaternion _initialRotation;
+        private int _bulletPerTarget;
+        private int _initialBulletCount;
 
         public event Action BulletsCountChanged;
+        
+        public int BulletCount { get; private set; }
 
         private void Awake()
         {
